@@ -1,0 +1,759 @@
+﻿
+@{
+    ViewBag.Title = "_BL_DocEsign_First";
+}
+
+@*@model ERP_YOGLOANS_LOCAL.Models.Legality_Model.Leegality_DataFill_Models*@
+
+@model ERP_YOGLOANS_LOCAL.Models.Legality_Model.ApplicationAndKFSViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+        body {
+            font-family: 'Times New Roman';
+            /*font-family: 'Arial', sans-serif;*/
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+
+        .page {
+            page-break-after: always;
+            min-height: calc(100vh - 50px); /* Adjust to ensure enough space for footer */
+            margin-bottom: 50px; /* Space to prevent overlapping */
+            padding-bottom: 60px; /* Add padding to avoid content overlapping with the footer */
+        }
+
+        .footer {
+            position: absolute; /* Keeps the footer at the bottom */
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            border-top: 1px solid #000;
+            padding: 5px; /* Increase padding for better visibility */
+            background-color: white;
+            height: 30px; /* Adjust height to make it visible */
+        }
+
+        .content {
+            padding: 20px;
+            font-size: 10px;
+        }
+
+        .company-info {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .application-title {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
+        /* -------------------KFS------------------------------------*/
+
+        .heading-container {
+            margin: 10px 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+            width: 100%; /* Adjust width to 100% */
+            margin: 5px auto; /* Reduce margin */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px; /* Reduced padding */
+            text-align: left;
+            font-size: 10px;
+        }
+
+        .small-column {
+            width: 20px; /* Adjusted width */
+            text-align: center;
+        }
+
+        .large-column {
+            width: 20%;
+        }
+
+        .largest-column {
+            width: 300px;
+        }
+
+        .pdf-button {
+            margin: 10px;
+            padding: 5px 10px;
+            font-size: 12px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .large-column {
+            word-wrap: break-word; /* Allows long words to break */
+            white-space: normal; /* Allows text to wrap onto the next line */
+            overflow-wrap: break-word; /* Ensures long words break as necessary */
+        }
+
+        .no-space {
+            border-collapse: collapse; /* Optional: removes space between cells */
+        }
+
+        td {
+            padding: 8px; /* Adds some padding for better readability */
+            vertical-align: top;
+        }
+
+
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #ADB1B1;
+            margin: 20px 0; /* Adjust margin for spacing */
+        }
+
+        .page-break {
+            page-break-before: always;
+            break-before: page;
+        }
+
+        table, .content {
+            page-break-inside: auto; /* Avoid page breaks within the table or content block */
+        }
+
+        tr, td {
+            page-break-inside: avoid;
+        }
+
+        p, li {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+    </style>
+
+
+</head>
+<body>
+
+    <div class="container">
+        <div class="page">
+            <div class="outline-container" id="pdf-content">
+                <div id="applictn_form">
+                    <div class="logo-src" style="margin-bottom: 5px; text-align:right;">
+                        <img style="width:170px;" src="~/images/logowithtext.png" alt="Company Logo" />
+                    </div>
+
+                    <div class="company-info" style="margin-bottom: -20px; line-height: 1.2;">
+                        <div style="font-size:12px;">യോഗക്ഷേമം ലോൺസ് ലിമിറ്റഡ്</div>
+                        <div style="font-size:12px;">YOGAKSHEMAM LOANS LIMITED</div>
+                        <div style="font-size:11px; font-weight:normal;">(INCORPORATED UNDER THE COMPANIES ACT 1956)</div>
+                        <div style="font-size:11px;">CIN: U65992KL1991PLC005965</div>
+                        <div style="font-size: 11px; font-weight: normal;">Regd. Office: 3rd Floor, Ottappath Tower, Aswini Junction, Thiruvambadi PO., Thrissur, Kerala - 680 022<br />APPLICATION FOR BUSINESS / PROPERTY LOAN</div><br />
+                    </div>
+                    <hr />
+
+                    <div class="application-title" style="margin-top: -5px; margin-bottom: 10px; line-height: 1.2; font-size: 12px; font-weight: bold;">
+                        APPLICATION FOR BUSINESS / PROPERTY LOAN<br />
+                        <span class="malayalam" style="font-weight: bold;">ബിസിനസ്സ്/വസ്തു വായ്പാ അപേക്ഷ</span>
+                    </div>
+
+                    <div class="toaddress" style="line-height: 1.2; margin-bottom: 1px; font-size:10px; margin-left:14px;">
+                        To,<br />
+                        The Manager / മാനേജർ<br />
+                        Yogakshemam Loans Ltd. / യോഗക്ഷേമം ലോൺസ് ലിമിറ്റഡ്<br />
+                        @Model.ApplicationFormData.BranchName
+                    </div>
+                    <div class="content">
+
+                        <p style="margin-bottom:-10px">
+                            Sir / Madam / സർ / മാഡം,<br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I/We request you to sanction business/property loan of Rs&nbsp;@Model.ApplicationFormData.AppliedLoanAmt (Rupees @Model.ApplicationFormData.AppliedLoanAmtWords) My/our personal / profession / business details are furnished below.<br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;എനിയ്ക്ക് / ഞങ്ങൾക്ക്&nbsp;@Model.ApplicationFormData.AppliedLoanAmt &nbsp; രൂപയുടെ ( &nbsp;@Model.ApplicationFormData.AppliedLoanAmtWords&nbsp;രൂപ)
+
+                            ബിസിനസ്സ് / പ്രോപ്പർട്ടി ലോൺ അനുവദിക്കുവാൻ അപേക്ഷിക്കുന്നു.
+                        </p><br />
+                        <p style="margin-bottom:-5px; text-align:center;">
+                            എൻ്റെ / ഞങ്ങളുടെ / വ്യക്തിപരവും / തൊഴിൽപരവുമായ വിശദാംശങ്ങൾ താഴെ ചേർക്കുന്നു.
+                        </p>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px; margin-bottom:7px;" id="applicationTable">
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%;">
+                                    Name of the Loan Applicant<br />അപേക്ഷകന്റെ പേര്
+                                </td>
+                                <td colspan="2" style="border: 1px solid #ddd; width: 60%;">@Model.ApplicationFormData.PrimaryApplicantName</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%;">Son of/ Daughter of / Wife of<br />അച്ഛന്റേയോ / അമ്മയുടേയോ / <br />ഭർത്താവിന്റേയോ പേര്</td>
+                                <td colspan="2" style="border: 1px solid #ddd; width: 60%;" @*id="D_S_W_Name"*@>@Model.ApplicationFormData.PrimaryApplicantGuardianType,@Model.ApplicationFormData.PrimaryApplicantGuardian</td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%;">Sex / ലിംഗം</td>
+                                <td style="border: 1px solid #ddd; width: 30%;">
+                                    Male / ആണ്&nbsp;&nbsp;  <input type="checkbox" id="genderMale" style="width: 20px; height: 20px;"
+                                                                   @(Model.ApplicationFormData.PrimaryApplicantGender == "Male" ? "checked" : "")>
+                                </td>
+                                <td style="border: 1px solid #ddd; width: 30%;">
+                                    Female / പെണ്ണ് &nbsp;&nbsp;<input type="checkbox" id="genderFemale" style="width: 20px; height: 20px;"
+                                                                       @(Model.ApplicationFormData.PrimaryApplicantGender == "Female" ? "checked" : "")>
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%;">Age and Date of Birth<br />വയസ്സ്, ജനനതിയതി</td>
+                                <td colspan="2" style="border: 1px solid #ddd; width: 60%;" id="DOB">@Model.ApplicationFormData.PrimaryApplicantAgeDOB</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%;">
+                                    Mobile No (+91)<br />മൊബൈൽ നമ്പർ
+                                </td>
+                                <td colspan="2" style="border: 1px solid #ddd; width: 60%;" id="mobileNoCell">@Model.ApplicationFormData.Mobile</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%;">Whatsapp No (+91)<br />വാട്ട്സ്ആപ്പ് നമ്പർ</td>
+                                <td colspan="2" style="border: 1px solid #ddd; width: 60%;" id="whtsappno"></td>
+                            </tr>
+                            <tr style="margin-bottom:20px;">
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%;">Email ID<br /> ഇ-മെയിൽ വിലാസം</td>
+                                <td colspan="2" style="border: 1px solid #ddd; width: 60%;" id="email_id"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%; ">
+                                    Present Residential Address<br />ഇപ്പോഴത്തെ മേൽവിലാസം
+                                </td>
+                                <td colspan="2" style="border: 1px solid #ddd; text-align: center; width: 60%;" id="present_address">
+                                    @{
+                                        var address = new List<string>(); // Create a list to store non-null address parts
+
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.PrimaryApplicantPresentAddress1)) { address.Add(Model.ApplicationFormData.PrimaryApplicantPresentAddress1); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.PrimaryApplicantPresentAddress2)) { address.Add(Model.ApplicationFormData.PrimaryApplicantPresentAddress2); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.PrimaryApplicantPresentAddress3)) { address.Add(Model.ApplicationFormData.PrimaryApplicantPresentAddress3); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.PrimaryApplicantPresentAddress4)) { address.Add(Model.ApplicationFormData.PrimaryApplicantPresentAddress4); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.PrimaryApplicantPresentCity)) { address.Add(Model.ApplicationFormData.PrimaryApplicantPresentCity); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.PrimaryApplicantPresentPost)) { address.Add(Model.ApplicationFormData.PrimaryApplicantPresentPost); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.PrimaryApplicantPresentDistrict)) { address.Add(Model.ApplicationFormData.PrimaryApplicantPresentDistrict); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.PrimaryApplicantPresentState)) { address.Add(Model.ApplicationFormData.PrimaryApplicantPresentState); }
+
+                                        // Join the address parts with commas and output them
+                                        @String.Join(", ", address)
+                                    }
+                                    @*<div style="display: flex; justify-content: left; align-items: center; height: 100%;">
+                                <span style="display: block; margin-top: 5px;">PIN Code/പിൻകോഡ്</span>&nbsp;
+                                <input type="text" maxlength="6" style="width: 120px; text-align: center; border: 1px solid #ddd; height: 30px; margin-left: 10px;" id="present_pin" />
+                            </div>*@
+                                    <div style="display: flex; justify-content: left; align-items: center; height: 100%;">
+                                        <span style="display: block; margin-top: 5px;">PIN Code/പിൻകോഡ്</span>&nbsp;
+                                        <!-- Bind the input field to the PrimaryApplicantPresentPinCode model property -->
+                                        <input type="text" maxlength="6"
+                                               style="width: 120px; text-align: center; border: 1px solid #ddd; height: 30px; margin-left: 10px;"
+                                               id="present_pin"
+                                               name="PrimaryApplicantPresentPinCode"
+                                               value="@Model.ApplicationFormData.PrimaryApplicantPresentPinCode" />
+                                    </div>
+
+                                </td>
+                            </tr>
+
+
+
+
+
+
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%; ">
+                                    Permanent Residential Address <br />സ്ഥിരം മേൽവിലാസം
+                                </td>
+                                <td colspan="2" style="border: 1px solid #ddd; text-align: center; width: 60%;" id="perma_address">
+                                    @{
+                                        var permanentAddress = new List<string>(); // Create a list to store non-null address parts
+
+                                        // Conditionally add each part to the list if not null or empty
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.PrimaryApplicantPermanentAddress1)) { permanentAddress.Add(Model.ApplicationFormData.PrimaryApplicantPermanentAddress1); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.PrimaryApplicantPermanentAddress2)) { permanentAddress.Add(Model.ApplicationFormData.PrimaryApplicantPermanentAddress2); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.PrimaryApplicantPermanentAddress3)) { permanentAddress.Add(Model.ApplicationFormData.PrimaryApplicantPermanentAddress3); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.PrimaryApplicantPermanentCity)) { permanentAddress.Add(Model.ApplicationFormData.PrimaryApplicantPermanentCity); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.PrimaryApplicantPermanentPost)) { permanentAddress.Add(Model.ApplicationFormData.PrimaryApplicantPermanentPost); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.PrimaryApplicantPermanentDistrict)) { permanentAddress.Add(Model.ApplicationFormData.PrimaryApplicantPermanentDistrict); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.PrimaryApplicantPermanentState)) { permanentAddress.Add(Model.ApplicationFormData.PrimaryApplicantPermanentState); }
+
+                                        // Join the address parts with commas and output them
+                                        @String.Join(", ", permanentAddress)
+                                    }
+
+                                    <div style="display: flex; justify-content: left; align-items: center; height: 100%;">
+                                        <span style="display: block; margin-top: 5px;">PIN Code/പിൻകോഡ്</span>&nbsp;
+                                        <input type="text" maxlength="6"
+                                               style="width: 120px; text-align: center; border: 1px solid #ddd; height: 30px; margin-left: 10px;"
+                                               id="present_pin"
+                                               name="PrimaryApplicantPresentPinCode"
+                                               value="@Model.ApplicationFormData.PrimaryApplicantPermanentPinCode" />
+                                    </div>
+                                </td>
+
+                            </tr>
+                        </table>
+
+                        <p style="font-weight:bold;">Particulars of Co-applicant/ അപേക്ഷകരുടെ വിവരങ്ങൾ</p>
+                        <table style="width: 100%;  border-collapse: collapse; margin-top: 20px; margin-bottom:7px;">
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 26%;">Name/പേര്</td>
+                                <td style="border: 1px solid #ddd; width: 25%;">@Model.ApplicationFormData.CoApplicant1_Name</td>
+                                <td style="border: 1px solid #ddd; width: 25%;">@Model.ApplicationFormData.CoApplicant2_Name</td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.CoApplicant3_Name</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 26%;">Age & Date of Birth /<br />വയസ്സ്, ജനന തീയതി</td>
+                                <td style="border: 1px solid #ddd; width: 25%;">@Model.ApplicationFormData.CoApplicant1_AgeDOB</td>
+                                <td style="border: 1px solid #ddd; width: 25%;">@Model.ApplicationFormData.CoApplicant2_AgeDOB</td>
+                                <td style="border: 1px solid #ddd; ">@Model.ApplicationFormData.CoApplicant3_AgeDOB</td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 26%;">Sex/<br />ആൺ / പെൺ</td>
+                                <td style="border: 1px solid #ddd; width: 25%;">@Model.ApplicationFormData.CoApplicant1_Sex</td>
+                                <td style="border: 1px solid #ddd; width: 25%;">@Model.ApplicationFormData.CoApplicant2_Sex</td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.CoApplicant3_Sex</td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 26%;">
+                                    Relationship/<br />അപേക്ഷകനുമാ
+                                    യുള്ള ബന്ധം
+                                </td>
+                                <td style="border: 1px solid #ddd; width: 25%;">@Model.ApplicationFormData.CoApplicant1_Relation</td>
+                                <td style="border: 1px solid #ddd; width: 25%;">@Model.ApplicationFormData.CoApplicant2_Relation</td>
+                                <td style="border: 1px solid #ddd; ">@Model.ApplicationFormData.CoApplicant3_Relation</td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 26%;">Occupation/<br />/ തൊഴിൽ</td>
+                                <td style="border: 1px solid #ddd; width: 25%;">@Model.ApplicationFormData.CoApplicant1_Occupation</td>
+                                <td style="border: 1px solid #ddd; width: 25%;">@Model.ApplicationFormData.CoApplicant2_Occupation</td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.CoApplicant3_Occupation</td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 26%;">Mobile No (+91) /<br />മൊബൈൽ നമ്പർ</td>
+                                <td style="border: 1px solid #ddd; width: 25%;">@Model.ApplicationFormData.CoApplicant1_Mobile</td>
+                                <td style="border: 1px solid #ddd; width: 25%;">@Model.ApplicationFormData.CoApplicant2_Mobile</td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.CoApplicant3_Mobile</td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 26%;">Whatsapp No (+91)/<br />വാട്ട്സ്ആപ്പ് നമ്പർ</td>
+                                <td style="border: 1px solid #ddd; width: 25%;"></td>
+                                <td style="border: 1px solid #ddd; width: 25%;"></td>
+                                <td style="border: 1px solid #ddd;"></td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 26%;">Email ID/<br />ഇ-മെയിൽ വിലാസം</td>
+                                <td style="border: 1px solid #ddd; width: 25%;">@Model.ApplicationFormData.CoApplicant1_Email</td>
+                                <td style="border: 1px solid #ddd; width: 25%;">@Model.ApplicationFormData.CoApplicant2_Email</td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.CoApplicant3_Email</td>
+
+                            </tr>
+
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 26%;">Physical Address /<br />മേൽവിലാസം</td>
+                                <td style="border: 1px solid #ddd; width: 25%;">
+                                    @{
+                                        var coApplicant1Address = new List<string>(); // Create a list to store non-null address parts
+
+                                        // Conditionally add each part to the list if not null or empty
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant1_Address1)) { coApplicant1Address.Add(Model.ApplicationFormData.CoApplicant1_Address1); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant1_Address2)) { coApplicant1Address.Add(Model.ApplicationFormData.CoApplicant1_Address2); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant1_Address3)) { coApplicant1Address.Add(Model.ApplicationFormData.CoApplicant1_Address3); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant1_Address4)) { coApplicant1Address.Add(Model.ApplicationFormData.CoApplicant1_Address4); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant1_Post)) { coApplicant1Address.Add(Model.ApplicationFormData.CoApplicant1_Post); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant1_City)) { coApplicant1Address.Add(Model.ApplicationFormData.CoApplicant1_City); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant1_State)) { coApplicant1Address.Add(Model.ApplicationFormData.CoApplicant1_State); }
+
+                                        // Join the address parts with commas and output them
+                                        @String.Join(", ", coApplicant1Address)
+                                    }
+                                </td>
+                                <td style="border: 1px solid #ddd; width: 25%;">
+                                    @{
+                                        var coApplicant2Address = new List<string>(); // Create a list to store non-null address parts
+
+                                        // Conditionally add each part to the list if not null or empty
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant2_Address1)) { coApplicant2Address.Add(Model.ApplicationFormData.CoApplicant2_Address1); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant2_Address2)) { coApplicant2Address.Add(Model.ApplicationFormData.CoApplicant2_Address2); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant2_Address3)) { coApplicant2Address.Add(Model.ApplicationFormData.CoApplicant2_Address3); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant2_Address4)) { coApplicant2Address.Add(Model.ApplicationFormData.CoApplicant2_Address4); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant2_Post)) { coApplicant2Address.Add(Model.ApplicationFormData.CoApplicant2_Post); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant2_City)) { coApplicant2Address.Add(Model.ApplicationFormData.CoApplicant2_City); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant2_State)) { coApplicant2Address.Add(Model.ApplicationFormData.CoApplicant2_State); }
+
+                                        // Join the address parts with commas and output them
+                                        @String.Join(", ", coApplicant2Address)
+                                    }
+                                </td>
+                                <td style="border: 1px solid #ddd;">
+                                    @{
+                                        var coApplicant3Address = new List<string>(); // Create a list to store non-null address parts
+
+                                        // Conditionally add each part to the list if not null or empty
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant3_Address1)) { coApplicant3Address.Add(Model.ApplicationFormData.CoApplicant3_Address1); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant3_Address2)) { coApplicant3Address.Add(Model.ApplicationFormData.CoApplicant3_Address2); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant3_Address3)) { coApplicant3Address.Add(Model.ApplicationFormData.CoApplicant3_Address3); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant3_Address4)) { coApplicant3Address.Add(Model.ApplicationFormData.CoApplicant3_Address4); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant3_Post)) { coApplicant3Address.Add(Model.ApplicationFormData.CoApplicant3_Post); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant3_City)) { coApplicant3Address.Add(Model.ApplicationFormData.CoApplicant3_City); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant3_State)) { coApplicant3Address.Add(Model.ApplicationFormData.CoApplicant3_State); }
+
+                                        // Join the address parts with commas and output them
+                                        @String.Join(", ", coApplicant3Address)
+                                    }
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 26%;">PIN Code/പിൻകോഡ്</td>
+                                <td style="border: 1px solid #ddd; width: 25%;">@Model.ApplicationFormData.CoApplicant1_PinCode</td>
+                                <td style="border: 1px solid #ddd; width: 25%;">@Model.ApplicationFormData.CoApplicant2_PinCode</td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.CoApplicant3_PinCode</td>
+                            </tr>
+
+
+                        </table>
+                        <table style="width: 100%;  border-collapse: collapse; margin-top: 20px; margin-bottom:7px;">
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%; font-size:12px;">
+                                    Particulars of
+                                    Borrowings/Loans availed at the time of making this application along with present dues from any
+                                    source including Yogakshemam Loans Ltd.<br /><label style="font-size:10px;">
+                                        Borrowings should mention
+                                        loans in the name of loan applicant, family members and business firm. Loans from private
+                                        financiers to be also mentioned gold loans also to be included. Loan accounts which have been
+                                        closed also to be mentioned. If loan has not been availed at all please mention so.
+                                    </label><br />യോഗക്ഷേമത്തിലേതടക്കമുള്ള മറ്റ് വായ്പാ വിവരങ്ങൾ
+                                </td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.CurrentLiability</td>
+
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%; font-size: 12px;">
+                                    In case of loan against property details of property offered as security for loan.<br /><label style="font-size:10px;">
+                                        Nature and extent of property offered as security, when & how acquired, purchase price, present market value, in whose name is the property registered.
+                                    </label><br />പ്രോപ്പർട്ടി ലോൺ ആണെങ്കിൽ പണയ വസ്തുവിന്റെ വിവരങ്ങൾ
+                                </td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.PropertyDetails</td>
+
+                            </tr>
+                        </table>
+
+                        <table style="width: 100%;  border-collapse: collapse; margin-top: 20px; margin-bottom:7px;">
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%;">
+                                    PAN/GST Regn. /പാൻ / ജിഎസ്ടി നമ്പർ
+                                </td>
+                                <td colspan="3" style="border: 1px solid #ddd;">@Model.ApplicationFormData.PAN_GST</td>
+
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%; font-size: 12px;">
+                                    Bank Account Details<br /><label style="font-size:10px;">
+                                        (Name of the bank, branch, type of account, account number. Copy of passbook/statement of account may be enclosed)
+                                    </label><br />ബാങ്ക് അക്കൗണ്ട് വിവരങ്ങൾ
+                                </td>
+                                <td colspan="3" style="border: 1px solid #ddd;">
+                                    @{
+                                        var bankDetails = new List<string>(); // Create a list to store non-null bank details
+
+                                        // Conditionally add each bank detail to the list if not null or empty
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.BankName)) { bankDetails.Add(Model.ApplicationFormData.BankName); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.BankBranch)) { bankDetails.Add(Model.ApplicationFormData.BankBranch); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.AccountType)) { bankDetails.Add(Model.ApplicationFormData.AccountType); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.AccountNumber)) { bankDetails.Add(Model.ApplicationFormData.AccountNumber); }
+
+                                        // Join the bank details with commas and output them
+                                        @String.Join(", ", bankDetails)
+                                    }
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%;">
+                                    KYC Type & Number<br />കെ.വൈ.സി. ടൈപ്പ് & നമ്പർ
+                                </td>
+                                <td colspan="3" style="border: 1px solid #ddd;">
+                                    @{
+                                        var kycDetails = new List<string>(); // Create a list to store non-null bank details
+
+                                        // Conditionally add each bank detail to the list if not null or empty
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.KYCType)) { kycDetails.Add(Model.ApplicationFormData.KYCType); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.KYCNumber)) { kycDetails.Add(Model.ApplicationFormData.KYCNumber); }
+
+
+                                        // Join the bank details with commas and output them
+                                        @String.Join(", ", kycDetails)
+                                    }
+                                </td>
+
+
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%;">
+                                    Business/Profession present and in the past <br /><br />നിലവിലുള്ളതും മുൻപ് ചെയ്തിരുന്നതും ആയ തൊഴിൽ / വ്യവസായ വിവരങ്ങൾ
+                                </td>
+                                <td colspan="3" style="border: 1px solid #ddd;">@Model.ApplicationFormData.BusinessActivity</td>
+
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%;">
+                                    Business Address in full<br /> സ്ഥാപനത്തിന്റെ മേൽവിലാസം
+
+                                </td>
+                                <td colspan="3" style="border: 1px solid #ddd;">
+                                    @{
+                                        var BusinessAddressDetails = new List<string>(); // Create a list to store non-null bank details
+
+                                        // Conditionally add each bank detail to the list if not null or empty
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.BusinessAddress1)) { BusinessAddressDetails.Add(Model.ApplicationFormData.BusinessAddress1); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.BusinessAddress2)) { BusinessAddressDetails.Add(Model.ApplicationFormData.BusinessAddress2); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.BusinessAddress3)) { BusinessAddressDetails.Add(Model.ApplicationFormData.BusinessAddress3); }
+                                        if (!string.IsNullOrEmpty(Model.ApplicationFormData.BusinessAddress4)) { BusinessAddressDetails.Add(Model.ApplicationFormData.BusinessAddress4); }
+
+
+                                        // Join the bank details with commas and output them
+                                        @String.Join(", ", BusinessAddressDetails)
+                                    }
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%; font-size: 10px;">
+                                    Whether business premises owned or rented. (If rented rent paid per month.) സ്ഥാപനം സ്വന്തമാണോ വാടകയ്ക്കാണോ (ആണെങ്കിൽ മാസവാടക)
+                                </td>
+                                <td colspan="3" style="border: 1px solid #ddd;">@Model.ApplicationFormData.BusinessPremises_Own_Rent</td>
+
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%;">
+                                    Type of loan required (Business/Property Loan)<br />ഏത് തരം ലോണിനാണ് ആവശ്യം (ബിസിനസ് / പ്രോപ്പർട്ടി)
+                                </td>
+                                <td colspan="3" style="border: 1px solid #ddd;">@Model.ApplicationFormData.TypeOfLoan</td>
+
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%;">
+                                    Amount of loan required /വായ്പാ തുക
+                                </td>
+                                <td style="border: 1px solid #ddd; width: 20%;">@Model.ApplicationFormData.AmountOfLoan</td>
+                                <td style="border: 1px solid #ddd; width: 20%;">Period കാലാവധി</td>
+                                <td style="border: 1px solid #ddd; width: 20%;">@Model.ApplicationFormData.Period</td>
+
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 40%;">
+                                    Purpose for which loan is required പാൻ / ജിഎസ്ടി നമ്പർ<br /><label style="font-size:10px;">
+                                        (Brief details to be given. General responses
+                                        such as 'development of business’, ‘expansion of business' must be avoided)
+
+                                    </label><br />ലോൺ എടുക്കുന്നതിന്റെ ആവശ്യകത
+                                </td>
+                                <td colspan="3" style="border: 1px solid #ddd;">@Model.ApplicationFormData.PurposeOfLoan</td>
+
+                            </tr>
+
+                        </table>
+                        <p style="font-weight:bold;">Particulars of Family Members / കുടുംബാംഗങ്ങളുടെ വിവരങ്ങൾ</p>
+                        <table style="width: 100%;  border-collapse: collapse; margin-top: 20px; margin-bottom:10px;">
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd; width: 0%;">Name/പേര്</td>
+                                <td style="border: 1px solid #ddd; width: 20%;">@Model.ApplicationFormData.FamilyMember1_Name</td>
+                                <td style="border: 1px solid #ddd; width: 20%;">@Model.ApplicationFormData.FamilyMember2_Name</td>
+                                <td style="border: 1px solid #ddd; width: 20%;">@Model.ApplicationFormData.FamilyMember3_Name</td>
+                                <td style="border: 1px solid #ddd; width: 20%;">@Model.ApplicationFormData.FamilyMember4_Name</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd;">Age/വയസ്സ്</td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.FamilyMember1_Age</td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.FamilyMember2_Age</td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.FamilyMember3_Age</td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.FamilyMember4_Age</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd;">Relationship /<br />അപേക്ഷകനു മായുള്ള ബന്ധം</td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.FamilyMember1_Relation</td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.FamilyMember2_Relation</td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.FamilyMember3_Relation</td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.FamilyMember4_Relation</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; padding: 4px; border: 1px solid #ddd;">
+                                    Occupation/തൊഴിൽ
+                                </td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.FamilyMember1_Occupation</td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.FamilyMember2_Occupation</td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.FamilyMember3_Occupation</td>
+                                <td style="border: 1px solid #ddd;">@Model.ApplicationFormData.FamilyMember4_Occupation</td>
+                            </tr>
+                        </table>
+                        <p style="font-weight:bold; font-size:11px; text-align:center; margin-bottom:-1px;">DECLARATION CUM UNDERTAKING</p>
+                        <div class="content">
+                            I/We hereby declare and confirm that every information furnished above is true and correct. I/We have not withheld any information pertaining to my/our business details and borrowings. I/We are willing to submit any further information / details that the Company may require to process this loan application. I/We further agree that mere acceptance of this loan application does not signify commitment of the Company to sanction the loan applied for. I/We also declare that the loan amount, if sanctioned and disbursed, shall be put to only legal, permissible and productive use in the normal course of our stated business and shall not be used for any unproductive, speculative, unlawful or money laundering purposes or diverted for any other activity which has not been disclosed above.
+                            <br /> <br />I / We declare that   the mobile number, Whatsapp number and e-Mail IDs given above are registered in my/our name and I/We wish to receive SMS// Whatsapp/e-Mail  communications on this. I / We hereby authorise Yogakshemam Loans Ltd to deliver the digitally signed loan documents through Whatapp and/or e-Mail Ids registered in my/our names.
+                        </div>
+
+                        <p style="font-weight: bold; font-size: 11px; text-align: center; margin-bottom: -1px;">സത്യപ്രസ്താവന</p>
+                        <div class="content">
+                            മുകളിൽ പറഞ്ഞിരിയ്ക്കുന്ന വിവരങ്ങൾ എന്റെ അറിവിലും വിശ്വാസത്തിലും സത്യമാകുന്നു. എന്റെ വ്യക്തിപരമാ അതോ കച്ചവടസംബന്ധമായതോ ആയ യാതൊരു വിവരങ്ങളും മറച്ചുവെച്ചിട്ടില്ല. ഈ ലോൺ അപേക്ഷയോടനുബന്ധിച്ച് കൂടുതൽ വിവരങ്ങൾ കമ്പനി ആവശ്യപ്പെട്ടാൽ നൽകുവാൻ ഞാൻ തയ്യാറാണ്. ലോൺ അപേക്ഷ കമ്പനി സ്വീകരിച്ചു എന്നതുകൊണ്ട് മാത്രം ലോൺ അനുവദിക്കണമെന്നില്ല എന്ന ബോദ്ധ്യം എനിയ്ക്കുണ്ട്. ഈ അപേക്ഷ പ്രകാരം വായ് വ അനുവദിയ്ക്കുകയാണെങ്കിൽ ഈ പണമുപയോഗിച്ച് ഞങ്ങൾ മുകളിൽ പ്രതിപാദിച്ചിരിക്കുന്ന പ്രകാരമുള്ള കച്ചവട
+                            ആവശ്യങ്ങൾക്കുമാത്രമേ ഉപയോഗിക്കുകയുള്ളൂ എന്നും മറ്റു നിയമപരമല്ലാത്ത കാര്യങ്ങൾക്കോ ഊഹക്കച്ചവടങ്ങൾക്കോ അനുവദനീയമല്ലാത്തതോ ലാഭകരമല്ലാത്തതോ ആയ മറ്റ് വ്യവഹാരങ്ങൾക്കോ ഉപയോഗിക്കുന്നതല്ലെന്നും ഇതിനാൽ പ്രസ്താവിക്കുന്നു.
+                            <br />
+                            <br />മുകളിൽ നൽകിയിരിക്കുന്ന മൊബൈൽ നമ്പർ, വാട്ട്‌സ്ആപ്പ് നമ്പർ, ഇ-മെയിൽ ഐഡികൾ എന്നിവ എൻ്റെ/ഞങ്ങളുടെ പേരിൽ രജിസ്റ്റർ ചെയ്തിട്ടുള്ളതാണെന്ന് ഞാൻ / ഞങ്ങൾ പ്രഖ്യാപിക്കുന്നു. എൻ്റെ/ഞങ്ങളുടെ പേരിൽ രജിസ്റ്റർ ചെയ്ത Whatapp കൂടാതെ/അല്ലെങ്കിൽ ഇ-മെയിൽ ഐഡികൾ വഴി ഡിജിറ്റലായി ഒപ്പിട്ട ലോൺ ഡോക്യുമെൻ്റുകൾ ഡെലിവർ ചെയ്യാൻ യോഗക്ഷേമം ലോൺസ് ലിമിറ്റഡിന് ഞാൻ / ഞങ്ങൾ ഇതിനാൽ അധികാരം നൽകുന്നു.
+                            <br /> <hr />
+                        </div>
+
+
+                        <!--<div class="photo-container">
+            <div class="placeDate">Place / സ്ഥലം :@Model.ApplicationFormData.Place<br /><br />Date / തിയ്യതി:@Model.ApplicationFormData.ApplicationDate<br /><br /></div>-->
+                        @*<div class="photo-square" id="photo1">@Model.PrimaryApplicant_Photo_ImageUrl1</div>*@
+                        <!--<img src="@Model.ApplicationFormData.PrimaryApplicant_Photo_ImageUrl1" alt="Primary Applicant Photo" />
+
+                <div class="photo-square" id="photo2"></div>
+                <div class="photo-square" id="photo3"></div>
+            </div>-->
+                        <div class="photo-container" style="page-break-inside: avoid;">
+                            @*<div class="photo-container" style="page-break-inside: avoid; page-break-before: auto;">*@
+                            <div class="placeDate">Place / സ്ഥലം :@Model.ApplicationFormData.Place<br /><br />Date / തിയ്യതി:@Model.ApplicationFormData.ApplicationDate<br /><br /></div>
+                            @if (!string.IsNullOrEmpty(Model.ApplicationFormData.PrimaryApplicant_Photo_ImageUrl1))
+                            {
+                                <div class="photo-square">
+                                    <img src="@Model.ApplicationFormData.PrimaryApplicant_Photo_ImageUrl1" alt="Primary Applicant Photo" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="photo-square">
+                                    <p>No Photo</p>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant1_Photo_ImageUrl1))
+                            {
+                                <div class="photo-square">
+                                    <img src="@Model.ApplicationFormData.CoApplicant1_Photo_ImageUrl1" alt="CoApplicant 1 Photo" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="photo-square">
+                                    <p>No Photo</p>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant2_Photo_ImageUrl1))
+                            {
+                                <div class="photo-square">
+                                    <img src="@Model.ApplicationFormData.CoApplicant2_Photo_ImageUrl1" alt="CoApplicant 2 Photo" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="photo-square">
+                                    <p>No Photo</p>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.ApplicationFormData.CoApplicant3_Photo_ImageUrl1))
+                            {
+                                <div class="photo-square">
+                                    <img src="@Model.ApplicationFormData.CoApplicant3_Photo_ImageUrl1" alt="CoApplicant 3 Photo" />
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="photo-square">
+                                    <p>No Photo</p>
+                                </div>
+                            }
+                        </div>
+
+
+                        <style>
+                            .photo-container {
+                                display: flex;
+                                justify-content: space-around; /* Distribute space evenly */
+                                align-items: center; /* Center items vertically */
+                                margin: 20px; /* Margin around the container */
+                            }
+
+                            .photo-square {
+                                width: 100px; /* Width of the square */
+                                height: 100px; /* Height of the square */
+                                background-color: #ccc; /* Light gray background */
+                                border: 2px solid #333; /* Border color */
+                                border-radius: 8px; /* Rounded corners */
+                                display: flex;
+                                justify-content: center; /* Center the image horizontally */
+                                align-items: center; /* Center the image vertically */
+                                transition: transform 0.3s; /* Transition for hover effect */
+                                overflow: hidden; /* Ensure the image doesn't overflow the square */
+                            }
+
+                                .photo-square img {
+                                    width: 100%; /* Ensure the image fills the container width */
+                                    height: 100%; /* Ensure the image fills the container height */
+                                    object-fit: cover; /* Make the image cover the container */
+                                }
+
+                                .photo-square:hover {
+                                    transform: scale(1.05); /* Slightly enlarge on hover */
+                                }
+                        </style>
+
+                        <div style="text-align: left; padding: 8px; font-size:13px;">
+                            <br /><br />
+                            <span> Signatures / ഒപ്പ്<br />Name / പേര് :</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span>1. Applicant / അപേക്ഷകൻ</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span>2. Co. Applicant / സഹ അപേക്ഷകൻ</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span>3. Co. Applicant / സഹ അപേക്ഷകൻ</span>
+                        </div>
+                        <p style="font-size:13px; text-align:center;"><u>List of documents/papers to be enclosed along with the loan application<br />ലോൺ അപേക്ഷയോടൊപ്പം നൽകേണ്ട രേഖകൾ</u></p>
+                        <ul style="list-style-type: decimal; margin-left: 10px; margin-top: 6px; margin-bottom: -1px; ">
+                            <li> KYC Documents (Proof of Identity & Proof of Address).<br> കെ.വൈ.സി. ഡോക്യുമെന്റ്സ് (തിരിച്ചറിയലിനും മേൽവിലാസത്തിനുമുള്ള രേഖകൾ) </li>
+                            <li>Valid business licence issued by local authority (Old and New).<br> ബിസിനസ് ലൈസൻസിന്റെ കോപ്പി (പഴയതും പുതിയതും) </li>
+                            <li>  Valid special licence if required for business.<br> ബിസിനസ് സ്പെഷ്യൽ ലൈസൻസിന്റെ കോപ്പി </li>
+                            <li> GST Registration Certificate.<br> ജി. എസ്.ടി. രജിസ്ട്രേഷൻ സർട്ടിഫിക്കറ്റ് </li>
+                            <li> Income Tax Return.<br> ഇൻകംടാക്സ് റിട്ടേൺ<br> Evidence of Properties owned (Latest land tax paid receipt, Encumbrance certificate, Photocopy of title deeds, etc.).<br> സ്ഥലത്തിന്റെ ആധാരത്തിന്റെ കോപ്പിയും പുതിയ നികുതി അടച്ച രശീതിന്റെ കോപ്പിയും </li>
+                            <li> Valid Shop Rent / Lease Agreement.<br> സാധുവായ കട വാടക / പാട്ടക്കരാർ </li>
+                            <li>  Bank Account Statement / Passbook for past 6 months.<br> ബാങ്ക് എക്കൗണ്ട് സ്റ്റേറ്റ്മെന്റ് പാസ് ബുക്ക് കോപ്പി (6 മാസം) </li>
+                            <li>  2 Copies of colour photographs of all applicants.<br> പാസ്പോർട്ട് സൈസ് ഫോട്ടോ 2 എണ്ണം (മൂന്ന് പേരുടേയും) </li>
+                            <li>  Any other document that may be required.<br> അധികാരികൾ കൂടുതലായി ആവശ്യപ്പെടുന്ന മറ്റു രേഖകൾ </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="partialViewContainerKFS">
+                    @Html.Partial("_BL_KFS_Malayalam")
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+
+

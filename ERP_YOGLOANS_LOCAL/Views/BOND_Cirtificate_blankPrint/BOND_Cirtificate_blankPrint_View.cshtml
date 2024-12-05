@@ -1,0 +1,155 @@
+﻿@{
+
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @Styles.Render("~/Content/css")
+    <style>
+        .styled-table {
+            border-collapse: collapse;
+            border: 1px solid black;
+            width:100%;
+        }
+
+            .styled-table td {
+                border: 1px solid black;
+            }
+
+    </style>
+    <script>
+
+
+
+        $(document).ready(function () {
+            // Call the text_box_fill method
+            $.ajax({
+                url: '/BOND_Cirtificate_blankPrint/text_box_fill', // Update with your actual controller name
+                type: 'POST',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        alert("text_box_fill success");
+
+                        var data = response.data;
+                        var item = data[0];
+                        alert(data[0].customer_id);
+                        document.getElementById('customer_id').textContent = data[0].customer_id; 
+                        document.getElementById('branch_name').textContent = data[0].branch_name; 
+                        document.getElementById('customer_name').textContent = data[0].customer_name; 
+                        document.getElementById('applicant_name').textContent = data[0].applicant_name; 
+                        document.getElementById('ADDRESS').textContent = data[0].ADDRESS; 
+                        document.getElementById('amount').textContent = data[0].amount; 
+                        document.getElementById('amount_in_words').textContent = data[0].amount_in_words; 
+                        document.getElementById('nominee_name').textContent = data[0].nominee_name; 
+                        document.getElementById('certificate_no').textContent = data[0].certificate_no; 
+                        document.getElementById('issue_no').textContent = data[0].issue_no;
+                        document.getElementById('allotment_date').textContent = data[0].allotment_date; 
+                        document.getElementById('int_type').textContent = data[0].int_type; 
+                        document.getElementById('interest_rate').textContent = data[0].interest_rate; 
+                        document.getElementById('matamt').textContent = data[0].matamt; 
+                        document.getElementById('maturity_date').textContent = data[0].maturity_date; 
+                        document.getElementById('reg_startdate').textContent = data[0].reg_startdate;
+
+                        document.getElementById('customer_id2').textContent = data[0].customer_id;
+                        document.getElementById('branch_name2').textContent = data[0].branch_name;
+                        document.getElementById('customer_name2').textContent = data[0].customer_name;
+                        document.getElementById('applicant_name2').textContent = data[0].applicant_name;
+                        document.getElementById('ADDRESS2').textContent = data[0].ADDRESS;
+                        document.getElementById('amount2').textContent = data[0].amount;
+                        document.getElementById('amount_in_words2').textContent = data[0].amount_in_words;
+                        document.getElementById('nominee_name2').textContent = data[0].nominee_name;
+                        document.getElementById('certificate_no2').textContent = data[0].certificate_no;
+                        document.getElementById('allotment_date2').textContent = data[0].allotment_date;
+                        document.getElementById('int_type2').textContent = data[0].int_type;
+                        document.getElementById('interest_rate2').textContent = data[0].interest_rate;
+                        document.getElementById('matamt2').textContent = data[0].matamt;
+                        document.getElementById('maturity_date2').textContent = data[0].maturity_date;
+                        document.getElementById('reg_startdate2').textContent = data[0].reg_startdate;
+                        document.getElementById('issue_no2').textContent = data[0].issue_no;
+                    } else {
+                        // Handle failure
+                        console.error('Error:', response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle AJAX error
+                    console.error('AJAX error:', error);
+                }
+            });
+        });
+
+    </script>
+</head>
+<body style="font-family:Calibri;" >
+    <div style="width:100%;height:150px;"></div>
+    <div style="width: 100%; height: 200px; text-align: justify; font-size: 14px; color: black;padding:20px;">
+        <p style="line-height: 1.8;">
+            For value received, Yogakshemam Loans Limited, having registered office at 
+            Yogakshemam Loans Limited, Aswini Junction, Thiruvambady P.O, Thrissur 680 022.
+            Promises to pay to the person(s) named as holder(s) upon presentation and discharge of 
+            this certificate on the date of redemption as mentioned below, including the amount of
+            interest at the rate specified below at regular intervals of the months (subject to 
+            deduction of tax at source at the rates prevailing from time to time under the provisions 
+            of the income tax Act. 1961 or any statutory modifications or re-enactment thereof).
+            This certificate is issued subject to and with the benefit of the conditions endorsed here 
+            on which shall be binding on the company and Certificate holder(s) and all persons claiming 
+            by through or under any of them.
+        </p>
+    </div>
+    <br />
+    <br />
+    <br />
+    <br />
+    <div style="width: 100%; height: 300px; font-size: 14px; color: black;">
+        <div style="width: 50%; height: 250px; float: left; padding-left: 27px; line-height: .9; ">
+            Folio No : <label id="customer_id">fgdfgdfgdfg </label><br />
+            Branch : <label id="branch_name"> </label><br />
+            Name & Address of the Holder(s) :<label id="customer_name"></label><br />
+            (If Minor Name of Guardian) : <label id="applicant_name"></label><br />
+            <label id="ADDRESS"> </label><br />
+            Amount  Rs : <label id="amount"></label>/- &nbsp;(<label id="amount_in_words"></label>)<br />
+            Name & Details of Nominee :<label id="nominee_name"></label>
+        </div>
+        <div style="width: 50%; height: 250px; float: left; padding-left: 27px; line-height: .9; ">
+
+            Certificate No :<label id="issue_no"></label>/<label id="certificate_no"></label>   <br />
+            Effective Date : <label id="allotment_date"> </label><br />
+            Interest Payment : <label id="int_type"> </label><br />
+            Rate of Interest : <label id="interest_rate"> </label>%<br />
+            Maturity Value  Rs: <label id="matamt"> </label>/-<br />
+            Maturity Date :<label id="maturity_date"> </label><br />
+            Date of Issue :<label id="reg_startdate"> </label><br />
+        </div>
+    </div>
+    <br /><br /><br />
+    <div style="width: 100%; height: 300px; font-size: 14px; color: black; ">
+        <div style="width: 50%; height: 250px; float: left; padding-left: 18px; line-height: .9;">
+            Folio No : <label id="customer_id2"> </label><br />
+            Branch : <label id="branch_name2"> </label><br />
+            Name & Address of the Holder(s) :<label id="customer_name2"></label><br />
+            (If Minor Name of Guardian) : <label id="applicant_name2"></label><br />
+            <label id="ADDRESS2"> </label><br />
+            Amount  Rs : <label id="amount2"></label>/- &nbsp;(<label id="amount_in_words2"></label>)<br />
+            Name & Details of Nominee :<label id="nominee_name2"></label>
+        </div>
+        <div style="width: 50%; height: 250px; float: left; padding-left: 18px; line-height: .9; ">
+            Certificate No : <label id="issue_no2"> </label>/ <label id="certificate_no2"> </label> <br />
+            Date of Allotment: <label id="allotment_date2"> </label><br />
+            Interest Payment : <label id="int_type2"> </label><br />
+            Rate of Interest : <label id="interest_rate2"> </label>%<br />
+            Maturity Value  Rs: <label id="matamt2"> </label>/-<br />
+            Maturity Date :<label id="maturity_date2"> </label><br />
+            Date of Issue :<label id="reg_startdate2"> </label><br />
+        </div>
+    </div>
+
+</body>
+</html>
+

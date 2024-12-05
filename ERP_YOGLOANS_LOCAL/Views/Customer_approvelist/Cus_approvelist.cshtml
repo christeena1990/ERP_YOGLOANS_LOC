@@ -1,0 +1,190 @@
+﻿@model ERP_YOGLOANS_LOCAL.Models.Customer_Approval_ViewModel
+<html>
+<head>
+    <style>
+        .hidden-column {
+            display: none;
+        }
+    </style>
+    <style>
+        button {
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: #f5f5f5;
+            color: #333;
+            border-radius: 5px;
+        }
+
+            button.selected {
+                background-color: lightblue;
+                color: #007FFF; /* Add this line if you want to change text color when selected */
+            }
+    </style>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @*<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>*@
+
+    <script src="~/Scripts/jquery-3.6.4.min.js"></script>
+
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>*@
+
+
+    <script src="~/Scripts/spin.min.js"></script>
+
+
+
+
+
+
+</head>
+
+
+<body>
+    @*<div class="main-panel">
+        <div class="content">
+            <div class="page-inner">
+                <div class="col-md-12">
+                    <div class="card" style="background-color: #fcfcfc">*@
+
+    <div class="app-main__inner" style="margin-top: -30px;padding:10px;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Customer Approval List</h6>
+            </div><br />
+        </div>
+        @*<div style="display: flex; gap: 10px;">
+                <form id="form1">
+                    <button type="button" id="approvalListBtn" style="font-weight: bold; font-size: 18px; padding: 5px 10px;">Approval List</button>
+                </form>
+
+
+
+            </div>*@
+        <div class="card-body">
+            <div style="width: 100%;  overflow-y: auto;">
+                <form id="approve_form" action="@Url.Action("Select","Customer_approvelist")" method="post">
+                    <div id="approvalListTable">
+                        @*<table id="dataGrid" class="mb-0 table table-bordered" style="overflow-y: auto;">*@
+                        <table id="dataGrid" class="table table-hover table-striped table-bordered" style="overflow-y: auto; font-size:14px;width:100%;font-weight:500;">
+                            @if (Model.Data != null && Model.Data.Count > 0)
+                            {
+                                <thead>
+                                    <tr>
+                                        <th style="background-color: #4D759A; color:white;" >#</th>
+                                        @{
+
+
+                                            var fieldDisplayNames = new Dictionary<string, string>
+                                                                                                                                                                                                                                                                                                                                                                                                        {
+                                                                    {"customer_temp_id", "Customer Temp ID"},
+                                                                    {"customer_name", "Customer Name"},
+                                                                    {"address", "Address"},
+                                                                    {"city", "City"},
+                                                                    {"mobile_no", "Mobile Number"},
+                                                                    {"branch_id", "Branch ID"},
+                                                                    {"branch_name", "Branch Name"},
+                                                                    {"employ_name", "Employee Name"}
+                                                                };
+
+                                            var fieldDisplayNamesToUse = Model.Columns.Count == 9 ? fieldDisplayNames : null;
+                                            foreach (var column in Model.Columns)
+                                            {
+                                                var isHidden = column == "branch_id" || column == "enter_by";
+                                                <th class="@(isHidden ? "hidden-column" : "")"  style="background-color: #4D759A; color: white;"  >
+                                                    @(fieldDisplayNamesToUse != null && fieldDisplayNamesToUse.ContainsKey(column) ? fieldDisplayNamesToUse[column] : column)
+                                                   
+                                                </th>
+                                            }
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Data)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @{
+                                                    var customerId = item.ContainsKey(Model.Columns.Count == 9 ? "customer_temp_id" : "customer_id") ? item[Model.Columns.Count == 9 ? "customer_temp_id" : "customer_id"] : null;
+                                                    var cust_slno = item.ContainsKey("sl_no") ? item["sl_no"] : null;
+                                                }
+                                                <a href="#" onclick="submitForm('@customerId', @(Model.Columns.Count == 9 ? 1 : 2), @cust_slno);">
+                                                    <span style="font-size:medium">&#128065;</span>
+                                                    @*<button class="mb-2 mr-2 btn-icon btn-icon-only btn-pill btn btn-danger"><i class="lnr-eye btn-icon-wrapper"> </i></button>*@
+                                                </a>
+                                            </td>
+                                            @foreach (var column in Model.Columns)
+                                            {
+                                                var isHidden = column == "branch_id" || column == "enter_by";
+                                                <td class="@(isHidden ? "hidden-column" : "")">
+                                                    @(item.ContainsKey(column) ? item[column] : "")
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                </tbody>
+                            }
+                            else
+                            {
+                                <p>No pending approvals...</p>
+                                @*<tr>
+                                        <td colspan="@(Model.Columns.Count)">No pending approvals...</td>
+                                    </tr>*@
+                            }
+                        </table>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    @*</div>
+                </div>
+            </div>
+        </div>*@
+
+
+
+    <script>
+       
+        function submitForm(customerId, app_type, sl_no) {
+            var hiden_cust_type = document.createElement("input");
+            hiden_cust_type.type = "hidden";
+            hiden_cust_type.name = "appr_type";
+            hiden_cust_type.id = "appr_type";
+
+            var hiden_slno = document.createElement("input");
+            hiden_slno.type = "hidden";
+            hiden_slno.name = "sl_no";
+            hiden_slno.id = "sl_no";
+            hiden_slno.value = sl_no;
+
+            if (app_type === 1) {
+                hiden_cust_type.value = 1;
+            } else {
+                hiden_cust_type.value = 2;
+            }
+
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "customer_id";
+            input.id = "customer_id";
+            input.value = customerId;
+
+            document.getElementById("approve_form").appendChild(input);
+            document.getElementById("approve_form").appendChild(hiden_cust_type);
+            document.getElementById("approve_form").appendChild(hiden_slno);
+
+            document.getElementById("approve_form").submit();
+        }
+
+
+    </script>
+
+
+
+</body>
+</html>

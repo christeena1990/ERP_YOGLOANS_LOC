@@ -1,0 +1,637 @@
+﻿
+
+@using System.Data
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Add Bank Details</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+
+    <style>
+        /* Styling for dropdown container */
+        .dropdown-container {
+            width: 200px;
+            position: relative;
+            text-align: center;
+        }
+
+        /* Remove default dropdown arrow */
+        #styledDropdown {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            color: #333;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            background-image: none; /* Remove default arrow */
+            background-position: right 10px center;
+            background-repeat: no-repeat;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+            /* Add a custom arrow */
+            #styledDropdown::after {
+                content: "\25BC"; /* Unicode for downward arrow */
+                position: absolute;
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                pointer-events: none;
+            }
+
+            /* Change color on hover */
+            #styledDropdown:hover {
+                border-color: #007bff;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            }
+
+            /* Change style when focused */
+            #styledDropdown:focus {
+                outline: none;
+                border-color: #007bff;
+            }
+
+
+        #cus_detailsDataGrid tr:hover {
+            background-color: #b2c3d6;
+            /*  background-color:cadetblue;*/
+            opacity: 500;
+            cursor: pointer;
+            color: white;
+        }
+
+        .table {
+            font-size: 14px;
+        }
+
+        #cus_detailsDataGrid {
+            width: 100%;
+        }
+
+        .suggestionsclass {
+            font-size: 14px; /* Adjust this value to your desired font size */
+            position: absolute;
+            top: 100%; /* Position below the search box */
+            left: 0;
+            width: 300px; /* Match the width of the search box */
+            background-color: white;
+            border: 1px solid white;
+            border-radius: 3px;
+            z-index: 1000; /* Ensure the suggestions appear above other elements */
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            /*margin-left: 30px;*/
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+            .suggestionsclass li {
+                padding: 5px;
+            }
+
+                .suggestionsclass li:hover {
+                    background-color: darkgray;
+                    cursor: pointer;
+                    color: blue;
+                }
+    </style>
+    <script>
+
+
+        function initSearch(searchBoxId, suggestionsId, selectedCustomerIdId) {
+         const searchBox = document.getElementById(searchBoxId);
+         const suggestions = document.getElementById(suggestionsId);
+         const selectedCustomerId = document.getElementById(selectedCustomerIdId);
+
+         searchBox.addEventListener("input", function () {
+             const search_txt = searchBox.value;
+             if (search_txt.length >= 2) {
+                 fetch(`@Url.Action("GetSearchSuggestions", "PersonalLoan_collection")?search_txt=${search_txt}`)
+                     .then(response => response.json())
+                     .then(data => {
+                         suggestions.innerHTML = "";
+                         data.forEach(item => {
+                             const li = document.createElement("li");
+                             li.textContent = item; // Display the concatenated string
+                             li.addEventListener("click", function () {
+                                 const selectedValue = item.split('-')[0]; // Extract the customer ID
+                                 selectedCustomerId.value = selectedValue;
+                                 searchBox.value = item; // Set the input value to the selected item
+                                 suggestions.innerHTML = "";
+                             });
+                             suggestions.appendChild(li);
+                         });
+                     });
+             } else {
+                 suggestions.innerHTML = "";
+                 selectedCustomerId.value = "";
+             }
+         });
+
+         document.addEventListener("click", function (event) {
+             if (!suggestions.contains(event.target) && event.target !== searchBox) {
+                 suggestions.innerHTML = "";
+             }
+         });
+     }
+
+        function search() {
+           // alert("search_click");
+
+
+            if ($("#selectedCustomerId").val() == "") {
+                alert("Please select from below.");
+                $("#searchBox").focus();
+                return;
+            }
+
+            // Get the input value
+            var input = $("#selectedCustomerId").val();
+           // alert(input);
+            // AJAX request to store the input in session and then open a new window
+            $.ajax({
+                url: '/PersonalLoan_collection/SetCustomerSession', // New controller action to set the session
+                type: 'POST', // POST request since we are modifying the session
+                data: { LoanrId: input }, // Pass the input value as a parameter
+                success: function (response) {
+                  //  alert("Session set successfully");
+                    $.ajax({
+                        type: 'POST',
+                        url: '/PersonalLoan_collection/grid_pl_loan_fill',
+                        dataType: 'json',
+                        success: function (response) {
+                            if (response.success) {
+                               // alert("success");
+                                // Assuming you have a function to render the table
+                                renderTable(response.data);
+                            }
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    // Handle any errors
+                    alert("An error occurred: " + xhr.responseText);
+                }
+            });
+        }
+
+
+
+
+        //function renderTable(data) {
+        //    // Get the table element
+        //    var table = $('#cus_detailsDataGrid');
+        //    $("#submit_div").show();
+        //    // Clear any existing rows
+        //    table.empty();
+
+        //    // Check if there is any data
+        //    if (data.length === 0) {
+        //        table.append('<tr><td colspan="100%">No data available</td></tr>');
+        //        return;
+        //    }
+
+        //    // Create the header row
+        //    var header = '<tr>';
+        //    for (var key in data[0]) {
+        //        header += '<th style="background-color:#4D759A;color:white;">' + key + '</th>';
+        //    }
+        //    // Add new column for Collection Amount
+        //    header += '<th style="background-color:#4D759A;color:white;">Collection Amount</th>';
+        //    header += '</tr>';
+        //    table.append(header);
+
+        //    // Loop through each row of data and append to the table
+        //    data.forEach(function (row, index) {
+        //        var rowHtml = '<tr>';
+
+        //        // Loop through each data key and value
+        //        for (var key in row) {
+        //            rowHtml += '<td>' + row[key] + '</td>';
+        //        }
+
+        //        rowHtml += '<td><input type="text" name="collectionAmount" class="form-control collection-input" placeholder="Enter amount" /></td>';
+
+        //        rowHtml += '</tr>';
+        //        table.append(rowHtml);
+        //    });
+
+
+        //    $('.collection-input').focusout(function () {
+        //        calculateTotal();
+        //    });
+        //    $('.collection-input').on('focusout keyup', function () {
+        //        calculateTotal();
+        //    });
+        //}
+
+
+        //function renderTable(data) {
+        //    // Get the table element
+        //    var table = $('#cus_detailsDataGrid');
+        //    $("#submit_div").show();
+
+        //    // Clear any existing rows
+        //    table.empty();
+
+        //    // Check if there is any data
+        //    if (data.length === 0) {
+        //        table.append('<tr><td colspan="100%">No data available</td></tr>');
+        //        return;
+        //    }
+
+        //    // Create the header row
+        //    var header = '<tr>';
+        //    for (var key in data[0]) {
+        //        header += '<th style="background-color:#4D759A;color:white;">' + key + '</th>';
+        //    }
+        //    // Add new column for Collection Amount
+        //    header += '<th style="background-color:#4D759A;color:white;">Collection Amount</th>';
+        //    header += '</tr>';
+        //    table.append(header);
+
+        //    // Loop through each row of data and append to the table
+        //    data.forEach(function (row, index) {
+        //        var rowHtml = '<tr>';
+
+        //        // Loop through each data key and value
+        //        for (var key in row) {
+        //            rowHtml += '<td>' + row[key] + '</td>';
+        //        }
+
+        //        rowHtml += '<td><input type="text" name="collectionAmount" class="form-control collection-input" placeholder="Enter amount" /></td>';
+
+        //        rowHtml += '</tr>';
+        //        table.append(rowHtml);
+        //    });
+
+        //    // Set the background color for the last row
+        //    $('#cus_detailsDataGrid tr:last').css('color', 'red'); // Light grey background
+
+        //    $('.collection-input').focusout(function () {
+        //        calculateTotal();
+        //    });
+        //    $('.collection-input').on('focusout keyup', function () {
+        //        calculateTotal();
+        //    });
+        //}
+
+
+
+        function renderTable(data) {
+            $('#styledDropdown').prop('selectedIndex', 0);
+            var table = $('#cus_detailsDataGrid');
+            $("#submit_div").show();
+
+            // Clear any existing rows
+            table.empty();
+
+            // Check if there is any data
+            if (data.length === 0) {
+                table.append('<tr><td colspan="100%">No data available</td></tr>');
+                return;
+            }
+
+            // Create the header row
+            var header = '<tr>';
+            for (var key in data[0]) {
+                header += '<th style="background-color:#4D759A;color:white;">' + key + '</th>';
+            }
+            // Add new column for Collection Amount
+            header += '<th style="background-color:#4D759A;color:white;">Collection Amount</th>';
+            header += '</tr>';
+            table.append(header);
+
+            // Loop through each row of data and append to the table
+            data.forEach(function (row, index) {
+                var rowHtml = '<tr>';
+
+                // Loop through each data key and value
+                for (var key in row) {
+                    rowHtml += '<td>' + row[key] + '</td>';
+                }
+
+                rowHtml += '<td><input type="text" name="collectionAmount" class="form-control collection-input" placeholder="Enter amount" /></td>';
+
+                rowHtml += '</tr>';
+                table.append(rowHtml);
+            });
+
+            // Set the text color for the last row
+            $('#cus_detailsDataGrid tr:last').css('color', 'red');
+
+            // Make the input fields in the last row read-only
+            $('#cus_detailsDataGrid tr:last input').prop('readonly', true);
+
+            $('.collection-input').focusout(function () {
+                calculateTotal();
+            });
+
+            $('.collection-input').on('focusout keyup', function () {
+
+                calculateTotal();
+            });
+            $('.collection-input').on('input', function () {
+                var inputVal = $(this).val();
+
+                // Allow only numbers
+                if (!/^\d*$/.test(inputVal)) {
+                    $(this).val(inputVal.replace(/\D/g, ''));  // Replace non-numeric characters
+                }
+
+                
+            });
+
+        }
+
+
+
+        function calculateTotal() {
+
+            var total = 0;
+
+
+            $('.collection-input').each(function () {
+                var value = parseFloat($(this).val());
+                if (!isNaN(value)) {
+                    total += value;
+                }
+            });
+
+
+            var lastRow = $('#cus_detailsDataGrid tr:last');
+            lastRow.find('td:last').text(total.toFixed(2));
+        }
+
+
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            initSearch("searchBox", "suggestions", "selectedCustomerId");
+            initSearch("secondSearchBox", "secondSuggestions", "secondSelectedCustomerId");
+
+
+            document.getElementById("searchBox").value = "";
+            document.getElementById("selectedCustomerId").value = "";
+            localStorage.setItem('activeButton', "");
+            localStorage.setItem('onceSearched', false.toString());
+
+            const buttons = document.querySelectorAll('.btn-group .btn');
+
+            function setActiveButton(button) {
+
+                buttons.forEach(btn => btn.classList.remove('active'));
+
+                button.classList.add('active');
+
+                localStorage.setItem('activeButton', button.value);
+                var activeValue1 = localStorage.getItem('activeButton');
+
+                if (activeValue1 == "B") {
+                    document.getElementById('lbl_message').textContent = "You are trying to BLOCK the following Customer.";
+                } else if (activeValue1 == "C") {
+                    document.getElementById('lbl_message').textContent = "You are trying to CLOSE the following Customer ID.";
+                }
+
+                //alert(activeValue1);
+            }
+
+            // Attach event listener to each button
+            buttons.forEach(button => {
+                button.addEventListener('click', function () {
+                    let isActive = (localStorage.getItem('onceSearched') === 'true');
+
+                    if (isActive) {
+                        // Store the clicked button value before reloading
+                        localStorage.setItem('clickedButtonValue', button.value);
+                        location.reload(); // Reload the page
+                    } else {
+                        setActiveButton(button);
+                    }
+                });
+            });
+
+            // After page reload, apply the setActiveButton to the clicked button
+            const clickedButtonValue = localStorage.getItem('clickedButtonValue');
+            if (clickedButtonValue) {
+                buttons.forEach(button => {
+                    if (button.value === clickedButtonValue) {
+                        setActiveButton(button);
+                    }
+                });
+                localStorage.removeItem('clickedButtonValue'); // Clear after applying
+            }
+
+            // Load the active button from localStorage on page load
+            const activeButtonValue = localStorage.getItem('activeButton');
+            if (activeButtonValue) {
+                buttons.forEach(button => {
+                    if (button.value === activeButtonValue) {
+                        button.classList.add('active');
+                    }
+                });
+            }
+        });
+
+
+        function confirmButtonClick() {
+            // Get the dropdown element
+            var dropdown = document.getElementById('styledDropdown');
+            var selectedValue = dropdown.value;
+
+            // Check if a payment mode is selected
+            if (selectedValue == 0) {
+                alert('Please select a payment mode.');
+                return false;
+            }
+
+            // Initialize variables to store the concatenated result and total collection amount
+            var concatenatedResult = '';
+            var totalCollectionAmount = 0;
+
+            // Get all the rows of the table (except the last row)
+            var rows = document.querySelectorAll('#cus_detailsDataGrid tr');
+           
+            // Loop through each row except the last row (total row)
+            for (var i = 1; i < rows.length - 1; i++) {
+                var row = rows[i];
+                var columns = row.querySelectorAll('td');
+                var rowConcat = '';
+                var isFirst = true;
+
+                // Only get the 2nd, 6th, 7th, and 9th columns (index 1, 5, 6, and 8)
+                var selectedColumns = [1, 5, 6];
+
+                // Check if the 9th column (index 8) is filled
+                var ninthColumnValue = columns[8].querySelector('input') ? columns[8].querySelector('input').value.trim() : '';
+
+                // Only process the row if the 9th column is filled
+                if (ninthColumnValue !== '') {
+                    selectedColumns.forEach(function (index, idx) {
+                        var columnValue = columns[index].innerText.trim();
+
+                        // Only add '#' if there is a non-empty value before it
+                        if (columnValue !== '') {
+                            if (isFirst) {
+                                rowConcat = columnValue;
+                                isFirst = false;
+                            } else {
+                                rowConcat += '#' + columnValue;
+                            }
+                        } else if (idx > 0) {
+                            // Add '#' only if there are non-empty values before
+                            rowConcat += '#';
+                        }
+                    });
+
+                    // Get the last column (Collection Amount, if it's part of your specific logic)
+                    var collectionAmountInput = columns[columns.length - 1].querySelector('input');
+                    var collectionAmount = parseFloat(collectionAmountInput.value.trim());
+
+                    // Only concatenate the row if the last column (Collection Amount) is not null/empty
+                    if (!isNaN(collectionAmount) && collectionAmount > 0) {
+                        // Concatenate the row with the collection amount
+                        rowConcat += '#' + collectionAmount;
+
+                        // Add the row concatenation to the final result
+                        if (concatenatedResult === '') {
+                            concatenatedResult = rowConcat;
+                        } else {
+                            concatenatedResult += '&' + rowConcat;
+                        }
+
+                        // Add the collection amount to the total collection amount
+                        totalCollectionAmount += collectionAmount;
+                    }
+                }
+            }
+
+          
+            $.ajax({
+                url: '/PersonalLoan_collection/Confirm_click', 
+                type: 'POST',
+                data: {
+                    concatenatedResult: concatenatedResult,
+                    selectedValue: selectedValue, 
+                    totalCollectionAmount: totalCollectionAmount 
+                },
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        window.location.reload();
+                    } else {
+                        alert("Please Enter collecton Amount.");
+                    }
+                },
+                error: function (error) {
+                    alert('Failed to send data.');
+                }
+            });
+        }
+
+
+        $(document).ready(function () {
+            $('#searchBox').on('keyup', function () {
+               // alert("keyup");
+               
+                var table = $('#cus_detailsDataGrid');
+                $("#submit_div").hide();
+
+               
+                    $('#styledDropdown').prop('selectedIndex', 0); // Set to first option
+            
+      
+                table.empty();
+
+            });
+        });
+
+
+       
+
+    </script>
+</head>
+<body>
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Personal Loan Collection</h6>
+            </div>
+        </div>
+        <div class="card-body" @*style="width:50%;*@>
+
+            <div class="row">
+                <div class="col-md-6 col-lg-10">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                       
+                        </div>
+                        <input id="searchBox" placeholder="Loan No/Name" type="text" class="form-control" autocomplete="off">
+                        <div class="input-group-text" style="height:39px;" onclick="search()">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <ul id="suggestions" class="suggestionsclass"></ul>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-2" style="display:none;">
+                    <div class="input-group mb-3" >
+                        <input type="text" id="selectedCustomerId" placeholder="Loan No" class="form-control" style="width:120px;" readonly />
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <div style="overflow-x: auto; max-height: 400px;">
+            <table id="cus_detailsDataGrid" class="table table-hover table-striped table-bordered">
+            </table>
+        </div>
+        <div class="card-body" style="width: 100%; justify-self: center; display: none;" id="submit_div">
+
+            <div  class="dropdown-container">
+                <select id="styledDropdown">
+                    @*<option value="" disabled selected>Payment Mode</option>*@
+                    @if (ViewBag.PaymentModes != null)
+                    {
+                        foreach (DataRow row in ((DataTable)ViewBag.PaymentModes).Rows)
+                        {
+                            <option value="@row["id"]">@row["pay_mode"]</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;
+            &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;
+            &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;
+            &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;
+            &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;
+            &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;    &nbsp;
+
+            <button style="height:50px;" onclick="location.reload();" class="mb-2 mr-2 btn-transition btn btn-outline-secondary">Reset</button>
+            <button style="height:50px;" onclick="confirmButtonClick()" class="mb-2 mr-2 btn-transition btn btn-outline-success">Confirm</button>
+
+        </div>
+    </div>
+
+</body>
+</html>

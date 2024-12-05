@@ -1,0 +1,1632 @@
+﻿
+
+@if (ViewBag.CustomerBankDetails != null && ViewBag.CustomerBankDetails.Rows.Count > 0)
+{
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="~/Content/input_styles.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+        <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> <!-- Ensure Font Awesome is included -->
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.0.0/pdf.min.js"></script>
+
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+
+        <style>
+
+
+
+            input:focus, textarea:focus {
+                outline: 2px solid #6497b1; /* Remove any outline if there is one */
+                border: #6497b1; /* Set a noticeable border color */
+            }
+
+
+
+            #cus_detailsDataGrid {
+                overflow-y: auto;
+                font-size: 14px;
+                width: 90%;
+                font-weight: 500;
+                border-collapse: collapse;
+            }
+
+            #BankTable {
+                overflow-y: auto;
+                font-size: 14px;
+                width: 100%;
+                font-weight: 500;
+                border-collapse: collapse;
+            }
+
+            #selectedRowTable {
+                overflow-y: auto;
+                font-size: 14px;
+                width: 100%;
+                font-weight: 500;
+                border-collapse: collapse;
+            }
+
+            #cus_detailsDataGrid th, #cus_detailsDataGrid td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: center;
+            }
+
+            #BankTable th, #BankTable td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: center;
+            }
+            /* Styling for table header */
+            #BankTable th {
+                background-color: #4D759A;
+                color: white;
+            }
+
+            #cus_detailsDataGrid th {
+                background-color: #4D759A;
+                color: white;
+            }
+
+            #selectedRowTable th, #selectedRowTable td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: center;
+            }
+
+            /* Styling for table header */
+            #selectedRowTable th {
+                background-color: #4D759A;
+                color: white;
+            }
+
+            /* Style for the selected row table */
+            #selectedRowTable {
+                margin-top: 20px;
+                border: 1px solid #ccc;
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+                #selectedRowTable th, #selectedRowTable td {
+                    border: 1px solid #ccc;
+                    padding: 8px;
+                    text-align: center;
+                }
+
+
+
+            .widget-heading {
+                font-size: 15px; /* Adjusts the text size */
+                font-weight: bold; /* Makes the text bold */
+                color: darkblue; /* Sets a dark gray text color */
+                /*   text-transform: uppercase; */
+            }
+
+
+            .widget-subheading {
+                font-size: 13px; /* Adjusts the text size */
+                font-weight: bold; /* Makes the text bold */
+                color: black; /* Sets a dark gray text color */
+                /* text-transform: uppercase; */
+            }
+        </style>
+
+
+        <script>
+
+         
+
+
+
+          
+
+            //$(document).ready(function () {
+            //    alert("ready");
+            //    // Call toggleTextbox when the document is ready
+            //    checkInitialRadioState();
+
+
+            //});
+
+            function checkInitialRadioState() {
+               // alert("ready radio");
+                var yesOption = document.querySelector('input[name="option"][value="yes"]');
+                var textbox = document.getElementById('renew_amonut');
+                //alert(yesOption);
+                // Check the state of the "yes" option
+                if (yesOption.checked) {
+                   // alert("ready no");
+                    textbox.removeAttribute('readonly');
+                } else {
+                   // alert("ready yes");
+                    textbox.setAttribute('readonly', false);
+                }
+            }
+
+            function toggleTextbox() {
+                var yesOption = document.querySelector('input[name="option"][value="yes"]');
+                var textbox = document.getElementById('renew_amonut');
+
+                if (yesOption.checked) {
+                    //alert("Yes");
+                    // Make the textbox editable
+                    textbox.removeAttribute('readonly');
+                } else {
+                   // alert("No");
+                    textbox.setAttribute('readonly', true);
+                }
+            }
+
+
+
+
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const checkboxes = document.querySelectorAll('.select-checkbox');
+
+
+                checkboxes.forEach(function (checkbox) {
+                    checkbox.addEventListener('change', function () {
+                        if (this.checked) {
+                            // Uncheck other checkboxes
+                            checkboxes.forEach(function (otherCheckbox) {
+                                if (otherCheckbox !== checkbox) {
+                                    otherCheckbox.checked = false;
+                                }
+                            });
+
+                            // Get the row associated with this checkbox
+                            const row = this.closest('tr');
+                            const rowData = Array.from(row.querySelectorAll('td')).map(td => td.innerText);
+
+                            // Example: Assuming you want to get the values of specific columns, say index 2 and 4
+                            const application_id = rowData[1]; // Get value from 3rd column (index 2)
+                           // alert(customerid);
+                            const customer_id = rowData[5]; // Get value from 5th column (index 4)
+                            // alert(customerid);
+
+
+                            $.ajax({
+                                url: '/NCD_Application_Approval_Branch/Approvan_branch_textBox_fill',  // Update the URL to your actual endpoint
+                                type: 'POST',
+                                data: { application_id: application_id, customer_id: customer_id },  // Send the customerid as a parameter
+                                success: function (response) {
+                                    if (response.success) {
+                                        $("#textBpx_details_div").show();
+                                        $("#cus_detailsDataGrid").hide();
+
+                                        var data = response.data;
+
+                                        if (data.length > 0) {
+                                            var item = data[0]; // Access the first item directly
+
+
+                                            document.getElementById('app_id_label').innerText = item.app_id;
+                                            document.getElementById('app_money_label').innerText = item.app_money_no;
+                                            document.getElementById('issue_no_label').innerText = item.issue_no;
+                                            document.getElementById('int_type_label').innerText = item.int_type;
+                                            document.getElementById('int_rate_label').innerText = item.int_rate;
+                                            document.getElementById('period_label').innerText = item.period;
+                                            document.getElementById('amount_label').innerText = item.amount;
+                                            document.getElementById('no_deben_label').innerText = item.n0_deben;
+                                            document.getElementById('maturity_amount_label').innerText = item.maturity_amount;
+                                            document.getElementById('cus_id_label').innerText = item.customer_id;
+                                            document.getElementById('cus_name_label').innerText = item.customer_name;
+                                            document.getElementById('DOB/Age_label').innerText = item.DOB_Age;
+                                            document.getElementById('Pan_label').innerText = item.pan;
+                                            document.getElementById('15_Status_label').innerText = item.fifteen_status;
+                                            document.getElementById('Tax_Payee_label').innerText = item.tax_payee;
+                                            document.getElementById('no_of_applicant_label').innerText = item.no_of_applicant;
+                                            document.getElementById('Repayment_Mode_label').innerText = item.repayment_mode;
+                                            document.getElementById('Lien_Marking_label').innerText = item.lien_marking;
+                                            document.getElementById('Nominee_label').innerText = item.nominee;
+                                            document.getElementById('Address_label').innerText = item.address;
+                                            document.getElementById('Relation_label').innerText = item.relation;
+                                            document.getElementById('Canvasser_label').innerText = item.canvasser;
+                                            document.getElementById('Canvasser_Code_label').innerText = item.canvasser_Code;
+                                            document.getElementById('Canvasser_Role_label').innerText = item.canvasser_role;
+                                           // document.getElementById('Canvasser_Role_label').innerText = item.renew_status;
+                                            //alert(item.renew_status);
+                                          //  alert(item.renew_amonut);
+                                            if (item.renew_status === 'Y') {
+                                                document.querySelector('input[name="option"][value="yes"]').checked = true;
+                                            } else if (item.renew_status === 'N') {
+                                                document.querySelector('input[name="option"][value="no"]').checked = true;
+                                            }
+                                            document.getElementById('renew_amonut').value = item.renew_amonut;
+                                            checkInitialRadioState();
+
+                                        } else {
+                                            alert("No data found");
+                                        }
+
+                                        var table2 = response.table2Data;
+                                        if (table2.rows.length > 0 && table2.rows[0] != null && Object.keys(table2.rows[0]).length > 0) {
+
+                                            renderTable(table2.headings, table2.rows);
+                                            $("#table2_container").show();
+                                        }
+                                        else
+                                        {
+
+                                            $("#table2_container").hide();
+                                        }
+                                       // ------------------------------------------------------------
+                                        var table3 = response.table3Data;
+                                        if (table3.rows.length > 0 && table3.rows[0] != null && Object.keys(table3.rows[0]).length > 0) {
+
+                                            renderTable3(table3.headings, table3.rows);
+                                            $("#table3_container").show();
+                                        }
+                                        else {
+
+                                            $("#table3_container").hide();
+                                        }
+                                      //  --------------------------------------------------------------------
+                                        var table4 = response.table4Data;
+                                        if (table4.rows.length > 0 && table4.rows[0] != null && Object.keys(table4.rows[0]).length > 0) {
+
+                                            renderTable4(table4.headings, table4.rows);
+                                            $("#table4_container").show();
+                                        }
+                                        else {
+
+                                            $("#table4_container").hide();
+                                        }
+                                     //   ------------------------------------------------------------------------------
+                                        var authr_letter = response.authr_letter_imgurl;
+                                       // alert(authr_letter);
+                                        if (authr_letter == null || authr_letter == "")
+                                        {
+
+                                          //  alert(authr_letter);
+                                           // alert("auth letter nul");
+                                            $("#view_auth_letter").hide();
+
+                                        }
+                                        else
+                                        {
+                                           // alert("auth letter present");
+                                            $("#view_auth_letter").show();
+
+                                        }
+
+                                        $("#buttob_div").show();
+                                    }
+                                    else
+                                    {
+                                        alert("No data found");
+                                    }
+                                }
+
+                            });
+
+
+
+
+                        } else {
+
+                            selectedRowTable.querySelector('thead tr').innerHTML = '';
+                            selectedRowTable.querySelector('tbody tr').innerHTML = '';
+                            selectedRowContainer.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+
+
+            //function renderTable(headers, rows) {
+            //    // Get the header and body elements
+            //    const headerRow = document.getElementById('tableHeaders');
+            //    const body = document.getElementById('tableBody');
+
+            //    // Clear existing headers and rows
+            //    headerRow.innerHTML = '';
+            //    body.innerHTML = '';
+
+            //    // Populate table headers
+            //    headers.forEach(header => {
+            //        const th = document.createElement('th');
+            //        th.innerText = header; // Set the header text
+            //        headerRow.appendChild(th);
+            //    });
+
+            //    // Populate table rows
+            //    rows.forEach(row => {
+            //        const bodyRow = document.createElement('tr');
+            //        row.forEach(cell => {
+            //            const td = document.createElement('td');
+            //            td.innerText = cell; // Set the cell text
+            //            bodyRow.appendChild(td);
+            //        });
+            //        body.appendChild(bodyRow);
+            //    });
+            //}
+
+
+
+
+            function renderTable(headers, rows) {
+                // alert("render table");
+                // Get the header and body elements
+                const headerRow = document.getElementById('tableHeaders');
+                const body = document.getElementById('tableBody');
+
+                // Clear existing headers and rows
+                headerRow.innerHTML = '';
+                body.innerHTML = '';
+
+                // Populate table headers with an extra column
+                headers.forEach(header => {
+                    const th = document.createElement('th');
+                    th.innerText = header; // Set the header text
+                    headerRow.appendChild(th);
+                });
+
+                // Add the extra column header
+                const extraHeader = document.createElement('th');
+                extraHeader.innerText = "Actions"; // Set the header text for the extra column
+                headerRow.appendChild(extraHeader);
+
+                // Populate table rows with an extra column
+                rows.forEach(row => {
+                    const bodyRow = document.createElement('tr');
+                    row.forEach(cell => {
+                        const td = document.createElement('td');
+                        td.innerText = cell; // Set the cell text
+                        bodyRow.appendChild(td);
+                    });
+
+                    const actionTd = document.createElement('td');
+                    const button = document.createElement('button');
+
+                    // Customize the button with required classes and attributes
+                    button.className = 'mb-2 mr-2 btn-icon btn-pill btn btn-warning action-button'; // Set the button classes
+                    button.setAttribute('data-hidden1', row[7]); // Set the data-hidden1 attribute to the 7th column value
+                    button.setAttribute('data-hidden2', '15');   // Set an additional data-hidden2 attribute (as an example)
+
+                    // Add the icon inside the button
+                    const icon = document.createElement('i');
+                    icon.className = 'lnr-picture btn-icon-wrapper'; // Set the icon class
+                    button.appendChild(icon); // Append the icon to the button
+
+                    // Add click event to the button
+                    button.addEventListener('click', () => {
+                        const hiddenValue = button.getAttribute('data-hidden1'); // Get the 7th column value
+                         alert(hiddenValue);
+                        viewImage1(hiddenValue); // Pass the value to the function
+                    });
+
+                    actionTd.appendChild(button);
+                    bodyRow.appendChild(actionTd);
+
+                    body.appendChild(bodyRow);
+                });
+            }
+
+            function viewImage1(hiddenValue) {
+                alert("view1");
+                $.ajax({
+                    url: '/NCD_Application_Approval_Branch/amount_colle_attach_popup',
+                    type: 'POST',
+                    data: {
+                        hiddenValue: hiddenValue
+                        // Send the module_id as a parameter
+                    },
+                    success: function (response) {
+                        if (response.sucess === false) {
+                            // If the server indicates failure, alert the failure message
+                            alert(response.message);
+                        } else {
+                            // If successful, alert the success message and data (e.g., image URL)
+                            // alert('Success! Image URL: ' + response.data);
+                            var getImageValue = response.data;
+                            // alert(getImageValue);
+
+                            if (getImageValue != null) {
+                                if (getImageValue.startsWith("data:image")) {
+                                    //  alert("image");
+                                    displayPhoto(getImageValue, 'image');
+                                } else if (getImageValue.startsWith("data:application/pdf")) {
+                                    //   alert("pdf");
+                                    displayPhoto(getImageValue, 'pdf');
+                                } else {
+                                    alert("Unknown file type");
+                                }
+                            } else {
+                                alert("No image URL received");
+                            }
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', error);
+                        // You can also alert the user of an AJAX failure
+                        alert('AJAX call failed: ' + error);
+                    }
+                });
+            }
+
+
+            function renderTable3(headers, rows) {
+                // Get the header and body elements
+                const headerRow = document.getElementById('tableHeaders3');
+                const body = document.getElementById('tableBody3');
+
+                // Clear existing headers and rows
+                headerRow.innerHTML = '';
+                body.innerHTML = '';
+
+                // Populate table headers
+                headers.forEach(header => {
+                    const th = document.createElement('th');
+                    th.innerText = header; // Set the header text
+                    headerRow.appendChild(th);
+                });
+
+                // Populate table rows
+                rows.forEach(row => {
+                    const bodyRow = document.createElement('tr');
+                    row.forEach(cell => {
+                        const td = document.createElement('td');
+                        td.innerText = cell; // Set the cell text
+                        bodyRow.appendChild(td);
+                    });
+                    body.appendChild(bodyRow);
+                });
+            }
+
+
+
+
+            function renderTable4(headers, rows) {
+                // Get the header and body elements
+                const headerRow = document.getElementById('tableHeaders4');
+                const body = document.getElementById('tableBody4');
+
+                // Clear existing headers and rows
+                headerRow.innerHTML = '';
+                body.innerHTML = '';
+
+                // Populate table headers (add a new header for the image button)
+                headers.forEach((header, index) => {
+                    if (index !== 6) { // Skip the 7th column
+                        const th = document.createElement('th');
+                        th.innerText = header; // Set the header text
+                        headerRow.appendChild(th);
+                    }
+                });
+
+                // Add the new header for the image button
+                const imageHeader = document.createElement('th');
+                imageHeader.innerText = 'Action'; // Set the text for the new column
+                headerRow.appendChild(imageHeader);
+
+                // Populate table rows
+                rows.forEach(row => {
+                    const bodyRow = document.createElement('tr');
+
+                    // Loop through each cell except the 7th column
+                    row.forEach((cell, index) => {
+                        if (index !== 6) { // Skip the 7th column
+                            const td = document.createElement('td');
+                            td.innerText = cell; // Set the cell text
+                            bodyRow.appendChild(td);
+                        }
+                    });
+
+                    // Create a new column with the desired button
+                    const actionTd = document.createElement('td');
+                    const button = document.createElement('button');
+
+                    // Customize the button with required classes and attributes
+                    button.className = 'mb-2 mr-2 btn-icon btn-pill btn btn-warning action-button'; // Set the button classes
+                    button.setAttribute('data-hidden1', row[6]); // Set the data-hidden1 attribute to the 7th column value
+                    button.setAttribute('data-hidden2', '15');   // Set an additional data-hidden2 attribute (as an example)
+
+                    // Add the icon inside the button
+                    const icon = document.createElement('i');
+                    icon.className = 'lnr-picture btn-icon-wrapper'; // Set the icon class
+                    button.appendChild(icon); // Append the icon to the button
+
+                    // Add click event to the button
+                    button.addEventListener('click', () => {
+                        const hiddenValue = button.getAttribute('data-hidden1'); // Get the 7th column value
+                       //alert(hiddenValue);
+                        viewImage(hiddenValue); // Pass the value to the function
+                    });
+
+                    actionTd.appendChild(button);
+                    bodyRow.appendChild(actionTd);
+
+                    body.appendChild(bodyRow);
+                });
+            }
+
+
+
+            function viewImage(hiddenValue) {
+                $.ajax({
+                    url: '/NCD_Application_Approval_Branch/bank_attach_select_popup',
+                    type: 'POST',
+                    data: {
+                        hiddenValue: hiddenValue
+                         // Send the module_id as a parameter
+                    },
+                    success: function (response) {
+                        if (response.sucess === false) {
+                            // If the server indicates failure, alert the failure message
+                            alert(response.message);
+                        } else {
+                            // If successful, alert the success message and data (e.g., image URL)
+                            // alert('Success! Image URL: ' + response.data);
+                            var getImageValue = response.data;
+                            // alert(getImageValue);
+
+                            if (getImageValue != null) {
+                                if (getImageValue.startsWith("data:image")) {
+                                    //  alert("image");
+                                    displayPhoto(getImageValue, 'image');
+                                } else if (getImageValue.startsWith("data:application/pdf")) {
+                                    //   alert("pdf");
+                                    displayPhoto(getImageValue, 'pdf');
+                                } else {
+                                    alert("Unknown file type");
+                                }
+                            } else {
+                                alert("No image URL received");
+                            }
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', error);
+                        // You can also alert the user of an AJAX failure
+                        alert('AJAX call failed: ' + error);
+                    }
+                });
+            }
+
+
+
+    function viewCustomerDetails() {
+
+    $.ajax({
+        url: "@Url.Action("SetCustId_to_Session", "NCD_Application_Approval_Branch")",
+        type: "GET",
+       // data: { custId: customerId },
+       success: function (response) {
+
+                 if (response.success == true) {
+                      // Open the new tab with the URL from the action
+                      openInNewTab('@Url.Action("FillDetails", "Customer_CustView")');
+                 } else {
+                      alert("Failed to set customer ID in session.");
+                 }
+
+            },
+        error: function (error) {
+            alert("Error fetching data.");
+        }
+    });
+}
+
+
+
+
+            function viewAuthorizationLetter() {
+               // alert("attach click");
+                $.ajax({
+                    url: '/NCD_Application_Approval_Branch/auther_letter_select_popup',
+                    type: 'POST',
+
+                    success: function (response) {
+                        if (response.sucess === false) {
+                            // If the server indicates failure, alert the failure message
+                            alert(response.message);
+                        } else {
+                            // If successful, alert the success message and data (e.g., image URL)
+                            // alert('Success! Image URL: ' + response.data);
+                            var getImageValue = response.data;
+                             //alert(getImageValue);
+
+                            if (getImageValue != null) {
+                                if (getImageValue.startsWith("data:image")) {
+                                      //alert("image");
+                                    displayPhoto(getImageValue, 'image');
+                                } else if (getImageValue.startsWith("data:application/pdf")) {
+                                       //alert("pdf");
+                                    displayPhoto(getImageValue, 'pdf');
+                                } else {
+                                    alert("Unknown file type");
+                                }
+                            } else {
+                                alert("No image URL received");
+                            }
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', error);
+                        // You can also alert the user of an AJAX failure
+                        alert('AJAX call failed: ' + error);
+                    }
+                });
+            }
+
+
+
+
+
+            function displayPhoto(dataUrl, type) {
+                // alert("display");
+                var modal = document.getElementById('mediaModal');
+                var content = document.getElementById('pdfViewer'); // Use pdfViewer as content
+
+                if (type === 'pdf') {
+                    // Convert base64 to Blob
+                    var base64Data = dataUrl.split(',')[1];
+                    var binaryString = atob(base64Data);
+                    var len = binaryString.length;
+                    var bytes = new Uint8Array(len);
+                    for (var i = 0; i < len; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    var blob = new Blob([bytes], { type: 'application/pdf' });
+                    var blobUrl = URL.createObjectURL(blob);
+
+                    // Embed PDF in an iframe
+                    content.innerHTML = `
+                    <iframe id="pdfFrame" src="${blobUrl}" style="width:100%; height:400px; border:none; border: 7px solid #ddd;" frameborder="0"></iframe>`;
+
+
+                    document.getElementById('zoomControls').style.display = 'none';
+
+                } else if (type === 'image') {
+                    content.innerHTML = `
+                  <div id="imageWrapper" style="width:700px; height:400px; overflow:auto; background-color:white; border: 7px solid #ddd;">
+                      <img id="modalImage" src="${dataUrl}" style="width:600px; padding-left:120px; padding-top:35px; transform: scale(1);" />
+                  </div>`;
+
+                    // Show zoom controls for images
+                    document.getElementById('zoomControls').style.display = 'block';
+
+                    // Add zoom functionality for image
+                    let scale = 1;
+                    const zoomStep = 0.1;
+                    const modalImage = document.getElementById('modalImage');
+
+                    document.getElementById('zoomIn').addEventListener('click', () => {
+                        scale += zoomStep;
+                        modalImage.style.transform = `scale(${scale})`;
+                    });
+
+                    document.getElementById('zoomOut').addEventListener('click', () => {
+                        if (scale > zoomStep) {
+                            scale -= zoomStep;
+                            modalImage.style.transform = `scale(${scale})`;
+                        }
+                    });
+                    let rotationAngle = 0;
+
+                    document.getElementById('rotateImage').addEventListener('click', function () {
+                        // alert("rotate");
+                        rotationAngle += 90; // Rotate by 90 degrees each time the button is clicked
+                        document.getElementById('modalImage').style.transform = 'rotate(' + rotationAngle + 'deg)';
+                    });
+                }
+
+                modal.style.display = 'block';
+            }
+
+
+
+            document.addEventListener('DOMContentLoaded', function () {
+                var mediaModalContent = document.getElementById('mediaModalContent');
+
+                // Check if the element exists
+                if (mediaModalContent) {
+                    // Apply dragging functionality to the media modal content
+                    mediaModalContent.addEventListener('mousedown', function (event) {
+                        // alert("alert");  // This should trigger now
+                        makeDraggable(document.getElementById('mediaModal'));
+                    });
+                } else {
+                    console.error('Element #mediaModalContent not found');
+                }
+            });
+
+            function makeDraggable(element) {
+                var isDragging = false;
+                var offsetX, offsetY;
+
+                element.onmousedown = function (event) {
+                    isDragging = true;
+                    offsetX = event.clientX - element.getBoundingClientRect().left;
+                    offsetY = event.clientY - element.getBoundingClientRect().top;
+
+                    // Disable text selection while dragging
+                    document.body.style.userSelect = 'none';
+
+                    document.onmousemove = function (event) {
+                        if (isDragging) {
+                            var modal = document.getElementById('mediaModal');
+                            modal.style.left = (event.clientX - offsetX) + 'px';
+                            modal.style.top = (event.clientY - offsetY) + 'px';
+                        }
+                    };
+
+                    document.onmouseup = function () {
+                        isDragging = false;
+                        document.onmousemove = null;
+                        // Re-enable text selection after dragging
+                        document.body.style.userSelect = 'auto';
+                    };
+                };
+            }
+
+
+
+            // Apply dragging functionality to the header
+            document.getElementById('pdfViewer').addEventListener('mousedown', function (event) {
+                makeDraggable(document.getElementById('mediaModal'));
+            });
+
+
+            window.onclick = function (event) {
+                //  alert("mediaModal click");
+                var modal = document.getElementById("mediaModal");
+                if (event.target == modal) {
+                    closeModal();
+                }
+            }
+
+            function closeModal() {
+                // alert("close");
+                var modal = document.getElementById("mediaModal");
+                modal.style.display = "none";
+            }
+
+
+            function ReturnBtnClick() {
+                // alert("reject click");
+                $.ajax({
+                    url: '/NCD_Application_Approval_Branch/Return_BtnClick',  // Replace with your actual controller name
+                    type: 'GET',  // Or 'POST' if your method is POST
+                    success: function (response) {
+                        // Process the response
+                        if (response.success) {
+                            // alert("success");
+                            // alert(response.data);
+                            Swal.fire({
+
+                                title: response.data,
+                                /* text: result.message,*/
+                                text: "",
+                                icon: "success",
+                                confirmButtonText: "OK"
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        }
+                        else {
+                            //alert("not success");
+                            Swal.fire({
+                                title: "",
+                                text: response.message,
+                                icon: "error",
+                                confirmButtonText: "OK"
+
+                            });
+
+                            //alert(result.message);
+                            //return;
+                        }
+
+                        // You can add other actions like updating the DOM, etc.
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error: " + error);
+                    }
+                });
+            }
+
+            function RejectBtnClick() {
+               // alert("reject click");
+                $.ajax({
+                    url: '/NCD_Application_Approval_Branch/Reject_BtnClick',  // Replace with your actual controller name
+                    type: 'GET',  // Or 'POST' if your method is POST
+                    success: function (response) {
+                        // Process the response
+                        if (response.success) {
+                           // alert("success");
+                           // alert(response.data);
+                            Swal.fire({
+
+                                title: response.data,
+                                /* text: result.message,*/
+                                text: "",
+                                icon: "success",
+                                confirmButtonText: "OK"
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        }
+                        else
+                        {
+                            //alert("not success");
+                            Swal.fire({
+                                title: "",
+                                text: response.message,
+                                icon: "error",
+                                confirmButtonText: "OK"
+
+                            });
+
+                            //alert(result.message);
+                            //return;
+                        }
+
+                        // You can add other actions like updating the DOM, etc.
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error: " + error);
+                    }
+                });
+            }
+
+            function ApproveBtnClick() {
+
+               // alert("ApproveBtnClick click");
+                var yesOption = document.querySelector('input[name="option"][value="yes"]');
+
+                var renew_amount = $('#renew_amonut').val();
+
+                if (yesOption.checked) {
+                    if (renew_amount == "" || renew_amount == null) {
+                        alert("Please enter Debenture Amount");
+                        $('#renew_amonut').focus();
+                        return false;
+                    }
+
+                } else {
+
+
+                }
+
+                
+                $.ajax({
+                    url: '/NCD_Application_Approval_Branch/Approve_BtnClick',  // Replace with your actual controller name
+                    type: 'GET',  // Or 'POST' if your method is POST
+                    data: {
+                        renew_amount: renew_amount
+                        // Send the module_id as a parameter
+                    },
+                    success: function (response) {
+                        // Process the response
+                        if (response.success) {
+                            // alert("success");
+                            // alert(response.data);
+                            Swal.fire({
+
+                                title: response.data,
+                                /* text: result.message,*/
+                                text: "",
+                                icon: "success",
+                                confirmButtonText: "OK"
+                            }).then(() => {
+                                window.location.reload();
+                                var url = '/NCD_Receipt/NCD_Receipt_View';
+                                window.open(url, '_blank');
+                            });
+
+                        }
+                        else {
+
+                            Swal.fire({
+                                title: "",
+                                text: response.message,
+                                icon: "error",
+                                confirmButtonText: "OK"
+
+                            });
+                        }
+
+                        // You can add other actions like updating the DOM, etc.
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error: " + error);
+                    }
+                });
+            }
+
+
+            function reloadPage() {
+                // Reload the page
+                location.reload();
+            }
+
+
+            //function checkRenewalAmount() {
+            //    var min_amount = localStorage.getItem('amount_label');
+               
+            //    var renewAmount = parseFloat($('#txt_reniewAmt').val());
+            //    if (renewAmount > min_amount) {
+            //        alert("Renewal amount must not greater than minimum amount!.");
+            //        document.getElementById('txt_reniewAmt').value = '';
+            //        return;
+            //    }
+            //}
+
+
+            function validateInput(input) {
+              //  alert("renew amount input");
+                input.value = input.value.replace(/[^0-9]/g, '');
+              
+                const max_amount = parseInt(document.getElementById('amount_label').innerText, 10);
+
+                // Get the input value (converted to a number)
+                const renew_amount = parseInt(input.value, 10);
+
+                // Check if renew_amount is greater than max_amount
+                if (renew_amount > max_amount) {
+                    alert("Renew Amount must be lesser or equal to Debenture Amount!");
+                    $('#renew_amonut').val('');
+
+                }
+
+            }
+
+        </script>
+
+
+
+
+    </head>
+    <body>
+
+        <div id="mediaModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; padding-top: 50px; background-color: rgba(0,0,0,0); z-index: 1000;">
+            <div id="mediaModalContent" style="position: relative; cursor: move; margin: auto; padding: 40px; width: 60%; height: 90%; ">
+                <div id="pdfViewer" style="width: 100%; cursor: move; height: calc(100% - 40px);"></div>
+
+                @*Zoom Controls*@
+                <div id="zoomControls" style="text-align:center;">
+
+                    <button id="zoomIn" style="margin-right: 10px; background:transparent; border:none; font-size:24px; cursor:pointer;">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+
+                    <!-- Zoom Out button with icon -->
+                    <button id="zoomOut" style="background:transparent; border:none; font-size:24px; cursor:pointer;">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                    <!-- Rotate button with icon -->
+                    <button id="rotateImage" style="background:transparent; border:none; font-size:24px; cursor:pointer;">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+
+
+                <button onclick="closeModal()" style="position:absolute; top:10px; right:10px; background:transparent; border:none; font-size:24px; cursor:pointer;">
+                    <i class="fas fa-times"></i>
+                </button>
+                @*</div>*@
+            </div>
+        </div>
+
+
+
+        <div class="app-main__inner" style="margin-top: -30px;padding:0px;width:100%;">
+            <div style="height: 40px; display: flex; align-items: center; justify-content: center;">
+                <div class="card-title">
+                    <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Appliction Approval</h6>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Original Data Grid Table -->
+                <div style="overflow-x:auto; max-height: 400px;">
+                    <table id="cus_detailsDataGrid" class="table table-hover table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Select</th> <!-- Selection column header -->
+                                @if (ViewBag.CustomerBankDetails != null && ViewBag.CustomerBankDetails.Columns.Count > 0)
+                                {
+                                    foreach (System.Data.DataColumn column in ViewBag.CustomerBankDetails.Columns)
+                                    {
+                                        <th>@column.ColumnName</th>
+                                    }
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.CustomerBankDetails != null && ViewBag.CustomerBankDetails.Rows.Count > 0)
+                            {
+                                foreach (System.Data.DataRow row in ViewBag.CustomerBankDetails.Rows)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="selectedRow" class="select-checkbox" value="@row[0]" /> <!-- Checkbox for selecting the row -->
+                                        </td>
+                                        @foreach (var item in row.ItemArray)
+                                        {
+                                            <td>@item</td>
+                                        }
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6">No data available</td> <!-- Updated colspan to account for the selection column -->
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+
+            </div>
+            <div class="card-body" id="textBpx_details_div" style="display:none;width:100%;">
+                @*------------------------------------Application Details-------------------------------------------*@
+                <div class="row" id="heading1">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <span class="form-check-sign" style="color: maroon; font-weight: 500; font-size:medium;">Application Details</span>
+
+                            &nbsp; &nbsp;&nbsp;&nbsp;
+                        </label>
+                    </div>
+                </div>
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Application Id</div>
+                                        <div id="app_id_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">App Money No</div>
+                                        <div id="app_money_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Issue No</div>
+                                        <div id="issue_no_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Interest Type</div>
+                                        <div id="int_type_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Interest Rate</div>
+                                        <div id="int_rate_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Period</div>
+                                        <div id="period_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Amount</div>
+                                        <div id="amount_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">No of Deben</div>
+                                        <div id="no_deben_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Maturity Amt</div>
+                                        <div id="maturity_amount_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Renew</div>
+                                        <label>
+                                            <input type="radio" name="option" value="yes" onclick="toggleTextbox()"> Yes
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="option" value="no" onclick="toggleTextbox()"> No
+                                        </label>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Renew</div>
+
+                                        
+                                        <div class="input-container">
+                                            <input type="text" id="renew_amonut" name="renew_amonut" value="" oninput="validateInput(this)"/>
+                                          
+
+                                        </div>
+                                       
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row" id="heading1">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <span class="form-check-sign" style="color: maroon; font-weight: 500; font-size:medium;">Applicant Details</span>
+
+                            &nbsp; &nbsp;&nbsp;&nbsp;
+                        </label>
+                    </div>
+                </div>
+                @*------------------------------------Applicant Details   1st row-------------------------------------------*@
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Customer Id</div>
+                                        <div id="cus_id_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Customer Name</div>
+                                        <div id="cus_name_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">DOB/Age</div>
+                                        <div id="DOB/Age_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Pan</div>
+                                        <div id="Pan_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                @*------------------------------------Applicant Details   2st row-------------------------------------------*@
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">15 Status</div>
+                                        <div id="15_Status_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Tax Payee</div>
+                                        <div id="Tax_Payee_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Applicant No</div>
+                                        <div id="no_of_applicant_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Repayment Mode</div>
+                                        <div id="Repayment_Mode_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                @*------------------------------------Applicant Details   3rd row-------------------------------------------*@
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Lien Marking</div>
+                                        <div id="Lien_Marking_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Nominee</div>
+                                        <div id="Nominee_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Address</div>
+                                        <div id="Address_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Relation</div>
+                                        <div id="Relation_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Canvasser</div>
+                                        <div id="Canvasser_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Canvasser Code</div>
+                                        <div id="Canvasser_Code_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Canvasser Role</div>
+                                        <div id="Canvasser_Role_label" class="widget-subheading"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="text-center d-block p-3 card-footer">
+                    <button class="btn-pill btn-shadow btn-wide fsize-1 btn btn-primary btn-lg" onabort="" onclick="viewCustomerDetails();">
+
+                        View Customer Details
+                    </button>
+                </div>
+
+            </div>
+
+
+
+            <div class="card-body" id="table2_container" style="display:none;">
+
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <span class="form-check-sign" style="color: maroon; font-weight: 500; font-size:medium;">Dept Amount Collection Details</span>
+
+
+                    </label>
+                </div>
+
+                <!-- Original Data Grid Table -->
+                <div style="overflow-x:auto; max-height: 400px; width:100%;font-size:16px;background-color:white;">
+                    <table id="BankTable" class="mb-0 table table-hover">
+                        <thead>
+                            <tr id="tableHeaders">
+                                <!-- Headers will be filled dynamically -->
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Table rows will be filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+
+            </div>
+            <div class="card-body" id="table3_container" style="display:none;">
+
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <span class="form-check-sign" style="color: maroon; font-weight: 500; font-size:medium;">Joint Applicant Details</span>
+
+
+                    </label>
+                </div>
+
+                <!-- Original Data Grid Table -->
+                <div style="overflow-x:auto; max-height: 400px; width:100%;font-size:16px;background-color:white;">
+                    <table id="BankTable" class="mb-0 table table-hover">
+                        <thead>
+                            <tr id="tableHeaders3">
+                                <!-- Headers will be filled dynamically -->
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody3">
+                            <!-- Table rows will be filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+
+            </div>
+
+            <div class="card-body" id="table4_container" style="display:none;">
+
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <span class="form-check-sign" style="color: maroon; font-weight: 500; font-size:medium;">Applicant Bank Details For Settlement/Interest Payment</span>
+
+
+                    </label>
+                </div>
+
+                <!-- Original Data Grid Table -->
+                <div style="overflow-x:auto; max-height: 400px; width:100%;font-size:16px;background-color:white;">
+                    <table id="BankTable" class="mb-0 table table-hover">
+                        <thead>
+                            <tr id="tableHeaders4">
+                                <!-- Headers will be filled dynamically -->
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody4">
+                            <!-- Table rows will be filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <br />
+                <button onclick="viewAuthorizationLetter()" id="view_auth_letter" class="mb-2 mr-2 btn-hover-shine btn btn-warning">View Autherization Letter</button>
+
+            </div>
+
+            <div class="card-body" id="buttob_div" style="display:none;">
+                <div class="container">
+                    <ul class="tabs-animated-shadow tabs-animated nav nav-justified tabs-rounded-lg">
+                        <li class="nav-item">
+                            <a role="tab" class="nav-link" href="javascript:void(0);" aria-selected="false" onclick="ApproveBtnClick()">
+                                <span style="font-weight:700;">Approve</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a role="tab" class="nav-link" href="javascript:void(0);" aria-selected="false" onclick="ReturnBtnClick()">
+                                <span style="font-weight:700;">Return</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a role="tab" class="nav-link" href="javascript:void(0);" aria-selected="false" onclick="RejectBtnClick()">
+                                <span style="font-weight:700;">Reject</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a role="tab" class="nav-link" href="javascript:void(0);" aria-selected="false" onclick="reloadPage()">
+                                <span style="font-weight:700;">Reset</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+</body>
+</html>
+}
+else
+{
+<p>No data available</p> <!-- Message if CustomerBankDetails is null or empty -->
+}

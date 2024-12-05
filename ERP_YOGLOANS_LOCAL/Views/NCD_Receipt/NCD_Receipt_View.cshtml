@@ -1,0 +1,206 @@
+﻿
+@{
+
+    Layout = null;
+}
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajax({
+                url: '@Url.Action("NCD_Receipt_select", "NCD_Receipt")', // Update "YourControllerName" to the actual controller name
+                type: 'GET',
+                success: function (data) {
+                   
+                        if (data.length > 0) {
+                            let result = data[0];
+
+                            // Fill the table with data
+                           // $('#branch').text(result.Branch);
+                            $('#branch').text("Branch: " + result.Branch);
+                            $('#branch2').text("Branch: " + result.Branch);
+                            $('#deb_amount').text(result.deb_amount);
+                           // $('#emp_name').text(result.emp_name);
+                            $('#emp_name').text("User: " + result.emp_name);
+                            $('#emp_name2').text("User: " + result.emp_name);
+                           // $('#date').text(result.date);
+                            $('#date').text("Date: " + result.date);
+                            $('#date2').text("Date: " + result.date);
+                           // $('#time').text(result.time);
+                            $('#time').text("Time: " + result.time);
+                            $('#time2').text("Time: " + result.time);
+                            $('#cus_name').text(result.cus_name);
+                           // $('#phon_no').text(result.phon_no);
+                            $('#phon_no').text("Phone: " + result.phon_no);
+                            $('#phon_no2').text("Phone: " + result.phon_no);
+                            $('#cus_id').text(result.cus_id);
+                            $('#check_ref_no').text(result.check_ref_no_amiunt_line);
+                            $('#check_ref_no2').text(result.check_ref_no_amiunt_line);
+                            $('#CIN').text(result.CIN);
+                            $('#CIN2').text(result.CIN);
+                            $('#GSTIN').text(result.GSTIN);
+                            $('#GSTIN2').text(result.GSTIN);
+                            $('#type_tr').text(result.type_tr);
+                            $('#cusamount_in_words').text(result.cusamount_in_words);
+                            $('#Line_text').text("Amount Received From " + result.cus_name + " " + "Rs." + " " + result.deb_amount + " " + "/-" + "  " + result.cusamount_in_words);
+                            $('#Line_text2').text("Amount Received From " + result.cus_name + " " + "Rs." + " " + result.deb_amount + " " + "/-" + "  " + result.cusamount_in_words);
+
+                            $('#NB').text("NB: " + result.type_tr + " " + "Subject To Realisation ");
+                            $('#NB2').text("NB: " + result.type_tr + " " + "Subject To Realisation ");
+                        } else {
+                            alert("No data found.");
+                        }
+                 
+                    
+                },
+                error: function (xhr, status, error) {
+                    console.log("Error:", error);
+                }
+            });
+        });
+
+
+
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault(); // Prevent default right-click menu
+
+            // Trigger print dialog
+            window.print();
+        });
+    </script>
+</head>
+<body>
+    <div id="officeCopy" style="page-break-after: always;font-family:Cambria;width:100%;padding-top:30px;">
+        <table style="width:100%;height:50px;color:black;font-size:14px;">
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="text-align:center;"> YOGAKSHEMAM LOANS LTD</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td id="CIN"></td>
+                <td></td>
+                <td align="right" id="GSTIN" style="white-space: nowrap;"></td>
+            </tr>
+            <tr>
+                <td id="branch"></td>
+                <td></td>
+                <td style="text-align:right;" id="date"></td>
+            </tr>
+            <tr>
+                <td id="phon_no"></td>
+                <td></td>
+                <td style="text-align:right;" id="time"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="font-weight: 800; text-align: center;">Application Money Received</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <hr style="border: 0.2px solid gray; width: 100%;">
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%;height:50px;color:black;font-size:14px;">
+            <tr>
+
+                <td width:1px;></td>
+                <td style="text-align: center;" id="Line_text"></td>
+                <td width:1px;></td>
+            </tr>
+            <tr>
+                <td width:1px;></td>
+                <td style="text-align: center;" id="check_ref_no"></td>
+                <td width:1px;></td>
+            </tr>
+        </table>
+        <table style="width:100%;height:50px;color:black;font-size:14px;padding-top:40px;">
+
+            <tr>
+                @*<td id="NB" style="white-space: nowrap;"></td>*@
+                <td id="NB"></td>
+                <td></td>
+                <td style="text-align:right;" id="emp_name"></td>
+            </tr>
+            <tr>
+                <td colspan="3"><center> (office copy)</center></td>
+
+            </tr>
+        </table>
+    </div>
+    <div id="customerCopy" style="page-break-after: always;font-family:Cambria;width:100%;padding-top:30px;">
+        <table style="width:100%;height:50px;color:black;font-size:14px;">
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="text-align:center;"> YOGAKSHEMAM LOANS LTD</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td id="CIN2"></td>
+                <td></td>
+                <td align="right" id="GSTIN2" style="white-space: nowrap;"></td>
+            </tr>
+            <tr>
+                <td id="branch2"></td>
+                <td></td>
+                <td style="text-align:right;" id="date2"></td>
+            </tr>
+            <tr>
+                <td id="phon_no2"></td>
+                <td></td>
+                <td style="text-align:right;" id="time2"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="font-weight: 800; text-align: center;">Application Money Received</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <hr style="border: 0.2px solid gray; width: 100%;">
+                </td>
+            </tr>
+        </table>
+        <table style="width:100%;height:50px;color:black;font-size:14px;">
+            <tr>
+
+                <td width:1px;></td>
+                <td style="text-align: center;" id="Line_text2"></td>
+                <td width:1px;></td>
+            </tr>
+            <tr>
+                <td width:1px;></td>
+                <td style="text-align: center;" id="check_ref_no2"></td>
+                <td width:1px;></td>
+            </tr>
+        </table>
+        <table style="width:100%;height:50px;color:black;font-size:14px;padding-top:40px;">
+
+            <tr>
+                @*<td id="NB" style="white-space: nowrap;"></td>*@
+                <td id="NB2"></td>
+                <td></td>
+                <td style="text-align:right;" id="emp_name2"></td>
+            </tr>
+            <tr>
+                <td colspan="3"><center> (customer copy)</center></td>
+
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

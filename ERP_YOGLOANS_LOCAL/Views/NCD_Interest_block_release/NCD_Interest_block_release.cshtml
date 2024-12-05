@@ -1,0 +1,579 @@
+﻿
+@{
+    ViewBag.Title = "NCD_Interest_block_release";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Interest Block/Release Request</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+
+    <style>
+
+
+        /* -------------------Style for Autosuggestion ------------------------------------------------*/
+
+        .suggestionsclass {
+            font-size: 14px; /* Adjust this value to your desired font size */
+            position: absolute;
+            top: 100%; /* Position below the search box */
+            left: 0;
+            width: 300px; /* Match the width of the search box */
+            background-color: white;
+            border: 1px solid white;
+            border-radius: 3px;
+            z-index: 1000; /* Ensure the suggestions appear above other elements */
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            /*margin-left: 30px;*/
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+            .suggestionsclass li {
+                padding: 5px;
+            }
+
+                .suggestionsclass li:hover {
+                    background-color: darkgray;
+                    cursor: pointer;
+                    color: blue;
+                }
+
+        .fixed-width-card {
+            flex: 1 1 300px; /* Flex-grow: 1, Flex-shrink: 1, Flex-basis: 300px */
+            min-width: 250px; /* Ensure a minimum width */
+            word-wrap: break-word;
+            word-break: break-word;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+    </style>
+
+
+</head>
+<body>
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">INTEREST PAYMENT BLOCK/RELEASE REQUEST</h6>
+            </div>
+        </div>
+
+
+        @*--- Buttons ---*@
+    <div class="card-body" style="width:100%;">
+
+        @* ---------Buttons for Block/Release------------------- *@
+        <div role="group" class="mb-2 btn-group-lg btn-group btn-group-toggle">
+            <button type="button" class="btn btn-outline-primary" value="B">Block</button>
+            <button type="button" class="btn btn-outline-primary" value="R">Release</button>
+        </div>
+        <br />
+        <label id="lbl_message" style="color: orange; font-weight:bold; font-size:medium;"></label>
+        @* ---------Div for Issue Numebr search------------------- *@
+        <div class="row">
+            <div class="col-md-6 col-lg-12">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        @*<div class="input-group-text">
+                            <i class="fa fa-search"></i>
+                        </div>*@
+                    </div>
+                    <input id="searchBox" placeholder="Issue Number/Certificate Number" type="text" class="form-control" autocomplete="off">
+                    <div class="input-group-text" style="height:39px;" onclick="search()">
+                        <i class="fa fa-search"></i>
+                    </div>
+                    <ul id="suggestions" class="suggestionsclass"></ul>
+                </div>
+            </div>
+
+            @*<div class="col-md-6 col-lg-2">
+                <div class="input-group mb-3">
+                    <input type="text" id="selected_debId" placeholder="ID" class="form-control" style="width:120px;" readonly />
+                </div>
+            </div>*@
+        </div>
+
+        @*------------------ Div for View Details -----------------------*@
+        <div class="main-card mb-2 card" style="display:none;" id="div_details">
+            <div class="card-body">
+                <h5 class="card-title">DETAILS</h5>
+                <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
+                    <div class="vertical-timeline-item vertical-timeline-element">
+                        @* Details here *@
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        @*------------------ Div for comments -----------------------*@
+
+        <div class="row" id="div_comments" style="display:none;">
+            <div class="col-md-6 col-lg-12">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Comments <span style="color:red;">*</span></span>
+                        </div>
+                    </div>
+                    <textarea name="text" id="txt_comments" class="form-control" placeholder="Please Enter Comments here..."></textarea>
+                </div>
+            </div>
+        </div>
+        @*------------------ div for Attachment -----------------------*@
+        <div class="row" id="div_upload" style="display:none;">
+            <div class="col-md-6 col-lg-12">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Upload Customer Request</span>
+                    </div>
+                    <input type="file" id="attachment" name="attachment" style="font-size: 15px;padding:2px;">
+                    <span style="color:red;font-size:small">Acceptable format: .png/.jpg/.jpeg/.bmp/.pdf</span>
+                </div>
+            </div>
+        </div>
+        @*------------------ div for Buttons -----------------------*@
+        <div class="tabs-animation" id="div_btn" style="display:none;">
+            <div class="mb-3 card">
+                <div class="card-header-tab card-header">
+                    <div class="card-header-title font-size-md text-capitalize font-weight-bold">
+                        <i class="header-icon lnr-charts icon-gradient bg-happy-green"> </i>
+                        <button type="submit" class="mb-2 mr-2 btn btn-success active" id="btn_submit" style="width:150px;" onclick="request()">Submit</button>
+                    </div>
+                    <div class="btn-actions-pane-right text-capitalize">
+                        <button type="submit" class="mb-2 mr-2 btn btn-danger active" id="btn_reset" style="width:150px;">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+            document.getElementById('lbl_message').textContent = "";
+            localStorage.setItem('activeButton', "");
+            initSearch("searchBox", "suggestions", "selected_debId");
+            // Manage button group functionality
+            const buttons = document.querySelectorAll('.btn-group .btn');
+
+            // Function to update active class and save to localStorage
+            function setActiveButton(button) {
+                // Remove active class from all buttons
+                buttons.forEach(btn => btn.classList.remove('active'));
+
+                // Add active class to the clicked button
+                button.classList.add('active');
+
+                // Save the value of the active button to localStorage
+                localStorage.setItem('activeButton', button.value);
+                var activeValue1 = localStorage.getItem('activeButton');
+
+                // Display appropriate message based on the button value
+                if (activeValue1 == "B") {
+                    document.getElementById('lbl_message').textContent = "You are trying to BLOCK the Interest Payment.";
+                } else if (activeValue1 == "R") {
+                    document.getElementById('lbl_message').textContent = "You are trying to RELEASE the Interest Payment block.";
+                }
+
+                //alert(activeValue1);
+            }
+
+            // Attach event listener to each button
+            buttons.forEach(button => {
+                button.addEventListener('click', function () {
+                    let isActive = (localStorage.getItem('onceSearched') === 'true');
+
+                    if (isActive) {
+                        // Store the clicked button value before reloading
+                        localStorage.setItem('clickedButtonValue', button.value);
+                        location.reload(); // Reload the page
+                    } else {
+                        setActiveButton(button);
+                    }
+                });
+            });
+
+            // After page reload, apply the setActiveButton to the clicked button
+            const clickedButtonValue = localStorage.getItem('clickedButtonValue');
+            if (clickedButtonValue) {
+                buttons.forEach(button => {
+                    if (button.value === clickedButtonValue) {
+                        setActiveButton(button);
+                    }
+                });
+                localStorage.removeItem('clickedButtonValue'); // Clear after applying
+            }
+
+            // Load the active button from localStorage on page load
+            const activeButtonValue = localStorage.getItem('activeButton');
+            if (activeButtonValue) {
+                buttons.forEach(button => {
+                    if (button.value === activeButtonValue) {
+                        button.classList.add('active');
+                    }
+                });
+            }
+        });
+function initSearch(searchBoxId, suggestionsId, selectedDebId) {
+    const searchBox = document.getElementById(searchBoxId);
+    const suggestions = document.getElementById(suggestionsId);
+    const selected_DebId = document.getElementById(selectedDebId);
+
+    searchBox.addEventListener("input", function () {
+        const search_txt = searchBox.value;
+        if (search_txt.length >= 2) {
+            fetch(`@Url.Action("GetSearchSuggestions", "NCD_Interest_block_release")?search_txt=${search_txt}`)
+                .then(response => response.json())
+                .then(data => {
+                    suggestions.innerHTML = "";
+                    data.forEach(item => {
+                        const li = document.createElement("li");
+                        li.textContent = item.Name;
+                        li.dataset.debId = item.DebId;
+
+                        li.onclick = function () {
+                            document.getElementById("searchBox").value = item.Name;
+                            suggestions.style.display = "none";
+
+                            const [issueNoCertificateNo, customerName] = item.Name.split(" ");
+
+                            // Further split issue_no and certificate_no
+                            const [issueNo, certificateNo] = issueNoCertificateNo.split("/");
+
+                            // Trim values to ensure no extra spaces
+                            const issueNumber = issueNo.trim();
+                            const certificateNumber = certificateNo.trim();
+                            localStorage.setItem('issueNumber', issueNumber);
+                            localStorage.setItem('certificateNum', certificateNumber);
+                            localStorage.setItem('selectedDebId', item.DebId);
+                        };
+                        
+                        suggestions.appendChild(li);
+                    });
+                });
+        } else {
+            suggestions.innerHTML = "";
+            
+        }
+    });
+
+    document.addEventListener("click", function (event) {
+        if (!suggestions.contains(event.target) && event.target !== searchBox) {
+            suggestions.innerHTML = "";
+        }
+    });
+}
+
+        function search() {
+
+             localStorage.setItem('onceSearched', true.toString()); // Stores "true" as a string
+
+             var activeValue = localStorage.getItem('activeButton');
+
+             var issue_no = localStorage.getItem('issueNumber');
+             var certifi_no = localStorage.getItem('certificateNum');
+
+             alert(activeValue);
+
+
+             if (activeValue != "") {
+                 if (activeValue == 'B') {
+                     $.ajax({
+                         url: "@Url.Action("GetIssueDetails", "NCD_Interest_block_release")",
+                         type: "GET",
+                         data: { issue_no: issue_no, certifi_no: certifi_no },
+                         success: function (data) {
+
+                             $("#div_details").css("display", "block");
+                             $("#div_upload").css("display", "block");
+                             $("#div_comments").css("display", "block");
+                             $("#div_btn").css("display", "block");
+
+                             var divIssueDetails = $("#div_details .vertical-timeline-item");
+                             divIssueDetails.empty(); // Clear any existing content
+
+                             if (data.Issue.length > 0) {
+                                 data.Issue.forEach(function (issue) {
+
+                                     var IssueHtml = `
+                                 <div class="vertical-timeline-item vertical-timeline-element">
+                                     <div>
+                                         <span class="vertical-timeline-element-icon bounce-in">
+                                             <i class="badge badge-dot badge-dot-xl badge-primary"> </i>
+                                         </span>
+                                         <div class="vertical-timeline-element-content bounce-in">
+                                             <h4 class="timeline-title text-success">Issue Details</h4>
+                                             <p>
+
+                                                 Issue No: &nbsp;<span style="font-weight:bold;color:#3f6ad8">${issue.issue_no}</span>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                 Certificate No: &nbsp;<span style="font-weight:bold;color:orange">${issue.certificate_no}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                                 Deposit Amount	: &nbsp;<span style="font-weight:bold;color:#d92550">${issue.amount}/-</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                 Period	: &nbsp;<span style="font-weight:bold;color:#444054">${issue.period}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                 Customer Name	: &nbsp;<span style="font-weight:bold;color:#16aaff">${issue.customer_name}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                             <br/>
+                                                Maturity Date: &nbsp;<span style="font-weight:bold;color:#444054">${issue.maturity_date}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            </p>
+                                         </div>
+                                     </div>
+                                 </div>
+                             `;
+
+                                     divIssueDetails.append(IssueHtml);
+                                 });
+                             }
+
+                             if (data.Bank.length > 0) {
+                                 data.Bank.forEach(function (bank) {
+                                     var bankHtml = `
+                <div class="vertical-timeline-item vertical-timeline-element">
+                    <div>
+                        <span class="vertical-timeline-element-icon bounce-in">
+                            <i class="badge badge-dot badge-dot-xl badge-primary"> </i>
+                        </span>
+                        <div class="vertical-timeline-element-content bounce-in">
+                            <h4 class="timeline-title text-success">Bank Details</h4>
+                            <p>
+
+                                IFSC: &nbsp;<span style="font-weight:bold;color:#3f6ad8">${bank.IFSC_code}</span>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                Bank Name: &nbsp;<span style="font-weight:bold;color:orange">${bank.bank_name}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                Account No: &nbsp;<span style="font-weight:bold;color:#444054">${bank.banki_ac}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                Payee Name	: &nbsp;<span style="font-weight:bold;color:#16aaff">${bank.payee_name}/-</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+                                     divIssueDetails.append(bankHtml);
+                                 });
+                             }
+
+                         },
+                         error: function (xhr, status, error) {
+                             alert("error" + error);
+
+                         }
+                     });
+                 }
+                 else {
+                        $.ajax({
+                                url: "@Url.Action("GetBlockedIssueDetails", "NCD_Interest_block_release")",
+                                type: "GET",
+                                data: { issue_no: issue_no, certifi_no: certifi_no },
+                                success: function (data) {
+
+                                    $("#div_details").css("display", "block");
+
+
+
+                                    var divIssueDetails = $("#div_details .vertical-timeline-item");
+                                    divIssueDetails.empty(); // Clear any existing content
+
+                                    if (data.length > 0) {
+
+                                        $("#div_comments").css("display", "block");
+                                        $("#div_btn").css("display", "block");
+
+                                        data.forEach(function (issue) {
+                                            localStorage.setItem('slno', issue.sl_no);
+                                      var IssueHtml = `
+                                        <div class="vertical-timeline-item vertical-timeline-element">
+                                            <div>
+                                                <span class="vertical-timeline-element-icon bounce-in">
+                                                    <i class="badge badge-dot badge-dot-xl badge-primary"> </i>
+                                                </span>
+                                                <div class="vertical-timeline-element-content bounce-in">
+                                                    <h4 class="timeline-title text-success">Blocked Issue Details</h4>
+                                                    <p>
+
+                                                        Issue No: &nbsp;<span style="font-weight:bold;color:#3f6ad8">${issue.issue_no}</span>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        Certificate No: &nbsp;<span style="font-weight:bold;color:orange">${issue.certificate_no}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        Customer Name: &nbsp;<span style="font-weight:bold;color:#16aaff">${issue.customer}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        Deposit Amount: &nbsp;<span style="font-weight:bold;color:#d92550">${issue.amount}/-</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <br/>
+                                                        Approved By	: &nbsp;<span style="font-weight:bold;color:#444054">${issue.approved_by}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                                    </p>
+                                                    <p>
+                                                    Maturity Date: &nbsp;<span style="font-weight:bold;color:orange">${issue.maturity_date}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    IFSC: &nbsp;<span style="font-weight:bold;color:#3f6ad8">${issue.IFSC_code}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    Bank Name: &nbsp;<span style="font-weight:bold;color:#16aaff">${issue.bank_name}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                                     </p>
+                                                     <p>
+                                                    Account No: &nbsp;<span style="font-weight:bold;color:#d92550">${issue.banki_ac}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    Payee Name: &nbsp;<span style="font-weight:bold;color:#3f6ad8">${issue.payee_name}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    Block Approved Date: &nbsp;<span style="font-weight:bold;color:orange">${issue.blk_ap_rjt_dt}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                   </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                      `;
+
+                                            divIssueDetails.append(IssueHtml);
+                                        });
+                                    }
+                                    else {
+                                        var IssueHtml = `
+                                            <div class="vertical-timeline-item vertical-timeline-element">
+                                                <div>
+                                                    <span class="vertical-timeline-element-icon bounce-in">
+                                                        <i class="badge badge-dot badge-dot-xl badge-primary"></i>
+                                                    </span>
+                                                    <div class="vertical-timeline-element-content bounce-in">
+                                                        <h4 class="timeline-title text-danger">This Account not blocked...</h4>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        `;
+                                        divIssueDetails.append(IssueHtml);
+                                    }
+
+
+
+                     },
+                     error: function (xhr, status, error) {
+                         alert("error" + error);
+
+                     }
+                 });
+                 }
+             }
+             else {
+                 document.getElementById("searchBox").value = "";
+                 document.getElementById("selectedCustomerId").value = "";
+                 alert("Please select any of the buttons Block/Release!..");
+                 return;
+
+             }
+
+            }
+
+function request() {
+
+    var comments = document.getElementById('txt_comments').value;
+    var activeValue = localStorage.getItem('activeButton');
+    var deb_id = localStorage.getItem('selectedDebId');
+
+    if (comments == '') {
+        alert("Please Enter comments!.."); document.getElementById('txt_comments').focus(); return;
+    }
+
+    if (activeValue == 'B') {
+        var documentFile = document.getElementById('attachment').files[0];
+
+        if (!documentFile) {
+            alert("Please upload the attachment!..");
+            document.getElementById('attachment').focus();
+            return false; // Return false to prevent form submission or further execution
+        }
+        else if (documentFile && documentFile.size > 1 * 1024 * 1024) { // Check if the first file exceeds 1 MB
+            alert("The file size exceeds 1 MB limit.");
+            return false; // Prevent form submission
+        }
+        else {
+            var formData = new FormData();
+            formData.append('deb_id', deb_id);
+            formData.append('Comments', comments);
+            formData.append('Document', documentFile);
+
+            $.ajax({
+                url: "@Url.Action("SaveBlockRequest", "NCD_Interest_block_release")",
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        window.location.reload();
+                    }
+
+                    //console.log('Data sent successfully:', response);
+                },
+                error: function (error) {
+                    alert("error");
+                    console.error('Error sending data:', error);
+                }
+            });
+        }
+
+
+    }
+    else {
+        var slno = localStorage.getItem('slno');
+        var formData = new FormData();
+        formData.append('deb_id', slno);
+        formData.append('Comments', comments);        
+        alert("dfsdf");
+        $.ajax({
+            url: "@Url.Action("SaveBlockReleaseRequest", "NCD_Interest_block_release")",
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    window.location.reload();
+                }
+
+                //console.log('Data sent successfully:', response);
+            },
+            error: function (error) {
+                alert("error");
+                console.error('Error sending data:', error);
+            }
+        });
+
+    }
+
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('btn_reset').addEventListener('click', function (event) {
+                // Prevent the default action first
+                event.preventDefault();
+
+                localStorage.setItem('onceSearched', false.toString());
+
+                location.reload();
+            });
+        });
+
+        let suggestionSelected = false; // Flag to track if a suggestion was selected
+
+        // Event listener for selecting a suggestion
+        document.getElementById("searchBox").addEventListener("input", function () {
+            if (suggestionSelected) {
+                location.reload(); // Reload the page if the input is modified after a suggestion
+            }
+        });
+
+        // Handle suggestions and set the flag
+        document.getElementById("searchBox").addEventListener("focusout", function () {
+            suggestionSelected = this.value !== ""; // Set flag to true if a value was selected
+        });
+
+
+    </script>
+
+
+
+</body>
+</html>
+

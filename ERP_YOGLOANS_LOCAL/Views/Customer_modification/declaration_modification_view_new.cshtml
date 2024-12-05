@@ -1,0 +1,495 @@
+﻿
+@model ERP_YOGLOANS_LOCAL.Models.modify_model
+
+
+@{
+
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html @*xmlns="http://www.w3.org/1999/xhtml*@">
+<head runat="server">
+    <title></title>
+
+    <style type="text/css" media="print">
+        @*@page*@ {
+            size: auto;
+            margin: 50px;
+        }
+    </style>
+
+
+
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 7px;
+            border: 1px solid #ddd;
+        }
+
+        .detail {
+            font-size: medium; /* Increased size for details */
+        }
+
+        .photo {
+            width: 20%; /* Decreased space for photo */
+        }
+
+        .photo-container {
+            text-align: right;
+        }
+        /* -------------------*/
+
+        .table {
+            display: table;
+            width: 100%;
+        }
+
+        .row {
+            display: table-row;
+        }
+
+        .cell {
+            display: table-cell;
+            padding: 5px;
+        }
+
+        .detail {
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+
+        .table {
+            display: table;
+            width: 100%;
+        }
+
+        .row {
+            display: table-row;
+        }
+
+        .cell {
+            display: table-cell;
+            padding: 5px;
+        }
+
+        .detail {
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+
+        .data-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        /* ------------------------------------*/
+
+        .detail {
+            width: 30%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        .detail1 {
+            width: 33.3%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        .detail1 {
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+    </style>
+
+
+    <script>
+ // Check if the page was loaded directly (not via navigation within the site)
+ if (document.referrer === '') {
+     // If there is no referrer, redirect to the login page
+     window.location.href = '/Smart_Login/Login'; // Change to your login page URL
+ }
+    </script>
+
+
+
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div id="div_dec" runat="server">
+            <table style="width:100%; border: 1px solid black; border-collapse: collapse;">
+                <tr>
+                    <td style="text-align:center;background-color:white;color:black;" colspan="2">
+                        <div class="logo-src" style="height:42px;vertical-align:top">
+                            <img style="width:170px;" src="~/images/logowithtext.png" />
+
+                        </div>
+                        Branch Name:@Model.branch_name
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; background-color: #064e9c; color: white;" colspan="2">
+                        KYC & CKYC Form Aoutherised Signatory
+
+                    </td>
+                </tr>
+
+
+
+                <tr>
+                    <td style="width: 448.42px; text-align: left; font-weight: bold;">
+                        CKYC:
+                    </td>
+                    <td style="width: 90px; text-align: left; font-weight: bold;">
+                        Customer ID: @Session["CustomerID_M"]
+
+                    </td>
+                </tr>
+
+
+
+            </table>
+
+            <table id="myTable">
+                <table>
+                    <tr>
+                        <td style="width: 850px; text-align: left;">
+
+                            <table>
+                                <div class="data-container">
+
+                                    @if (!string.IsNullOrEmpty(Model.first_name))
+                                    {
+                                        <div class="detail1">First name: @Model.first_name</div>
+                                    }
+
+                                    @if (string.IsNullOrEmpty(Model.first_name))
+                                    {
+                                        <div class="detail1">First Name: @Model.Customer_name</div>
+                                    }
+
+                                    @*@if (!string.IsNullOrEmpty(Model.second_name))*@
+                                    @if (!string.IsNullOrWhiteSpace(Model.second_name))
+                                    {
+                                        <div class="detail1">Second name: @Model.second_name</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.dob))
+                                    {
+                                        <div class="detail1">Date Of Birth: @Model.dob</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.gender))
+                                    {
+                                        var genderValue = Model.gender == "F" ? "FEMALE" : Model.gender == "M" ? "MALE" : Model.gender == "T" ? "TRANSGENDER" : Model.gender;
+                                        <div class="detail1">Gender: @genderValue</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.marital_status))
+                                    {
+                                        <div class="detail1">Marital Status: @Model.marital_status</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.spause_name))
+                                    {
+                                        <div class="detail1">Name of Spouse: @Model.spause_name</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.father_name))
+                                    {
+                                        <div class="detail1">Father name: @Model.father_name</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.mother_name))
+                                    {
+                                        <div class="detail1">Mother name: @Model.mother_name</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.residence_type))
+                                    {
+                                        var residenceType = Model.residence_type == "O" ? "Own" : "Rent";
+                                        <div class="detail1">Residential Status: @residenceType</div>
+                                    }
+                                    @if (Model.annual_income != 0)
+                                    {
+                                        <div class="detail1">Annual Income: @Model.annual_income</div>
+                                    }
+                                    @*@if (Model.annual_income != 0)
+        {
+            <div class="detail1">Annual Income: @Model.annual_income.ToString("N2")</div>
+        }*@
+
+                                    @if (!string.IsNullOrEmpty(Model.occupation_d))
+                                    {
+                                        <div class="detail1">Occupation: @Model.occupation_d</div>
+                                    }
+                                </div>
+
+                              
+
+                            </table>
+
+
+                         
+
+                        </td>
+                        <td style="width: 105px; text-align: center;" class="photo-container">
+
+                            <div style="width:100px; height:130px; border:dashed;align-self:center">
+                                <img id="photo" src="@Model.photo" style="width: 100%; height: 100%;" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <!-- Your existing rows here -->
+            </table>
+
+            <table style="width:100%; border: 1px solid black; border-collapse: collapse;">
+                <tr>
+                    <td style="width: 448.42px; text-align:left; font-weight: bold;font-size:16px;">
+                        Identity Proofs
+                    </td>
+
+                </tr>
+
+                <td style="width: 850px; text-align: left;">
+                    <table>
+                        <div class="data-container">
+                            @if (!string.IsNullOrEmpty(Model.PANCard))
+                            {
+                                <div class="detail1">PAN: @Model.PANCard</div>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.AadharCard))
+                            {
+                                <div class="detail1">Aadhaar: @Model.AadharCard</div>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.VotersIdentityCard))
+                            {
+                                <div class="detail1">Voter's Id: @Model.VotersIdentityCard</div>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.DrivingLicense))
+                            {
+                                <div class="detail1">Licence: @Model.DrivingLicense</div>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.passport))
+                            {
+                                <div class="detail1">Passport: @Model.passport</div>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.RationCard))
+                            {
+                                <div class="detail1">Ration Card: @Model.RationCard</div>
+                            }
+                        </div>
+                    </table>
+                </td>
+
+
+
+
+                @*<td style="width: 850px; text-align: left;">
+                        <table>
+                            <tr>
+                                @if (!string.IsNullOrEmpty(Model.PANCard))
+                                {
+                                    <td colspan="4" class="detail">PAN:@Model.PANCard</td>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.AadharCard))
+                                {
+                                    <td colspan="4" class="detail">Aadhaar:@Model.AadharCard</td>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.VotersIdentityCard))
+                                {
+                                    <td colspan="4" class="detail">Voter's Id:@Model.VotersIdentityCard</td>
+                                }
+
+                            </tr>
+                            <tr>
+                                @if (!string.IsNullOrEmpty(Model.DrivingLicense))
+                                {
+                                    <td colspan="4" class="detail">Licence:@Model.DrivingLicense</td>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.passport))
+                                {
+                                    <td colspan="4" class="detail">Passport:@Model.passport</td>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.RationCard))
+                                {
+                                    <td colspan="4" class="detail">Ration Card:@Model.RationCard</td>
+                                }
+
+                            </tr>
+                        </table>
+                    </td>*@
+            </table>
+
+
+
+            <td colspan="2">
+                <table style="width:100%">
+                    <tr>
+                        <td style="width:50%">
+                            <table style="width:100%">
+                                @*<tr style="background-color: #064e9c; color: white;">
+                                        <td colspan="2">Communication Address</td>
+                                    </tr>*@
+                                <tr>
+                                    <td style="width: 448.42px; text-align:left; font-weight: bold; font-size: 16px; ">
+                                        Communication Address
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="detail">Address: @Model.house_name</td>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="detail">State: @Model.State</td>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="detail">PIN: @Model.Pincode</td>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="detail">Country: INDIA</td>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="detail">Mobile: @Model.mob_no</td>
+
+                                </tr>
+
+                            </table>
+
+                        </td>
+
+                        <td style="width:50%">
+                            @if (string.IsNullOrEmpty(Model.p_Pincode))
+                            {
+
+
+                                <table style="width:100%">
+
+                                    <tr>
+                                        <td style="width: 448.42px; text-align:left; font-weight: bold; font-size: 16px; ">
+                                            Permanent Address
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="4" class="detail">Address: @Model.p_house_name</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">State: @Model.p_State</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">PIN: @Model.p_Pincode</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">Country: INDIA</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">Mobile: @Model.mob_no</td>
+
+                                    </tr>
+                                </table>
+                            }
+                            else
+                            {
+                                <table style="width:100%">
+
+                                    <tr>
+                                        <td style="width: 448.42px; text-align:left; font-weight: bold; font-size: 16px; ">
+                                            Permanent Address
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="4" class="detail">Address: @Model.p_house_name</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">State: @Model.p_State</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">PIN: @Model.p_Pincode</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">Country: INDIA</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">Mobile: @Model.mob_no</td>
+
+                                    </tr>
+                                </table>
+
+
+                            }
+
+
+
+                            @*}*@
+
+
+
+                        </td>
+                    </tr>
+                </table>
+
+
+            </td>
+
+            </tr>
+
+            <table style="width:100%; border: 1px solid black; border-collapse: collapse;">
+                <tr>
+                    <td style="width: 448.42px; text-align:left; font-weight: bold;font-size:18px;">
+                        Declaration
+                    </td>
+
+                </tr>
+                <td style="width:100%">
+                    <table style="width:100%">
+
+                        <td colspan="2">
+
+
+
+                            I/We @Model.Customer_name hereby declare that the details furnished above are true and correct.I have submitted my physical Aadhaar card /E-Aadhaar card /Masked Aadhaar /Offline Electronic Aadhaar xml voluntarily as an officially valid document for opening customer  account and  all the above information voluntarily furnished by me is true, correct and complete.
+                            <br />
+
+
+                            I/we undertake to inform you of any changes therein, immediately. In case any of the above information is found to be false or untrue or misleading or misrepresenting, I/we am/are aware that I/we may be held liable for it. I/We hereby undertake that periodic KYC updations will be carried out as per the policy.
+                            <br />
+
+                            I/We authorise you to link Aadhaar No. for aadhaar and biometric for aadhaar authentication service, E-KYC. My/our personal KYC details may be shared with Central KYC Registry / TaxAuthorities / Regulators . I/We hereby consent to receiving information from Central KYC Registry through SMS/ Email on the above registered number / email address.
+
+                            <br />
+                            <br />@*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*@
+                            Place:<label for="place">--------------------</label>&nbsp;&nbsp;&nbsp;
+                            Date:<label for="date">&nbsp;@Model.todaydate</label>&nbsp;&nbsp;&nbsp;
+                            Signature:<label for="sign">--------------------</label><br />
+                        </td>
+                        @*  *@
+                    </table>
+                </td>
+
+            </table>
+            </table>
+        </div>
+       
+    </form>
+
+</body>
+</html>
+
+

@@ -1,0 +1,1442 @@
+﻿
+
+@{
+    if (ViewBag.CustomerBankDetails != null && ViewBag.CustomerBankDetails.Rows.Count > 0)
+    {
+        <html>
+        <head>
+
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+            <link rel="stylesheet" href="~/Content/input_styles.css" />
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+            <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> <!-- Ensure Font Awesome is included -->
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.0.0/pdf.min.js"></script>
+
+            <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+            <style>
+
+                .widget-heading {
+                    color: darkred; /* Sets text color */
+                    font-size: 16px;
+                }
+
+                .widget-subheading1 {
+                    /*font-weight: 1500;*/
+                    /* opacity: 1000;*/
+                    color: darkblue;
+                    /* font-weight: bold;*/
+                    font-size: 16px;
+                }
+
+                #example {
+                    overflow-y: auto;
+                    font-size: 10px;
+                    /*  width: 100%;*/
+                    font-weight: 700;
+                    color: black;
+                    /* border-collapse: collapse;*/
+                }
+
+                    #example th, #example td {
+                        /*     border: 1px solid #ccc;*/
+                        padding: 0px;
+                        text-align: left;
+                    }
+
+                    #example th {
+                        background-color: #4D759A;
+                        color: white;
+                        font-size: 10px;
+                    }
+
+                #selectedRowTable {
+                    overflow-y: auto;
+                    font-size: 11px;
+                    color: black;
+                    width: 100%;
+                    font-weight: 500;
+                    border-collapse: collapse;
+                }
+
+                    #selectedRowTable th, #selectedRowTable td {
+                        border: 1px solid #ccc;
+                        padding: 0px;
+                        text-align: center;
+                    }
+
+                    /* Styling for table header */
+                    #selectedRowTable th {
+                        background-color: #4D759A;
+                        color: white;
+                    }
+                #tableContainer {
+                    overflow-y: auto;
+                    font-size: 14px;
+                    color: black;
+                    width: 100%;
+                    font-weight: 500;
+                    border-collapse: collapse;
+                }
+
+                    #tableContainer th, #tableContainer td {
+                        border: 1px solid #ccc;
+                        padding: 0px;
+                        text-align: center;
+                    }
+
+                    /* Styling for table header */
+                    #tableContainer th {
+                        background-color: #4D759A;
+                        color: white;
+                    }
+                
+            </style>
+            <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const checkboxes = document.querySelectorAll('.select-checkbox');
+                        const selectedRowTable = document.getElementById('selectedRowTable');
+                        const selectedRowContainer = document.getElementById('selectedRowContainer');
+
+                        checkboxes.forEach(function (checkbox) {
+                            checkbox.addEventListener('change', function () {
+                                if (this.checked) {
+                                    // Uncheck other checkboxes
+                                    checkboxes.forEach(function (otherCheckbox) {
+                                        if (otherCheckbox !== checkbox) {
+                                            otherCheckbox.checked = false;
+                                        }
+                                    });
+
+                                    // Get the row associated with this checkbox
+                                    const row = this.closest('tr');
+                                    const rowData = Array.from(row.querySelectorAll('td')).map(td => td.innerText);
+
+                                    const cus_name = rowData[1];
+                                    // alert("name" + cus_name);
+                                    const cus_id = rowData[2];
+                                    const issueNo = rowData[3];
+                                    const cirtificateNo = rowData[4];
+                                    const amount = rowData[5];
+                                    const int_rate = rowData[6];
+                                    const int_type = rowData[7];
+                                    const AllotmentDt = rowData[8];
+                                    const MaturityDt = rowData[9];
+                                    const bond_id = rowData[12]; // Get value from 5th column (index 4)
+                                    const period = rowData[14];
+                                    const settl_type = rowData[16];
+
+
+                                    // Clear the selected row table content
+                                    selectedRowTable.querySelector('thead tr').innerHTML = '';
+                                    selectedRowTable.querySelector('tbody tr').innerHTML = '';
+
+                                    // Get the headers from the original table
+                                    const originalTableHeaders = document.querySelectorAll('#example th');
+                                    originalTableHeaders.forEach((th, index) => {
+                                        if (index > 0) { // Skip the "Select" column header
+                                            const newTh = document.createElement('th');
+                                            newTh.textContent = th.textContent;
+                                            selectedRowTable.querySelector('thead tr').appendChild(newTh);
+                                        }
+                                    });
+
+                                    // Populate the selected row table
+                                    rowData.forEach((data, index) => {
+                                        if (index > 0) { // Skip the "Select" column data
+                                            const newTd = document.createElement('td');
+                                            newTd.textContent = data;
+                                            selectedRowTable.querySelector('tbody tr').appendChild(newTd);
+                                        }
+                                    });
+
+                                    // Show the selected row container and other elements
+                                    selectedRowContainer.style.display = 'block';
+
+
+                                    // textfill(bond_id);
+                                    $.ajax({
+                                        url: '/BOND_Approve_Settlment/textBox_fill',
+                                        type: 'POST',  // Use the correct HTTP method (GET, POST, etc.)
+                                        contentType: 'application/json',
+                                        data: JSON.stringify({ bond_id: bond_id }),  // Pass the value as data
+                                        success: function (response) {
+                                            if (!response.success) {
+                                                // alert(response.message);
+
+                                                Swal.fire({
+                                                    title: "",
+                                                    text: response.message,
+                                                    icon: "error",
+                                                    confirmButtonText: "OK"
+                                                }).then(() => {
+                                                    window.location.reload();
+                                                });
+                                                //window.location.reload();
+                                            }
+                                            var data = response.data;
+                                            var item = data[0];
+
+                                            //  $('#cus_id').val(cus_id);
+
+                                           // document.getElementById('balanceInput').innerText = balanceInput;
+                                          //  document.getElementById('balanceInput').value = balanceInput;
+                                            document.getElementById('settl_type').innerText = settl_type;
+                                            document.getElementById('cus_id').innerText = cus_id;
+                                            document.getElementById('cus_name').innerText = cus_name;
+                                            document.getElementById('issueNo').innerText = issueNo;
+                                            document.getElementById('cirtificateNo').innerText = cirtificateNo;
+                                            document.getElementById('int_rate').innerText = int_rate;
+                                            document.getElementById('int_type').innerText = int_type;
+                                            document.getElementById('AllotmentDt').innerText = AllotmentDt;
+                                            document.getElementById('MaturityDt').innerText = MaturityDt;
+                                            document.getElementById('period').innerText = period;
+                                            document.getElementById('amount').innerText = amount;
+
+                                          //  alert(data[0].balanceInput);
+                                            document.getElementById('balanceInput').value = data[0].balanceInput;
+                                            document.getElementById('total_int').innerText = data[0].total_int;
+                                          //  document.getElementById('interstamt').innerText = data[0].interstamt;
+
+                                            document.getElementById('eranint').innerText = data[0].eranint;
+
+                                            document.getElementById('tot_tds').innerText = data[0].tot_tds;
+                                            document.getElementById('payamt').innerText = data[0].payamt;
+                                            document.getElementById('balpay').innerText = data[0].balpay;
+
+
+                                            document.getElementById('maturity_amount').innerText = data[0].maturity_amount;
+                                            document.getElementById('lasttds').innerText = data[0].lasttds;
+                                            document.getElementById('short_recovery').innerText = data[0].short_recovery;
+                                            document.getElementById('pantrack').innerText = data[0].pantrack;
+
+                                           // document.getElementById('settpay').innerText = data[0].settpay;
+                                            document.getElementById('settpay').innerText = data[0].settpay;
+                                            $("#example_div").hide();
+                                            $("#textBpx_details_div").show();
+                                            $("#buttonDiv").show();
+                                            updateFinalAmount();
+                                            loadBankTable();
+                                            fillDropdownlist();
+
+                                        },
+                                        error: function (error) {
+                                            console.error("Error:", error);
+                                            // Handle any errors
+                                        }
+                                    });
+                                    checkPanOrForm60Status()
+                                } else {
+                                    // Clear the selected row table if no checkbox is checked
+                                    selectedRowTable.querySelector('thead tr').innerHTML = '';
+                                    selectedRowTable.querySelector('tbody tr').innerHTML = '';
+                                    selectedRowContainer.style.display = 'none';
+                                }
+                            });
+                        });
+                    });
+
+                $(document).ready(function () {
+                  // alert("ready");
+                    
+                    Bind_category();
+                    //fillDropdownlist();
+                    // Call on page load
+                    updateFinalAmount();
+
+                    // Update when input changes
+                    $("#balanceInput").on("input", updateFinalAmount);
+                });
+                function updateFinalAmount() {
+                   // alert("sum");
+                    var balanceAmount = parseFloat($("#balanceInput").val()) || 0;
+                    var settledAmount = parseFloat($("#settpay").text()) || 0;
+                    var finalSettledAmount = balanceAmount + settledAmount;
+                    $("#final_sett_Amount").text(finalSettledAmount.toFixed(2));
+                    localStorage.setItem("loanAmount", finalSettledAmount.toFixed(2));
+                }
+
+                    function checkPanOrForm60Status() {
+                        $.ajax({
+                            url: '/BOND_Approve_Settlment/panORform60_status', // Replace with your actual controller name
+                            type: 'POST',
+                            dataType: 'json',
+                            success: function (response) {
+                                if (response.success) {
+                                    //    alert("Status check successful.");
+                                    var data = response.data;
+                                    var item = data[0];
+                                    document.getElementById('panorform60_status').innerText = data[0].panorform60_type;
+                                    document.getElementById('type_form').innerText = data[0].type_form;
+                                    document.getElementById('idno').innerText = data[0].idno;
+                                  //  alert(data[0].return_reason);
+
+
+
+
+                                } else {
+                                    console.log("Status check failed.");
+                                    // Handle failure logic here
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("Error occurred:", error);
+                                // Handle error logic here
+                            }
+                        });
+                    }
+
+                    $(document).ready(function () {
+
+                        $('#requestButton').click(function () {
+                            const hoBankDropdown = $('#HO_bank_dropdown');
+                           /* var bankDetails = $('#tableContainer').val();*/
+
+                            var loanAmt = localStorage.getItem("loanAmount");                            
+                            var bankId = hoBankDropdown.val();
+                            var paymenttype = $('#payment_type').val();
+                            var paymode_value = $('#payment_mode').val();
+                            var paymode = $('#payment_mode option:selected').text(); // Get the selected text of the dropdown
+                            //alert(paymodeText);
+                            var bankAcNo = localStorage.getItem("bankAccNo");
+                            var ifsc = localStorage.getItem("ifsc");
+                            var customerName = localStorage.getItem("payeeName");
+                            var bank_Name = localStorage.getItem("bankName");
+                            alert(bank_Name);
+                            // Validation checks
+                            if (bankAcNo == "0") {
+                                Swal.fire({
+                                    title: "",
+                                    text: "Please Add Bank Details.",
+                                    icon: "warning",
+                                    confirmButtonText: "OK",
+
+                                });
+                                return;
+                            }
+                            if (bankId == 0) {
+                                Swal.fire({
+                                    title: "",
+                                    text: "Please select a bank.",
+                                    icon: "warning",
+                                    confirmButtonText: "OK",
+
+                                    didClose: () => {
+                                        document.getElementById("bankSelect").focus();
+                                    }
+                                });
+                                return;
+                            }
+                            if (paymenttype == 0) {
+                                Swal.fire({
+                                    title: "",
+                                    text: "Please select a payment type.",
+                                    icon: "warning",
+                                    confirmButtonText: "OK",
+
+
+                                    didClose: () => {
+                                        document.getElementById("paymenttypeSelect").focus();
+                                    }
+                                });
+                                return;
+                            }
+                            if (paymode_value == 0) {
+                                Swal.fire({
+                                    title: "",
+                                    text: "Please select a payment mode.",
+                                    icon: "warning",
+                                    confirmButtonText: "OK",
+
+                                    didClose: () => {
+                                        document.getElementById("paymodeSelect").focus();
+                                    }
+                                });
+                                return;
+                            }
+                            alert(1);
+                            var formData = new FormData();                            
+                            formData.append('loanAmt', loanAmt);                            
+                            formData.append('bankId', bankId);
+                            formData.append('paymode', paymode);
+                            formData.append('paymenttype', paymenttype);                            
+                            formData.append('custAccntNumb', bankAcNo);
+                            formData.append('ifsc', ifsc);
+                            formData.append('custName', customerName);                           
+                            formData.append('bankName', bank_Name);
+                            alert(2);
+                            
+
+                        $.ajax({
+                            url: '/BOND_Approve_Settlment/Approve_BtnClick', // replace with your endpoint
+                            type: 'POST',
+                            data: formData,
+                            processData: false, // Prevent jQuery from converting the form data into a query string
+                            contentType: false, // Prevent jQuery from setting content type header
+                            success: function (response) {
+                                if (response.success) {
+                                    // alert("success");
+                                    //  alert(response.data);
+                                    Swal.fire({
+
+                                        title: "",
+                                        text: response.message,
+                                        /*text: "",*/
+                                        icon: "success",
+                                        confirmButtonText: "OK"
+                                    }).then(() => {
+                                        window.location.reload();
+
+                                    });
+
+                                }
+                                else {
+
+                                    Swal.fire({
+                                        title: "",
+                                        text: response.message,
+                                        icon: "error",
+                                        confirmButtonText: "OK"
+
+                                    });
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                // Handle error
+                                console.error('Error:', error);
+                            }
+                        });
+
+                        });
+                    });
+
+
+
+                    function reloadPage() {
+                        // Reload the page
+                        location.reload();
+                    }
+
+
+                    // Function to calculate the sum
+
+                    function validateInput(event) {
+                        // Remove non-numeric characters
+                        event.target.value = event.target.value.replace(/[^0-9]/g, '');
+                    }
+
+                    function viewCirtificate() {
+                        // alert("attach click");
+                        $.ajax({
+                            url: '/BOND_Approve_Settlment/viewCirtificate',
+                            type: 'POST',
+
+                            success: function (response) {
+                                if (response.sucess === false) {
+                                    // If the server indicates failure, alert the failure message
+                                    alert(response.message);
+                                } else {
+                                    // If successful, alert the success message and data (e.g., image URL)
+                                    // alert('Success! Image URL: ' + response.data);
+                                    var getImageValue = response.data;
+                                    //alert(getImageValue);
+
+                                    if (getImageValue != null) {
+                                        if (getImageValue.startsWith("data:image")) {
+                                            //alert("image");
+                                            displayPhoto(getImageValue, 'image');
+                                        } else if (getImageValue.startsWith("data:application/pdf")) {
+                                            //alert("pdf");
+                                            displayPhoto(getImageValue, 'pdf');
+                                        } else {
+                                            alert("Unknown file type");
+                                        }
+                                    } else {
+                                        alert("No image URL received");
+                                    }
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('AJAX Error:', error);
+                                // You can also alert the user of an AJAX failure
+                                alert('AJAX call failed: ' + error);
+                            }
+                        });
+                    }
+
+
+
+
+                    function displayPhoto(dataUrl, type) {
+                        // alert("display");
+                        var modal = document.getElementById('mediaModal');
+                        var content = document.getElementById('pdfViewer'); // Use pdfViewer as content
+
+                        if (type === 'pdf') {
+                            // Convert base64 to Blob
+                            var base64Data = dataUrl.split(',')[1];
+                            var binaryString = atob(base64Data);
+                            var len = binaryString.length;
+                            var bytes = new Uint8Array(len);
+                            for (var i = 0; i < len; i++) {
+                                bytes[i] = binaryString.charCodeAt(i);
+                            }
+                            var blob = new Blob([bytes], { type: 'application/pdf' });
+                            var blobUrl = URL.createObjectURL(blob);
+
+                            // Embed PDF in an iframe
+                            content.innerHTML = `
+                                    <iframe id="pdfFrame" src="${blobUrl}" style="width:100%; height:400px; border:none; border: 7px solid #ddd;" frameborder="0"></iframe>`;
+
+
+                            document.getElementById('zoomControls').style.display = 'none';
+
+                        } else if (type === 'image') {
+                            content.innerHTML = `
+                                  <div id="imageWrapper" style="width:700px; height:400px; overflow:auto; background-color:white; border: 7px solid #ddd;">
+                                      <img id="modalImage" src="${dataUrl}" style="width:600px; padding-left:120px; padding-top:35px; transform: scale(1);" />
+                                  </div>`;
+
+                            // Show zoom controls for images
+                            document.getElementById('zoomControls').style.display = 'block';
+
+                            // Add zoom functionality for image
+                            let scale = 1;
+                            const zoomStep = 0.1;
+                            const modalImage = document.getElementById('modalImage');
+
+                            document.getElementById('zoomIn').addEventListener('click', () => {
+                                scale += zoomStep;
+                                modalImage.style.transform = `scale(${scale})`;
+                            });
+
+                            document.getElementById('zoomOut').addEventListener('click', () => {
+                                if (scale > zoomStep) {
+                                    scale -= zoomStep;
+                                    modalImage.style.transform = `scale(${scale})`;
+                                }
+                            });
+                            let rotationAngle = 0;
+
+                            document.getElementById('rotateImage').addEventListener('click', function () {
+                                // alert("rotate");
+                                rotationAngle += 90; // Rotate by 90 degrees each time the button is clicked
+                                document.getElementById('modalImage').style.transform = 'rotate(' + rotationAngle + 'deg)';
+                            });
+                        }
+
+                        modal.style.display = 'block';
+                    }
+
+
+
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var mediaModalContent = document.getElementById('mediaModalContent');
+
+                        // Check if the element exists
+                        if (mediaModalContent) {
+                            // Apply dragging functionality to the media modal content
+                            mediaModalContent.addEventListener('mousedown', function (event) {
+                                // alert("alert");  // This should trigger now
+                                makeDraggable(document.getElementById('mediaModal'));
+                            });
+                        } else {
+                            console.error('Element #mediaModalContent not found');
+                        }
+                    });
+
+                    function makeDraggable(element) {
+                        var isDragging = false;
+                        var offsetX, offsetY;
+
+                        element.onmousedown = function (event) {
+                            isDragging = true;
+                            offsetX = event.clientX - element.getBoundingClientRect().left;
+                            offsetY = event.clientY - element.getBoundingClientRect().top;
+
+                            // Disable text selection while dragging
+                            document.body.style.userSelect = 'none';
+
+                            document.onmousemove = function (event) {
+                                if (isDragging) {
+                                    var modal = document.getElementById('mediaModal');
+                                    modal.style.left = (event.clientX - offsetX) + 'px';
+                                    modal.style.top = (event.clientY - offsetY) + 'px';
+                                }
+                            };
+
+                            document.onmouseup = function () {
+                                isDragging = false;
+                                document.onmousemove = null;
+                                // Re-enable text selection after dragging
+                                document.body.style.userSelect = 'auto';
+                            };
+                        };
+                    }
+
+
+
+                    // Apply dragging functionality to the header
+                    document.getElementById('pdfViewer').addEventListener('mousedown', function (event) {
+                        makeDraggable(document.getElementById('mediaModal'));
+                    });
+
+
+                    window.onclick = function (event) {
+                        //  alert("mediaModal click");
+                        var modal = document.getElementById("mediaModal");
+                        if (event.target == modal) {
+                            closeModal();
+                        }
+                    }
+
+                    function closeModal() {
+                        // alert("close");
+                        var modal = document.getElementById("mediaModal");
+                        modal.style.display = "none";
+                    }
+                    function showReject(action) {
+                       // alert("reject");
+                        Swal.fire({
+                            title: "Reason for " + action + ":",
+                            input: "text",
+                            showCancelButton: false,
+                            confirmButtonText: "OK",
+                            //cancelButtonText: "Cancel",
+                            preConfirm: (rejectReason) => {
+                                if (!rejectReason || rejectReason.trim() === "") {
+                                    Swal.showValidationMessage("Please enter a valid reason.");
+                                    return false; // prevent closing the dialog
+                                } else {
+                                    // Perform the RejectCustomer action when the user clicks "OK"
+                                    $.ajax({
+                                        url: '/BOND_Approve_Settlment/return_click',
+                                        type: 'POST',
+                                        data: { rejectReason: rejectReason },
+                                        success: function (data) {
+                                            // Handle success response from the server if needed
+                                            Swal.fire(
+                                                "Returned to B&D Department Successfully ",
+                                                "Reason for " + action + ": " + rejectReason,
+                                                "success"
+                                            ).then(() => {
+                                                // Redirect to the approval list after showing the success message
+                                                window.location.reload();
+                                            });
+                                        },
+                                        error: function (xhr, textStatus, errorThrown) {
+                                            // Handle error response from the server if needed
+                                            Swal.fire(
+                                                "Error",
+                                                "Failed to submit reason. Please try again.",
+                                                "error"
+                                            );
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+
+
+
+                function Bind_category() {
+                    $.ajax({
+                        url: '/BOND_Approve_Settlment/GetCategories',
+                        type: 'GET',
+                        success: function (data) {
+                           // console.log(data); // Debug response
+                            //$('#HO_bank_dropdown').empty();
+                          //  $('#HO_bank_dropdown').append('<option value="" disabled selected>Select a bank</option>');
+                            $.each(data, function (index, item) {
+                                $('#HO_bank_dropdown').append($('<option>', {
+                                    value: item.Value,
+                                    text: item.Text
+                                }));
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error fetching categories: ' + xhr.responseText);
+                        }
+                    });
+                }
+
+                function loadBankTable() {
+                  //  alert("loadBankTable");
+                    $.ajax({
+                        url: '/BOND_Approve_Settlment/bank_table', // Replace with your actual controller name
+                        type: 'GET', // Use 'GET' because the method doesn't expect any data in the request body
+                        dataType: 'json', // Expect JSON response
+                        success: function (response) {
+                            if (response.success) {
+                                // Destructure the headings and rows from the response
+                                const { headings, rows } = response.table4Data;
+
+                                // Add an extra heading for the button column
+                                headings.push("Action");
+
+                                // Build the table HTML dynamically
+                                let tableHtml = '<table border="1" style="border-collapse: collapse; width: 100%;">';
+                                tableHtml += '<thead><tr>';
+                                headings.forEach(heading => {
+                                    tableHtml += `<th style="padding: 8px; text-align: left; border: 1px solid #ddd;">${heading}</th>`;
+                                });
+                                tableHtml += '</tr></thead><tbody>';
+
+                                // Check if rows are empty
+                                if (rows.length === 0) {
+                                    tableHtml += `
+                        <tr>
+                            <td colspan="${headings.length}" style="padding: 8px; text-align: center; border: 1px solid #ddd;">
+                                No data available
+                            </td>
+                        </tr>`;
+                                } else {
+                                    rows.forEach((row, rowIndex) => {
+                                        localStorage.setItem("bankAccNo", row[1]);
+                                        localStorage.setItem("ifsc", row[2]);
+                                        localStorage.setItem("payeeName", row[0]);
+                                        localStorage.setItem("bankName", row[3]);
+
+                                        tableHtml += '<tr>';
+                                        row.forEach(cell => {
+                                            tableHtml += `<td style="padding: 8px; text-align: left; border: 1px solid #ddd;">${cell}</td>`;
+                                        });
+
+                                        // Add a button in the extra column
+                                        tableHtml += `
+                            <td style="padding: 8px; text-align: center; border: 1px solid #ddd;">
+                                <button onclick="handleButtonClick();" class="mb-2 mr-2 btn-icon btn-square btn btn-warning">
+                                    <i class="pe-7s-photo btn-icon-wrapper"></i> Bank Attach
+                                </button>
+                            </td>`;
+                                        tableHtml += '</tr>';
+                                    });
+                                }
+                                tableHtml += '</tbody></table>';
+
+                                // Append the generated table to the container div
+                                document.getElementById('tableContainer').innerHTML = tableHtml;
+                            } else {
+                                alert('Failed to retrieve data');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Error:', error);
+                            alert('An error occurred while loading the table');
+                        }
+                    });
+                }
+
+                function handleButtonClick() {
+                  //  alert(`Button clicked for row `);
+                    $.ajax({
+                        url: '/BOND_Approve_Settlment/viewBankAttach',
+                        type: 'POST',
+
+                        success: function (response) {
+                            if (response.sucess === false) {
+                                // If the server indicates failure, alert the failure message
+                                alert(response.message);
+                            } else {
+                                // If successful, alert the success message and data (e.g., image URL)
+                                // alert('Success! Image URL: ' + response.data);
+                                var getImageValue = response.data;
+                                //alert(getImageValue);
+
+                                if (getImageValue != null) {
+                                    if (getImageValue.startsWith("data:image")) {
+                                        //alert("image");
+                                        displayPhoto(getImageValue, 'image');
+                                    } else if (getImageValue.startsWith("data:application/pdf")) {
+                                        //alert("pdf");
+                                        displayPhoto(getImageValue, 'pdf');
+                                    } else {
+                                        alert("Unknown file type");
+                                    }
+                                } else {
+                                    alert("No image URL received");
+                                }
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('AJAX Error:', error);
+                            // You can also alert the user of an AJAX failure
+                            alert('AJAX call failed: ' + error);
+                        }
+                    });
+                }
+
+function fillDropdownlist() {
+                    
+    $.ajax({
+        url: "@Url.Action("FillDropdowns", "BOND_Approve_Settlment")",
+        type: 'GET',
+       
+        success: function (response) {
+            if (response.success) {
+                //alert(response.success);
+                // Fill Payment Type
+                var TypeDropdown = $('#payment_type');
+                $.each(response.data.TypeOptions, function (index, option) {
+                    TypeDropdown.append($('<option>', {
+                        value: option.Id,
+                        text: option.Name
+                    }));
+                });
+
+                // Fill Payment Mode
+                var ModeDropdown = $('#payment_mode');
+                $.each(response.data.ModeOptions, function (index, option) {
+                    ModeDropdown.append($('<option>', {
+                        value: option.Id,
+                        text: option.Name
+                    }));
+                });
+
+
+            } else {
+                alert(response.message);
+            }
+        },
+        error: function () {
+            alert('Error retrieving dropdown data.');
+        }
+    });
+
+}
+
+            </script>
+        </head>
+        <body>
+            <div id="mediaModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; padding-top: 50px; background-color: rgba(0,0,0,0); z-index: 1000;">
+                <div id="mediaModalContent" style="position: relative; cursor: move; margin: auto; padding: 40px; width: 60%; height: 90%; ">
+                    <div id="pdfViewer" style="width: 100%; cursor: move; height: calc(100% - 40px);"></div>
+
+                    @*Zoom Controls*@
+                    <div id="zoomControls" style="text-align:center;">
+
+                        <button id="zoomIn" style="margin-right: 10px; background:transparent; border:none; font-size:24px; cursor:pointer;">
+                            <i class="fas fa-search-plus"></i>
+                        </button>
+
+                        <!-- Zoom Out button with icon -->
+                        <button id="zoomOut" style="background:transparent; border:none; font-size:24px; cursor:pointer;">
+                            <i class="fas fa-search-minus"></i>
+                        </button>
+                        <!-- Rotate button with icon -->
+                        <button id="rotateImage" style="background:transparent; border:none; font-size:24px; cursor:pointer;">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+
+
+                    <button onclick="closeModal()" style="position:absolute; top:10px; right:10px; background:transparent; border:none; font-size:24px; cursor:pointer;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    @*</div>*@
+                </div>
+            </div>
+            <div class="app-main__inner" style="margin-top: -20px;padding:0px;width:100%;">
+                <div style="height: 40px; display: flex; align-items: center; justify-content: center;">
+                    <div class="card-title">
+                        <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Settlement Approve</h6>
+                    </div>
+                </div>
+                <div class="main-card mb-3 card" id="example_div">
+                    <div class="card-body">
+                        <div id="example_wrapper" class="dataTables_wrapper dt-bootstrap4">
+
+                            <div class="row">
+                                <div class="col-sm-12">
+
+                                    <table style="width: 100%;" id="example" class="table table-hover table-striped table-bordered dataTable dtr-inline" role="grid" aria-describedby="example_info">
+                                        <thead>
+                                            <tr>
+                                                <th>Select</th> <!-- Selection column header -->
+                                                @if (ViewBag.CustomerBankDetails != null && ViewBag.CustomerBankDetails.Columns.Count > 0)
+                                                {
+                                                    foreach (System.Data.DataColumn column in ViewBag.CustomerBankDetails.Columns)
+                                                    {
+                                                        <th>@column.ColumnName</th>
+                                                    }
+                                                }
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.CustomerBankDetails != null && ViewBag.CustomerBankDetails.Rows.Count > 0)
+                                            {
+                                                foreach (System.Data.DataRow row in ViewBag.CustomerBankDetails.Rows)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <input type="checkbox" id="loadBankTable" name="selectedRow" class="select-checkbox" value="@row[0]" /> <!-- Checkbox for selecting the row -->
+                                                        </td>
+                                                        @foreach (var item in row.ItemArray)
+                                                        {
+                                                            <td>@item</td>
+                                                        }
+                                                    </tr>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <tr>
+                                                    <td colspan="6">No data available</td> <!-- Updated colspan to account for the selection column -->
+                                                </tr>
+                                            }
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="overflow-x:auto; max-height: 400px;" id="selectedRowContainer">
+
+                    <table id="selectedRowTable" class="table table-hover table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <!-- Dynamically fill the column headers -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <!-- Dynamically fill the row data -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+
+            <div class="card-body" id="textBpx_details_div" style="display:none;width:100%;">
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">
+                                            Settlement Type
+                                        </div>
+                                        <div id="settl_type" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Maturity Amount</div>
+                                        <div id="maturity_amount" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading"></div>
+                                        <div style="color:darkgreen;" id="" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">&nbsp;</div>
+                                        <div id="bala_Aemount" class="widget-subheading1">
+                                            <button onclick="viewCirtificate()" class="mb-2 mr-2 btn-icon btn-square btn btn-warning"><i class="pe-7s-photo btn-icon-wrapper"> </i>View Certificate</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">
+                                            Customer ID
+                                        </div>
+                                        <div id="cus_id" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Customer Name</div>
+                                        <div id="cus_name" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Issue No</div>
+                                        <div id="issueNo" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Certificate No</div>
+                                        <div id="cirtificateNo" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Interest Rate:</div>
+                                        <div id="int_rate" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Interest Type</div>
+                                        <div id="int_type" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">
+                                            Allotment
+                                            Date
+                                        </div>
+                                        <div id="AllotmentDt" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">
+                                            Maturity
+                                            Date
+                                        </div>
+                                        <div id="MaturityDt" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+                @*------------------------------------Applicant Details   1st row-------------------------------------------*@
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Period</div>
+                                        <div id="period" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading"> Amount</div>
+                                        <div id="amount" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">	Total Interest</div>
+                                        <div id="total_int" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Total Earned   Interest</div>
+                                        <div id="eranint" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*------------------------------------Applicant Details   2st row-------------------------------------------*@
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Total TDS</div>
+                                        <div id="tot_tds" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading"> 	Total Interest Paid</div>
+                                        <div id="payamt" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">
+                                            Total Payable
+                                            Amount
+                                        </div>
+                                        <div id="balpay" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">	Short recovery</div>
+                                        <div id="short_recovery" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*------------------------------------Applicant Details   3rd row-------------------------------------------*@
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">TDS Payable</div>
+                                        <div id="lasttds" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">15 track_id</div>
+                                        <div id="pantrack" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">
+                                            Submited
+                                        </div>
+                                        <div id="panorform60_status" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading" id="type_form"></div>
+                                        <div id="idno" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+                </div>
+
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Total Settled Amount</div>
+                                        <div id="settpay" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Balance Amount</div>
+                                        <div id="bala_Amount" class="widget-subheading1">
+                                            <input type="text" id="balanceInput" class="form-control" placeholder="" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Final Settled Amount</div>
+                                        <div id="final_sett_Amount" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">HO Bank</div>
+                                        <div id="HO_bank" class="widget-subheading1">
+                                            <select style="width:200px;" id="HO_bank_dropdown" class="form-control">
+                                                @*<option value="" disabled selected>Select a bank</option>*@
+                                            </select>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                @* ------------idfc details------------------ *@
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Payment Type</div>
+                                        <div id="type" class="widget-subheading1">
+                                            <select style="width:200px;" id="payment_type" class="form-control">
+                                                @*<option value="" disabled selected>Select a bank</option>*@
+                                            </select>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Payment Mode</div>
+                                        <div id="mode" class="widget-subheading1">
+                                            <select style="width:200px;" id="payment_mode" class="form-control">
+                                                @*<option value="" disabled selected>Select a bank</option>*@
+                                            </select>
+
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @* ----------Customer bank details---------------- *@
+                <div style="overflow-x:auto; max-height: 400px;" id="tableContainerContainer">
+
+                    <table id="tableContainer" class="table table-hover table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <!-- Dynamically fill the column headers -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <!-- Dynamically fill the row data -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-body" id="buttonDiv" style="display:none;">
+
+                    <div class="text-center">
+
+                        <button id="requestButton" style="width: 100px;font-size:18px;" class="ladda-button mb-2 mr-2 btn-square btn btn-success" data-style="expand-up">
+                            <span class="ladda-label">Approve</span>
+
+                            <span class="ladda-spinner"></span><div class="ladda-progress" style="width: 0px;"></div>
+                        </button>
+                        <button onclick="showReject('Reject')" class="mb-2 mr-2 btn-square btn btn-danger" style="width: 100px; font-size: 18px;">Return</button>
+
+                        <button onclick="reloadPage()" style="width: 100px; font-size: 18px;" class="ladda-button mb-2 mr-2 btn-square btn btn-secondary" data-style="expand-right">
+                            <span class="ladda-label">Cancel</span>
+
+                            <span class="ladda-spinner"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </body>
+    </html>
+        }
+        else
+        {
+        <h3>No Document Available</h3>
+        }
+
+    }
+
+

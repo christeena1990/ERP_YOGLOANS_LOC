@@ -1,0 +1,4591 @@
+﻿
+
+@model ERP_YOGLOANS_LOCAL.Models.modify_model
+
+@{
+    ViewBag.Title = "customer_modification";
+}
+
+@using System.Data
+
+
+@using System.Web.Mvc
+
+
+
+@{
+    var categoryList = ViewData["CategoryList"] as DataTable;
+    var categories = categoryList.AsEnumerable().Select(row => new
+    {
+        category_id = row["category_id"],
+        category_name = row["category_name"]
+    });
+
+
+
+
+
+    var genderList = ViewData["genderList"] as DataTable;
+    var genders = genderList.AsEnumerable().Select(row => new
+    {
+        gender_val = row["gender_val"],
+        gender = row["gender"]
+    });
+
+
+
+    var m_statusList = ViewData["m_statusList"] as DataTable;
+    var statuses = m_statusList.AsEnumerable().Select(row => new
+    {
+        mstatus_val = row["mstatus_val"],
+        m_status = row["m_status"]
+    });
+
+
+    var kyc_typeList = ViewData["kyc_typeList"] as DataTable;
+    var kyctypes = kyc_typeList.AsEnumerable().Select(row => new
+    {
+        kyc_type = row["kyc_type"],
+        kyc = row["kyc"]
+    });
+
+
+
+    var EduList = ViewData["EducationList"] as DataTable;
+    var edu = EduList.AsEnumerable().Select(row => new
+    {
+        edu_id = row["Sub_id"],
+        edu_name = row["General_name"]
+    });
+
+    var occuList = ViewData["OccupationList"] as DataTable;
+    var occu = occuList.AsEnumerable().Select(row => new
+    {
+        occu_id = row["Sub_id"],
+        occu_name = row["General_name"]
+    });
+
+}
+
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-bfn9pWo+Yz4L0S/5PDiMlCbzLXdgBbKdQ5Pd/WcF1BfP0k2GG+Tf3Z9y5qgkW5YB" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+    <style>
+
+        /*--------------------Approve msg box style----------------*/
+
+
+        /* Add your custom styles */
+        .custom-approve-button .swal2-confirm, .custom-approve-button .swal2-deny {
+            background-color: #3085d6;
+            color: #fff;
+            border: none !important; /* Remove the border */
+            box-shadow: none !important; /* Remove the box shadow */
+            outline: none; /* Remove the outline on click */
+            /* Add any other styles you need for both buttons */
+        }
+
+            .custom-approve-button .swal2-deny::after {
+                content: none; /* Remove the default ::after pseudo-element */
+            }
+
+        /* ----------------------------------------------------------------------*/
+
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+        }
+
+        /* Modal Content (image) */
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+        }
+
+
+        /* Caption of Modal Image */
+        #caption {
+            margin: auto;
+            display: block;
+            width: 60%;
+            /*max-width: 700px;*/
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            /*height: 150px;*/
+            height: 100%;
+        }
+
+        /* The Close Button */
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: #bbb;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+
+        /* The Close Button on Photo */
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #fff;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+            .close:hover {
+                color: #ccc;
+            }
+    </style>
+    <style>
+        .custom-alert {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+            .custom-alert strong {
+                color: #721c24;
+            }
+
+            .custom-alert p {
+                margin: 5px 0;
+            }
+
+            .custom-alert .close-btn {
+                cursor: pointer;
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                font-size: 18px;
+                color: #721c24;
+            }
+    </style>
+
+
+</head>
+
+@*<body>*@
+<body @*onload="makeFieldsReadOnly()*@>
+
+    @*<div class="main-panel">
+        <div class="content">
+            <div class="page-inner">
+
+                <div class="col-md-12">
+
+                </div>
+                <div class="card" style="background-color:#fafafa">
+                    <br />*@
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Customer Details</h6>
+            </div>
+        </div>
+        <br />
+        @if (Model.rekyc_status == 1)
+        {
+            <div style="display: flex; align-items: center;">
+                <p style="color: darkblue; font-weight: 500; font-size: medium; margin: 0;">
+                    &nbsp;&nbsp;
+                    <label style="color: red; font-weight: 500; font-size:large;">Customer KYC update required. Please complete the <b>Re-KYC</b> process</label>
+                </p>
+                @*<button type="button" id="downloadButton" class="button_style" style="width: 185px; margin-left: 10px;background-color:green;">Download Documents</button>*@
+                &nbsp;&nbsp;   <button type="button" @*id="viewDocumentsBtn2"*@ class="btn btn-primary btn-custom" onclick="openInNewTab('@Url.Action("DownloadAllDocuments", "Customer_modification")')">View Documents</button>
+
+            </div>
+        }
+        else
+        {
+
+        }
+        <div class="card-body">
+
+            <button id="hidePencilsCheckbox" style="width:100px;" class="button_style" type="button">Edit</button>
+            <br />
+            <br />
+            @if (!string.IsNullOrWhiteSpace(Model.return_reason))
+            {
+                <p style="color: darkblue; font-weight: 500; font-size: medium">&nbsp;Return Reason:&nbsp;<label style="color: red; font-weight: 500;" font-size: medium">@Model.return_reason @*@Model.modi_status*@</label></p>
+            }
+            else
+            {
+
+            }
+            <div id="form-container">
+
+
+                @*first row starts here....*@
+
+                <div class="row">
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Customer ID</span>
+                            </div>
+
+
+                            <input type="text" class="form-control" placeholder="" id="customer_id" name="customer_id" aria-label="" aria-describedby="basic-addon1" autocomplete="off" Style="text-transform: uppercase" onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g, '')" onPaste="javascript: return false;"
+                                   onselectstart="return false" onmousedown="return false;"
+                                   value="@Session["CustomerID_M"]" @if (Session["CustomerID_M"] != null) { <text> readonly</text> }>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Customer Name</span>
+                            </div>
+
+
+                            @*<input type="text" class="form-control" id="Customer_name" name="Customer_name" placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                @if (Model != null) { <text> value="@Model.Customer_name" </text> } readonly>*@
+                            @*value="@Model.Customer_name" @if (Model != null) { <text> readonly</text> }>*@
+                            @*value="@Model.Customer_name">*@
+
+                            <textarea class="form-control" readonly id="customer_name" name="customer_name" placeholder="" aria-label="" aria-describedby="basic-addon1" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" maxlength="50" style="width: 100px; height: 38px; resize: none; overflow-y: auto;">
+                                    @if (Model != null)
+                                    { @Model.Customer_name }
+                            </textarea>
+
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" @*id="category_id"*@ class="input-group-text">Category<span style="color:red">*</span></span>
+                                </div>
+
+
+                                <select name="category_id" id="category_id" class="form-control" required readonly style="pointer-events: none">
+                                    <option>-----Select-----</option>
+
+
+                                    @foreach (var category in categories)
+                                    {
+
+                                        <option value="@category.category_name" @(Model != null && Model.category_id != null && category.category_name.ToString() == Model.category_id.ToString() ? "selected" : "")> @category.category_name</option>
+                                    }
+
+                                </select>
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+
+
+                @*second row starts here....*@
+
+
+                <div class="row" style="margin-top:-15px; margin-bottom:2px;">
+
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Customer Branch</span>
+                            </div>
+
+
+                            <input type="text" class="form-control" id="branch_name" name="branch_name" placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                   value="@Model.branch_name" @if (@Model.branch_name != null) { <text> readonly </text> }>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Cust. Create Date</span>
+                            </div>
+
+
+                            <input type="text" class="form-control" id="create_date" name="create_date" placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                   value="@Model.create_date" @if (@Model.create_date != null) { <text> readonly </text> }>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Customer Status</span>
+                            </div>
+
+
+                            <input type="text" class="form-control" id="status_id" name="status_id" placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                   @*@if (Model != null) { <text> value="@Model.Customer_name" </text> }readonly>*@
+                                   value="@Model.status_id" @if (@Model.status_id != null) { <text> readonly </text> }>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            @*////////////////////////////////////////////////////////////////////////////////////////////////////*@
+            @*kyc page*@
+            @*////////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+            @*third row starts here....*@
+
+
+            <input type="hidden" id="cust_slno" value="@(Session["cust_slno"] ?? "")" />
+
+
+
+
+            @*kyc page full code starts here*@
+
+            <style>
+
+
+                .button_style {
+                    background-color: #007FFF;
+                    height: 40px;
+                    width: 100px;
+                    border-radius: 8px;
+                    color: white;
+                    border-color: white;
+                    font-size: 15px;
+                }
+
+                .grid-container {
+                    display: grid;
+                    grid-template-columns: auto auto auto auto;
+                    grid-gap: 1px;
+                    background-color: #2196F3;
+                    padding: 5px;
+                    border: thin;
+                }
+
+                    .grid-container > div {
+                        background-color: rgba(255, 255, 255, 0.8);
+                        border: 1px thin;
+                        text-align: center;
+                        font-size: 10px;
+                    }
+            </style>
+
+
+            @*/////////////////////////////////////////////////////////////////////// Photo starts here  ///////////////////////////////////////////////////////////////////*@
+
+
+
+            <script>
+
+
+    $(document).ready(function () {
+        hidediv();
+
+        // Show/hide divs based on radio button click
+        $('input[type="radio"][name="photoRadio"]').on('click', function () {
+            var image_div = $('#photodiv_bro');
+            image_div.toggle(this.value === '2');
+
+            if (this.value === '1') {
+                webdata();
+            } else {
+                webbro();
+            }
+        });
+
+
+        // Webcam configuration and capture
+        Webcam.set({
+            width: 160,
+            height: 120,
+            image_format: 'jpeg',
+            jpeg_quality: 90
+        });
+
+        // Initialize Webcam in a hidden container
+        initializeWebcam();
+
+
+        $("#btn_camera_Capture").click(function () {
+            Webcam.snap(function (data_uri) {
+                $("#imgCapture1").attr("src", data_uri).show();
+                $("#imgCapture1")[0].src = data_uri;
+                $("#btn_camera_Upload").show().removeAttr("disabled");
+            });
+        });
+
+
+    });
+
+
+    function initializeWebcam() {
+        var webcamContainer = $('#webcamContainer');
+
+        if (webcamContainer.is(':visible')) {
+            Webcam.attach('#webcamPreview');
+        } else {
+            Webcam.reset();
+        }
+    }
+
+
+
+    function hidediv() {
+        $('#photodiv_bro').hide();
+    }
+
+
+
+    function webdata() {
+        $("#photodiv_bro").hide();
+        $("#webcamContainer").show();
+
+        $("#btn_camera_Capture").show();
+        $("#btn_camera_Upload").show();
+
+
+        Webcam.reset();
+        initializeWebcam();
+        $("#webcamPreview").show();  // Show the live camera
+
+    }
+
+    function webbro() {
+        $("#webcamContainer").hide();
+        $("#photodiv_bro").show();
+
+        // Disable the Upload button when switching to browse image option
+        $("#uploadButton").attr("disabled", "disabled");
+
+        $("#btn_camera_Capture").show();
+        $("#btn_camera_Upload").show();
+
+
+
+        $("#up_img").hide();
+    }
+
+
+
+@*web browser here script*@
+
+
+
+
+    $(function () {
+        Webcam.set({
+            width: 160,
+            height: 120,
+            image_format: 'jpeg',
+            jpeg_quality: 90
+        });
+        Webcam.attach('#webcam');
+
+
+
+        $("#btn_camera_Upload").click(function () {
+
+            var imageData = $("#imgCapture1").attr("src");
+            uploadImageData(imageData);
+            btn_camera_Upload.disabled = false;
+            $('#photodiv').show();
+            $("#webcamContainer").hide();
+
+        });
+
+
+
+
+    });
+
+    function uploadFile_add_modi() {
+        var fileInput = document.getElementById('fileInput');
+        var file = fileInput.files[0];
+        if (file) {
+            var formData = new FormData();
+            formData.append('file', file);
+
+            $.ajax({
+                url: '/Customer_modification/UploadImage_modification',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    // Display uploaded image
+                    $('#photodiv').show();
+                    //aler("55")
+                    alert(response.message);
+                },
+                error: function () {
+                    alert('Error uploading file.');
+                }
+            });
+        } else {
+            alert('Please select a file.');
+        }
+    }
+
+    /*webcam savecaptured here*/
+
+    function uploadImageData(imageData) {
+        $.ajax({
+            type: "POST",
+            url: "/Customer_modification/SaveCapturedImage_modification",
+            data: { imageData: imageData },
+            success: function (response) {
+                $("#photoDisplay").attr("src", imageData); // Display uploaded image
+
+                document.getElementById("photodiv").style.display = "block";
+                alert("Customer Photo uploaded successfully!");
+            },
+            error: function (error) {
+                console.error("Error occurred while uploading image!");
+            }
+        });
+    }
+            </script>
+            @*////////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+            @*third row starts here....*@
+
+            <br />
+            <div class="row" style="margin-top:-15px; margin-bottom:2px;">
+                <div class="col-md-6 col-lg-4">
+                    <p style="color: darkblue; font-weight: 500;font-size :medium;">
+                        Customer photo &nbsp; &nbsp;
+                        <i class="fas fa-pencil-alt" id="pencilIcon" name="pencilIcon" style="color: maroon; font-size: 20px; cursor: pointer;"></i>
+                    </p>
+                </div>
+            </div>
+
+            @*kyc page full code starts here*@
+
+
+            <div class="row">
+
+                <div class="col-md-6 col-lg-4" style="text-align: right;">
+
+                    <div class="input-group mb-3">
+                        <div id="div_gur" style="vertical-align:central; padding-top:10px; display:none; text-align: left;">
+
+                            <label class="form-radio-label2">
+                                <input class="form-radio-input" type="radio" id="radio_web" name="photoRadio" onclick="webdata()" value="1" disabled>
+                                <span style="font-size:15px;" class="form-radio-sign">Webcam </span>
+                            </label>
+                            <label class="form-radio-label2 ml-3">
+                                <input class="form-radio-input" type="radio" id="radio_bro" onclick="webbro()" name="photoRadio" value="2" disabled>
+                                <span style="font-size:15px;" class="form-radio-sign">Browse Image</span>
+                            </label>
+                        </div>
+                    </div>
+
+
+                    @*<div class="input-group mb-3">
+                            <div id="div_gur" style="vertical-align:central; padding-top:10px; display: inline-block; text-align: left;">
+
+                                <label class="form-radio-label2">
+                                    <input class="form-radio-input" type="radio" id="radio_web" name="photoRadio" onclick="webdata()" value="1" disabled>
+                                    <span style="font-size:15px;" class="form-radio-sign">Webcam </span>
+                                </label>
+                                <label class="form-radio-label2 ml-3">
+                                    <input class="form-radio-input" type="radio" id="radio_bro" onclick="webbro()" name="photoRadio" value="2" disabled>
+                                    <span style="font-size:15px;" class="form-radio-sign">Browse Image</span>
+                                </label>
+
+                            </div>
+                        </div>*@
+
+
+
+                    @*--------------------------PARTIAL VIEW FOR PHOTO -------------------------*@
+
+                    <div id="photodiv_bro" style="width:100%; text-align: left;">
+                        @Html.Partial("KYC_partial_modi")
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" style="text-align: right;" id="camera_div">
+
+                    <input style="font-size:15px;display:none" type="button" id="btn_camera_Capture" value="Capture" />
+
+                    &nbsp;   &nbsp;   &nbsp;   &nbsp; &nbsp;   &nbsp;   &nbsp;   &nbsp;
+                    <input style="font-size:15px;display:none" type="button" id="btn_camera_Upload" value="Upload" />
+
+
+                    <div id="webcamContainer" style="display:none; text-align: left;">
+                        <table>
+
+                            <tr>
+                                <td>
+                                    <div id="webcamPreview"></div>
+                                </td>
+                                <td>
+                                    <div id="capturedImage"><img id="imgCapture1" /></div>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td><u style="font-size:15px;">Live Image</u></td>
+                                <td><u style="font-size:15px;">Captured Image</u></td>
+                            </tr>
+                            <tr>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 col-lg-4" style="width:100%; text-align: right;">
+                    <div id="photodiv" style="width:160px;height:150px;border:solid;border-color:black;">
+                        <!-- Display the image using the passed Base64 string -->
+
+                        <img id="photoDisplay" src="@((ViewBag.PhotoData != null) ? "data:image/png;base64," + ViewBag.PhotoData : "")" style="width: 100%; height: 100%;" />
+
+                    </div>
+                </div>
+
+
+
+            </div>
+
+
+
+        </div>
+        @*'''''''''''''''''''''''''''''''''''''''''''''''''*@
+
+
+        <form action="@Url.Action("document_upload_M", "Customer_modification")" method="post" id="kyc_form_M" enctype="multipart/form-data" @*onsubmit="return validateForm()"*@>
+
+            <div class="row">
+                <div class="col-md-6 col-lg-4">
+                    <p style="color: darkblue; font-weight: 500;font-size :medium;">
+                        KYC Details &nbsp;&nbsp; &nbsp;
+                        @*<i id="toggleButton_kycedit" class="fa-solid fa-pencil" style="color: maroon; font-size: 20px;"></i>*@
+                        <i id="toggleButton_kycedit" class="fas fa-pencil-alt" style="color: maroon; font-size: 20px;"></i>
+
+                    </p>
+                </div>
+            </div>
+
+
+
+            <div id="kyc_edit_div" display:none;>
+                <div class="row" style="width:100%;">
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">KYC Type<span style="color:red">*</span></span>
+
+                            </div>
+
+                            <div class="input-group-prepend" id="kyc_id_div">
+                                <select class="form-control" name="kyc_id" id="kyc_id" onchange="toggleAadharAttachment();">
+
+                                    @foreach (var guardian in kyctypes)
+
+                                    {
+
+                                        <option value="@guardian.kyc_type">@guardian.kyc</option>
+
+                                    }
+
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-4" id="idno_div">
+                        <div class="input-group mb-3">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width: 140px; background-color: #eff9ff;" class="input-group-text" id="basic-addon1">ID No<span style="color:red">*</span></span>
+                                </div>
+                                <input type="text" id="id_no" name="id_no" onchange="validateAddressProofNo()" class="form-control" placeholder="" @*onkeyup="this.value=this.value.replace(/[^0-9A-Z]/g, '')"*@ onkeyup="validate_id_no(this)" aria-label="" aria-describedby="basic-addon1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4" id="view_form16_div_m">
+                        <div class="input-group mb-3">
+                            <div class="input-group mb-3">
+
+                                <button type="button" onclick="form_60_check_modi()" ; class="button_style" style="width: 155px; display: none" id="form_60_btn">View Form60</button>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+
+
+                <div class="row" id="aadharAttachmentDiv" style="width:100%">
+
+
+
+                    <div class="col-md-6 col-lg-6">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width: 140px; background-color: #eff9ff;" class="input-group-text" id="basic-addon1">Unmasked<span style="color:red">*</span></span>
+
+                                &nbsp;  &nbsp; &nbsp;
+                                <div id="input_unmasked_attachment_div">
+                                    <input style="font-size:15px;" type="file" id="image1" name="image1" />
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="width:100%" id="attachment">
+                    <div class="col-md-6 col-lg-6">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+
+                                <span style="width: 140px; background-color: #eff9ff;" class="input-group-text" id="attach" data-kyc-type="default">Attachment<span style="color:red">*</span></span>
+                                <span style="width: 140px; background-color: #eff9ff; display:none;" class="input-group-text" id="masked" data-kyc-type="adhar">Masked<span style="color:red">*</span></span>
+                                &nbsp;  &nbsp;&nbsp;
+                                <div id="input_attachment_div">
+                                    <input type="file" style="font-size:15px;" id="image" name="image" accept="image/*, application/pdf" multiple />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="from_to_date" style="display:none;">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">From Date<span style="color:red">*</span></span>
+                            </div>
+
+                            <input type="date" name="from_date" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" id="from_date" required onchange="validateFrom_dt(this.value)"
+                                   value="@Model.from_date" />
+
+                            <span id="from-error" style="color: red; font-size:small;"></span>
+                            <script>
+                                function validateFrom_dt(enteredDate) {
+
+                                    var errorSpan = document.getElementById('from-error');
+                                    errorSpan.textContent = '';  // Clear previous error message
+
+                                    var fromDate = new Date(enteredDate);
+
+                                    var dateReportedCertified = new Date(); // Set to today's date
+
+                                    // var dobValidation = new Date(document.getElementById('dob').value);
+
+                                    var dobValidationValue = document.getElementById('dob').value;
+                                    var dobValidation = new Date(dobValidationValue);
+
+                                    if (!dobValidationValue || isNaN(dobValidation.getTime())) {
+                                        alert("Please Fill the date of birth.");
+                                        var textBox = document.getElementById('from_date');
+                                        textBox.value = '';
+                                        return false;
+
+                                    }
+                                    else {
+
+                                        var dateOfBirth = dobValidation;  // Already a Date object
+
+                                        var todayUTC = new Date(Date.now()).setUTCHours(0, 0, 0, 0);
+                                        var fromDateUTC = new Date(fromDate).setUTCHours(0, 0, 0, 0);
+                                        var dateOfBirthUTC = new Date(dateOfBirth).setUTCHours(0, 0, 0, 0);
+
+                                        // Comparison logic
+                                        if (fromDateUTC <= dateOfBirth) {
+
+                                            errorSpan.textContent = 'Must be later than the date of birth.';
+                                            var textBox = document.getElementById('from_date');
+                                            textBox.value = '';
+                                            return false;
+                                        }
+                                        if (fromDateUTC > todayUTC) {
+
+                                            errorSpan.textContent = 'Must be on or earlier than today\'s date.';
+                                            var textBox = document.getElementById('from_date');
+                                            textBox.value = '';
+                                            return false;
+                                        }
+
+                                        if (fromDateUTC === todayUTC) {
+
+                                            errorSpan.textContent = 'Must be earlier than today\'s date.';
+                                            var textBox = document.getElementById('from_date');
+                                            textBox.value = '';
+                                            return false;
+                                        }
+
+
+
+                                    }
+
+                                    // Reset custom validity
+                                    errorSpan.textContent = '';
+                                    return true;
+                                }
+                            </script>
+
+
+
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">To Date<span style="color:red">*</span></span>
+                            </div>
+
+                            <input type="date" name="to_date" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" id="to_date" required oninput="validatetodate(this.value)"
+                                   @Model.to_date />
+
+                            <span id="to-error" style="color: red; font-size:small;"></span>
+
+
+                            <script>
+                                function validatetodate(enteredDate) {
+                                    var errorSpan = document.getElementById('to-error');
+                                    errorSpan.textContent = '';  // Clear previous error message
+
+                                    var toDate = new Date(enteredDate);
+                                    var dateReportedCertified = new Date(); // Set to today's date
+
+                                    // Assuming dobValidation format is "DD-MM-YYYY"
+                                    var dobValidationValue = document.getElementById('dob').value;
+                                    var dobValidation = new Date(dobValidationValue);
+
+                                    var issuedate = new Date(document.getElementById('from_date').value);
+
+                                    // Convert dates to UTC to remove time zone discrepancies
+
+                                    if (!dobValidationValue || isNaN(dobValidation.getTime())) {
+                                        alert("Please Fill the date of birth.");
+                                        var textBox = document.getElementById('to_date');
+                                        textBox.value = '';
+                                        return false;
+
+                                    }
+                                    else {
+
+                                        var dateOfBirth = dobValidation;
+
+                                        var todayUTC = new Date(Date.now()).setUTCHours(0, 0, 0, 0);
+                                        var toDateUTC = toDate.setUTCHours(0, 0, 0, 0);
+                                        var issueDateUTC = issuedate.setUTCHours(0, 0, 0, 0);
+                                        var dateOfBirthUTC = new Date(dateOfBirth).setUTCHours(0, 0, 0, 0);
+
+
+                                        //alert("Today (UTC): "+ todayUTC);
+                                        //alert("To Date (UTC): " + toDateUTC);
+                                        //alert("Issue Date (UTC): " + issueDateUTC);
+                                        //alert("Date of Birth (UTC): " + dateOfBirthUTC);
+
+                                        // Comparison logic
+
+
+
+                                        if (toDateUTC <= dateOfBirthUTC) {
+                                            errorSpan.textContent = 'Must be later than the date of birth.';
+                                            var textBox = document.getElementById('to_date');
+                                            textBox.value = '';
+                                            return false;
+                                        }
+
+                                        if (toDateUTC < issueDateUTC) {
+                                            errorSpan.textContent = 'Must be later than the From date.';
+                                            var textBox = document.getElementById('to_date');
+                                            textBox.value = '';
+                                            return false;
+                                        }
+                                        if (toDateUTC <= todayUTC) {
+                                            errorSpan.textContent = 'Must be later than today\'s date.';
+                                            var textBox = document.getElementById('to_date');
+                                            textBox.value = '';
+                                            return false;
+                                        }
+                                    }
+                                    // Reset custom validity
+                                    errorSpan.textContent = '';
+                                    return true;
+                                }
+                            </script>
+
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-lg-4" style="display:none;" id="Pan_dtl_headinf_div">
+                        <p style="color: darkblue; font-weight: 500;font-size :medium;">
+                            Enter your details as in PAN card &nbsp;&nbsp; &nbsp;
+
+                        </p>
+                    </div>
+                </div>
+                <div class="row" id="pan_dtl_div" style="display:none;">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Customer Name<span style="color:red">*</span></span>
+                            </div>
+
+                            <input type="text" class="form-control" id="pan_name" name="pan_name" placeholder="" aria-label="" aria-describedby="basic-addon1" maxlength="50"
+                                   oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" }>
+
+
+
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Date of Birth<span style="color: red; font-size: 15px;">*</span></span>
+                            </div>
+
+
+                            <input type="date" name="pan_dob" class="form-control" placeholder="" aria-label=""
+                                   aria-describedby="basic-addon1" id="pan_dob" oninput="validateDOB_pan(this.value)" />
+
+
+                            <span id="dob-error_pan" style="color: red; font-size:small;"></span>
+
+                            <script>
+                                //function validateDOB(enteredDate) {
+                                //    var errorSpan = document.getElementById('dob-error');
+                                //    errorSpan.textContent = '';  // Clear previous error message
+
+                                //    if (enteredDate.trim() === '') {
+                                //        errorSpan.textContent = 'Please enter your Date of Birth.';
+                                //        document.getElementById('dob').setCustomValidity('Please enter your Date of Birth.');
+                                //        return false;
+                                //    }
+
+                                //    // Extract the year part from the entered date
+                                //    var enteredYear = enteredDate.split('-')[0];
+
+                                //    // Check if the entered year has exactly 4 digits
+                                //    if (enteredYear.length !== 4) {
+                                //        errorSpan.textContent = 'Please enter a valid 4-digit year.';
+                                //        document.getElementById('dob').setCustomValidity('Please enter a valid 4-digit year.');
+                                //        return false;
+                                //    }
+
+                                //    var currentDate = new Date();
+                                //    var selectedDate = new Date(enteredDate);
+
+                                //    // Calculate age
+                                //    var age = currentDate.getFullYear() - selectedDate.getFullYear();
+
+                                //    // Check if the age is between 18 and 90
+                                //    if (age < 18 || age > 90) {
+                                //        errorSpan.textContent = 'Age must be between 18 and 90 years.';
+                                //        document.getElementById('dob').setCustomValidity('Age must be between 18 and 90 years.');
+                                //        return false;
+                                //    }
+
+                                //    // Set dynamic min value based on current year - 91
+                                //    var minYear = currentDate.getFullYear() - 91;
+                                //    document.getElementById('dob').setAttribute('min', minYear + '-01-01');
+
+                                //    document.getElementById('dob').setCustomValidity('');  // Reset custom validity
+                                //}
+                                function validateDOB_pan(enteredDate) {
+                                    var errorSpan = document.getElementById('dob-error_pan');
+                                    errorSpan.textContent = '';  // Clear previous error message
+
+                                    if (enteredDate.trim() === '') {
+                                        errorSpan.textContent = 'Please enter your Date of Birth.';
+                                        document.getElementById('pan_dob').setCustomValidity('Please enter your Date of Birth.');
+                                        return false;
+                                    }
+
+                                    // Extract the year part from the entered date
+                                    var enteredYear = enteredDate.split('-')[0];
+
+                                    // Check if the entered year has exactly 4 digits
+                                    if (enteredYear.length !== 4) {
+                                        errorSpan.textContent = 'Please enter a valid 4-digit year.';
+                                        document.getElementById('pan_dob').setCustomValidity('Please enter a valid 4-digit year.');
+                                        return false;
+                                    }
+
+                                    var currentDate = new Date();
+                                    var selectedDate = new Date(enteredDate);
+
+                                    // Calculate age
+                                    var age = currentDate.getFullYear() - selectedDate.getFullYear();
+
+                                    // Check if the age is between 18 and 90
+                                    if (age < 18 || age > 90) {
+                                        errorSpan.textContent = 'Age must be between 18 and 90 years.';
+                                        document.getElementById('pan_dob').setCustomValidity('Age must be between 18 and 90 years.');
+                                        return false;
+                                    }
+
+                                    // Set dynamic min value based on current year - 91
+                                    var minYear = currentDate.getFullYear() - 91;
+                                    document.getElementById('pan_dob').setAttribute('min', minYear + '-01-01');
+
+                                    document.getElementById('pan_dob').setCustomValidity('');  // Reset custom validity
+                                    return true;  // Validation passed
+                                }
+
+
+                            </script>
+
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Father's Name</span>
+                            </div>
+
+                            <input type="text" class="form-control" id="pan_father_name" name="pan_father_name" placeholder="" aria-label="" aria-describedby="basic-addon1" maxlength="50"
+                                   oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()">
+
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+
+                            <div>
+
+                                @*<button class="button_style" type="submit" id="addKycButton" value="submit">Add KYC</button>*@
+                                <button class="button_style" type="submit" id="btn_add_kyc" value="submit">Add KYC</button>
+                                <input type="hidden" name="btn_edit_status" id="btn_edit_status" value="@(Session["Hidden_kyc_edit"] ?? "")" />
+
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <input type="hidden" name="hidden_kyc_status" id="hidden_kyc_status" value="@(Session["hid_kyc_edit_status"] ?? "")">
+
+        </form>
+
+        @*------------------------------- GRID VIEW-----------------------------------------*@
+
+
+
+
+
+
+        @*<div id="gridContainer">
+                @Html.Partial("grid_view_modifi", Model.kycgrids)
+            </div>*@
+
+        <div id="gridContainer">
+            @if (Model.kycgrids != null && Model.kycgrids.Any())
+            {
+                @Html.Partial("grid_view_modifi", Model.kycgrids)
+            }
+            else
+            {
+                @*@Html.Partial("grid_view_modifi")*@
+                <p>No data available</p>
+                <!-- Add more logic or message as needed -->
+            }
+        </div>
+
+
+        <br />
+
+
+
+
+        @*-------------------------------------customer mobil number DETAILS------------------------------*@
+
+        @*<div id="personal_div">*@
+        <form action="@Url.Action("declaration_modification_view", "Customer_modification")" method="post" id="print_declaration_form" enctype="multipart/form-data">
+
+            <div>
+                <div id="customer_name_div">
+                    <div class="row" style="margin-top:-15px; margin-bottom:2px;">
+                        <div class="col-md-6 col-lg-4">
+                            <p style="color: darkblue; font-weight: 500;font-size :medium;">
+                                Customer Name  &nbsp; &nbsp;
+                                <i class="fas fa-pencil-alt" id="name_pencil" style="color: maroon; font-size: 20px; cursor: pointer;"></i>
+                            </p>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row" style="margin-top:-15px; margin-bottom:2px;" id="name_div">
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">First Name </span>
+                                </div>
+
+
+
+                                <input type="text" class="form-control" id="first_name" name="first_name" placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                       @*oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()"*@
+                                       oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '').toUpperCase()"
+                                       value="@Model.first_name" @if (@Model.first_name != null) { <text> readonly </text> }>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text"> Second Name</span>
+                                </div>
+
+
+                                <input type="text" class="form-control" id="second_name" name="second_name" placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                       @*oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()"*@
+                                       oninput="this.value = this.value.replace(/[^a-zA-Z]/g, '').toUpperCase()"
+                                       value="@Model.second_name" @if (@Model.second_name != null) { <text> readonly </text> }>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Last Name </span>
+                                </div>
+
+
+                                <input type="text" class="form-control" id="last_name" name="last_name" placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                       oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" value="@Model.last_name" @if (@Model.last_name != null) { <text> readonly </text> }>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+                <br />
+
+                @*Fourth row starts here....*@
+                <div id="customer_contact_div">
+                    <div class="row" style="margin-top:-15px; margin-bottom:2px;">
+                        <div class="col-md-6 col-lg-4">
+                            <p style="color: darkblue; font-weight: 500;font-size :medium;">
+                                Contact Details  &nbsp; &nbsp;
+                                <i class="fas fa-pencil-alt" id="contact_pencil" style="color: maroon; font-size: 20px; cursor: pointer;"></i>
+                            </p>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row" style="margin-top:-15px; margin-bottom:2px;">
+
+
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Mobile No.</span>
+                                </div>
+
+
+
+                                @*<input type="text" class="form-control" id="mobile_no" name="mobile_no" placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                    value="@Model.mob_no" @if (Model.mob_no != null) { <text> readonly </text> }>*@
+                                <input type="text" class="form-control" id="mob_no" name="mob_no" placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                       minlength="10" maxlength="10" pattern="\d{10}" oninput="this.value = this.value.replace(/\D/g, '');"
+                                       @*oninvalid="this.setCustomValidity('Please enter a valid 10-digit mobile number')"*@
+                                       value="@Model.mob_no" @if (Model.mob_no != null) { <text> readonly </text> }>
+
+
+
+
+                            </div>
+
+                        </div>
+
+                        <input type="hidden" id="hidden_mobilestatus" name="hidden_mobilestatus" />
+
+                        <div class="row" id="div_otp" style="display:none;">
+
+                            @Html.Partial("_OtpVerificationPartial")
+
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+
+                <br />
+
+
+
+
+
+
+
+
+
+
+
+
+                @*-------------------------------------PERSONAL DETAILS------------------------------*@
+
+
+                <div class="row" style="margin-top:-15px; margin-bottom:2px;">
+                    <div class="col-md-6 col-lg-4">
+                        <p style="color: darkblue; font-weight: 500;font-size :medium;">
+                            Personal Details &nbsp;&nbsp; &nbsp;
+                            @*<i class="fa-solid fa-pencil" id="personal_pencile" style="color: maroon; font-size: 20px;"></i>*@
+                            <i id="personal_pencile" class="fas fa-pencil-alt" style="color: maroon; font-size: 20px;"></i>
+                        </p>
+                    </div>
+                </div>
+
+                <div id="personal_div">
+                    @*<form action="@Url.Action("declaration_modification_view", "Customer_modification")" method="post" id="print_declaration_form" enctype="multipart/form-data">*@
+                    @*third row starts here....*@
+                    <div class="row">
+
+
+
+
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Date of Birth<span style="color: red; font-size: 15px;">*</span></span>
+                                </div>
+
+
+                                @*<input type="date" name="dob" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" id="dob" required readonly
+                                    @if (Model != null && Model.dob !="") { <text> value="@Model.dob" </text> } />*@
+
+                                @*<input type="date" name="dob" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" id="dob" required readonly @if (Model != null && !string.IsNullOrEmpty(Model.dob)) { <text> value="@Convert.ToDateTime(Model.dob).ToString()" </text> } />*@
+
+                                <input type="date" name="dob" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" id="dob" required readonly oninput="validateDOB(this.value)" @if (Model != null && !string.IsNullOrEmpty(Model.dob)) { <text> value="@Model.dob" </text> } />
+
+
+                                <span id="dob-error" style="color: red; font-size: small;"></span>
+                                <span id="dob1-error" class="error" style="display: none; color: red;font-size:small;"></span>
+
+                                <script>
+                                    function validateDOB(enteredDate) {
+                                        var errorSpan = document.getElementById('dob-error');
+                                        errorSpan.textContent = '';  // Clear previous error message
+
+                                        if (enteredDate.trim() === '') {
+                                            errorSpan.textContent = 'Please enter your Date of Birth.';
+                                            document.getElementById('dob').setCustomValidity('Please enter your Date of Birth.');
+                                            return false;
+                                        }
+
+                                        // Extract the year part from the entered date
+                                        var enteredYear = enteredDate.split('-')[0];
+
+                                        // Check if the entered year has exactly 4 digits
+                                        if (enteredYear.length !== 4) {
+                                            errorSpan.textContent = 'Please enter a valid 4-digit year.';
+                                            document.getElementById('dob').setCustomValidity('Please enter a valid 4-digit year.');
+                                            return false;
+                                        }
+
+                                        var currentDate = new Date();
+                                        var selectedDate = new Date(enteredDate);
+
+                                        // Calculate age
+                                        var age = currentDate.getFullYear() - selectedDate.getFullYear();
+
+                                        // Check if the age is between 18 and 90
+                                        if (age < 18 || age > 90) {
+                                            errorSpan.textContent = 'Age must be between 18 and 90 years.';
+
+                                            document.getElementById('dob').setCustomValidity('Age must be between 18 and 90 years.');
+
+                                            return false;
+                                        }
+
+                                        // Set dynamic min value based on current year - 91
+                                        var minYear = currentDate.getFullYear() - 91;
+                                        document.getElementById('dob').setAttribute('min', minYear + '-01-01');
+
+                                        document.getElementById('dob').setCustomValidity('');  // Reset custom validity
+                                    }
+                                </script>
+
+
+
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Gender<span style="color:red">*</span></span>
+                                </div>
+
+
+
+                                <select class="form-control" name="gender" id="gender" required readonly style="pointer-events: none">
+                                    <option value="">----- Select -----</option>
+
+                                    @foreach (var gender in genders)
+                                    {
+                                        <option value="@gender.gender_val" @(Model != null && Model.gender != null && gender.gender_val.ToString() == Model.gender.ToString() ? "selected" : "")>@gender.gender</option>
+
+
+
+                                    }
+
+
+                                </select>
+                                <span id="gender-error" class="error" style="display: none;color:red;font-size:small;"></span>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:144px;height:40px;" class="input-group-text">Dist. From Branch<span style="color:red;font-size:15px;">*</span></span>
+                                </div>
+                                &nbsp;
+                                <div id="div_gur">
+                                    <label class="form-radio-label1">
+                                        <input class="form-radio-input" type="radio" name="dist_from_branch" id="dist_from_branch" required disabled value="1" @(Model != null && Model.dist_from_branch == 1 ? "checked" : "")>
+
+
+                                        <span style="font-size:12px;" class="form-radio-sign">Blw 5KM</span>
+                                    </label>
+                                    <label class="form-radio-label1">
+
+                                        <input class="form-radio-input" type="radio" name="dist_from_branch" id="dist_from_branch_2" required disabled value="2" @(Model != null && Model.dist_from_branch == 2 ? "checked" : "")>
+
+                                        <span style="font-size: 12px;" class="form-radio-sign">Abv 5KM</span>
+                                    </label>
+                                </div>
+                                <span id="dist_from_branch-error" class="error" style="display: none; color: red; font-size: small;"></span>
+                                <input type="hidden" id="hidden_distance_branch" value="@(Session["distance_from_bramch"] ?? "")" />
+
+
+
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+
+                    @*Third row starts here....*@
+
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Father's Name</span>
+                                </div>
+
+                                <input type="text" class="form-control" id="father_name" name="father_name" placeholder="" aria-label="" aria-describedby="basic-addon1" maxlength="50" readonly
+                                       oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()"
+                                       @if (Model != null) { <text> value="@Model.father_name" </text> }>
+
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Mother's Name</span>
+                                </div>
+                                <input type="text" class="form-control" id="mother_name" name="mother_name" placeholder="" aria-label="" aria-describedby="basic-addon1" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" maxlength="50" readonly
+                                       @if (Model != null) { <text> value="@Model.mother_name" </text> }>
+
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;height:40px;" class="input-group-text">Residence type</span>
+                                </div>
+                                &nbsp; &nbsp;
+
+
+
+                                <div id="div_gur">
+                                    <label class="form-radio-label2">
+                                        <input class="form-radio-input" type="radio" name="residence_type" id="residence_type_own" disabled value="Own" @(Model != null && Model.residence_type == "O" ? "checked" : "")>
+                                        <span style="font-size:small;" class="form-radio-sign">Own </span>
+                                    </label>
+                                    <label class="form-radio-label2 ml-3">
+                                        <input class="form-radio-input" type="radio" name="residence_type" id="residence_type_rent" disabled value="Rent" @(Model != null && Model.residence_type == "R" ? "checked" : "")>
+                                        <span style="font-size:small;" class="form-radio-sign">Rent</span>
+                                    </label>
+                                </div>
+                                @*<input type="hidden" id="hidden_residence_type" name="hidden_residence_type" value="">*@
+
+                                <input type="hidden" id="hidden_residence_type" value="@(Session["residence_type"] ?? "")" />
+
+
+
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+
+                    @*fourth row starts here....*@
+                    <div class="row">
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Marital Status<span style="color: red; font-size: 15px;">*</span></span>
+                                </div>
+
+                                @*@Html.DropDownListFor(model => model.marital_status, new SelectList(statuses, "mstatus_val", "m_status"), "--- Select ---", new { @class = "form-control" })*@
+
+                                <select class="form-control" name="marital_status" id="marital_status" required readonly onchange="toggleSpouseNameField()" style="pointer-events: none">
+                                    @*<option value="">----- Select -----</option>*@
+                                    Loop through statuses and generate options
+                                    @foreach (var status in statuses)
+                                    {
+                                        <option value="@status.mstatus_val" @(Model != null && Model.marital_status != null && status.mstatus_val.ToString() == Model.marital_status.ToString() ? "selected" : "")>@status.m_status</option>
+                                    }
+                                </select>
+                                <span id="marital-error" class="error" style="display: none; color: red; font-size: small;"></span>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Spouse Name</span>
+                                </div>
+
+                                @*<input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" id="txt_cust_father" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')" maxlength="50"value="@Model.father_name">*@
+                                <input type="text" class="form-control" id="spause_name" name="spause_name" placeholder="" aria-label="" aria-describedby="basic-addon1" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" maxlength="50" readonly
+                                       @if (Model != null) { <text> value="@Model.spause_name" </text> }>
+
+
+
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" class="input-group-text">Email</span>
+                                    </div>
+
+
+                                    @{
+                                        var onInputCode = "setCustomValidity('');";
+                                        var onInvalidCode = "setCustomValidity('Please enter a valid email address');";
+                                        var emailValue = (Model != null ? Model.email : null)?.ToString();
+                                    }
+
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="" aria-label="" aria-describedby="basic-addon1" readonly
+                                           oninput="@onInputCode"
+                                           oninvalid="@onInvalidCode"
+                                           value="@emailValue">
+
+
+
+
+
+
+
+
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+
+
+
+
+                    </div>
+                    @*fifth row starts here....*@
+
+                    <div class="row" style="margin-top:-15px; margin-bottom:2px;">
+
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Annual Income</span>
+                                </div>
+
+                                <input type="text" id="annual_income" name="annual_income" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" readonly
+                                       oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength="20"
+                                       @if (Model != null) { <text>
+                                       value="@String.Format("{0:F2}", Model.annual_income)" </text> }>
+                                @*value="@Model.annualincome.toFixed(2)"*@
+
+
+                            </div>
+
+                        </div>
+
+
+
+
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Residence Ph.No</span>
+                                </div>
+
+                                <!--<input type="text" class="form-control" id="residence_no" name="residence_no" placeholder="" aria-label="" aria-describedby="basic-addon1"--> @*required*@
+                                <!--readonly
+                                minlength="10" maxlength="10" pattern="\d{10}"
+                                oninput="this.value = this.value.replace(/\D/g, '');"
+                                oninvalid="this.setCustomValidity('Please enter a valid 10-digit mobile number')"
+                                @if (Model != null) { <text> value="@Model.residence_no" </text> }>-->
+
+                                <input type="text" class="form-control" id="residence_no" name="residence_no" placeholder="" aria-label="" aria-describedby="basic-addon1" readonly
+                                       minlength="10" maxlength="12"
+                                       pattern="\d{10,12}"
+                                       oninput="this.value = this.value.replace(/\D/g, '');"
+                                       onchange="res_validatePhoneNumber(this)"
+                                       @if (Model != null) { <text> value="@Model.office_no" </text> }>
+                                <span id="res_phone-error" style="display: none; color: red; font-size: small; "></span>
+
+                                <script>
+                                    function res_validatePhoneNumber(input) {
+                                        const value = input.value;
+                                        const errorSpan = document.getElementById('res_phone-error');
+
+                                        // Regex to match only digits and length between 10 to 12
+                                        const isValid = /^\d{10,12}$/.test(value);
+
+                                        if (!isValid) {
+                                            errorSpan.textContent = 'Please enter a valid phone number with 10 to 12 digits';
+                                            errorSpan.style.display = 'inline';
+                                            $('#residence_no').focus();
+
+                                        } else {
+                                            errorSpan.textContent = '';
+                                            errorSpan.style.display = 'none';
+                                        }
+                                    }
+                                </script>
+
+
+
+
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Office Ph.No</span>
+                                </div>
+
+
+
+
+                                @*<input type="text" class="form-control" id="office_no" name="office_no" placeholder="" aria-label="" aria-describedby="basic-addon1" minlength="10" maxlength="10" readonly
+                                    pattern="\d{10}"
+                                    oninput="this.setCustomValidity('');"
+                                    oninvalid="this.setCustomValidity('Please enter a valid 10-digit mobile number')"
+                                    @if (Model != null) { <text> value="@Model.office_no" </text> }>*@
+
+                                <input type="text" class="form-control" id="office_no" name="office_no" placeholder="" aria-label="" aria-describedby="basic-addon1" readonly
+                                       minlength="10" maxlength="12"
+                                       pattern="\d{10,12}"
+                                       oninput="this.value = this.value.replace(/\D/g, '');"
+                                       onchange="validatePhoneNumber(this)"
+                                       @if (Model != null) { <text> value="@Model.office_no" </text> }>
+                                <span id="phone-error" style="display: none; color: red; font-size: small; "></span>
+
+
+                                <script>
+                                    function validatePhoneNumber(input) {
+                                        const value = input.value;
+                                        const errorSpan = document.getElementById('phone-error');
+
+                                        // Regex to match only digits and length between 10 to 12
+                                        const isValid = /^\d{10,12}$/.test(value);
+
+                                        if (!isValid) {
+                                            errorSpan.textContent = 'Please enter a valid phone number with 10 to 12 digits';
+                                            errorSpan.style.display = 'inline';
+                                            $('#office_no').focus();
+                                        } else {
+                                            errorSpan.textContent = '';
+                                            errorSpan.style.display = 'none';
+                                        }
+                                    }
+                                </script>
+
+
+
+
+
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+
+                    @*sixth row starts here....*@
+
+                    <div class="row">
+
+
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Education<span style="color: red; font-size: 15px;">*</span></span>
+                                </div>
+
+                                @*@Html.DropDownListFor(model => model.marital_status, new SelectList(statuses, "mstatus_val", "m_status"), "--- Select ---", new { @class = "form-control" })*@
+
+                                <select name="education" id="education" class="form-control" required readonly style="pointer-events: none">
+                                    <option value="">----- Select -----</option>
+
+                                    @foreach (var education in edu)
+                                    {
+                                        <option value="@education.edu_id" @(Model != null && Model.education != null && education.edu_id.ToString() == Model.education.ToString() ? "selected" : "")> @education.edu_name</option>
+
+                                    }
+                                </select>
+                                <span id="education-error" class="error" style="display: none; color: red; font-size: small; "></span>
+
+
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text"> Occupation<span style="color: red; font-size: 15px;">*</span></span>
+                                </div>
+
+                                <select name="occupation" id="occupation" class="form-control" required readonly style="pointer-events: none">
+                                    <option value="">----- Select -----</option>
+
+                                    @foreach (var occupation in occu)
+                                    {
+                                        <option value="@occupation.occu_id" @(Model != null && Model.occupation != null && occupation.occu_id.ToString() == Model.occupation.ToString() ? "selected" : "")> @occupation.occu_name</option>
+
+                                    }
+                                </select>
+                                <span id="occupation-error" class="error" style="display: none; color: red; font-size: small; "></span>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <br />
+
+                    @*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*@
+                    @*seventh row starts here....*@
+
+                    <div id="communi_address">
+                        <div class="row" style="margin-top:-15px; margin-bottom:2px;">
+                            <div class="col-md-6 col-lg-4">
+                                <p style="color: darkblue; font-weight: 500;font-size :medium;">
+                                    Communication Address &nbsp;&nbsp; &nbsp;
+                                    @*<i class="fa-solid fa-pencil" id="communication_pencile" style="color: maroon; font-size: 20px;"></i>*@
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" class="input-group-text">House Name/No<span style="color: red; font-size: 15px;">*</span></span>
+                                    </div>
+                                    <input type="text" class="form-control" id="house_name" name="house_name" placeholder="" aria-label="" aria-describedby="basic-addon1" required readonly
+                                           oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ]/g, '').toUpperCase()"
+                                           @if (Model != null) { <text> value="@Model.house_name" </text> }>
+                                    <span id="house_name-error" class="error" style="display: none; color: red; font-size: small;"></span>
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-lg-4">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" class="input-group-text">Land Mark<span style="color: red; font-size: 15px;">*</span></span>
+                                    </div>
+
+                                    @*<textarea class="form-control" id="txt_cust_landmark" aria-label="" aria-describedby="basic-addon1" rows="1">@Model.landmark</textarea>*@
+                                    <input type="text" class="form-control" id="landmark" name="landmark" placeholder="" aria-label="" aria-describedby="basic-addon1" required readonly
+                                           oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ]/g, '').toUpperCase()"
+                                           @if (Model != null) { <text> value="@Model.landmark" </text> }>
+                                    <span id="landmark-error" class="error" style="display: none; color: red; font-size: small;"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-lg-4">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" class="input-group-text">City/Place<span style="color: red; font-size: 15px;">*</span></span>
+                                    </div>
+
+
+                                    <input type="text" class="form-control" id="City" name="City" placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                           @*oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" maxlength="50"*@
+                                           oninput="this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '').toUpperCase()" maxlength="50"
+                                           required readonly
+                                           @if (Model != null) { <text> value="@Model.City" </text> }>
+                                    <span id="City-error" class="error" style="display: none; color: red; font-size: small;"></span>
+                                </div>
+                            </div>
+                        </div>
+                        @*Eighth row starts here....*@
+
+                        <div class="row">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" class="input-group-text">Pincode<span style="color: red; font-size: 15px;">*</span></span>
+                                    </div>
+
+                                    <input type="text" class="form-control" id="txt_cust_pincode" placeholder="" aria-label="" aria-describedby="basic-addon1" oninput="if(/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')" maxlength="6" required readonly
+                                           @if (Model != null) { <text> value="@Model.Pincode" </text> }>
+                                    <span id="pincode-error" class="error" style="display: none; color: red; font-size: small;"></span>
+                                </div>
+                            </div>
+
+
+
+                            <div class="col-md-6 col-lg-4">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" class="input-group-text">Post Office<span style="color: red; font-size: 15px;">*</span></span>
+                                    </div>
+
+
+
+
+
+                                    <select id="PostOffice" class="form-control" name="PostOffice" required readonly style="pointer-events: none">
+                                        @if (Model != null && Model.Post_name != null)
+                                        {
+                                            <option value="0">----- Select -----</option>
+                                            <option value="@Model.PostOffice" selected>@Model.Post_name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="0" selected>----- Select -----</option>
+                                        }
+                                    </select>
+
+                                    <span id="Postname-error" class="error" style="display: none; color: red; font-size: small;"></span>
+
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-lg-4">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" class="input-group-text">District</span>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" id="district_name" required readonly
+                                           @if (Model != null) { <text> value="@Model.District" </text> } readonly>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        @*Ninenth row starts here....*@
+
+                        <div class="row">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" class="input-group-text">State</span>
+                                    </div>
+                                    @*<input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">*@
+                                    <input type="text" id="state_name" name="state_name" class="form-control"
+                                           @if (Model != null) { <text> value="@Model.State" </text> } readonly>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-6 col-lg-4">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" class="input-group-text">Years of Stay<span style="color: red; font-size: 15px;">*</span></span>
+                                    </div>
+
+
+
+                                    <input type="text" class="form-control" id="yearofstay" name="yearofstay" placeholder="" aria-label="" aria-describedby="basic-addon1" onkeyup="if(/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')" maxlength="2" required readonly
+                                           @if (Model != null) { <text> value="@Model.yearofstay" </text> }>
+
+                                    <span id="yearofstay-error" class="error" style="display: none; color: red; font-size: small; "></span>
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+                    @*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*@
+                    @*checkbox is here*@
+
+
+                    <div class="row">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <span class="form-check-sign" style="color: darkblue; font-weight: 500; font-size:medium;"> Is permanent address the same as communication address </span>
+
+                                <input style="margin:2px; width:17px;height:15px;" disabled type="checkbox" value="" name="c1" id="hideCheckbox" @(Model != null && string.IsNullOrEmpty(Model.p_house_name) ? "checked" : "")>
+                                &nbsp; &nbsp;&nbsp;&nbsp;
+                            </label>
+                        </div>
+                    </div>
+                    &nbsp; &nbsp; &nbsp; &nbsp;
+
+                    <div id="P_add_div">
+
+                        @Html.Partial("_modi_permenant_address_view")
+
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+
+
+
+                                    <button id="viewDeclarationButton" class="button_style" type="submit" value="submit" style="width: 190px; display:none;">Modification Completed</button>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*<input type="hidden" id="hidden_mobilestatus" name="hiddenFieldName" value="hiddenValue" />*@
+        </form>
+        <div class="row" id="printdeclaration_div">
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+
+
+
+                        <button id="viewDeclarationButton_new" class="button_style" @*type="submit"*@ @*value="submit"*@ style="width: 155px; display: none; background-color: #686D76;" onclick="openDeclarationInNewTab(event);">Print Declaration</button>
+
+                    </div>
+                </div>
+            </div>
+
+            <form action="@Url.Action("declaration_upload_M", "Customer_modification")" method="post" enctype="multipart/form-data">
+
+
+
+
+                <div class="col-md-6 col-lg-4" id="fileInputContainer" style="display:none">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <input type="file" id="image3" name="image3" style="font-size: 15px;">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4" id="uploadButtonContainer" style="display:none">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <button id="save1" @*style="width:155px;"*@ class="button_style" type="submit" value="submit">Upload</button>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+        <input type="hidden" id="hiddenField" name="hiddenFieldName" value="hiddenValue" />
+        <div class="row">
+            <div class="col-md-6 col-lg-4" id="view_form16_div_m_new" style="display:none">
+                <div class="input-group mb-3">
+                    <div class="input-group mb-3">
+
+                        <button type="button" onclick="form_60_check_modi()" ; class="button_style" style="width: 155px; background-color: #10439F;" id="form_60_btn_new">View Form60</button>
+
+                    </div>
+                </div>
+            </div>
+
+            <form action="@Url.Action("form60_upload_M", "Customer_modification")" method="post" enctype="multipart/form-data">
+
+
+
+
+                <div class="col-md-6 col-lg-4" id="fileInputContainer_form60" style="display:none">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <input type="file" id="image5" name="image5" style="font-size: 15px;">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4" id="uploadButtonContainer_form60" style="display:none">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <button id="save2" @*style="width:155px;"*@ class="button_style" type="submit" value="submit">Upload</button>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+
+        </form>
+        @*submit button *@
+        <hr />
+
+
+        <div style="display: flex;">
+            <a href="@Url.Action("CustomerCreate", "CustomerCreate")">
+                <button style="width:100px; background-color:red;" class="button_style" type="button">Close</button>
+            </a>
+            &nbsp;
+
+            <button class="button_style" id="modiCancelledButton" style="width: 190px;display:none;background-color:darkcyan;">Modification Cancel</button>
+
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+            <div id="div_button" style="display:none;">
+                <form id="sendApprovalForm" action="@Url.Action("sent_modi_approval", "Customer_modification")" method="post">
+                    <button type="submit" class="button_style" style="width: 100px; background-color: green;">Submit</button>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+    </div>
+
+    <iv class="col-md-6 col-lg-4">
+    </iv>
+
+    </div>
+    </div>
+
+
+    </div>
+    </div>
+
+
+
+
+
+    <script>
+
+
+        $(document).ready(function () {
+            $('#modiCancelledButton').click(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "/Customer_modification/modi_cancelled_btnclick", // Update with your controller's name
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            window.location.href = "/CustomerCreate/CustomerCreate";
+                        } else {
+                            alert("Modification not cancelled.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("An error occurred: " + error);
+                    }
+                });
+            });
+        });
+
+
+
+        $(document).ready(function () {
+            toggleVisibility();
+
+            // Function to toggle visibility of permanent address section based on checkbox state
+            function toggleVisibility() {
+                var dataSection = $("#P_add_div");
+                var hideCheckbox = $("#hideCheckbox");
+
+
+                // Show or hide the data section based on checkbox state
+                if (hideCheckbox.prop("checked")) {
+                    dataSection.hide();
+                    $('#p_house_name').val('');
+                    $('#p_landmark').val('');
+                    $('#p_City').val('');
+                    $('#txt_cust_pincode_perm_new').val('');
+                    $("#p_PostOffice").empty();
+                    $('#p_District').val('');
+                    $('#p_State').val('');
+
+
+
+
+                } else {
+                    dataSection.show();
+                    $('#per_attach_Status').val('per_address present');
+
+
+
+                }
+
+                // Toggle the 'required' attribute on input elements based on checkbox state
+                var inputElements = dataSection.find('input, select');
+                inputElements.prop("required", !hideCheckbox.prop("checked"));
+
+            }
+
+            // Event listener for checkbox change
+            $('#hideCheckbox').change(function () {
+                toggleVisibility();
+            });
+
+        });
+    </script>
+
+
+
+
+
+    <script>
+                $(document).ready(function () {
+
+                    $("#txt_cust_pincode").on("focusout", function () {
+                var pincode = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("PincodeChanged", "Customer_modification")',
+                    type: 'POST',
+                    data: { pincode: pincode },
+                    dataType: 'json',
+                    success: function (result) {
+                        // Clear existing options for Post Office dropdown
+                        $("#PostOffice").empty();
+
+                        // Add new options for Post Office dropdown based on the result
+                        $.each(result.PostOffices, function (index, item) {
+                            $("#PostOffice").append($('<option>', {
+                                value: item.Value,
+                                text: item.Text
+                            }));
+                        });
+
+                        // Set the value for the District text input
+                        $("#district_name").val(result.Districts[0].Text); // Assuming you want the first district as an example
+                        $("#state_name").val(result.States[0].Text);
+
+
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log("Error:", jqXHR.responseText);
+                        console.log("Status:", textStatus);
+                        console.log("Error Thrown:", errorThrown);
+                        alert('Error occurred while fetching data. See console for details.');
+                    }
+                });
+            });
+
+                 });
+
+
+
+    </script>
+
+
+    @*--- when the continue clicks the dropdown must be selected and the other options are there ---*@
+
+
+    <script>
+    $(document).ready(function () {
+        // Function to fill the Post Office dropdown based on pincode
+        function fillDropdown(pincode, selectedValue) {
+            $.ajax({
+                url: '@Url.Action("PincodeChanged", "Customer_modification")',
+                type: 'POST',
+                data: { pincode: pincode },
+                dataType: 'json',
+                success: function (result) {
+                    // Clear existing options for Post Office dropdown
+                    $("#PostOffice").empty();
+
+                    // Add new options for Post Office dropdown based on the result
+                    $.each(result.PostOffices, function (index, item) {
+                        var option = $('<option>', {
+                            value: item.Value,
+                            text: item.Text
+                        });
+
+                        // Set selected based on the condition
+                        if (item.Value === selectedValue || (selectedValue === null && item.Value === $('#hiddenPostOffice').val())) {
+                            option.prop('selected', true);
+                        }
+
+                        $("#PostOffice").append(option);
+                    });
+
+                    // Set the value for the District and State text inputs
+                    $("#district_name").val(result.Districts[0]?.Text || ''); // Assuming you want the first district as an example
+                    $("#state_name").val(result.States[0]?.Text || '');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("Error:", jqXHR.responseText);
+                    console.error("Status:", textStatus);
+                    console.error("Error Thrown:", errorThrown);
+                //    alert('Error occurred while fetching data. See console for details.');
+                }
+            });
+        }
+
+        // Function to populate form values on page load
+        @*function populateFormValues(model) {
+            // Use the model.Pincode and model.PostOffice instead of the hardcoded values
+            var pincodeFromTable = model ? model.Pincode : null;
+            var selectedValueFromTable = model ? model.PostOffice : null;
+            //alert(selectedValueFromTable);
+            // Populate the dropdown based on the provided values
+            fillDropdown(pincodeFromTable, selectedValueFromTable);
+
+        }
+
+        // Trigger the populateFormValues function on page load
+        // Pass the model as an argument if it's available in the view
+        populateFormValues(@Html.Raw(Json.Encode(Model)));*@
+
+
+        // Check if the model.PostOffice is null and trigger the focusout event
+         (@Model?.PostOffice == null) {
+            $("#txt_cust_pincode").trigger("focusout");
+        }
+
+
+    });
+    </script>
+
+
+
+
+
+
+
+    @*////////////////////// kyc - script for hide and show needed data fields like buttons and document attachments  from the dropdown  /////////////////*@
+
+
+
+    <script>
+        $(document).ready(function () {
+            // Initial setup on page load
+            toggleAadharAttachment();
+
+            // Show/hide divs based on KYC type dropdown selection
+            $('#kyc_id').on('change', function () {
+
+                toggleAadharAttachment();
+
+
+                $('#id_no').val('');
+                //$('#from_date').val('');
+                var textBox = document.getElementById('from_date');
+                textBox.value = '';
+                var textBox = document.getElementById('to_date');
+                textBox.value = '';
+                //$('#to_date').val('');
+                // $('#image1').attr('src', '');
+
+
+            });
+
+            // Rest of your existing script
+            // ...
+
+            function toggleAadharAttachment() {
+                // alert("onchange");
+                var documentTypeDropdown = document.getElementById("kyc_id");
+                var aadharAttachmentDiv = document.getElementById("aadharAttachmentDiv");
+                var attachmentDiv = document.getElementById("attachment");
+
+                // Check if the selected value is 'aadhar'
+                if (documentTypeDropdown.value === "9") {
+                    // alert("aadhar");
+                    aadharAttachmentDiv.style.display = "block"; // Show Aadhar Attachment div
+                    //attachmentDiv.style.display = "none"; // Hide Attachment div
+                } else {
+                    aadharAttachmentDiv.style.display = "none"; // Hide Aadhar Attachment div
+                    attachmentDiv.style.display = "block"; // Show Attachment div
+                }
+            }
+        });
+    </script>
+
+
+
+
+
+    <script>
+        function validateAddressProofNo() {
+            // $('#id_no').val('');
+            var selectedValue = document.getElementById("kyc_id").value;
+            // $('#id_no').val('');
+            var addressProofNo = document.getElementById("id_no").value;
+            var regex;
+
+            if (!selectedValue) {
+                alert("Please select KYC type");
+                return;
+            }
+
+            switch (selectedValue) {
+                case "9":
+                    // regex = /^\d{12}$/; // Aadhar validation
+
+
+                    regex = /^(?!0000)[0-9]{4}[0-9]{4}[0-9]{4}$/;
+
+                    break;
+                case "1":
+                    regex = /^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/; // PAN card validation
+                    break;
+                case "2":
+
+
+                    //eg IDs :J6765454
+
+
+                    regex = /([a-zA-Z]{1})([0-9]{7})$/;
+
+                    break;
+                case "4":
+
+
+                    //eg IDs :TY1236547,ERT1452369,FG12365214587
+
+                    // regex = /^(?:[A-Z]{2}(?:[0-9]{8}|[0-9]{11})|[A-Z]{3}[0-9]{7})$/;
+                    regex = /^(?:[A-Z]{2}(?:[0-9]{8}|[0-9]{11,12})|[A-Z]{3}[0-9]{7})$/;
+
+                    break;
+                default:
+                    return;
+            }
+
+            // Perform validation
+            if (!regex.test(addressProofNo)) {
+                //var message = (selectedValue === "9") ? "Invalid Aadhar Card No! Please enter a valid number." :
+                //    "Invalid PAN Card No! Please enter a valid number.";
+                var message;
+                if (selectedValue === "9")
+                    message = "Invalid Aadhar Card No! Please enter a valid number.";
+
+                else if (selectedValue === "1")
+                    message = "Invalid PAN Card No! Please enter a valid number.";
+
+                else if (selectedValue === "2")
+                    message = "Invalid Passport ID! Please enter a valid number.";
+                else if (selectedValue === "4")
+                    message = "Invalid Voter's ID! Please enter a valid number.";
+
+                else
+
+                    return;
+
+                alert(message);
+                document.getElementById("id_no").value = '';
+                document.getElementById("id_no").focus();
+            }
+        }
+    </script>
+
+
+
+
+
+    @*/////////////////////////////////////////////////////neethu////////////////////////////////////////////////////////////*@
+
+
+
+    @*///////////////////////////////////////////// new script for the kyc pencil event feb 29 ////////////////////////////////////////////////////////////////*@
+    @*<script>
+            function callServerSideFunction() {
+                 alert("call_server");
+                fetch('/Customer_modification/kyc_edit_pencil_click', {
+                    method: 'POST',
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            alert("response.ok");
+                            // If the response is successful, reload the partial view
+                            reloadPartialView();
+                        } else {
+                            // If the response is not successful, log an error
+                            console.error('Server-side function failed:', response.statusText);
+                        }
+                    })
+                    .catch(error => {
+                        // Handle errors if any
+                        console.error('Error:', error);
+                    });
+            }
+
+
+
+
+            // Reload partial view
+            function reloadPartialView() {
+                alert("reloadpartial");
+                // Reload the partial view using AJAX
+                $.ajax({
+                    url: '/Customer_modification/kyc_edit_pencil_click', // URL to fetch the updated data
+                    type: 'POST', // Assuming you need to post data
+                    success: function (response) {
+                        alert("success");
+                        // Replace the content of gridContainer with the updated partial view content
+                        $('#gridContainer').html(response);
+                    },
+                    error: function () {
+                        console.error("An error occurred while reloading the partial view.");
+                    }
+                });
+            }
+
+        </script>*@
+
+    <script>
+
+
+
+
+        //function callServerSideFunction() {
+        //    // alert("kyc_pencile");
+        //    fetch('/Customer_modification/kyc_edit_pencil_click', {
+        //        method: 'POST',
+
+        //    })
+        //        .catch(error => {
+        //            // Handle errors if any
+        //            console.error('Error:', error);
+        //        });
+
+        //    var deleteIcons = document.querySelectorAll('.delete-icon');
+
+        //    // Loop through each delete icon element
+        //    deleteIcons.forEach(function (deleteIcon) {
+        //        // Remove the style attribute
+        //       // deleteIcon.removeAttribute('style');
+        //    });
+        //}
+
+
+
+
+        // Function to handle the click event for the pencil icon
+        function handlePencilIconClick() {
+
+            //var hiddenInput = document.querySelector('input[name="hidden_kyc_status"]');
+
+            //// Check if the hidden input field exists
+            //if (hiddenInput !== null) {
+            //    //hiddenInput.value = "1";
+            //}
+
+            //togglekyc_edit();
+
+            //callServerSideFunction();
+
+        }
+
+
+        //----------------------------------- kyc deails edit click ------------------------------------
+
+       $(document).ready(function () {
+        document.getElementById('toggleButton_kycedit').addEventListener('click', function () {
+           // alert("start_kyc_pencile");
+
+          // localStorage.setItem('toggleButton_kycedit', '1');
+
+            // handlePencilIconClick();
+
+           // $('#viewDeclarationButton').css('display', 'block');
+           // $('#kyc_edit_div').css('display', 'block');
+           // //reloadGrid();
+
+           //// $('.delete-icon').css('display', '');
+
+
+
+           // //var form60Button = document.getElementById('form_60_btn');
+
+            // kycEditDiv.style.display = 'none';
+            //$('.delete-icon').css('display', '');
+            if (confirm("Do you want to upload a new declaration form?")) {
+
+                $.ajax({
+                    url: '@Url.Action("ModifyDeclarationDelete", "Customer_modification")',
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            // Reload the page if deletion is successful
+                            //window.location.reload();
+
+                            // alert("ModifyDeclarationDelete_success");
+                           // alert("You need to upload new declaration form");
+                            reloadGrid_kyc();
+                            localStorage.setItem('toggleButton_kycedit', '1');
+                            // $('.delete-icon').css('display', 'none');
+                            $('.delete-icon').css('display', '');
+                            $('#viewDeclarationButton').css('display', 'block');
+                            $('#kyc_edit_div').css('display', 'block');
+                            // $('#form_60_btn').css('display', 'none');
+                            var viewForm16Div = document.getElementById("view_form16_div_m");
+                            viewForm16Div.style.display = "none";
+                            var viewForm16Div = document.getElementById("view_form16_div_m");
+                            viewForm16Div.style.display = "none";
+                            // kycEditDiv.style.display = 'none';
+                            // $('.view_form16_div_m').css('display', 'none');
+                        } else {
+                            console.error('Deletion failed:', response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX error:', error);
+                    }
+                });
+            }
+            else
+            {
+
+            }
+     });
+    });
+
+
+
+
+
+        $(document).ready(function () {
+            document.getElementById('pencilIcon').addEventListener('click', function () {
+              //  alert(" photo change clicked ");
+                if (confirm("Do you want to upload a new declaration form?")) {
+                localStorage.setItem('pencilIcon', '1');
+
+                $('#viewDeclarationButton').css('display', 'block');
+                $('#div_gur').css('display', 'block');
+                    $.ajax({
+                        url: '@Url.Action("ModifyphotoDeclarationDelete", "Customer_modification")',
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function (response) {
+                            if (response.success) {
+                                //alert("declaration deleted");
+                               // alert("You need to upload new declaration form");
+                                reloadGrid();
+                            } else {
+                                console.error('Deletion failed:', response.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('AJAX error:', error);
+                        }
+                    });
+
+                }
+                        else
+                {
+                    //alert("cancel");
+                    }
+            });
+
+        });
+
+
+
+
+
+
+
+
+
+        // Function to toggle kyc_edit_div visibility and remove readonly/disabled
+        //function togglekyc_edit() {
+        //    var kycEditDiv = document.getElementById('kyc_edit_div');
+        //    var elementsWithAttribute = kycEditDiv.querySelectorAll('[readonly], [disabled]');
+
+        //    // Toggle the display property for kyc_edit_div
+        //    kycEditDiv.style.display = (kycEditDiv.style.display === 'none' || kycEditDiv.style.display === '') ? 'block' : 'none';
+
+        //    // Iterate through elements with attribute and remove readonly/disabled
+        //    //elementsWithAttribute.forEach(element => {
+        //    //    element.removeAttribute('readonly');
+        //    //    element.removeAttribute('disabled');
+
+
+        //    //});
+
+
+
+        //    // Hide the View Form60 button
+        //    //var form60Button = document.getElementById('form_60_btn');
+        //    //form60Button.style.display = 'none';
+
+        //}
+
+
+    </script>
+
+
+
+
+
+
+
+
+    @*///////////////////////////////////////////// make fields read only//////////////////////////////////////////////////////////////////////////////*@
+
+
+
+    <script>
+        //function makeFieldsReadOnly() {
+        //    alert("readonly");
+        //    // Get all input elements with type "text", all select elements, and all checkboxes
+        //    var textboxes = document.querySelectorAll('input[type="text"]');
+        //    var selects = document.querySelectorAll('select');
+        //    var checkboxes = document.querySelectorAll('input[type="radio"]');
+        //    var emails = document.querySelectorAll('input[type="email"]');
+        //    var table = document.querySelector('table'); // Assuming only one table on the page
+
+        //    // Loop through each email input and set the readOnly attribute
+        //    emails.forEach(function (email) {
+        //        email.readOnly = true;
+        //    });
+        //    // Loop through each textbox and set the readOnly attribute
+        //    textboxes.forEach(function (textbox) {
+        //        textbox.readOnly = true;
+        //    });
+
+        //    // Loop through each select element and set the disabled attribute
+        //    selects.forEach(function (select) {
+        //        select.disabled = true;
+        //    });
+
+        //    // Loop through each checkbox and set the disabled attribute
+        //    checkboxes.forEach(function (checkbox) {
+        //        checkbox.disabled = true;
+        //    });
+
+        //    // Disable interaction with the entire table
+        //    if (table) {
+        //        table.style.pointerEvents = 'none';
+        //    }
+        //    var kyc_id = document.getElementById('kyc_id');
+        //    var id_no_id = document.getElementById('id_no');
+        //    kyc_id.disabled = false;
+        //    id_no_id.readOnly = false;
+
+
+        //}
+
+
+
+        // Function to make all form elements within a specific div readonly
+
+
+        function makeElementsReadonly(containerId) {
+
+            var container = document.getElementById(containerId);
+            var elements = container.querySelectorAll('input, select, textarea');
+
+            for (var i = 0; i < elements.length; i++) {
+                elements[i].setAttribute('readonly', 'readonly');
+            }
+        }
+
+        // Call the function on page load
+        window.onload = function () {
+            // alert("elements_readonly");
+            makeElementsReadonly('personal_div');
+        };
+
+
+    </script>
+
+
+    @*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+<script>
+
+        /*document.addEventListener('DOMContentLoaded', function () {*/
+        $(document).ready(function () {
+           // alert("newww");
+            var kycEditDiv = document.getElementById('kyc_edit_div');
+
+
+            //var form60Button = document.getElementById('form_60_btn');
+
+            kycEditDiv.style.display = 'none';
+            //form60Button.style.display = 'none';
+
+            var custSlno = $("#cust_slno").val();
+           // alert(custSlno);
+
+            if (custSlno === "") {
+              // alert("firstloop");
+                hidePencilIcons();
+                var kycEditDiv = document.getElementById('kyc_edit_div');
+                kycEditDiv.style.display = 'none';
+            }
+            else { //loop for load the modification return initially..
+                //alert("second loop");
+                hidePencilIcons();
+
+                //$("#first_name, #second_name, #last_name").prop('readonly', true);
+                //makeElementsReadonly('customer_name_div');
+
+                var hiddenEdit_btnStatus = document.querySelector('input[name="btn_edit_status"]');
+
+
+                if (hiddenEdit_btnStatus !== null) { // if the hidden exists
+
+                    var hiddenEdit_btnValue = hiddenEdit_btnStatus.value;
+
+                    //alert(hiddenEdit_btnValue);
+
+                    if (hiddenEdit_btnValue !== null && hiddenEdit_btnValue !== "") { // if its 1 then the edit button clicked once
+
+                        showPencilIcons(); //show pencil icon
+                        var radio_web = document.getElementById("radio_web");
+                        radio_web.removeAttribute("disabled");
+                        var radio_bro = document.getElementById("radio_bro");
+                        radio_bro.removeAttribute("disabled");
+
+                        // Then checking for the pencil icon of kyc is clicked or not
+                        var hiddenInput = document.querySelector('input[name="hidden_kyc_status"]');
+
+                        // Check if the hidden input field exists
+                        if (hiddenInput !== null) {
+                            //hiddenInput.value = "1";
+                            var hiddenFieldValue = hiddenInput.value;
+                             //alert(hiddenFieldValue);
+
+                            if (hiddenFieldValue !== null && hiddenFieldValue !== "") {// if hiddenFieldValue=1 the pencil icon is clicked once
+                               // alert("pencil icon is clicked once");
+                                //handlePencilIconClick();
+
+                                var pencil_name = localStorage.getItem('namepencil');
+
+                                //alert(pencil_name);
+                                // Compare the value
+                                if (pencil_name === '1') { // Name pencil icon clicked
+
+                                   // alert("loop_name");
+                                    toggleReadOnly('first_name');
+                                    //$('#first_name').val('');
+                                    $('#first_name').focus();
+                                    toggleReadOnly('second_name');
+                                    toggleReadOnly('last_name');
+                                    $('#customer_name_div').removeAttr('style');
+                                    $('#viewDeclarationButton').css('display', 'block');
+                                    localStorage.setItem('namepencil', '0');
+                                }
+
+                                var pencil_contact = localStorage.getItem('contact_pencil');
+
+                                //alert(pencil_contact);
+                                // Compare the value
+                                if (pencil_contact === '1') {
+                                    //alert("loop1_contact");
+                                    toggleReadOnly('mob_no');
+                                    //$('#mob_no').val('');
+                                    $('#mob_no').focus();
+                                    $('#div_otp').removeAttr('style');
+                                    $('#viewDeclarationButton').css('display', 'block');
+                                    localStorage.setItem('contact_pencil', '0');
+                                }
+                                var pencil_personal = localStorage.getItem('personal_pencile');
+
+                               // alert(pencil_personal);
+                                // Compare the value
+                                if (pencil_personal === '1') { // Name pencil icon clicked
+
+                                    alert("loop_personal");
+                                    toggleEditable();
+                                    $('#viewDeclarationButton').css('display', 'block');
+                                    $('#image4').css('display', 'block');
+                                   /* $('#btn_per_attach').css('display', 'block');*/
+                                    // Remove pointer-events: none; from select elements
+                                    $('#personal_div select').css('pointer-events', 'auto');
+                                    localStorage.setItem('personal_pencile', '0');
+                                }
+
+                                var pencil_photo = localStorage.getItem('pencilIcon');
+
+                                //alert(pencil_photo);
+                                // Compare the value
+                                if (pencil_photo === '1') { // Name pencil icon clicked
+
+                                   // alert("loop_photo");
+                                    $('#viewDeclarationButton').css('display', 'block');
+                                    $('#div_gur').css('display', 'block');
+                                    localStorage.setItem('pencilIcon', '0');
+                                }
+
+                                //var pencil_kyc = localStorage.getItem('toggleButton_kycedit');
+
+
+
+                                //if (pencil_kyc === '1') { // Name pencil icon clicked
+
+                                //   // alert("loop_kyc");
+                                //    handlePencilIconClick();
+
+                                //    $('#viewDeclarationButton').css('display', 'block');
+                                //    localStorage.setItem('toggleButton_kycedit', '0');
+                                //}
+
+                                var kyc_button = localStorage.getItem('btn_add_kyc');
+
+                                // alert(pencil_personal);
+                                // Compare the value
+                                if (kyc_button === '1') { // Name pencil icon clicked
+
+                                   // alert("loop_kyc_button");
+                                    handlePencilIconClick();
+
+                                    $('#viewDeclarationButton').css('display', 'block');
+
+
+
+                                    localStorage.setItem('btn_add_kyc', '0');
+                                }
+                                var delete_button = localStorage.getItem('delete_icon');
+
+                                // alert(pencil_personal);
+                                // Compare the value
+                                if (delete_button === '1') { // Name pencil icon clicked
+
+                                   // alert("loop_delete_button");
+                                    handlePencilIconClick();
+
+                                    $('#viewDeclarationButton').css('display', 'block');
+
+
+
+                                    localStorage.setItem('delete_icon', '0');
+                                }
+
+                            } else {
+                              //  $('.delete-icon').css('display', '');
+                                var kycEditDiv = document.getElementById('kyc_edit_div');
+                                kycEditDiv.style.display = 'none';
+                                $('#viewDeclarationButton').css('display', 'none');
+                            }
+                        }
+                    }
+                }
+            }
+
+        });
+
+$(document).ready(function () {
+     document.getElementById('hidePencilsCheckbox').addEventListener('click', function () {
+             //alert(1);
+
+             //set a hidden value to identify the edit button once clicked.
+             var hiddenEditStatus = document.querySelector('input[name="btn_edit_status"]');
+             //alert(hiddenEditStatus);
+             // Check if the hidden input field exists
+             if (hiddenEditStatus !== null) {
+                 hiddenEditStatus.value = "1";
+         }
+         var custSlno = '@Session["cust_slno"]';
+        // alert(custSlno);
+         if (@Model.rekyc_status== 1 && custSlno=="" ) {
+             //alert("rekyc status=1");
+             var userConfirmed = confirm('Are you sure you want to delete all KYC documents?');
+             if (userConfirmed) {
+
+                 var urlAction = '@Url.Action("modify_checkbox", "Customer_modification")';
+                 controller_Customer_modification(urlAction);
+             } else {
+
+                 return;
+             }
+         }
+         else
+         {
+              var urlAction = '@Url.Action("modify_checkbox", "Customer_modification")';
+              controller_Customer_modification(urlAction);
+         }
+          // Get the URL action using Razor syntax
+
+     });
+ //}
+     // Add event listener to the button
+ function controller_Customer_modification(urlAction) {
+     $.ajax({
+         url: urlAction,
+         type: 'POST',
+         success: function (response) {
+           //  alert("check_pencile_show");
+
+             //showPencilIcons();
+             if (response.success) {
+                // alert("success");
+                 showPencilIcons();
+                 $('#modiCancelledButton').show();
+                 reloadGrid();
+                 // Optionally, add any additional actions for success here.
+             } else {
+                 //alert("false");
+                 alert(response.message);
+             }
+
+
+         },
+         error: function (xhr, status, error) {
+             console.error(xhr.responseText);
+             alert('An error occurred while processing your request.');
+         }
+
+     });
+ }
+});
+
+// Helper function to show the submit button
+function showSubmitButton() {
+    var submitButton = document.getElementById('sndapprv');
+    if (submitButton) {
+        submitButton.style.display = 'block';
+    }
+}
+
+
+    //function arePencilIconsHidden() {
+    //    var pencilIcons = document.querySelectorAll('.fa-pencil-alt');
+
+    //    return Array.from(pencilIcons).some(function (icon) {
+    //        return icon.getAttribute('data-hidden') === 'true';
+    //    });
+    //}
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var pencilIcons = document.querySelectorAll('.fa-pencil-alt');
+            pencilIcons.forEach(function (icon) {
+                icon.style.display = 'none';
+            });
+        });
+
+
+
+
+        function controller_Customer_modification(urlAction) {
+            // Your logic for customer modification here
+            console.log('Customer modification URL: ' + urlAction);
+
+            // Example AJAX request using jQuery
+            $.ajax({
+                url: urlAction,
+                method: 'POST',
+                success: function (data) {
+                    console.log('AJAX request successful:', data);
+                },
+                error: function (error) {
+                    console.error('AJAX request failed:', error);
+                }
+            });
+        }
+      /*  });*/
+
+        function hidePencilIcons() {
+            var pencilIcons = document.querySelectorAll('.fa-pencil-alt');
+            pencilIcons.forEach(function (icon) {
+                icon.style.display = 'none';
+            });
+        }
+
+        function showPencilIcons() {
+
+            var pencilIcons = document.querySelectorAll('.fa-pencil-alt');
+           // alert("showpencile_function");
+            pencilIcons.forEach(function (icon) {
+                icon.style.display = 'inline'; // or 'block', depending on your layout
+            });
+            var radioWeb = document.getElementById('radio_web');
+            var radioBro = document.getElementById('radio_bro');
+
+            radioWeb.removeAttribute('disabled');
+            radioBro.removeAttribute('disabled');
+        }
+
+</script>
+
+
+    @*////////////////////////////////////////////////// upload imade/document for kyc drpdown ////////////////////////////////////////////////////////////////*@
+
+
+
+    <script>
+        function toggleFileInputVisibility() {
+            var fileInputContainer = document.getElementById('fileInputContainer');
+            var uploadButtonContainer = document.getElementById('uploadButtonContainer');
+
+            if (fileInputContainer.style.display === 'none') {
+                fileInputContainer.style.display = 'block';
+                uploadButtonContainer.style.display = 'block'; // Show the upload button when the file input is visible
+            } else {
+                fileInputContainer.style.display = 'none';
+                uploadButtonContainer.style.display = 'none'; // Hide the upload button when the file input is hidden
+            }
+        }
+    </script>
+
+
+
+
+    <script>
+
+      $(document).ready(function () {
+  $('#save1').click(function (e) {
+      e.preventDefault();
+
+      var image = document.getElementById('image3').files[0];
+      if (image && image.size > 1 * 1024 * 1024) { // Check if the first file exceeds 3 MB
+          alert("The file size exceeds 1 MB limit.");
+          return false; // Prevent form submission
+      }
+
+      var formData = new FormData(); // Create FormData object
+
+      var fileInput = $('#image3')[0].files[0];
+      if (!fileInput) {
+          alert("Please select a file to upload.");
+          return false;
+      } else {
+          formData.append('image3', fileInput); // Append file input to FormData object
+         // $('#image3').prop('disabled', true);
+      }
+
+     /* alert(1);*/
+
+      // Serialize form data and append it to FormData object
+      $('form').serializeArray().forEach(function(item) {
+          formData.append(item.name, item.value);
+      });
+
+      $.ajax({
+          url: '@Url.Action("declaration_upload_M", "Customer_modification")',
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function (result) {
+              $('#div_button').removeAttr('style');
+              $('#save1').prop('disabled', true);
+              var printDeclarationDiv = document.getElementById('printdeclaration_div');
+              printDeclarationDiv.style.display = 'none';
+              alert("Declaration Uploaded successfully");
+              reloadGrid();
+
+          },
+          error: function (xhr, status, error) {
+              alert('Error :' + error);
+          }
+      });
+  });
+      });
+        //----------------------------------------------------------------------------------------
+
+            $(document).ready(function () {
+$('#save2').click(function (e) {
+    e.preventDefault();
+    var image = document.getElementById('image5').files[0];
+    if (image && image.size > 1 * 1024 * 1024) { // Check if the first file exceeds 3 MB
+        alert("The file size exceeds 1 MB limit.");
+        return false; // Prevent form submission
+    }
+    var formData = new FormData(); // Create FormData object
+
+    var fileInput = $('#image5')[0].files[0];
+    if (!fileInput) {
+        alert("Please select a file to upload.");
+        return false;
+    } else {
+        formData.append('image5', fileInput); // Append file input to FormData object
+        $('#image5').prop('disabled', true);
+    }
+
+   /* alert(1);*/
+
+    // Serialize form data and append it to FormData object
+    $('form').serializeArray().forEach(function(item) {
+        formData.append(item.name, item.value);
+    });
+
+    $.ajax({
+        url: '@Url.Action("form60_upload_M", "Customer_modification")',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (result) {
+            $('#div_button').removeAttr('style');
+            //$('#save2').prop('disabled', true);
+            reloadGrid();
+            $('#viewDeclarationButton').css('display', 'none');
+            $('#fileInputContainer_form60').css('display', 'none');
+            $('#uploadButtonContainer_form60').css('display', 'none');
+            $('#view_form16_div_m_new').css('display', 'none');
+            $('#div_button').css('display', 'none');
+            $('#viewDeclarationButton_new').css('display', 'block');
+
+        },
+        error: function (xhr, status, error) {
+            alert('Error :' + error);
+        }
+    });
+});
+    });
+
+      //-------------------------------For shown close and submit button in one line----------------
+
+      $(document).ready(function () {
+          $('#uploadButton').click(function (e) {
+              e.preventDefault();
+              $('#div_button').show();
+          });
+      });
+
+    </script>
+
+
+
+
+
+    @*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+    <script>
+       $(document).ready(function () {
+        // Initial setup on page load
+        toggleSpanVisibility();
+ // Show/hide spans based on KYC type dropdown selection
+      $('#kyc_id').on('change', function () {
+             toggleSpanVisibility();
+           });
+
+           function toggleSpanVisibility() {
+               var documentTypeDropdown = document.getElementById("kyc_id");
+               var selectedValue = documentTypeDropdown.value;
+
+               // Check if the selected value is 'adhar'
+               if (selectedValue === "9") {
+                   $('#attach').hide(); // Hide Attachment span
+                   $('#masked').show(); // Show Masked span
+               } else {
+                   $('#attach').show(); // Show Attachment span
+                   $('#masked').hide(); // Hide Masked span
+               }
+           }
+       });                           // Function to toggle span visibility
+
+
+
+
+
+
+
+
+
+                                $(document).ready(function () {
+                                    $('#btn_add_kyc').click(function (event) {
+                                        var hiddenEditStatus = document.querySelector('input[name="btn_edit_status"]');
+                                        localStorage.setItem('btn_add_kyc', '1');
+                                        // Check if the hidden input field exists
+                                        if (hiddenEditStatus !== null) {
+                                            hiddenEditStatus.value = "1";
+                                        }
+
+
+
+                                        //var id_no = document.getElementById("id_no").value;
+                                        //var dropdown = document.getElementById("kyc_id");
+
+                                        //// Get the selected option's value
+                                        //var selectedValue = dropdown.value;
+
+                                        //if (selectedValue != 16) {
+                                        //    if (id_no === "") {
+                                        //        alert("Please fill the ID No.");
+                                        //        id_no.focus();
+                                        //        event.preventDefault();
+                                        //    }
+
+                                        //}
+
+                                    });
+                                });
+
+
+
+     function toggleEditable() {
+         //alert("toogleeditable");
+         var personalDiv = document.getElementById('personal_div');
+
+         // Get all input, select, and radio elements inside personal_div
+         var inputElements = personalDiv.querySelectorAll('input, select, input[type="radio"]');
+
+         // Iterate through each element and remove the readonly attribute
+         inputElements.forEach(function (element) {
+             if (element.id !== 'mob_no') {
+                 element.removeAttribute('readonly');
+             }
+
+             // For <select> elements, remove the "disabled" attribute from options
+             if (  element.id === 'p_PostOffice' ||  element.id === 'education' || element.id === 'occupation') {
+                 element.removeAttribute('disabled');
+             }
+         });
+
+         // If you're working with radio buttons, you may need to handle them separately
+         var radioButtons = personalDiv.querySelectorAll('input[type="radio"]');
+         radioButtons.forEach(function (radioButton) {
+             // Remove the "disabled" attribute for radio buttons
+             radioButton.removeAttribute('disabled');
+
+         });
+
+
+     }
+
+
+
+        document.getElementById('personal_pencile').addEventListener('click', function () {
+            if (confirm("Do you want to upload a new declaration form?")) {
+                // alert(" personal pencil clicked");
+                toggleSpouseNameField();
+
+                localStorage.setItem('personal_pencile', '1');
+
+                toggleEditable();
+                $('#viewDeclarationButton').css('display', 'block');
+                $('#image4').css('display', 'block');
+                /*   $('#btn_per_attach').css('display', 'block');*/
+                // Remove pointer-events: none; from select elements
+                $('#personal_div select').css('pointer-events', 'auto');
+
+                $.ajax({
+                    url: '@Url.Action("ModifyDeclarationDelete", "Customer_modification")',
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            // Reload the page if deletion is successful
+                            //alert(" declaration deleted");
+                            //alert("You need to upload new declaration form");
+                            reloadGrid();
+
+                            document.getElementById("hideCheckbox").disabled = false;
+                        } else {
+                            console.error('Deletion failed:', response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX error:', error);
+                    }
+                });
+            }
+            else
+                { }
+});
+
+
+////////////////////////////  view declaration button clicked  /////////////////////////////////////////////////
+
+
+
+
+
+ $(document).ready(function () {
+
+
+  $('#viewDeclarationButton').click(function (e) {
+
+    //  alert("modi_completed_clicked");
+
+      e.preventDefault();
+
+      var image = document.getElementById('image4').files[0];
+      if (image && image.size > 1 * 1024 * 1024) { // Check if the first file exceeds 3 MB
+          alert("The file size exceeds 1 MB limit.");
+          return false; // Prevent form submission
+      }
+
+
+
+      function isCapturedImageNull() {
+
+
+          var imgElement = document.getElementById('photoDisplay');
+
+          if (imgElement.src.startsWith("data:image")) {
+
+
+              return true;  // The captured image is not null
+          } else {
+              alert("Please upload customer photo");
+
+              return false;  // The captured image is null
+          }
+      }
+
+      // Check if image is present before proceeding
+      if (!isCapturedImageNull()) {
+          return; // Stop if image is not present
+      }
+
+
+      function checkCustomerName() {
+
+          var customerName = document.getElementById('first_name').value.trim();
+          var second_name = document.getElementById('second_name').value.trim();
+
+
+          var fatherNameInput = document.getElementById("father_name");
+          var firstNameInput = document.getElementById("first_name");
+
+         if (second_name.length == 0 && fatherNameInput.value.length == 0) {
+
+              alert("Customer name is single so please provide Father name too!");
+              $('#father_name').focus();
+              fatherNameInput.removeAttribute("readonly");
+              $('#father_name').prop('required', true);
+              return false; // Prevent further execution
+          } else {
+
+              return true; // Allow further execution
+          }
+      }
+
+      // Check customer name before proceeding
+      if (!checkCustomerName()) {
+          return; // Stop if customer name check fails
+      }
+
+
+
+
+      toggleSpouseNameField();
+      localStorage.setItem('personal_pencile', '1');
+      toggleEditable();
+      $('#viewDeclarationButton').css('display', 'block');
+      $('#image4').css('display', 'block');
+      $('#personal_div select').css('pointer-events', 'auto');
+
+
+
+
+      function validateMobileNumber_modi(mobileNumber) {
+
+          if (mobileNumber === '' || mobileNumber === '0' || mobileNumber === '(null)' || mobileNumber.length < 10 ) {
+              alert("Please enter a 10 digit mobile number and verify OTP...");
+              $('#mob_no').focus();
+              return false;
+          } else {
+              return true;
+          }
+      }
+
+      var mobileNumber = $('#mob_no').val(); // Get the mobile number from the input field
+      if (!validateMobileNumber_modi(mobileNumber)) {
+
+          return;
+      }
+
+       var modelmob = '@Model.mob_no';
+      if (modelmob !== mobileNumber) {
+
+          var verificationStatus = $('#verificationStatus').val();
+
+
+          if (verificationStatus === 'OTP Verified')
+          {
+             // alert('OTP has been verified successfully.');
+             // return true;
+
+          } else if (verificationStatus === 'OTP Invalid') {
+              alert('Invalid OTP. Please try again.');
+              return false;
+
+          } else {
+              alert('Please verify OTP for mobile number');
+              $('#mob_no').focus();
+              return false;
+
+          }
+      }
+      else {
+         // alert('Mobile number matches the model. No OTP check required.');
+          // Additional actions if mobile numbers match
+      }
+
+
+
+
+      var yearofstayValue = $('#yearofstay').val().trim();
+
+      var printDeclarationForm = document.getElementById('print_declaration_form');
+      if (!printDeclarationForm.checkValidity()) {
+
+
+          toggleSpouseNameField();
+          localStorage.setItem('personal_pencile', '1');
+          toggleEditable();
+          document.getElementById("hideCheckbox").disabled = false;
+
+          $('#viewDeclarationButton').css('display', 'block');
+          $('#image4').css('display', 'block');
+          $('#personal_div select').css('pointer-events', 'auto');
+
+          if ($('#dob').val().trim() === '') {
+              $('#dob1-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#dob').focus();
+              return false;
+          }
+          else if ($('#gender').val().trim() === '') {
+              $('#gender-error').text('This field is required. Please fill it out to proceed.').show();
+              $('#gender').focus();
+              return false;
+          }
+
+          else if ($('input[name="dist_from_branch"]:checked').length === 0) {
+              $('#dist_from_branch-error').text(' This field is required. Please fill it out to proceed').show();
+              $('input[name="dist_from_branch"]').first().focus();
+              return false;
+
+          }
+          else if ($('#marital_status').val().trim() === '') {
+              $('#marital-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#marital_status').focus();
+              return false;
+          }
+          else if ($('#education').val().trim() === '') {
+              $('#education-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#education').focus();
+              return false;
+          }
+          else if ($('#occupation').val().trim() === '') {
+              $('#occupation-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#occupation').focus();
+              return false;
+          }
+          else if ($('#house_name').val().trim() === '') {
+              $('#house_name-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#house_name').focus();
+              return false;
+          }
+          else if ($('#landmark').val().trim() === '') {
+              $('#landmark-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#landmark').focus();
+              return false;
+          }
+          else if ($('#City').val().trim() === '') {
+              $('#City-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#City').focus();
+              return false;
+
+
+          }
+          else if ($('#txt_cust_pincode').val().trim() === '' || $('#txt_cust_pincode').val().trim() === '0') {
+              $('#pincode-error').text('This field is required. Please fill it out to proceed').show();
+              $('#txt_cust_pincode').prop('readonly', false); // Make it editable temporarily
+              setTimeout(function () {
+                  $('#txt_cust_pincode').focus();
+
+              }, 100);
+              return false;
+          }
+          else if ($('#PostOffice').val().trim() === '') {
+              $('#Postname-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#PostOffice').focus();
+              return false;
+          }
+          else if ($('#district_name').val().trim() === '') {
+              $('#district-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#district_name').focus();
+              return false;
+          }
+          else if ($('#state_name').val().trim() === '') {
+              $('#email-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#state_name').focus();
+              return false;
+          }
+
+          else if ($('#yearofstay').val().trim() === '' || $('#yearofstay').val().trim() === '0') {
+
+              $('#yearofstay-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#yearofstay').focus();
+              return false;
+          }
+          else if ($('#p_house_name').val().trim() === '') {
+              $('#p_housename-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#p_house_name').focus();
+              return false;
+          }
+          else if ($('#p_landmark').val().trim() === '') {
+              $('#p_landmark-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#p_landmark').focus();
+              return false;
+          }
+          else if ($('#p_City').val().trim() === '') {
+              $('#p_City-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#p_City').focus();
+              return false;
+          }
+          else if ($('#txt_cust_pincode_perm_new').val().trim() === '' || $('#txt_cust_pincode_perm_new').val().trim() === '0') {
+              $('#p_pincode-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#txt_cust_pincode_perm_new').prop('readonly', false); // Make it editable temporarily
+              setTimeout(function () {
+                  $('#txt_cust_pincode_perm_new').focus();
+              }, 100);
+              return false;
+          }
+          else if ($('#p_PostOffice').val().trim() === '') {
+              $('#p_postname-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#p_PostOffice').focus();
+              return false;
+          }
+          else if ($('#p_District').val().trim() === '') {
+              $('#email-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#p_District').focus();
+              return false;
+          }
+          else if ($('#p_State').val().trim() === '') {
+              $('#email-error').text(' This field is required. Please fill it out to proceed').show();
+              $('#p_State').focus();
+              return false;
+          }
+          else
+          {
+
+             // alert("else part");
+              var imageUrlPattach = '@Model.ImageUrl_pattach';
+             // alert(imageUrlPattach);
+              var imageInput = document.getElementById('image4');
+             // alert(imageInput);
+              var per_attach_Status = $('#per_attach_Status').val();
+             // alert(per_attach_Status);
+              if (imageInput.files.length === 0 && per_attach_Status === 'per_address present' && !imageUrlPattach) {
+                  alert("Please upload permanent address proof!");
+                  $('#image4').focus();
+                  var fileInput = document.getElementById('image4');
+                  fileInput.required = true;
+                  return false;
+              }
+              else
+              {
+                  var fileInput = document.getElementById('image4');
+                  fileInput.required = false;
+                 // alert("else");
+                 // return true;
+              }
+
+          }
+
+
+
+         // return;
+
+      }
+
+
+      reloadGrid();
+
+
+
+
+         $.ajax({
+             url: '@Url.Action("print_declaration_check_modi", "Customer_modification")',
+             type: 'POST',
+             success: function (response) {
+                 // Log the response for debugging
+                 console.log('First request response:', response);
+
+                 if (response.success) {
+                     var message = response.message;
+
+
+                     if (message === "Send for Approval") {
+                         //alert("redirect");
+                         var formData_dec = new FormData($('#print_declaration_form')[0]);
+
+
+                         $.ajax({
+                             url: '@Url.Action("declaration_modification_view", "Customer_modification")',
+                             type: 'POST',
+                             data: formData_dec,
+                             contentType: false,
+                             processData: false,
+                             success: function (data) {
+                                 // Log the response for debugging
+                                 console.log('Second request response:', data);
+
+                                 if (data.success) {
+                                     //alert("Success!");
+                                     //var newWindow = window.open('', '_blank');
+                                     //newWindow.document.write(data);
+                                     //newWindow.document.close();
+                                     alert("Modification Completed.");
+
+                                     let containsKYCId1 = false;
+                                     document.querySelectorAll('#dataGrid1 .kyc-id').forEach(function (element)
+                                     {
+
+                                         if (element.value === '1') {
+                                             containsKYCId1 = true;
+                                         }
+                                     });
+
+                                     if (containsKYCId1)
+                                     {
+                                        // alert("pan is present");
+                                         $('#viewDeclarationButton_new').css('display', 'block');
+                                         $('#viewDeclarationButton').css('display', 'none');
+
+                                     } else
+                                     {
+                                       //  alert("pan is null");
+                                         $('#view_form16_div_m_new').css('display', 'block');
+                                         $('#viewDeclarationButton').css('display', 'none');
+                                     }
+
+
+                                    // $('#view_form16_div_m_new').css('display', 'block');
+                                    // $('#viewDeclarationButton').css('display', 'none');
+                                     // $('#viewDeclarationButton_new').show();
+                                     document.getElementById('hidePencilsCheckbox').style.display = 'none';
+                                     document.getElementById('pencilIcon').style.display = 'none';
+                                     document.getElementById('toggleButton_kycedit').style.display = 'none';
+                                     document.getElementById('name_pencil').style.display = 'none';
+                                     document.getElementById('contact_pencil').style.display = 'none';
+                                     document.getElementById('personal_pencile').style.display = 'none';
+                                     document.getElementById('div_gur').style.display = 'none';
+                                     document.getElementById('camera_div').style.display = 'none';
+                                     document.getElementById('kyc_edit_div').style.display = 'none';
+                                     document.getElementById('up_img').style.display = 'none';
+                                     document.getElementById('div_otp').style.display = 'none';
+                                     document.getElementById('div_otp').style.display = 'none';
+                                     makeReadOnly_name_div();
+                                     hideAllDeleteIcons();
+                                     makeReadOnly_mob_input();
+                                     makeInputsReadonly_new();
+                                     makeSelectsReadonly_new();
+                                     makeRadioButtonsReadonly_new();
+                                     var fileInput = document.getElementById('image4');
+                                     fileInput.style.display = 'none';
+                                     document.getElementById("hideCheckbox").disabled = true;
+
+                                     reloadGrid();
+
+                                 } else {
+                                     alert(data.message);
+                                 }
+                             },
+                             error: function (xhr, status, error) {
+                                 console.error('Second request error:', error);
+                                 alert("error");
+                             }
+                         });
+                     }
+                     else
+                     {
+                         alert(message);
+                         return false;
+                     }
+                 }
+             },
+             error: function (xhr, status, error) {
+                 console.error('First request error:', error);
+                 alert("error");
+             }
+         });
+     });
+ });
+
+
+    $('#dob').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#dob1-error').hide();
+        }
+    });
+    $('#gender').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#gender-error').hide();
+        }
+    });
+    $('#dist_from_branch').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#dist_from_branch-error').hide();
+        }
+    });
+    $('#marital_status').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#marital-error').hide();
+        }
+    });
+    $('#education').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#education-error').hide();
+        }
+    });
+    $('#occupation').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#occupation-error').hide();
+        }
+    });
+    $('#house_name').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#house_name-error').hide();
+        }
+    });
+    $('#landmark').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#landmark-error').hide();
+        }
+    });
+    $('#City').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#City-error').hide();
+        }
+    });
+    $('#txt_cust_pincode').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#pincode-error').hide();
+        }
+    });
+    $('#PostOffice').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#Postname-error').hide();
+        }
+    });
+    $('#yearofstay').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#yearofstay-error').hide();
+        }
+    });
+    $('#p_house_name').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#p_housename-error').hide();
+        }
+    });
+    $('#p_landmark').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#p_landmark-error').hide();
+        }
+    });
+    $('#p_City').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#p_City-error').hide();
+        }
+    });
+    $('#p_City').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#p_pincode-error').hide();
+        }
+    });
+    $('#txt_cust_pincode_perm_new').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#p_pincode-error').hide();
+        }
+    });
+    $('#p_PostOffice').on('input', function () {
+        if ($(this).val().trim() !== '') {
+            $('#p_postname-error').hide();
+        }
+    });
+
+
+
+
+        function hideAllDeleteIcons() {
+            const deleteIcons = document.querySelectorAll('.delete-icon');
+            deleteIcons.forEach(icon => {
+                icon.style.display = 'none';
+            });
+        }
+        function makeReadOnly_name_div() {
+            var nameDiv = document.getElementById('name_div');
+            var inputs = nameDiv.getElementsByTagName('input');
+            for (var i = 0; i < inputs.length; i++) {
+                inputs[i].readOnly = true;
+            }
+        }
+        function makeReadOnly_mob_input() {
+            var mobInput = document.getElementById('mob_no');
+            mobInput.readOnly = true;
+        }
+        function makeInputsReadonly_new() {
+            // Select all input elements
+            var inputs = document.querySelectorAll('input');
+
+            // Set readonly attribute for each input
+            inputs.forEach(function (input) {
+                input.setAttribute('readonly', true);
+            });
+        }
+
+        // Function to make all select elements readonly
+        function makeSelectsReadonly_new() {
+            // Select all select elements
+            var selects = document.querySelectorAll('select');
+
+            // Set readonly attribute for each select
+            selects.forEach(function (select) {
+                select.setAttribute('readonly', true);
+                select.style.pointerEvents = 'none'; // Disable pointer events to prevent interaction
+            });
+        }
+
+        // Function to make all radio buttons readonly
+        function makeRadioButtonsReadonly_new() {
+            // Select all radio button elements
+            var radioButtons = document.querySelectorAll('input[type="radio"]');
+
+            // Set disabled attribute for each radio button
+            radioButtons.forEach(function (radioButton) {
+                radioButton.setAttribute('disabled', true);
+            });
+        }
+
+
+
+
+
+
+    $(document).ready(function () {
+    $("#sendApprovalForm").submit(function (e) {
+    e.preventDefault(); // Prevent form from submitting
+
+    // AJAX call to the controller action
+    $.ajax({
+    type: "POST",
+    url: "/Customer_modification/sent_modi_approval", // Replace ControllerName with your actual controller name
+    dataType: "json",
+    success: function (response) {
+    // Display alert with the message from the JSON response
+    alert(response.message);
+
+    // Check the message content and redirect accordingly
+        if (response.message.startsWith("Successfully Sent for Approval"))
+    {
+
+    window.location.href = "/CustomerCreate/CustomerCreate";
+    //} else {
+    //    //window.location.href = "/Customer_KYC/kyc_approval"; // Redirect to error page if needed
+    //    alert("Not sent for approval: " + response.message);
+    }
+    },
+    error: function (xhr, status, error) {
+    // Handle errors, if any
+    alert("An error occurred: " + error);
+    }
+    });
+    });
+    });
+
+
+
+
+
+    function openForm60InNewTab(event) {
+    event.preventDefault();
+    var url = '/Customer_modification/form60_modify_view_m';
+    window.open(url, '_blank');
+    }
+
+
+    @*$(document).ready(function () {
+               var alertMessage = "@ViewBag.AlertMessage";
+               alert(alertMessage);
+
+        });*@
+
+    $(document).ready(function () {
+    var alertMessage = "@ViewBag.AlertMessage";
+    if (alertMessage) { // Check if alertMessage is not null or empty
+    alert(alertMessage);
+    }
+    });
+
+
+        function openDeclarationInNewTab(event) {
+          //  alert("declaration");
+            event.preventDefault();
+            var url = '/Customer_modification/declaration_modification_view_new';
+            window.open(url, '_blank');
+            $('#fileInputContainer').show();
+            $('#uploadButtonContainer').show();
+        }
+
+
+
+    </script>
+
+    @*----------------------------------------Name and Mobile No edit----------------------------------------------*@
+
+
+    <script>
+        // Function to toggle readonly attribute of input fields
+        function toggleReadOnly(inputId) {
+            var inputField = document.getElementById(inputId);
+            inputField.readOnly = !inputField.readOnly;
+        }
+
+
+
+
+    /////////////////////////////////////////////////////commented on may 14//////////////////////////////////////////////////////////////////////////////////////////
+
+
+//////////////////////////////////only grid reload ////////////////////////////////////////////////////////////////////////////
+
+    document.getElementById('name_pencil').addEventListener('click', function () {
+        //alert("name pencil clicked");
+        if (confirm("Do you want to upload a new declaration form?")) {
+            localStorage.setItem('namepencil', '1');
+
+            toggleReadOnly('first_name');
+            toggleReadOnly('second_name');
+            toggleReadOnly('last_name');
+            $('#customer_name_div').removeAttr('style');
+            $('#viewDeclarationButton').css('display', 'block');
+
+            // AJAX request to delete the declaration form
+            $.ajax({
+                url: '@Url.Action("ModifyDeclarationDelete", "Customer_modification")',
+                type: 'POST',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        //alert("declaration deleted ");
+
+                        // Reload the grid after successful deletion
+                       // alert("You need to upload new declaration form");
+                        reloadGrid();
+
+                    } else {
+                        console.error('Deletion failed:', response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX error:', error);
+                }
+            });
+        }
+        else
+        {
+
+        }
+    });
+
+
+    function reloadGrid() {
+    // AJAX request to fetch updated grid content
+    $.ajax({
+        url: '@Url.Action("customer_modification", "Customer_modification")',
+        method: 'GET', // or 'POST' depending on your backend setup
+        success: function (data) {
+           // alert("grid reloaded ");
+            // Replace the grid content with the updated data
+            $('#gridContainer').html($(data).find('#gridContainer').html());
+
+
+
+
+        },
+        error: function () {
+            alert('Error reloading grid. Please refresh the page.');
+        }
+    });
+    }
+    function reloadGrid_kyc() {
+    // AJAX request to fetch updated grid content
+    $.ajax({
+        url: '@Url.Action("customer_modification", "Customer_modification")',
+        method: 'GET', // or 'POST' depending on your backend setup
+        success: function (data) {
+           // alert("grid reloaded ");
+            // Replace the grid content with the updated data
+            $('#gridContainer').html($(data).find('#gridContainer').html());
+
+            $('.delete-icon').css('display', '');
+            reload_kyc_dropdown();
+
+
+        },
+        error: function () {
+            alert('Error reloading grid. Please refresh the page.');
+        }
+    });
+}
+
+
+
+    $(document).ready(function () {
+    // Attach event listener to the dropdown
+        attachDropdownChangeListener();
+
+    });
+
+
+
+        function toggleAttachmentDivs() {
+
+        var documentTypeDropdown = document.getElementById("kyc_id");
+        var aadharAttachmentDiv = document.getElementById("aadharAttachmentDiv");
+        var attachmentDiv = document.getElementById("attachment");
+        var idNoDiv = document.getElementById("idno_div");
+        var viewForm16Div = document.getElementById("view_form16_div_m");
+        var frm_to_dat = document.getElementById("from_to_date");
+        var pan_dtl = document.getElementById("pan_dtl_div");
+        var Pan_dtl_headinf = document.getElementById("Pan_dtl_headinf_div");
+        switch (documentTypeDropdown.value) {
+            case "1": // Pan
+
+                pan_dtl.style.display = "block";
+                Pan_dtl_headinf.style.display = "block";
+                aadharAttachmentDiv.style.display = "none";
+                attachmentDiv.style.display = "block";
+                viewForm16Div.style.display = "none";
+               // idNoDiv.style.display = "block";
+                frm_to_dat.style.display = "none";
+                setRequiredAttributes(true, false, true, false);
+                $('#attach').show(); // Show Attachment span
+                $('#masked').hide(); // Hide Masked span
+                var textBox = document.getElementById('pan_name');
+                textBox.value = '';
+                var textBox = document.getElementById('pan_dob');
+                textBox.value = '';
+                var textBox = document.getElementById('pan_father_name');
+                textBox.value = '';
+                break;
+
+            case "9": // Aadhar
+                pan_dtl.style.display = "none";
+                Pan_dtl_headinf.style.display = "none";
+                aadharAttachmentDiv.style.display = "block";
+                attachmentDiv.style.display = "block";
+                viewForm16Div.style.display = "none";
+                idNoDiv.style.display = "block";
+                frm_to_dat.style.display = "none";
+                setRequiredAttributes(true, false, true, false);
+
+                $('#attach').hide(); // Hide Attachment span
+                $('#masked').show(); // Show Masked span
+                break;
+            case "16": // Form 16
+
+                aadharAttachmentDiv.style.display = "none";
+                attachmentDiv.style.display = "block";
+                idNoDiv.style.display = "none";
+                frm_to_dat.style.display = "none";
+                viewForm16Div.style.display = "block";
+                setRequiredAttributes(false, false, false, false);
+                break;
+            case "2":
+                pan_dtl.style.display = "none";
+                Pan_dtl_headinf.style.display = "none";
+                idNoDiv.style.display = "block";
+                frm_to_dat.style.display = "block";
+                viewForm16Div.style.display = "none";
+                aadharAttachmentDiv.style.display = "none";
+                attachmentDiv.style.display = "block";
+
+                setRequiredAttributes(true, false, false, true);
+
+                $('#attach').show(); // Show Attachment span
+                $('#masked').hide(); // Hide Masked span
+                break;
+            case "3": // Passport
+                pan_dtl.style.display = "none";
+                Pan_dtl_headinf.style.display = "none";
+                idNoDiv.style.display = "block";
+                frm_to_dat.style.display = "block";
+                attachmentDiv.style.display = "block";
+                aadharAttachmentDiv.style.display = "none";
+                viewForm16Div.style.display = "none";
+                setRequiredAttributes(true, false, true, true);
+
+                $('#attach').show(); // Show Attachment span
+                $('#masked').hide(); // Hide Masked span
+                break;
+            default: // Other
+                pan_dtl.style.display = "none";
+                Pan_dtl_headinf.style.display = "none";
+                aadharAttachmentDiv.style.display = "none";
+                attachmentDiv.style.display = "block";
+                idNoDiv.style.display = "block";
+                frm_to_dat.style.display = "none";
+                viewForm16Div.style.display = "none";
+                setRequiredAttributes(true, false, true, false);
+                $('#attach').show(); // Show Attachment span
+                $('#masked').hide(); // Hide Masked span
+                break;
+        }
+    }
+
+    function setRequiredAttributes(idNo, aadharAttachment, attachment, dateFields) {
+        document.getElementById('id_no').required = idNo;
+        document.getElementById('image1').required = aadharAttachment;
+        document.getElementById('image').required = attachment;
+        document.getElementById('from_date').required = dateFields;
+        document.getElementById('to_date').required = dateFields;
+    }
+
+    function attachDropdownChangeListener() {
+        $('#kyc_id').on('change', function () {
+            toggleAttachmentDivs();
+            setPanFieldsRequired();
+        });
+    }
+
+    function reload_kyc_dropdown() {
+        // AJAX request to fetch updated grid content
+        $.ajax({
+            url: '@Url.Action("customer_modification", "Customer_modification")',
+            method: 'GET', // or 'POST' depending on your backend setup
+            success: function (data) {
+                //alert("drop");
+
+                // Update the dropdown and divs with new content
+                $('#kyc_id_div').html($(data).find('#kyc_id_div').html());
+
+                //$('#kyc_id_div').html($(data).find('#kyc_id_div').html());
+                $('#idno_div').html($(data).find('#idno_div').html());
+
+                $('#input_attachment_div').html($(data).find('#input_attachment_div').html());
+                $('#input_unmasked_attachment_div').html($(data).find('#input_unmasked_attachment_div').html());
+
+                $('#kyc_id').on('change', function () {
+
+                    //toggleAadharAttachment();
+                   // toggleAttachmentDivs();
+                    $('#id_no').val('');
+                    var textBox = document.getElementById('from_date');
+                    textBox.value = '';
+                    var textBox = document.getElementById('to_date');
+                    textBox.value = '';
+
+
+                });
+                var aadharAttachmentDiv = document.getElementById("aadharAttachmentDiv");
+                aadharAttachmentDiv.style.display = "none";
+
+                var viewForm16Div = document.getElementById("view_form16_div_m");
+                viewForm16Div.style.display = "none";
+
+                var idNoDiv = document.getElementById("idno_div");
+                idNoDiv.style.display = "block";
+
+                var fromtodate = document.getElementById("from_to_date");
+                fromtodate.style.display = "none";
+
+                attachDropdownChangeListener();
+
+            },
+            error: function () {
+                alert('Error reloading grid. Please refresh the page.');
+            }
+        });
+    }
+
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    document.getElementById('contact_pencil').addEventListener('click', function () {
+       // alert("contact number pencil clicked");
+        if (confirm("Do you want to upload a new declaration form?")) {
+            localStorage.setItem('contact_pencil', '1');
+
+            var mobileNo = $('#mob_no').val();
+            //alert(mobileNo);
+            localStorage.setItem('savedMobileNo', mobileNo);
+
+
+            toggleReadOnly('mob_no');
+            //$('#mob_no').val(''); otpInput
+            $('#otpInput').val('');
+            $('#mob_no').focus();
+
+            $('#div_otp').removeAttr('style');
+            $('#div_resendotpBtn').hide();
+            $('#viewDeclarationButton').css('display', 'block');
+
+            $.ajax({
+                url: '@Url.Action("ModifyDeclarationDelete", "Customer_modification")',
+                type: 'POST',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        // alert(" declaration deleted");
+                      //  alert("You need to upload new declaration form");
+                        reloadGrid();
+
+
+                        //window.location.reload();
+                    } else {
+                        alert(response.message);
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX error:', error);
+                }
+            });
+
+        }
+        else
+        {
+            }
+    });
+
+
+
+    </script>
+
+    <script>
+        function validateForm(event) {
+
+          //  alert("validate form");
+            var attachmentInput = document.getElementById('image');
+            var attachmentInput1 = document.getElementById('image1');
+            var dropdown = document.getElementById("kyc_id");
+            var selectedValue = dropdown.value;
+            var id_no = document.getElementById("id_no").value;
+
+
+            var name = document.getElementById('pan_name').value;
+            var pan_dob = document.getElementById("pan_dob").value;
+
+            if (selectedValue == -1) {
+                alert("Please Select Kyc Type");
+                document.getElementById("kyc_id").focus();
+                return false;
+
+            }
+            if (id_no == "") {
+
+
+                if (selectedValue != 16) {
+
+                    alert("Please fill the ID No.");
+                    document.getElementById("id_no").focus();
+                    event.preventDefault();
+                    // return false;
+
+
+                }
+                //alert("Please fill the ID No.");
+                //document.getElementById("id_no").focus();
+                //return false;
+            }
+            if (attachmentInput.files.length == 0) {
+                alert("Please Upload Attachment");
+                return false;
+            }
+
+
+            if (selectedValue == 9) {
+
+                if (attachmentInput.files.length == 0) {
+                    alert("Please Upload Both Attachments");
+                    return false;
+                }
+                if (attachmentInput1.files.length == 0) {
+                    alert("Please Upload Both Attachments");
+                    return false;
+                }
+            }
+            if (selectedValue == 1)
+            {
+               // alert("pan");
+
+                if (name== null || name == "")
+                {
+                    var nameInput = document.getElementById("pan_name");
+                    var panNameField = document.getElementById("pan_name");
+
+                    nameInput.required = true;
+                    alert("Please add name as in PAN");
+                    document.getElementById("pan_name").focus();
+                    return false;
+                }
+                else if (pan_dob == "" || pan_dob ==null)
+                {
+                    alert("Please add DOB as in PAN");
+                    document.getElementById("pan_dob").focus();
+                    return false;
+                }
+
+
+            }
+
+
+
+           // alert("validation true");
+            return true;
+        }
+
+        function setPanFieldsRequired() {
+            var kycId = document.getElementById("kyc_id").value;
+            var panNameField = document.getElementById("pan_name");
+            var panDobField = document.getElementById("pan_dob");
+
+            if (kycId == "1") { // PAN
+                panNameField.required = true;
+                panDobField.required = true;
+            } else {
+                panNameField.required = false;
+                panDobField.required = false;
+            }
+        }
+
+    $(document).ready(function () {
+       // alert(1);
+                    $('#kyc_form_M').submit(function (e) {
+
+                  e.preventDefault(); // Prevent default form submission
+
+                        //var image = document.getElementById('image').files[0]; // Assuming 'image' is the ID of the file input for the first file
+                        //var image1 = document.getElementById('image1').files[0]; // Assuming 'image1' is the ID of the file input for the second file
+
+                        //if (image && image.size > 1 * 1024 * 1024) { // Check if the first file exceeds 3 MB
+                        //    alert("The file size exceeds 1 MB limit.");
+                        //    return false; // Prevent form submission
+                        //}
+
+                        //if (image1 && image1.size > 1 * 1024 * 1024) { // Check if the second file exceeds 3 MB
+                        //    alert("The file size exceeds 1 MB limit.");
+                        //    return false; // Prevent form submission
+                        //}
+                  //  alert("Form submission intercepted.");
+
+                    // Submit the form using AJAX
+                        if (validateForm() === true) {
+                            //alert("form validated");
+                      // alert("Form validation passed. Proceeding with AJAX call.");
+                        $.ajax({
+                            url: "@Url.Action("document_upload_M", "Customer_modification")",
+                            type: $(this).attr('method'),
+                            data: new FormData(this),
+                            contentType: false,
+                            processData: false,
+                            success: function (response) {
+                                //alert("AJAX call successful.");
+                                if (response.message !== 'KYC Saved') {
+                                    alert(response.message);
+                                    // Prevent form submission
+                                    e.preventDefault();
+                                    // window.location.reload();
+                                    reloadGrid_kyc();
+                                    localStorage.setItem('toggleButton_kycedit', '1');
+                                    $('#id_no').val('');
+                                    document.getElementById("id_no").focus();
+
+
+
+                                } else {
+
+                                    alert("KYC Saved");
+                                    //window.location.href = response.redirectTo;
+                                   // reload_kyc_drpdown();
+                                    reloadGrid_kyc();
+                                    reload_kyc_dropdown();
+                                    var pan_dtl = document.getElementById("pan_dtl_div");
+                                    var Pan_dtl_headinf = document.getElementById("Pan_dtl_headinf_div");
+                                    pan_dtl.style.display = "none";
+                                    Pan_dtl_headinf.style.display = "none";
+                                    document.getElementById("pan_name").value = "";
+                                    document.getElementById("pan_dob").value = "";
+                                    document.getElementById("pan_father_name").value = "";
+
+                                    //attachDropdownChangeListener();
+
+                                    // localStorage.setItem('added_kyc', '1');
+                                   // $('.delete-icon').css('display', '');
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.log("AJAX call error:", error);
+                                // Handle error response
+                            }
+                        });
+                    } else {
+                        console.log("Form validation failed. AJAX call not made.");
+                    }
+                });
+            });
+
+
+
+        function form_60_check_modi() {
+
+           // alert("form_60_function");
+
+            //e.preventDefault();
+            // AJAX call to fetch the message
+            $.ajax({
+                url: '@Url.Action("form_60_check_modi", "Customer_modification")', // Replace 'ControllerName' with the actual name of your controller
+                type: 'POST',
+                success: function (response) {
+                   // alert(response);
+
+                    if (response.success) {
+                        var message = response.message;
+
+                        if (message === "Already PAN attached. No need of taking Form60.") {
+
+                            alert(message);
+
+                            $('#view_form16_div_m_new').css('display', 'none');
+                            $('#viewDeclarationButton_new').css('display', 'block');
+
+
+                            //var idno_txtbox = document.getElementById('id_no');
+                            //idno_txtbox.style.display = 'block';
+                            var idNoDiv = document.getElementById("idno_div");
+                            idNoDiv.style.display = 'block';
+                            var form60Button = document.getElementById('view_form16_div_m');
+                            form60Button.style.display = 'none';
+
+                            var kycElement = document.getElementById("kyc_id");
+
+                            // Set the selected value variable to -1
+                            var selectedValue = -1;
+
+                            // Update the value of the element to -1
+                            kycElement.value = selectedValue;
+
+
+
+                        }
+                        else
+                        {
+
+                            openForm60InNewTab(event);
+                            $('#fileInputContainer_form60').css('display', 'block');
+                            $('#uploadButtonContainer_form60').css('display', 'block');
+
+
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("error");
+                    console.error(error);
+                    //alert(response);
+
+                }
+            });
+
+        }
+
+
+    function validate_id_no(input) {
+        //alert("id_no_uppercase_validation");
+        // Convert any lowercase letters to uppercase
+        input.value = input.value.toUpperCase();
+
+        // Remove any characters that are not numbers or uppercase letters
+        input.value = input.value.replace(/[^0-9A-Z]/g, '');
+    }
+
+
+    </script>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            //alert("Document is ready");
+            //toggleSpouseNameField(); // Call the function to toggle spouse name field initially
+
+            // Bind change event to marital status dropdown
+            $("#marital_status").change(function () {
+                toggleSpouseNameField(); // Call the function whenever marital status changes
+            });
+        });
+
+        function toggleSpouseNameField() {
+            //  alert("marital_status");
+            var maritalStatus = $("#marital_status").val();
+            var spouseNameInput = $("#spause_name");
+            //alert(maritalStatus);
+
+            if (maritalStatus === "Married" || maritalStatus === "Widow/Widower") {
+                spouseNameInput.prop("disabled", false);
+                spouseNameInput.prop("readonly", false);
+            } else {
+                spouseNameInput.prop("disabled", true);
+                spouseNameInput.prop("readonly", true);
+                spouseNameInput.val("");
+            }
+        }
+
+
+        @*document.getElementById("downloadButton").addEventListener("click", function () {
+            //alert("new tab");
+            var url = '@Url.Action("DownloadAllDocuments", "Customer_modification")';
+            window.open(url, '_blank');
+
+    });*@
+
+        @*document.getElementById("downloadButton").addEventListener("click", function () {
+    var url = '@Url.Action("DownloadAllDocuments", "Customer_modification")';
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message);
+            } else {
+                window.open(url, '_blank');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+});*@
+
+
+    </script>
+
+
+
+</body>
+</html>

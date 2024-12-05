@@ -1,0 +1,730 @@
+﻿
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>canvasser registration</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+
+    <style>
+
+        .app-main__inner {
+            margin-top: -30px;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        .card-title h6 {
+            font-weight: bold;
+            font-size: 25px;
+            margin: 0;
+            color: maroon;
+        }
+
+
+
+        .radio-label {
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 14px;
+            color: black;
+        }
+
+
+            .radio-label.selected {
+                color: red;
+            }
+
+
+        .search-container {
+            margin-top: 8px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%; /* Set width to 100% to occupy full container width */
+        }
+
+            /* Style for labels inside the search container */
+            .search-container label {
+                font-weight: bold;
+                margin-right: 10px;
+                font-size: 14px;
+            }
+
+            /* Style for radio buttons inside the search container */
+            .search-container input[type="radio"] {
+                margin-right: 8px;
+                transform: scale(0.9); /* Adjusted scale for radio button size */
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                border: 2px solid #007bff;
+                border-radius: 50%;
+                width: 18px;
+                height: 18px;
+                outline: none;
+            }
+
+                .search-container input[type="radio"]:checked {
+                    background-color: #007bff;
+                }
+
+            /* Style for text input field */
+            .search-container input[type="text"] {
+                padding: 10px; /* Adjust padding as needed */
+                margin-right: 8px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                font-size: 14px;
+                width: 300px; /* Increased width for input text */
+            }
+
+            /* Style for buttons inside the search container */
+            .search-container button {
+                padding: 8px 12px; /* Increased padding for button */
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+                font-size: 14px;
+                margin-left: 10px; /* Added space between buttons */
+            }
+
+                .search-container button:hover {
+                    background-color: #0056b3;
+                }
+
+        /* Style for the dropdown container */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Style for the suggestions dropdown */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            max-height: 200px; /* Set a maximum height for scrolling */
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Hide horizontal scrolling */
+            width: 100%; /* Ensure it occupies the same width as the input */
+        }
+
+            /* Style for individual suggestion items */
+            .dropdown-content div {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+                cursor: pointer;
+            }
+
+                .dropdown-content div:hover {
+                    background-color: #f1f1f1;
+                }
+
+        /* New CSS styles for the cus_detailsTable box */
+        #cus_detailsTable {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        #cus_detailsDataGrid, #cus_bankdetailsDataGrid, #cus_bankdetailsDataGrid_Modify {
+            overflow-y: auto;
+            font-size: 14px;
+            width: 100%;
+            font-weight: 500;
+            border-collapse: collapse; /* Ensures table borders are collapsed */
+        }
+
+            #cus_detailsDataGrid th,
+            #cus_detailsDataGrid td, #cus_bankdetailsDataGrid th,
+            #cus_bankdetailsDataGrid td, #cus_bankdetailsDataGrid_Modify th,
+            #cus_bankdetailsDataGrid_Modify td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: center; /* Adjust alignment as needed */
+            }
+
+            /* Styling for table header */
+            #cus_detailsDataGrid th, #cus_bankdetailsDataGrid th, #cus_bankdetailsDataGrid_Modify th {
+                background-color: #4D759A; /* Light blue background color for headers */
+                color: white; /* Dark text color for headers */
+            }
+
+
+        /* Adjusted styles for input fields */
+        .input-group {
+            width: 100%; /* Ensures inputs take full width of parent container */
+        }
+
+        .input-group-text {
+            width: 140px; /* Adjusted width for the label spans */
+            text-align: left; /* Left-align text in labels */
+        }
+
+        .form-control {
+            width: calc(100% - 150px); /* Adjusted width for input fields */
+        }
+
+        .ui-menu-item-custom {
+            font-size: 8px; /* Adjust this value as needed */
+            padding: 10px;
+        }
+
+        /* Ensure the autocomplete dropdown has scrolling */
+        .ui-autocomplete {
+            max-height: 200px; /* Height before scrolling starts */
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Hide horizontal scrolling */
+            /* Optional: add padding and border to make it more visible */
+            padding: 0;
+            border: 1px solid #ccc;
+        }
+
+        /* Additional styles for better appearance */
+        .ui-menu-item-custom {
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+
+            .ui-menu-item-custom:hover {
+                background-color: #f1f1f1;
+            }
+
+
+        .modify-bank-details-container {
+            border: 1px solid #ccc; /* Border style */
+            padding: 10px; /* Padding inside the container */
+            border-radius: 5px; /* Rounded corners */
+            display: inline-block; /* Display as inline block */
+            min-width: fit-content; /* Adjust width based on content */
+            margin: 0 auto; /* Center the container horizontally */
+        }
+
+        .modify-bank-details {
+            color: blue; /* Text color */
+            font-size: 16px; /* Font size */
+        }
+
+        /* ----------------------------------------------------------------------*/
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .popup {
+            display: none;
+            position: absolute;
+            width: 600px; /* Fixed width */
+            height: 500px; /* Fixed height */
+            background-color: white;
+            border: 1px solid #888;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+            cursor: move;
+            overflow: hidden; /* Ensure content doesn't overflow */
+        }
+
+
+        .popup-content {
+            width: 100%;
+            height: 100%;
+            /* overflow: auto;*/ /* Enable scrolling */
+        }
+
+            .popup-content img {
+                max-width: 100%;
+                max-height: 100%;
+                display: block;
+                margin: auto;
+            }
+
+            .popup-content object {
+                width: 100%;
+                height: 100%;
+            }
+
+        .popup-header {
+            background-color: #f1f1f1;
+            padding: 10px;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .popup-title {
+            margin: 0;
+        }
+
+        .close {
+            color: #000;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+            .close:hover {
+                color: red;
+            }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 999;
+        }
+    </style>
+    @*Table grid style*@
+    <style>
+        #emi_detailsDataGrid {
+            overflow-y: auto;
+            font-size: 12px;
+            width: 100%;
+            font-weight: 500;
+            border-collapse: collapse;
+        }
+
+            #emi_detailsDataGrid th, #emi_detailsDataGrid td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: center;
+            }
+
+            /* Styling for table header */
+            #emi_detailsDataGrid th {
+                background-color: #4D759A;
+                color: white;
+            }
+
+            /* Align CustomerName to left */
+            #emi_detailsDataGrid td.align-left {
+                text-align: left;
+            }
+
+            /* Align DueAmount to right */
+            #emi_detailsDataGrid td.align-right {
+                text-align: right;
+            }
+
+            /* Style for checkboxes in the header and rows */
+            #emi_detailsDataGrid td input[type="checkbox"], #emi_detailsDataGrid th input[type="checkbox"] {
+                margin: 0;
+                padding: 0;
+            }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+
+function searchData() {
+    //alert(1);
+    var fromDt = document.getElementById("from_dt").value;
+    var toDt = document.getElementById("to_dt").value;
+    var dueCount = document.getElementById("due_count").value;
+
+    // Validate inputs
+    /*if (!fromDt) {
+        alert("Please select From Date.");
+        return;
+    }
+    if (!toDt) {
+        alert("Please select To Date.");
+        return;
+    }
+
+    if (!dueCount) {
+        alert("Please enter Due Count.");
+        return;
+    }*/
+
+    if (fromDt && !toDt)
+    {
+        alert("Please select To Date.");
+        return;
+    }
+    if (fromDt && !toDt)
+    {
+        alert("Please select From Date.");
+        return;
+    }
+
+
+
+    // Prepare the data to send to the controller
+    var data = {
+        fromDate: fromDt,
+        toDate: toDt,
+        dueCount: dueCount
+    };
+
+    // AJAX request to the controller
+    $.ajax({
+        url: '@Url.Action("SearchData", "UPI")', // Controller action URL
+        type: 'POST',
+        data: data,
+        success: function (response) {
+            var tableBody = document.getElementById("emi_detailsDataGrid").getElementsByTagName("tbody")[0];
+            tableBody.innerHTML = ""; // Clear existing table rows
+
+            // Check if there are any results
+            if (response && response.length > 0) {
+                response.forEach(function (row) {
+                    var tr = document.createElement("tr");
+
+                    // Add the checkbox for each row
+                    tr.innerHTML = "<td><input type='checkbox' class='rowCheckbox' /></td>" +
+                                   "<td>" + row.No + "</td>" +
+                                   "<td>" + row.LoanNo + "</td>" +
+                                   "<td>" + row.DueCount + "</td>" +
+                                   "<td>" + row.CustomerID + "</td>" +
+                                   "<td class='align-left'>" + row.CustomerName + "</td>" +
+                                   "<td>" + row.MobileNo + "</td>" +
+                                   "<td class='align-right'>" + row.DueAmount + "</td>" +
+                                   "<td>" + row.DueDate + "</td>" +
+                                  "<td style='width: 80px;'>" +
+    "<input type='text' class='amountEdit' style='width: 70px;' value='" + row.DueAmount + "' " +
+    "onkeyup=\"if(/\\D/g.test(this.value)) this.value = this.value.replace(/\\D/g,'')\" " +
+    "oninput=\"if(parseFloat(this.value) > " + row.DueAmount + ") { alert('Amount should not exceed Due Amount.'); this.value = " + row.DueAmount + "; }\" />" +
+"</td>";
+
+                    tableBody.appendChild(tr);
+                });
+
+                // Show the table if data is found and hide the 'No data' message
+                document.getElementById("div_content").style.display = "block"; // Show the content div
+
+            } else {
+
+                noDataLabel.style.display = "block";
+                var tr = document.createElement("tr");
+                tr.innerHTML = "<td colspan='9'>No data found</td>";
+                tableBody.appendChild(tr);
+
+                // Hide the table and show the 'No data' message
+                document.getElementById("div_content").style.display = "none"; // Show the content div
+                alert("No data found");
+            }
+        },
+        error: function () {
+            alert("Error fetching data.");
+        }
+    });
+
+    // "Select All" checkbox functionality
+    document.getElementById("selectAllCheckbox").addEventListener("change", function () {
+        var checkboxes = document.querySelectorAll(".rowCheckbox");
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = document.getElementById("selectAllCheckbox").checked;
+        });
+    });
+
+    // Handle individual checkbox selection
+    document.getElementById("emi_detailsDataGrid").addEventListener("change", function (e) {
+        if (e.target && e.target.classList.contains("rowCheckbox")) {
+            var allCheckboxes = document.querySelectorAll(".rowCheckbox");
+            var allChecked = Array.from(allCheckboxes).every(function (checkbox) {
+                return checkbox.checked;
+            });
+            document.getElementById("selectAllCheckbox").checked = allChecked;
+        }
+    });
+}
+
+
+
+
+
+    $('#selectAll').on('change', function () {
+        var isChecked = $(this).prop('checked');
+        $('.rowCheckbox').prop('checked', isChecked);
+    });
+
+    function submitSelectedRows(Amttype) {
+    // Collect all selected rows
+
+    var type=Amttype;
+   // alert (type);
+
+    var validDate = document.getElementById("valid_dt").value;
+    if (!validDate) {
+        alert("Please choose message validity date");
+        return; // Stop the function if no date is selected
+    }
+
+    var selectedRows = [];
+    document.querySelectorAll(".rowCheckbox:checked").forEach(function (checkbox) {
+        var row = checkbox.closest("tr");
+        var rowData;
+
+        if(type=="0")
+        {
+
+            rowData = {
+                LoanNo: row.cells[2].innerText,             // LoanNo is in the 3rd column (index 2)
+                CustomerID: parseInt(row.cells[4].innerText) || 0, // CustomerID is in the 5th column (index 4), parsing it as integer
+                CustomerName: row.cells[5].innerText,       // CustomerName is in the 6th column (index 5)
+                MobileNo: row.cells[6].innerText,           // MobileNo is in the 7th column (index 6)
+                DueAmount: parseFloat(row.cells[7].innerText) || 0, // DueAmount from the input field, default to 0 if empty
+                DueCount: parseInt(row.cells[3].innerText) || 0,  // DueCount is in the 4th column (index 3), default to 0 if empty
+                Msged_EMI_Amt: 0
+
+             };
+
+        }
+
+         if(type=="1")
+         {
+
+             rowData = {
+                 LoanNo: row.cells[2].innerText,             // LoanNo is in the 3rd column (index 2)
+                 CustomerID: parseInt(row.cells[4].innerText) || 0, // CustomerID is in the 5th column (index 4), parsing it as integer
+                 CustomerName: row.cells[5].innerText,       // CustomerName is in the 6th column (index 5)
+                 MobileNo: row.cells[6].innerText,           // MobileNo is in the 7th column (index 6)
+                 DueAmount: parseFloat(row.cells[7].innerText) || 0, // DueAmount from the input field, default to 0 if empty
+                 DueCount: parseInt(row.cells[3].innerText) || 0,  // DueCount is in the 4th column (index 3), default to 0 if empty
+                 Msged_EMI_Amt:parseFloat(row.querySelector('.amountEdit').value) || 0
+
+              };
+
+         }
+
+
+
+        selectedRows.push(rowData);
+    });
+
+    if (selectedRows.length === 0) {
+        alert("Please select at least one row.");
+        return;
+    }
+
+    // Send the selected rows to the controller using AJAX
+    $.ajax({
+        url: '@Url.Action("SubmitSelectedRows", "UPI")',
+        type: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify({  selectedData: JSON.stringify(selectedRows),type: type,validDate:validDate }),
+
+        success: function (response) {
+
+            if (response.success) {
+
+
+                Swal.fire({
+                    title: "",
+                    text: response.message,
+                    icon: "success",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    window.location.reload();
+                });
+            } else {
+                Swal.fire({
+                    title: "",
+                    text: response.message,
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+
+        },
+        error: function (xhr, status, error) {
+            Swal.fire({
+                title: "An error occurred while saving the data. Please try again.",
+                text: "Error: " + error,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        }
+    });
+}
+
+
+
+
+        function validateDateRange() {
+            const inputDate = document.getElementById('valid_dt');
+            const errorSpan = document.getElementById('date-error');
+
+            // Get today's date in YYYY-MM-DD format
+            const today = new Date();
+
+            const dd = String(today.getDate()).padStart(2, '0');
+            const mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+            const yyyy = today.getFullYear();
+            const formattedDate = yyyy + '-' + mm + '-' + dd;
+
+            // Set the min attribute to today's date
+            inputDate.setAttribute('min', formattedDate);
+
+            // Check if the selected date is in the past
+            if (inputDate.value < formattedDate) {
+                errorSpan.textContent = 'Select today/any date in the future.';
+                document.getElementById('valid_dt').value = new Date().toISOString().split('T')[0];
+
+            } else {
+                errorSpan.textContent = '';
+            }
+        }
+
+
+        window.onload = validateDateRange;
+    </script>
+
+
+
+
+</head>
+<body onload="document.getElementById('valid_dt').value = new Date().toISOString().split('T')[0];">
+    <div class="app-main__inner">
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6>UPI LINK GENERATION</h6>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <div style="padding: 5px;">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="input-container">
+
+                            <input type="date" id="from_dt" name="from_dt" />
+                            <label for="from_dt">From Date</label>
+                            @*<span id="date-error" style="color: red; font-size: small;"></span>*@
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="date" id="to_dt" name="to_dt" />
+                            <label for="to_dt">To Date</label>
+                            @*<span id="date-error" style="color: red; font-size: small;"></span>*@
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="text" id="due_count" name="due_count" value="1" MaxLength="2" autocomplete="off" style="width:120px" onkeyup="if(/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')" required />
+                            <label for="due_count">Due Count</label>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+
+                            <button type="button" id="searchButton" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary" onclick="searchData()">Search</button>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <label id="noDataLabel" style="display: none; color: maroon;">No Records Available.</label>
+        <div class="card-body" id="div_content" style="display:none">
+
+            @*<form id="UPILink_form">
+
+                </form>*@
+
+            <div style="overflow-x:auto; max-height: 280px; ">
+                <table id="emi_detailsDataGrid" class="table table-hover table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAllCheckbox" /></th> <!-- Checkbox for select all -->
+                            <th>No</th>
+                            <th>Loan No</th>
+                            <th>Due Count</th>
+                            <th>Customer ID</th>
+                            <th class="align-left">Customer Name</th> <!-- Left-aligned -->
+                            <th>Mobile No</th>
+                            <th class="align-right">Due Amount</th> <!-- Right-aligned -->
+                            <th>Due Date</th>
+                            <th>AmtEdit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Results will be appended here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="divider"></div>
+
+
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="input-container">
+
+                        <input type="date" id="valid_dt" name="valid_dt" oninput="validateDateRange()" required />
+                        <label for="valid_dt">Message Link Valid Upto</label>
+                        <span id="date-error" style="color: red; font-size: small;"></span>
+
+
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="input-container">
+
+                        @*<button type="button" id="Msg_btn1" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary" onclick="submitSelectedRows()">Send Msg1</button>*@
+                        <button type="button" id="Msg_btn1" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary" onclick="submitSelectedRows(0)">Send-Zero Amt</button>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="input-container">
+
+
+                        <button type="button" id="Msg_btn2" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary" onclick="submitSelectedRows(1)">Send-EMI Amt</button>
+
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="input-container">
+
+                        <button type="button" id="reset" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary" style="width:120px" onclick="location.reload();">Reset</button>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>
+
+
+

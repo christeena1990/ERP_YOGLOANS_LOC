@@ -1,0 +1,312 @@
+﻿
+
+@model ERP_YOGLOANS_LOCAL.Models.ModuleMenuViewModel
+
+
+<ul class="vertical-nav-menu">
+    <li class="app-sidebar__heading">Menu</li>
+    <li>
+        <a href="#" style="color: maroon; font-weight: bold;font-size:16px;">
+            <i class="metismenu-icon pe-7s-rocket"></i>
+            @*---- db icon -----*@
+
+            @*<i class="metismenu-icon fa fa-database icon-gradient bg-ripe-malin"></i>*@
+            @Model.ModuleName
+            <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+
+        </a>
+        <ul class="submenu">
+
+            @*///////////////// with null check july 26  ////////////////////////*@
+
+            @*@if (Model != null && Model.Menus != null)
+            {
+                foreach (var menu in Model.Menus)
+                {
+                    var subMenus = Model.SubMenus != null ? Model.SubMenus.Where(sm => sm.ParentMenuId == menu.SubMenuId) : Enumerable.Empty<dynamic>();
+
+                    <li>
+                        @if (!subMenus.Any())
+                        {
+                            <a href="@menu.SubMenuUrl" class="menu-link" data-menu-id="@menu.SubMenuId">
+                                <i class="metismenu-icon"></i>@menu.SubMenuName
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="#" class="menu-toggle" data-menu-id="@menu.SubMenuId">
+                                <i class="metismenu-icon"></i>@menu.SubMenuName
+                                <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                            </a>
+                            <ul class="sub-submenu">
+                                @foreach (var submenu in subMenus)
+                                {
+                                    <li>
+                                        <a href="@submenu.SubMenuUrl" class="submenu-link" data-submenu-id="@submenu.SubMenuId">
+                                            <i class="metismenu-icon"></i>@submenu.SubMenuName
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </li>
+                }
+            }
+            else
+            {
+                <li>No menus available</li>
+            }*@
+
+
+            @foreach (var menu in Model.Menus)
+            {
+                var subMenus = Model.SubMenus.Where(sm => sm.ParentMenuId == menu.SubMenuId);
+                <li>
+                    @if (!subMenus.Any())
+                    {
+                        <a href="@menu.SubMenuUrl" class="menu-link" data-menu-id="@menu.SubMenuId">
+                            <i class="metismenu-icon"></i>@menu.SubMenuName
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="#" class="menu-toggle" data-menu-id="@menu.SubMenuId">
+                            <i class="metismenu-icon"></i>@menu.SubMenuName
+                            <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                        </a>
+                        <ul class="sub-submenu">
+                            @foreach (var submenu in subMenus)
+                            {
+                                <li>
+                                    <a href="@submenu.SubMenuUrl" class="submenu-link" data-submenu-id="@submenu.SubMenuId">
+                                        <i class="metismenu-icon"></i>@submenu.SubMenuName
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </li>
+            }
+
+
+            @* Conditional extra menus based on ModuleId == 25 *@
+            @*@if (Model.ModuleName == "CUSTOMER")*@
+            @if (Session["module_id"].ToString() == "25")
+            {
+
+                <li>
+                    <a href="#" class="menu-toggle">
+                        <i class="metismenu-icon pe-7s-plugin"></i> BLANK FORMS
+                        <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                    </a>
+                    <ul class="sub-submenu">
+                        <li>
+                            <a href="#" onclick="openInNewTab('@Url.Action("Form60blank","Customer_Form60blank")')">FORM 60</a>
+                        </li>
+                        <li>
+                            <a href="#" onclick="openInNewTab('@Url.Action("Declarationblank","Customer_Declarationblank")')">DECLARATION</a>
+                        </li>
+                    </ul>
+                </li>
+
+
+
+            }
+
+
+
+        </ul>
+    </li>
+</ul>
+
+<style>
+    /* Hide submenus by default */
+    .submenu ul,
+    .sub-submenu {
+        display: none;
+    }
+
+    /* Highlighting styles */
+    .mm-active a {
+        color: #007bff; /* Change color as needed */
+    }
+
+    .highlighted {
+        /* background-color: #eff9ff;*/
+        background-color: #D6EFFF;
+        /* Change background color as needed */
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        // Function to highlight the selected menu and submenu
+        function highlightSelectedMenu() {
+            var selectedMenuId = localStorage.getItem('selectedMenuId');
+            var selectedSubmenuId = localStorage.getItem('selectedSubmenuId');
+
+            // Clear all previous highlights
+            $('.menu-toggle').closest('li').removeClass('highlighted');
+            $('.submenu-link').closest('li').removeClass('highlighted');
+            $('.menu-toggle').closest('li').removeClass('mm-active');
+
+            if (selectedMenuId) {
+                $('[data-menu-id="' + selectedMenuId + '"]').closest('li').addClass('mm-active');
+                $('[data-menu-id="' + selectedMenuId + '"]').next('.sub-submenu').slideDown();
+            }
+
+            if (selectedSubmenuId) {
+                $('[data-submenu-id="' + selectedSubmenuId + '"]').closest('li').addClass('highlighted');
+            }
+        }
+
+        // Load the selected menu and submenu on page load
+        highlightSelectedMenu();
+
+        // Handle image link clicks
+        $('.image-link').click(function () {
+            // Clear localStorage values
+            localStorage.removeItem('selectedMenuId');
+            localStorage.removeItem('selectedSubmenuId');
+        });
+
+        // Toggle submenu visibility on click
+        $('.menu-toggle').click(function (e) {
+            e.preventDefault();
+            var menuId = $(this).data('menu-id');
+
+            // Clear submenu selection and set menu selection
+            localStorage.removeItem('selectedSubmenuId');
+            localStorage.setItem('selectedMenuId', menuId);
+
+            // Update highlighting
+            $('.menu-toggle').closest('li').removeClass('highlighted');
+            $(this).closest('li').toggleClass('highlighted');
+
+            // Toggle submenu visibility
+            $(this).next('.sub-submenu').slideToggle();
+            $('.menu-toggle').not(this).next('.sub-submenu').slideUp();
+            $('.menu-toggle').not(this).closest('li').removeClass('highlighted');
+        });
+
+        // Handle submenu link clicks
+        $('.submenu-link').click(function () {
+            var submenuId = $(this).data('submenu-id');
+
+            // Set submenu selection
+            localStorage.setItem('selectedSubmenuId', submenuId);
+
+            // Update highlighting
+            $('.submenu-link').closest('li').removeClass('highlighted');
+            $(this).closest('li').addClass('highlighted');
+        });
+
+        // Handle menu link clicks
+        $('.menu-link').click(function () {
+            var menuId = $(this).data('menu-id');
+
+            // Clear submenu selection and set menu selection
+            localStorage.removeItem('selectedSubmenuId');
+            localStorage.setItem('selectedMenuId', menuId);
+
+            // Update highlighting
+            $('.menu-toggle').closest('li').removeClass('highlighted');
+            $(this).closest('li').addClass('mm-active');
+        });
+    });
+</script>
+
+
+
+@*////////////////////////////// last updation///////////////////////////////*@
+
+
+
+
+@*@model ERP_YOGLOANS_LOCAL.Models.ModuleMenuViewModel
+
+    <ul class="vertical-nav-menu">
+        <li class="app-sidebar__heading">Menu</li>
+        <li class="mm-active">
+            <a href="#">
+                <i class="metismenu-icon pe-7s-rocket"></i>
+                @Model.ModuleName
+                <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+            </a>
+            <ul class="submenu">
+                @foreach (var menu in Model.Menus)
+                {
+                    <li>
+                        <a href="@(!string.IsNullOrEmpty(menu.SubMenuUrl) ? menu.SubMenuUrl : "#")" class="mm-active">
+                            <i class="metismenu-icon"></i>@menu.SubMenuName
+                            @if (Model.SubMenus.Any(sm => sm.ParentMenuId == menu.SubMenuId))
+                            {
+                                <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                            }
+                        </a>
+                        @{
+                            var subMenus = ((IEnumerable<dynamic>)Model.SubMenus).Where(sm => sm.ParentMenuId == menu.SubMenuId);
+                        }
+                        @if (subMenus.Any())
+                        {
+                            <ul class="sub-submenu">
+                                @foreach (var submenu in subMenus)
+                                {
+                                    <li>
+                                        <a href="@submenu.SubMenuUrl">
+                                            <i class="metismenu-icon"></i>@submenu.SubMenuName
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    </li>
+                }
+            </ul>
+        </li>
+    </ul>
+
+
+
+
+
+
+
+    <style>
+        /* Hide submenus by default */
+        .submenu ul {
+            display: none;
+        }
+
+        /* Show submenus on hover or when active */
+        .submenu li:hover > ul,
+        .submenu li.mm-active > ul {
+            display: block;
+        }
+
+        .sub-submenu {
+            display: none;
+        }
+
+        .submenu li:hover > .sub-submenu,
+        .submenu li.mm-active > .sub-submenu {
+            display: block;
+        }
+    </style>
+
+
+    <script>
+        $(document).ready(function () {
+            // Toggle submenu visibility on click
+            $('.menu-toggle').click(function (e) {
+                e.preventDefault();
+                $(this).next('.sub-submenu').slideToggle();
+            });
+        });
+    </script>*@
+
+
+

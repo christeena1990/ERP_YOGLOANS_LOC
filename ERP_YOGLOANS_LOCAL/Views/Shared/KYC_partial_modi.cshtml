@@ -1,0 +1,111 @@
+﻿
+@using (Html.BeginForm("Customer_modification", "Customer_modification", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div id="up_img">
+        @if (!string.IsNullOrEmpty(ViewBag.Message))
+        {
+            <p>@ViewBag.Message</p>
+        }
+
+        <input type="file" id="fileInput" style="font-size:15px;" name="file" onchange="fileSelected_phot()" /><br />&nbsp;&nbsp;&nbsp;
+        <input type="button" value="Upload" id="uploadButton" style="display: none; font-size:15px;" onclick="uploadFile_add()" />
+    </div>
+}
+
+<script>
+    function webbro() {
+        // Hide the webcam container
+        $("#webcamContainer").hide();
+
+        // Show the photo div
+        $("#photodiv").show();
+
+        resetWebcam();
+
+        // Show the 'up_img' div
+        $("#up_img").show();
+    }
+
+
+    function resetWebcam() {
+
+        $("#fileInput").val(''); // Clear the file input
+
+    }
+
+
+
+    function resetWebcam() {
+
+        $("#fileInput").val(''); // Clear the file input
+
+        $("#up_img").hide();
+    }
+
+    function fileSelected_phot() {
+        var fileInput = document.getElementById('fileInput');
+        var uploadButton = document.getElementById('uploadButton');
+
+        // Check if a file is selected
+        if (fileInput.files.length > 0) {
+            // Show the upload button
+            uploadButton.style.display = 'inline-block';
+        } else {
+            // Hide the upload button
+            uploadButton.style.display = 'none';
+        }
+    }
+
+
+    function uploadFile_add() {
+        var fileInput = document.getElementById('fileInput');
+        var file = fileInput.files[0];
+        var image = document.getElementById('fileInput').files[0];
+        if (image && image.size > 1 * 1024 * 1024) { // Check if the first file exceeds 3 MB
+            alert("The file size exceeds 1 MB limit.");
+            return false; // Prevent form submission
+        }
+        if (file) {
+            // Check if the file type is an image
+            if (!file.type.match('image.*')) {
+                alert("Please upload jpg, jpeg, png files.");
+                return;
+            }
+
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var photoDisplay = document.getElementById('photoDisplay');
+                $('#photoDiv').show();
+                photoDisplay.src = e.target.result;
+
+                // Sending file data to the controller using AJAX
+                var formData = new FormData();
+                formData.append('file', file);
+
+                $.ajax({
+                    url: '/Customer_modification/UploadImage_modification',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);
+                            $("#up_img").hide();
+                        } else {
+                            alert('Upload failed: ' + response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Error uploading file.');
+                    }
+                });
+            };
+            reader.readAsDataURL(file);
+        } else {
+            alert('Please select a file.');
+        }
+    }
+
+
+</script>

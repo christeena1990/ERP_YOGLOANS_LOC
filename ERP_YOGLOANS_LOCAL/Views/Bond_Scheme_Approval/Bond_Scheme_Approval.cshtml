@@ -1,0 +1,542 @@
+﻿@model ERP_YOGLOANS_LOCAL.Models.NCD_Models.NCD_Debenture_Scheme_Model
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .hidden-column {
+            display: none;
+        }
+    </style>
+    <style>
+
+        /*---------------------------table close&Open-----------------------------*/
+
+        .card-title {
+            display: flex;
+            align-items: center;
+        }
+
+            .card-title span {
+                margin-right: 8px; /* Spacing between arrow and title */
+            }
+        /* -------------------------------------------------*/
+
+        button {
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: #f5f5f5;
+            color: #333;
+            border-radius: 5px;
+        }
+
+            button.selected {
+                background-color: lightblue;
+                color: #007FFF; /* Add this line if you want to change text color when selected */
+            }
+
+        .btn-outline-primary:hover {
+            background-color: green; /* Your desired hover background color */
+            color: white; /* Text color */
+            border-color: green; /* Match border color with background */
+        }
+    </style>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+
+</head>
+
+<body>
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Bond Scheme Registration  Approval</h6>
+            </div>
+        </div>
+        <div class="card-body">
+            <div style="width: 100%; overflow-y: auto; max-height: 150px;">
+                <!-- Adjust max-height as needed -->
+                <div id="ncd_schemetbl1" style="overflow-y: auto; max-height: 150px; position: relative;">
+                    <table id="modifiedDataGrid" class="table table-hover table-striped table-bordered" style="width: 100%; font-size: 14px; font-weight: 500;">
+                        <thead>
+                            <tr>
+                                <th style="background-color: #4D759A; color: white;">#</th>
+                                @{
+                                    var fieldDisplayNames = new Dictionary<string, string>
+                                                                                                                             {
+         {"issue_no", "Issue No"},
+         {"duration", "Duration"},
+         {"interest_type", "Interest Type"},
+         {"interest_rate", "Interest Rate"},
+         {"mon_Rate", "Monthly Interest"},
+         {"cu_Rate", "Cumulative Interest"},
+         {"total_bond_amount", "Total Amount"},
+         {"reg_startdate", "Registration Start Date"},
+         {"reg_enddate", "Registration End Date"}
+     };
+
+
+                                    foreach (var column in Model.Columns)
+                                    {
+                                        <th style="background-color: #4D759A; color: white;">
+                                            @(fieldDisplayNames.ContainsKey(column) ? fieldDisplayNames[column] : column)
+                                        </th>
+                                    }
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Data != null && Model.Data.Count > 0)
+                            {
+                                foreach (var item in Model.Data)
+                                {
+
+                                    <tr onclick="selectRow(this);" style="cursor: pointer;">
+                                        @*<td>
+                                                <a href="#" onclick="showDetails('@item["issue_no"]');">
+                                                    <span>&#128065;</span>
+                                                </a>
+                                            </td>*@
+                                        <td>
+                                            <a href="#" onclick=" showDetails('@item["issue_no"]'); setIssueNo('@item["issue_no"]');">
+                                                <span>&#128065;</span>
+                                            </a>
+                                        </td>
+
+                                        @foreach (var column in Model.Columns)
+                                        {
+                                            <td>
+                                                @(item.ContainsKey(column) ? item[column] : "")
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="@(Model.Columns.Count + 1)" style="text-align: center;">No data found for scheme approval.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <script>
+                    function selectRow(row) {
+                        const rows = document.querySelectorAll("#modifiedDataGrid tbody tr");
+                        rows.forEach(r => {
+                            r.classList.remove('selected');
+                        });
+                        row.classList.add('selected');
+                    }
+                </script>
+
+                <style>
+                    /* Table styles */
+                    #modifiedDataGrid {
+                        border-collapse: collapse; /* Ensure no double borders */
+                    }
+
+                        #modifiedDataGrid th {
+                            position: sticky;
+                            top: 0; /* Stick to the top */
+                            z-index: 10; /* Ensure it stays above other elements */
+                            background-color: #4D759A; /* Header background color */
+                            color: white; /* Header text color */
+                        }
+
+                        #modifiedDataGrid tbody tr:nth-child(odd) {
+                            background-color: #f9f9f9; /* Light gray for odd rows */
+                        }
+
+                        #modifiedDataGrid tbody tr:nth-child(even) {
+                            background-color: #ffffff; /* White for even rows */
+                        }
+
+                    .selected {
+                        background-color: #e0f7fa !important; /* Light color for the selected row */
+                    }
+                </style>
+
+            </div>
+
+            <br />
+
+            <div id="details" style="display:none;">
+
+                @*------------------ Div for Active Loans Details -----------------------*@
+                <div class="main-card mb-2 card">
+                    <div class="card-body">
+                        <h5 class="card-title" id="toggleButtonScheme" style="cursor: pointer;">
+                            <span id="arrowScheme" style="font-size: 12px;">&#9654;</span> <!-- Right arrow for collapsed state -->
+                            Scheme Details
+                        </h5>
+                        <div id="div_activeloan" @*style="display: none;"*@>
+                            <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
+                                <div class="vertical-timeline-item vertical-timeline-element">
+                                    @* Details will be populated here *@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="main-card mb-3 card" id="canvaserdetails" style="display:none;">
+                            <div class="card-body" style="text-align:center;">
+                                <h5 class="card-title" id="toggleButtonCommission" style="cursor:pointer;">
+                                    <span id="arrowCommission" style="font-size: 12px;">&#9654;</span>  <!-- Right arrow for collapsed state -->
+                                    Canvasser Commission
+                                </h5>
+                                <div id="tableContainerCommission" style="display: none;">
+                                    <table class="mb-0 table table-bordered" id="canvasserTable" style="display:none;">
+                                        <thead style="font-size:12px;">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Amount Range</th>
+                                                <th>Commission</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="font-size:11px;">
+                                            <!-- Data will be populated here -->
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </div>
+                <div id="buttonDiv" class="col-md-6 col-lg-6" style="margin-left: 210px; display: none;">
+
+                    <button class="btn btn-success" style="height: 38px; width:100px;" onclick="showApprove('Approve')">Approve</button>
+                    <button class="btn btn-gradient-danger" style="height: 38px; width:100px;" onclick="showReject('Reject')">Reject</button>
+                    <button class="btn btn-gradient-secondary" style="height: 38px; width:100px;" onclick="refreshPage()">Refresh</button>
+
+
+                </div>
+
+                <!--<div class="col-md-6 col-lg-6">-->
+                    @*<button class="mb-2 mr-2 btn-transition btn btn-outline-primary" onclick="showApprove('Approve')" style="background-color:green;height:40px;width:100px;border-radius:8px;color:white;border-color:white;">Approve</button>*@
+                    @*<button onclick="showApprove('Approve')" style="background-color:green;height:40px;width:100px;border-radius:8px;color:white;border-color:white;">Approve</button>
+            <button onclick="showReject('Reject')" style="background-color:red;height:40px;width:100px;border-radius:8px;color:white;border-color:white;">Reject</button>
+            <button onclick="refreshPage()" style="background-color:#007FFF;height:40px;width:100px;border-radius:8px;color:white;border-color:white;">Refresh</button>*@
+
+                    <!--<button class="button approve" onclick="showApprove('Approve')">Approve</button>
+                    <button class="button reject" onclick="showReject('Reject')">Reject</button>
+                    <button class="button refresh" onclick="refreshPage()">Refresh</button>
+
+
+                </div>
+                <style>
+                    .button {
+                        height: 40px;
+                        width: 100px;
+                        border-radius: 8px;
+                        color: white;
+                        border: none;
+                        cursor: pointer;
+                        transition: background-color 0.3s, transform 0.2s;
+                        font-size: 16px; /* Adjust font size */
+                        font-weight: bold; /* Make text bold */
+                    }
+
+                    /* Button Colors */
+                    .approve {
+                        background-color: green;
+                    }
+
+                    .reject {
+                        background-color: red;
+                    }
+
+                    .refresh {
+                        background-color: #007FFF;
+                    }
+
+                    /* Hover Effects */
+                    .approve:hover {
+                        background-color: darkgreen; /* Darker shade for hover */
+                        transform: translateY(-2px); /* Slight lift effect */
+                    }
+
+                    .reject:hover {
+                        background-color: darkred; /* Darker shade for hover */
+                        transform: translateY(-2px); /* Slight lift effect */
+                    }
+
+                    .refresh:hover {
+                        background-color: #005BB5; /* Darker shade for hover */
+                        transform: translateY(-2px); /* Slight lift effect */
+                    }
+                </style>-->
+                <!--<div id="btn">-->
+                @*<button id="apprv_btn" class="btn-wide mb-2 mr-2 btn-pill btn btn-outline-primary">Approve</button>*@
+
+
+                <!--<button class="mb-2 mr-2 btn-pill btn btn-success">&nbsp;Approve&nbsp; </button>
+
+        <button class="mb-2 mr-2 btn-pill btn btn-danger">&nbsp;Reject&nbsp;  </button>
+
+        <button class="mb-2 mr-2 btn-pill btn btn-primary">&nbsp;Reset &nbsp; </button>
+    </div>-->
+            </div>
+        </div>
+
+</body>
+</html>
+<script>
+    $(document).ready(function () {
+        // Toggle the visibility of the Scheme Details
+        $("#toggleButtonScheme").click(function () {
+            var div = $("#div_activeloan");
+            var arrow = $("#arrowScheme");
+
+            div.toggle(); // Toggle visibility of the div
+
+            // Change the arrow direction based on visibility
+            if (div.is(":visible")) {
+                arrow.html("&#9660;"); // Down arrow for expanded state
+            } else {
+                arrow.html("&#9654;"); // Right arrow for collapsed state
+            }
+        });
+    });
+
+    function showDetails(issueNo) {
+    $.ajax({
+        url: '@Url.Action("GetDetails", "Bond_Scheme_Approval")',
+        type: 'GET',
+        data: { issue_no: issueNo },
+        success: function (data) {
+            // Clear existing content in div_activeloan
+            var divActiveLoan = $("#div_activeloan .vertical-timeline-item");
+            divActiveLoan.empty(); // Clear any existing content
+
+            // Create HTML to populate the div
+            data.forEach(function (detail) {
+
+                // Determine the display value for Canvasser Commission
+                var canvasserCommissionDisplay = detail.CanvasserCommission_Bond === 'Y' ? 'Yes' : 'No';
+
+
+                var loanHtml = `
+                <div class="vertical-timeline-item vertical-timeline-element">
+                    <div>
+                        <span class="vertical-timeline-element-icon bounce-in">
+                            <i class="badge badge-dot badge-dot-xl badge-primary"> </i>
+                        </span>
+                        <div class="vertical-timeline-element-content bounce-in">
+                            <h4 class="timeline-title text-success">Details for Issue No: ${issueNo}</h4>
+                            <p>
+                                Total Fund: &nbsp;<span style="font-weight:bold;color:#3f6ad8">${detail.TotalBondAmount}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                Face Value: &nbsp;<span style="font-weight:bold;color:orange">${detail.FaceValue_Bond}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                Minimum Amount: &nbsp;<span style="font-weight:bold;color:purple">${detail.MinAmount_Bond}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                Number of Debenture: &nbsp;<span style="font-weight:bold;color:#16aaff">${detail.No_of_bond}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>
+                                Locking Period: &nbsp;<span style="font-weight:bold;color:red">${detail.LockingPeriod_Bond}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                               
+                                Meet Date: &nbsp;<span style="font-weight:bold;color:ash">${detail.MeetDate_Bond}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                               
+                                Senior Citizen Interest Rate: &nbsp;<span style="font-weight:bold;color:Brown">${detail.SeniorCitizenInterest_Bond}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                Canvasser Commission: &nbsp;<span style="font-weight:bold;color:#16aaff">${canvasserCommissionDisplay}</span>
+                                </p>
+                        </div>
+                    </div>
+                </div>
+                `;
+
+                // Append the new HTML to div_activeloan
+                divActiveLoan.append(loanHtml);
+                // Show or hide the canvasser details based on commission
+                if (detail.CanvasserCommission_Bond === 'Y') {
+                    $("#canvaserdetails").show(); // Show the canvasser details div
+                } else {
+                    $("#canvaserdetails").hide(); // Hide the canvasser details div
+                }
+            });
+
+            $('#div_activeloan').show(); // Ensure the details container is visible
+            $('#buttonDiv').show();
+            $('#details').show();
+            // Fetch and populate additional tables
+            fetchCanvasserIncentives(issueNo);
+
+        },
+        error: function (xhr, status, error) {
+            console.error("Error occurred: " + error);
+        }
+    });
+}
+
+function fetchCanvasserIncentives(issueNo) {
+    $.ajax({
+        url: '@Url.Action("GetCanvasserIncentives", "Bond_Scheme_Approval")',
+        type: 'GET',
+        data: { issue_no: issueNo },
+        success: function (data) {
+            var tableBody = $("#canvasserTable tbody");
+            tableBody.empty(); // Clear existing rows
+
+            if (data.length === 0) {
+                // If no data is returned, display a "No data found" message
+                var rowHtml = `
+                <tr>
+                    <td colspan="3" style="text-align:center;">No data found</td>
+                </tr>
+                `;
+                tableBody.append(rowHtml);
+            } else {
+                data.forEach(function (item, index) {
+                    var rowHtml = `
+                    <tr>
+                        <th>${index + 1}</th>  <!-- Index for numbering -->
+                        <td>${item.AmountRange_Bond}</td>
+                        <td>${item.Commission_Bond}</td>
+                    </tr>
+                    `;
+                    tableBody.append(rowHtml);
+                });
+            }
+
+            $('#canvasserTable').show(); // Show the table
+        },
+        error: function (xhr, status, error) {
+            console.error("Error fetching canvasser incentives: " + error);
+        }
+    });
+}
+
+</script>
+
+<script>
+    document.getElementById('toggleButtonCommission').onclick = function () {
+        var tableContainer = document.getElementById('tableContainerCommission');
+        var arrow = document.getElementById('arrowCommission');
+
+        if (tableContainer.style.display === 'none') {
+            tableContainer.style.display = 'block';  // Show the table
+            arrow.innerHTML = '&#9660;';  // Change to downward arrow
+        } else {
+            tableContainer.style.display = 'none';  // Hide the table
+            arrow.innerHTML = '&#9654;';  // Change to right arrow
+        }
+    };
+</script>
+
+@*-----------Return,Approve & Reject Message Box-------------*@
+
+<!-- Include SweetAlert2 CSS and JS -->
+<link rel="stylesheet" href="~/Content/cust_apprvlmsgbox1.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+@*<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>*@
+
+<script src="~/Scripts/jquery-3.6.4.min.js"></script>
+<script>
+
+    let selectedIssueNo; // Global variable to store the selected issue number
+
+    function setIssueNo(issueNo) {
+        selectedIssueNo = issueNo; // Store the selected issue number
+    }
+
+    function showApprove(action) {
+        Swal.fire({
+            title: "Approve?",
+            showDenyButton: true,
+            confirmButtonText: "Yes",
+            denyButtonText: "No",
+            customClass: 'custom-approve-button',
+            preConfirm: (reason) => {
+                return $.ajax({
+                    url: '/Bond_Scheme_Approval/ApproveIssue',
+                    type: 'POST',
+                    data: { issue_no: selectedIssueNo, reason: reason },
+                });
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var message = result.value.result; // Directly access the message
+
+                if (message.startsWith("0")) {
+                    Swal.fire({
+                        title: message,
+                        icon: "error"
+                    }).then(() => {
+                        window.location.href = '/Bond_Scheme_Approval/Bond_Scheme_Approval';
+                    });
+                } else {
+                    Swal.fire({
+                        title: message,
+                        icon: "success"
+                    }).then(() => {
+                        window.location.href = '/Bond_Scheme_Approval/Bond_Scheme_Approval';
+                    });
+                }
+            }
+        }).catch((error) => {
+            Swal.fire(
+                "Error",
+                "Failed to submit reason. Please try again.",
+                "error"
+            );
+        });
+    }
+    function showReject(action) {
+        Swal.fire({
+            title: "Do you want to Reject?",
+            showDenyButton: true,
+            confirmButtonText: "Yes",
+            denyButtonText: "No",
+            customClass: 'custom-approve-button',
+            preConfirm: (reason) => {
+                return $.ajax({
+                    url: '/Bond_Scheme_Approval/RejectIssue',
+                    type: 'POST',
+                    data: { issue_no: selectedIssueNo, reason: reason },
+                });
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var message = result.value.result; // Directly access the message
+
+                if (message.startsWith("0")) {
+                    Swal.fire({
+                        title: message,
+                        icon: "error"
+                    }).then(() => {
+                        window.location.href = '/Bond_Scheme_Approval/Bond_Scheme_Approval';
+                    });
+                } else {
+                    Swal.fire({
+                        title: message,
+                        icon: "success"
+                    }).then(() => {
+                        window.location.href = '/Bond_Scheme_Approval/Bond_Scheme_Approval';
+                    });
+                }
+            }
+        }).catch((error) => {
+            Swal.fire(
+                "Error",
+                "Failed to submit reason. Please try again.",
+                "error"
+            );
+        });
+    }
+
+
+    function refreshPage() {
+        location.reload(); // This will refresh the current page
+    }
+
+</script>
+

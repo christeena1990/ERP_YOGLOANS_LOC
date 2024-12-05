@@ -1,0 +1,495 @@
+﻿
+
+@using System.Data
+
+@model IEnumerable<ERP_YOGLOANS_LOCAL.Models.CustomerCreate_model>
+
+@{
+
+    var addressList = ViewData["AddressproofList"] as DataTable;
+    var addressproof = addressList.AsEnumerable().Select(row => new
+    {
+        kyc_id = row["kyc_id"],
+        kyc_name = row["kyc_name"]
+    });
+
+    var idList = ViewData["idproofList"] as DataTable;
+    var idproof = idList.AsEnumerable().Select(row => new
+    {
+        kyc_id = row["kyc_id"],
+        kyc_name = row["kyc_name"]
+    });
+}
+
+
+
+<html>
+<head>
+    <style>
+        .button_style {
+            background-color: #007FFF;
+            height: 40px;
+            width: 100px;
+            border-radius: 8px;
+            color: white;
+            border-color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    @*<form action="@Url.Action("Search_customer", "CustomerCreate")" method="post" id="search_form">*@
+    @*<div class="main-panel">
+        <div class="content">
+            <div class="page-inner">
+
+                <div class="col-md-12">
+                    <div class="card" style="background-color:#fcfcfc">
+                        <br />*@
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Search Customer</h6>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <form id="otpForm" action="@Url.Action("ResendOtp", "CustomerCreate")" method="post">
+
+                <div class="row" style="width:140%;">
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Mobile No.</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="mobile_no" name="mobile_no" aria-label="" aria-describedby="basic-addon1" autocomplete="off" maxlength="10" onkeyup="validateMobileNumber(this)" value="@Session["MobileNo"]" @if (Session["MobileNo"] != null) { <text> readonly</text> } }>
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Customer ID</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="customer_id" name="customer_id" aria-label="" aria-describedby="basic-addon1" autocomplete="off" maxlength="10" onkeyup="validateMobileNumber(this)">
+                        </div>
+
+                    </div>
+                    @*<div class="col-md-6 col-lg-4">
+
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text" id="basic-addon1">Office Ph.No</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">
+                            </div>
+
+                        </div>*@
+                </div>
+                @*...Fifth row...*@
+                <div class="row" style="width:140%;">
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Id Proof</span>
+                            </div>
+                            @*@Html.DropDownList("IDProof", ViewBag.IDProofList as List<SelectListItem>, new { @class = "form-control", id = "ddl_idproof" })*@
+
+
+                            <select class="form-control" name="ddl_idproof" id="ddl_idproof">
+
+                                <!-- Loop through guardians and generate options -->
+                                @foreach (var id in idproof)
+                                {
+                                    <option value="@id.kyc_id">@id.kyc_name</option>
+                                }
+                            </select>
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Id Proof No</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="txt_id_proof_no" name="txt_id_proof_no" aria-label="" aria-describedby="basic-addon1" onchange="validateIDProofNo();" Style="text-transform: uppercase" value="@Session["Id"]">
+                        </div>
+
+                    </div>
+                    @*<div class="col-md-6 col-lg-4">
+
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text" id="basic-addon1">Gender</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">
+                            </div>
+
+                        </div>*@
+                </div>
+                @*...Sixth row...*@
+                <div class="row" style="width:140%;">
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Address Proof</span>
+                            </div>
+                            @*@Html.DropDownList("AddressProof", ViewBag.AddressProofList as List<SelectListItem>, new { @class = "form-control", id = "ddl_address" })*@
+
+
+
+                            <select class="form-control" name="ddl_address" id="ddl_address">
+                                <!-- Loop through guardians and generate options -->
+                                @foreach (var address in addressproof)
+                                {
+                                    <option value="@address.kyc_id" @(address.kyc_id.ToString() == Session["ddl_add"]?.ToString() ? "selected" : "")>@address.kyc_name</option>
+                                }
+                            </select>
+
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Address Proof No</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="txt_add_proof_no" name="txt_add_proof_no" aria-label="" aria-describedby="basic-addon1" onchange="validateAddressProofNo();" value="@Session["Eid"]">
+                        </div>
+
+                    </div>
+                    @*<div class="col-md-6 col-lg-4">
+
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text" id="basic-addon1">Mothers Name</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">
+                            </div>
+
+                        </div>*@
+                </div>
+                @*...Seventh row...*@
+                <div class="row" style="width:140%;">
+                    <div class="col-md-6 col-lg-4">
+
+
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">First Name</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="f_name" name="f_name" aria-label="" aria-describedby="basic-addon1" autocomplete="off" Style="text-transform: uppercase" onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g, '')" onPaste="javascript: return false;" value="@Session["f_name"]" @*@if (Session["f_name"] != null) { <text> readonly</text> }*@ @*}*@>
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-4">
+
+
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Second Name</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="s_name" name="s_name" aria-label="" aria-describedby="basic-addon1" autocomplete="off" Style="text-transform: uppercase" onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g, '')" onPaste="javascript: return false;" value="@Session["s_name"]" @*@if (Session["s_name"] != null) { <text> readonly</text> } }*@>
+                        </div>
+
+                    </div>
+                    @*<div class="col-md-6 col-lg-4">
+
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text" id="basic-addon1">Residence Type</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">
+                            </div>
+
+                        </div>*@
+                </div>
+
+
+                <div class="card-action" id="button_div">
+
+
+                    <!--<button class="button_style" type="submit" id="btn_search" value="submit"--> @*onclick="showDiv()"*@
+
+
+                    @*<button class="button_style" type="button" id="resetButton">Reset</button>
+                        </form>
+                        <button class="button_style" type="button" id="send_otp_Button">Send OTP</button>*@
+
+                </div>
+
+                <hr />
+
+                @*The search results table will be displayed here using PartialView*@
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+
+
+<div style="width:70%" class="input-group mb-3">
+
+
+    <button style="background-color:#007FFF;height:40px;width:100px;border-radius:8px;color:white;border-color:white;font-size:15px;" type="submit" value="submit" id="btn_resend_otp">Resend OTP</button>
+    </form>
+
+
+    &nbsp;&nbsp;
+    <div class="input-group-prepend">
+        <span style="width:140px;height:40px;" class="input-group-text" id="basic-addon1">OTP Number</span>
+    </div>
+    <div style="width:10px;">
+        <input type="text" class="form-control" placeholder="" id="otp_no" aria-label="" aria-describedby="basic-addon1">
+        <div style="width:70%" class="input-group mb-3">
+            @*<button style="background-color:#007FFF;height:40px;width:100px;border-radius:8px;color:white;border-color:white;" type="button" id="btn_resend_otp">Resend OTP</button>*@
+            <div id="timerDisplay" style="color: red; font-weight: bold;font-size:13px;margin-left: 10px;"></div>
+        </div>
+    </div>&nbsp;&nbsp;
+    @*<form id="verifyForm" action="@Url.Action("VerifyOtp", "CustomerCreate")" method="post">*@
+    <button id="btn_verify" style="background-color:#007FFF;height:40px;width:100px;border-radius:8px;color:white;border-color:white;font-size:15px;">Verify</button>
+    @*</form>*@
+
+
+    &nbsp;&nbsp;
+
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    @*$('#btn_resend_otp').on('click', function () {
+    $.ajax({
+        url: '@Url.Action("ResendOtp", "CustomerCreate")',
+        type: 'POST',
+        success: function (resendResult) {
+            //alert(resendResult);
+            alert("OTP Resent successfully. Please Enter the OTP and click on  Verify.");
+        },
+        error: function (xhr, status, error) {
+        // Handle AJAX errors
+        alert("Error resending OTP: " + error);
+        }
+        });
+    });*@
+
+    $('#btn_verify').click(function () {
+        //alert(00);
+    // Get the entered OTP
+    var enteredOtp = $('#otp_no').val();
+
+
+    $.ajax({
+        url: '@Url.Action("VerifyOtp", "CustomerCreate")',
+        type: 'POST',
+        data: { enteredOtp: enteredOtp },
+        success: function (verificationResult) {
+            if (verificationResult.success === true) {
+                // If OTP is valid, navigate to CustomerCreate_form1
+                window.location.href = '/CustomerCreate/CustomerCreate_form1';
+                alert("OTP verification successful. You can now create a new customer.");
+            } else {
+                window.location.href = '/CustomerCreate/resend_otp';
+                alert("Invalid OTP. Please try again.");
+            }
+        },
+        error: function (xhr, status, error) {
+            // Display a meaningful error message to the user
+            alert("Error verifying OTP: " + error);
+        }
+    });
+});
+
+
+</script>
+<script>
+    // Handle reset button click
+    $('#resetButton').on('click', function () {
+        // Reset input values and clear error messages
+        $('#mobile_no, #customer_id, #fname, #lname, #txt_add_proof_no, #ddl_address, #txt_id_proof_no, #ddl_idproof').val('');
+        // Clear any existing error messages
+        $('.error-message').remove();
+    });
+</script>
+<script>
+    // Function to handle OTP resend and timer
+    function resendOtpWithTimer() {
+        // Disable the resend OTP button to prevent multiple clicks
+        $('#btn_resend_otp').prop('disabled', true);
+
+        // Initialize countdown to 30 seconds
+        var countdown = 30;
+
+        // Function to update the timer display
+        function updateTimerDisplay() {
+            $('#timerDisplay').text(countdown + ' seconds remaining');
+        }
+
+        // Function to start the timer
+        function startTimer() {
+            // Update the timer display initially
+            updateTimerDisplay();
+
+            // Set an interval to update the timer display every second
+            var timerInterval = setInterval(function () {
+                countdown--;
+
+                // Update the timer display
+                updateTimerDisplay();
+
+                // Check if the countdown has reached 0
+                if (countdown <= 0) {
+                    // Stop the timer
+                    clearInterval(timerInterval);
+
+                    // Display "Timeout" message
+                    $('#timerDisplay').text('Timeout');
+
+                    // Enable the resend OTP button after timeout
+                    $('#btn_resend_otp').prop('disabled', false);
+
+                    // You can perform additional actions after the timeout here
+
+                    // Hide the timer display after displaying the timeout message
+                    setTimeout(function () {
+                        $('#timerDisplay').hide();
+                    }, 3000); // Hide after 3 seconds (adjust as needed)
+                }
+            }, 1000); // Update every 1000 milliseconds (1 second)
+        }
+
+        // Start the timer
+        startTimer();
+
+        // AJAX call to resend OTP
+        $.ajax({
+            url: '@Url.Action("ResendOtp", "CustomerCreate")',
+            type: 'POST',
+            success: function (resendResult) {
+                // Alert only once after successful OTP resend
+                //alert("OTP Resent successfully. Please Enter the OTP and click on Verify.");
+            },
+            error: function (xhr, status, error) {
+                // Handle AJAX errors
+                alert("Error resending OTP: " + error);
+                // Enable the resend OTP button in case of an error
+                $('#btn_resend_otp').prop('disabled', false);
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        // Handle click event for the resend OTP button
+        $('#btn_resend_otp').on('click', function () {
+            // Call the resendOtpWithTimer function
+            resendOtpWithTimer();
+        });
+    });
+</script>
+
+<script>
+    function validateAddressProofNo() {
+        var selectedValue = document.getElementById("ddl_address").value;
+        var addressProofNo = document.getElementById("txt_add_proof_no").value;
+        var regex;
+
+        if (!selectedValue || !addressProofNo) {
+            alert("Please select an Address Proof type and enter the corresponding number.");
+            return;
+        }
+
+        // Declare the regex variable outside the switch
+        switch (selectedValue) {
+            case "9": // Aadhar
+                regex = /^\d{12}$/;
+                if (!regex.test(addressProofNo)) {
+                    alert("Invalid Aadhar No! Please enter a valid 12-digit number.");
+                    clearAndFocus("txt_add_proof_no");
+                }
+                break;
+            case "2": // Passport
+                regex = /([a-zA-Z]{1})([0-9]{7})$/;
+                if (!regex.test(addressProofNo)) {
+                    alert("Invalid Passport No! Please enter a valid combination.");
+                    clearAndFocus("txt_add_proof_no");
+                }
+                break;
+            case "4": // Indian Voters ID
+                regex = /([a-zA-Z]{3})([0-9]{7})$/;
+                if (!regex.test(addressProofNo)) {
+                    alert("Invalid Voters ID No! Please enter a valid combination.");
+                    clearAndFocus("txt_add_proof_no");
+                }
+                break;
+            default:
+                // No validation for other items
+                return;
+        }
+    }
+
+    // Function to clear the input value and set focus
+    function clearAndFocus(elementId) {
+        document.getElementById(elementId).value = '';
+        document.getElementById(elementId).focus();
+    }
+
+    function validateIDProofNo() {
+        var selectedValue1 = document.getElementById("ddl_idproof").value;
+        var idProofNo = document.getElementById("txt_id_proof_no").value;
+        var regex;
+
+        if (!selectedValue1 || !idProofNo) {
+            alert("Please select an ID Proof type and enter the corresponding number.");
+            return;
+        }
+
+        switch (selectedValue1) {
+            // pan validation
+            case "1":
+
+
+                regex = /^[a-zA-Z]{3}P[a-zA-Z][0-9]{4}[a-zA-Z]$/;
+                break;
+            default:
+                return;
+        }
+
+        // Perform validation
+
+        var idProofNo = document.getElementById("txt_id_proof_no").value.trim().toUpperCase();
+
+
+        if (!regex.test(idProofNo)) {
+
+            alert("Invalid PAN No! Please enter a valid number.");
+            document.getElementById("txt_id_proof_no").value = '';
+            document.getElementById("txt_id_proof_no").focus();
+        }
+    }
+</script>

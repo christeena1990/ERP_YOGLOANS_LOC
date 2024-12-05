@@ -1,0 +1,141 @@
+﻿
+@{
+    ViewBag.Title = "Bond_ApplicationFormDownload";
+}
+
+<link rel="stylesheet" href="~/Content/input_styles.css" />
+<link rel="stylesheet" href="~/Content/table_styles.css" />
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+</head>
+<body>
+
+
+
+    <div class="app-main__inner" style="margin-top: -30px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            @*<br />*@
+            <div class="card-title">
+
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Application Form download </h6>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <div id="Joinapplicationaccttablediv" style="width: 85%;  max-height: 520px; ">
+                <!-- Adjust max-height as needed -->
+                <div id="ncd_schemetbl1" style="overflow-y: auto; max-height: 520px; ">
+                    <table id="cus_detailsDataGrid" class="table table-hover table-striped table-bordered" style="overflow-y: auto; font-size: 14px; font-weight: 500;">
+                        <thead>
+                            <tr>
+                                <th>Select</th> <!-- Selection column header -->
+                                @if (ViewBag.accountDetails != null && ViewBag.accountDetails.Columns.Count > 0)
+                                {
+                                    foreach (System.Data.DataColumn column in ViewBag.accountDetails.Columns)
+                                    {
+
+                                        <th>@column.ColumnName</th>
+
+                                    }
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.accountDetails != null && ViewBag.accountDetails.Rows.Count > 0)
+                            {
+                                foreach (System.Data.DataRow row in ViewBag.accountDetails.Rows)
+                                {
+                                    <tr>
+                                        <td>
+                                            <button onclick="printRowData(this)" id="print_btn" class="mb-2 mr-2 btn-icon btn-shadow btn-outline-2x btn btn-outline-success">@*<i class="lnr-inbox btn-icon-wrapper"> </i>*@DOWNLOAD</button>
+
+                                        </td>
+                                        @foreach (System.Data.DataColumn column in ViewBag.accountDetails.Columns)
+                                        {
+
+                                            <td>@row[column]</td>
+                                            <!-- Display the value of the current column -->
+
+                                        }
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="10">No data available</td> <!-- Updated colspan to account for the selection column -->
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+
+
+            <script>
+
+            // Function to handle the print button click
+            function printRowData(button) {
+                //alert("button clicked");
+
+                // Get the row (tr) that the button belongs to
+                var row = $(button).closest('tr');
+
+                // Extract the 2nd and 3rd column data from the row
+                var appid = row.find('td:eq(1)').text();  // 2nd column (index 1)
+                var issueno = row.find('td:eq(2)').text();
+                var custid = row.find('td:eq(5)').text(); // 6th column (index 5)
+                //form 15 G/H column data
+                var form_fifteen = row.find('td:eq(10)').text(); // 6th column (index 5)
+                //alert("form_fifteen: " + form_fifteen);
+
+
+                $.ajax({
+                    url: '/Bond_ApplicationFormDownload/Bond_ApplicationFormstatusupdate',  // Action to store data
+                    type: 'POST',
+                    data: {
+                        appid: appid,
+                        custid: custid,
+                        issueno: issueno
+                    },
+                    success: function (response) {
+                        openInNewTab('@Url.Action("Bond_ApplicationForm", "Bond_ApplicationForm")');
+                        openInNewTab('@Url.Action("Deposit_Nomination_Form_View", "Deposit_Nomination_Form")');
+
+
+                       if (form_fifteen == 'H') {
+                       window.open('@Url.Action("Fifteen_H_Form_View", "Fifteen_H_Form")' );
+                       }
+                 else {
+                           window.open('@Url.Action("Fifteen_G_Form", "Fifteen_G_Form")');
+                      }
+
+
+
+
+                    },
+                    error: function (error) {
+                        alert("Error occurred during data submission");
+                    }
+                });
+            }
+
+            </script>
+
+
+
+
+
+        </div>
+    </div>
+
+
+</body>
+</html>

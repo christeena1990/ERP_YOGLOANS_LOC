@@ -1,0 +1,229 @@
+﻿
+
+@{
+    ViewBag.Title = "NCD_Oversubscription_Form";
+    Layout = null;
+}
+
+@model ERP_YOGLOANS_LOCAL.Models.NCD_Models.NCD_Oversubscriptionmodel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title> Offer Letter NCD </title>
+    <style type="text/css">
+
+
+        .main-container {
+            width: 95%;
+            margin: auto;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* Header Section */
+        .header-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 15px;
+            border-bottom: .1px solid #000;
+        }
+
+        .company-logo {
+            width: 200px;
+            height: 50px;
+        }
+
+        .company-details {
+            text-align: left;
+        }
+
+            .company-details p {
+                margin: 2px 0;
+            }
+
+
+
+        /* General styling for tables without borders */
+        .tableData {
+            width: 100%;
+            text-align: left;
+            margin: 0 auto;
+            border-collapse: collapse;
+        }
+
+            .tableData td, .tableData th {
+                padding: 8px;
+                text-align: left;
+            }
+
+        /* Heading Styles */
+        h2 {
+            text-align: center;
+        }
+
+        /* Styling for sections */
+        .section {
+            margin-bottom: 20px;
+        }
+
+        /* Styling for contact email */
+        a {
+            color: blue;
+        }
+
+        /* Footer Section */
+        .footer {
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Signature Section */
+        .signature {
+            font-weight: bold;
+            font-size: 18px;
+            text-align: left;
+        }
+
+        /* Form and Document Content Styles */
+        .content {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="main-container">
+        <div class="header-section">
+            <img src="~/images/logo.jpg" alt="Logo" class="company-logo" />
+            <div class="company-details">
+                <p>YOGAKSHEMAM LOANS LTD.</p>
+                <p>Regd.office, 3rd Floor, Ottappath Tower, Aswini Junction</p>
+                <p>Thiruvambady(Post) ,Thrissur, Kerala - 680 022</p>
+                <p>Tel: 0487-2320102</p>
+            </div>
+        </div>
+
+
+       
+
+
+
+        <form id="form1">
+            <!-- Recipient Information -->
+            <div class="section">
+                <table class="tableData">
+                    <tr><td>To</td></tr>
+                    <tr><td>Mr/Mrs/Ms. @Model.CustomerName </ td ></ tr >
+                    <tr><td>@Model.Address</td></tr>
+                    <tr><td>@Model.LandMark</td></tr>
+                    <tr><td>@Model.Post</td></tr>
+                </table>
+            </div>
+
+            <!-- Subject and Letter Content -->
+            <div class="section">
+                <table class="tableData">
+                    <tr><td>Subject: - Regarding Private Placement Offer Letter</td></tr>
+                    <tr><td>Dear Sir/Madam,</td></tr>
+                    <tr>
+                        <td>
+                            Sub: Issue of @Model.AggrAmtFrom1000 Secured, Redeemable Non-Convertible Debentures (The NCDs)
+                            of face value of Rs. 1,000/-  each aggregating to Rs. @Model.AggrAmtFrom/- with an option to
+                            retain oversubscription upto @Model.AggrAmtTo1000 NCD's aggregating to Rs.@Model.AggrAmtTo/-
+
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Body Content -->
+            <div class="section">
+                <table class="tableData">
+                    <tr>
+                        <td>
+                            In response to your interest in subscribing to our Secured Redeeemable Non Convertible debentures of issue series @Model.IssueNo. Please see the attached private placement
+                            offer letter in Form PAS-4 dated together with its Annexure detailing the salient
+                            features of the issue for your reference. An application form for subscription of the
+                            NCDs is also attached. We hope that the information will help you further in your
+                            investment decision.
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+
+
+
+
+
+
+
+
+
+            <!-- Contact Information -->
+            <div class="section">
+                <table class="tableData">
+                    <tr>
+                        <td>
+                            If you require any further information or assistance, you may please contact the nearest branch or
+                            the compliance officer, or email us at <a href="mailto:cs@yogloans.com">cs@yogloans.com</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Thank You and Signature -->
+            <div class="section footer">
+                <table class="tableData">
+                    <tr><td>Thank You</td></tr>
+                </table>
+            </div>
+
+            <div class="section footer">
+                <table class="tableData">
+                    <tr><td>For YOGAKSHEMAM LOANS Ltd.,</td></tr>
+                </table>
+            </div>
+
+            <div class="section footer">
+                <table class="tableData">
+                    <tr><td>Sd/-</td></tr>
+                </table>
+            </div>
+
+            <div class="section signature">
+                <table class="tableData">
+                    <tr><td>Mr. Unnikrishnan I</td></tr>
+                    <tr><td>(Managing Director and CEO)</td></tr>
+                </table>
+            </div>
+
+            <!-- Acceptance Section -->
+            <div class="section">
+                <table class="tableData">
+                    <tr><td>Accepted the Offer</td></tr>
+                    <tr>
+                        <td>Name of the applicant:@Model.CustomerName</td>
+                        <td>Place: @Model.Place</td>
+                    </tr>
+                    <tr>
+                        <td>Signature:</td>
+                        <td>Date:@Model.Date</td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+

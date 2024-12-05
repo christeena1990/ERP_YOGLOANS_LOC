@@ -1,0 +1,657 @@
+﻿@model System.Data.DataTable
+@using System.Data
+
+<html>
+<head>
+
+    <style>
+  
+        .hidden-column 
+        {
+            display: none;
+        }
+
+        button 
+        {
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: #f5f5f5;
+            color: #333;
+            border-radius: 5px;
+        }
+
+        
+        button.selected 
+        {
+                background-color: lightblue;
+                color: #007FFF;
+        }
+
+        .search-container 
+        {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-container input[type="text"]
+        {
+                width: 250px;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 14px;
+        }
+
+         .search-container .search-btn 
+         {
+                background-color: #6cb2eb;
+                color: #fff;
+                border: none;
+                padding: 10px;
+                margin-left: 5px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 14px;
+         }
+
+         .search-container .search-btn:hover
+         {
+                    background-color: #4e96d8;
+         }
+
+        .scrollable-container 
+        {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+   
+        .scrollable-container 
+        {
+            max-height: 500px; /* Adjust the height as needed */
+            overflow-y: auto;
+        }
+   
+        .input-container 
+        {
+            position: relative;
+            margin: 20px 0;
+            height: 40px; /* Adjust the height as needed */
+        }
+
+        .input-container input[type="text"] 
+        {
+                border: 1px solid darkblue; /* Change color to match your design #6200EA */
+                border-radius: 4px;
+                padding: 5px 10px; /* Adjust padding to reduce height */
+                font-size: 16px;
+                outline: none;
+                width: 100%;
+                box-sizing: border-box;
+                height: 100%; /* Ensure input height matches the container */
+        }
+
+        .input-container label
+        {
+                position: absolute;
+                top: 50%;
+                left: 10px;
+                transform: translateY(-50%);
+                color: darkblue; /* Change color to match your design */
+                background-color: #fff;
+                padding: 0 5px;
+                transition: 0.3s ease;
+                pointer-events: none;
+        }
+
+        .input-container input[type="text"]:focus + label,
+            .input-container input[type="text"]:not(:placeholder-shown) + label 
+        {
+                top: -5px;
+                font-size: 12px;
+                color: darkblue; /* Change color to match your design */
+                font-weight: bold;
+        }
+    </style>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="~/Scripts/jquery-3.6.4.min.js"></script>
+    <script src="~/Scripts/spin.min.js"></script>
+
+
+</head>
+
+<body>
+
+    <div class="app-main__inner" style="margin-top: -30px;padding:10px;">
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+
+                <h6 style="font-weight: bold; font-size: 25px; margin:0;color:maroon">Personal Loan Approval</h6>
+            </div>
+        </div>
+
+        @if (ViewBag.IsEmpty)
+        {
+
+            <div>
+                No records available.
+            </div>
+        }
+        else
+        {
+
+
+            if (!string.IsNullOrEmpty(ViewBag.Message))
+            {
+                <div>@ViewBag.Message</div>
+            }
+            else
+            {
+
+                <div class="card-body" style="width:100%;">
+                    <div class="tab-content">
+                        <div class="tab-pane tabs-animation fade show active" id="tab-content-0" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-12 col-lg-4">
+                                    <div class="main-card mb-3 card">
+                                        <!-- Search Region -->
+
+                                        <div class="search-container">
+                                            <div class="region-dropdown" style="width:300px">
+                                                <select id="regionSelect" class="form-control" onchange="updateScrollableContainer()">
+
+                                                    @foreach (SelectListItem item in ViewBag.RegionList)
+                                                    {
+                                                        <option value="@item.Value">@item.Text</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                @*///////////////////////////////////////////////////////////////////////*@
+
+                                <div class="col-lg-8 col-md-12">
+                                    <div class="main-card mb-3 card">
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+                    <div class="card-body" style="width:100%;">
+                        <div class="tab-content">
+                            <div class="tab-pane tabs-animation fade show active" id="tab-content-0" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-12 col-lg-4">
+                                        <div class="main-card mb-3 card">
+                                            <div class="card-header">Customer Details</div>
+
+                                            <div id="scrollable-container" class="scrollable-container">
+                                                <ul class="todo-list-wrapper list-group list-group-flush">
+                                                    @foreach (DataRow row in Model.Rows)
+                                                    {
+                                                        //var customerloanId = row["loan_no"];
+                                                        var customerloanId = row["application_id"];
+                                                        <li class="list-group-item">
+                                                            <div class="todo-indicator bg-primary"></div>
+                                                            <div class="widget-content p-0">
+                                                                <div class="widget-content-wrapper">
+                                                                    <div class="widget-content-left mr-2">
+                                                                        <div class="custom-checkbox custom-control">
+                                                                            <input type="checkbox" name="option" class="custom-control-input checkbox-option" data-customer-id="@customerloanId" id="checkbox-@customerloanId">
+                                                                            <label class="custom-control-label" for="checkbox-@customerloanId">&nbsp;</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="widget-content-left">
+                                                                        <div class="widget-heading" style="font-size:small">
+                                                                            @row["customer_name"]
+                                                                        </div>
+                                                                        <div class="widget-subheading" style="font-size:small">
+                                                                            App ID:@row["application_id"]
+                                                                        </div>
+                                                                        <div class="widget-subheading" style="font-size:small">
+                                                                            Branch:@row["branch_name"]
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @*///////////////////////////////////////////////////////////////////////*@
+
+                                    <div class="col-lg-8 col-md-12">
+                                        <div class="main-card mb-3 card">
+                                            <div class="card-body">
+                                                <div id="smartwizard">
+                                                    <ul class="forms-wizard">
+                                                        <li>
+                                                            <a href="#step-1">
+
+                                                                <span></span>
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+
+                                                    @*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+                                                    <div class="form-wizard-content">
+
+                                                        <div id="step-1">
+
+                                                            @*<form id="loan-form" method="post" enctype="multipart/form-data" action="/Personal_Loan_Approve/ApproveApplication">*@
+
+                                                            <form id="loan-form" method="post" enctype="multipart/form-data">
+
+                                                                <input type="hidden" id="branchId" name="branchId" value="@Session["branch_id"]" />
+                                                                <input type="hidden" id="userId" name="userId" value="@Session["login_user"]" />
+
+                                                                <div class="form-row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="customername" name="customername" readonly />
+                                                                            <label for="input-text">Customer Name </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="customerid" name="customerid" readonly />
+                                                                            <label for="input-text">Customer ID </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-row">
+
+                                                                    <div class="col-md-6">
+                                                                        <div class="input-container">
+
+
+                                                                            <input type="text" id="applicationid" name="applicationid" readonly />
+                                                                            <label for="input-text">Application ID </label>
+                                                                        </div>
+                                                                    </div>
+
+
+                                                                    <div class="col-md-6">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="loan-number" name="loan-number" readonly />
+                                                                            <label for="input-text">Gold Loan Number </label>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                                <div class="form-row">
+                                                                    <div class="col-md-4">
+                                                                        <div class="position-relative form-group">
+                                                                            <div class="input-container">
+
+                                                                                <input type="text" id="scheme-name" name="scheme-name" readonly />
+                                                                                <label for="input-text">Scheme Name </label>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="app-date" name="app-date" readonly />
+                                                                            <label for="input-text">Application Date </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="position-relative form-group">
+                                                                            <div class="input-container">
+                                                                                <input type="text" id="maturity_dt" name="maturity_dt" readonly />
+                                                                                <label for="input-text">Maturity Date </label>
+                                                                            </div>
+
+
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                                <div class="form-row">
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+
+                                                                            <input type="text" id="interest-rate" name="interest-rate" readonly />
+                                                                            <label for="input-text">Interest Rate </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="position-relative form-group">
+                                                                            <div class="input-container">
+
+
+
+                                                                                <input type="text" id="max-amount" name="max-amount" readonly />
+                                                                                <label for="input-text">Max. Amount </label>
+                                                                            </div>
+
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="position-relative form-group">
+                                                                            <div class="input-container">
+                                                                                <input type="text" id="loan-amount" name="loan-amount" readonly />
+                                                                                <label for="input-text">Requested Amount </label>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-row">
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+
+                                                                            <input type="text" id="charges" name="charges" readonly />
+                                                                            <label for="input-text">Charges </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="position-relative form-group">
+                                                                            <div class="input-container">
+
+
+
+                                                                                <input type="text" id="disb-amount" name="disb-amount" readonly />
+                                                                                <label for="input-text">Disbursement Amount </label>
+                                                                            </div>
+
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="position-relative form-group">
+                                                                            <div class="input-container">
+
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="divider"></div>
+
+                                                                <div style="font-size: 12px; font-weight: bold;">Documents Verification</div>
+                                                                <div class="divider"></div>
+                                                                <div class="form-row">
+
+                                                                    <button type="button" class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-warning" onclick="openInNewTab('@Url.Action("cus_history", "Customer_History")')">KYC-Bank Documents</button>
+                                                                    <button type="button" class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-warning" onclick="openInNewTab('@Url.Action("LoanAttachments_View", "Attachment")')">Loan Documents</button>
+                                                                    <button type="button" class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-warning" onclick="openInNewTab('@Url.Action("PL_Disbursement_Memo_View", "PL_Disbursement_Memo")')">Disbursement Memo</button>
+
+                                                                    @*<button type="button" class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-warning"
+                                                                            onclick="saveDisbursementMemo('@Url.Action("PL_Disbursement_Memo_View", "PL_Disbursement_Memo")')">
+                                                                        Disbursement Memo
+                                                                    </button>
+
+                                                                    <script>
+function saveDisbursementMemo(url) {
+    // Here, you would fetch the application ID. For example, it could be stored in a variable:
+    var appId = '28000924500067'; // Replace with the actual application ID as needed
+    var enterBy = '11999'; // The user ID or whatever is applicable
+    var data1 = ''; // Add your attachment data if needed
+
+    $.ajax({
+        type: "POST",
+        url: '@Url.Action("SaveDisbursementMemo", "PL_Disbursement_Memo")',
+        data: {
+            app_id: appId,
+            enter_by: enterBy,
+            data1: data1
+        },
+        success: function (response) {
+            alert(response.message);
+            // Optionally, redirect to the URL after saving
+            window.open(url, '_blank');
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+            alert('An error occurred while saving the memo.');
+        }
+    });
+}
+                                                                    </script>*@
+
+
+
+
+                                                                </div>
+
+                                                                <div class="divider"></div>
+
+
+
+                                                                @*<div class="clearfix">
+                                                                    <button id="reject-button" name="actionType" value="Reject" onclick="submitForm('Reject')" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Reject</button>
+                                                                    <button id="approve-button" name="actionType" value="Approve" onclick="submitForm('Approve')" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Approve</button>
+
+                                                                </div>*@
+
+                                                                <div class="clearfix">
+                                                                    <button type="button" id="reject-button" name="actionType" value="Reject" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Reject</button>
+                                                                    <button type="button" id="approve-button" name="actionType" value="Approve" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary" OnClientClick="this.disabled = true; this.value = 'please wait ..';" UseSubmitBehavior="false">Approve</button>
+
+
+                                                                </div>
+
+                                                            </form>
+
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                                <div class="divider"></div>
+                                                <div class="clearfix">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+                <script>
+    $(document).on('change', '.checkbox-option', function () {
+        // Uncheck all checkboxes except the one currently checked
+        if ($(this).is(':checked')) {
+            $('.checkbox-option').not(this).prop('checked', false);
+         /*   var loanNo = $(this).data('customer-id');*/
+            var AppID = $(this).data('customer-id');
+
+            // AJAX call to fetch loan details
+            $.ajax({
+                url: '@Url.Action("personal_loan_details", "Personal_Loan_Approve")',
+                type: 'POST',
+                /*data: { loan_no: loanNo },*/
+                data: { AppID: AppID },
+                success: function (response) {
+                    // Process and display the response data
+                    if (response) {
+                        $('#customername').val(response.CustomerName);
+                        $('#customerid').val(response.CustomerId);
+                        $('#loan-number').val(response.LoanNo);
+                        $('#applicationid').val(response.ApplicationID);
+                        $('#app-date').val(response.AppDt);
+                        $('#maturity_dt').val(response.MaturityDt);
+                        $('#scheme-name').val(response.SchemeName);
+                        $('#interest-rate').val(response.InterestRt);
+                        $('#max-amount').val(response.MaxLoan);
+                        $('#loan-amount').val(response.LoanAmt);
+                        $('#branch-id').val(response.BranchId);
+                        $('#loan-no').val(response.BranchId);
+                        $('#charges').val(response.Doc_Charges);
+                        $('#disb-amount').val(response.DisbAmt);
+
+                    } else {
+                        console.log('No data found for ApplicationID: ' + AppID);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX Error: ' + status + error);
+                }
+            });
+        } else {
+            // If checkbox is unchecked, clear the form fields
+            clearFormFields();
+        }
+
+        // Check if any checkbox is still checked, if not, clear the form fields
+        if (!$('.checkbox-option:checked').length) {
+            clearFormFields();
+        }
+    });
+
+    $('#regionSelect').change(function () {
+        clearFormFields();
+    });
+
+    function clearFormFields() {
+        $('#customername').val('');
+        $('#customerid').val('');
+        $('#loan-number').val('');
+        $('#applicationid').val('');
+        $('#app-date').val('');
+        $('#maturity_dt').val('');
+        $('#scheme-name').val('');
+        $('#interest-rate').val('');
+        $('#max-amount').val('');
+        $('#loan-amount').val('');
+        $('#loan-no').val('');
+        $('#charges').val('');
+        $('#disb-amount').val('');
+    }
+
+    function updateScrollableContainer() {
+        var regionId = $('#regionSelect').val();
+
+        $.ajax({
+            url: '@Url.Action("UpdateScrollableContainer", "Personal_Loan_Approve")',
+            type: 'POST',
+            data: { region_id: regionId },
+            success: function (response) {
+                // Update the scrollable container with the returned HTML
+                $('#scrollable-container').html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error('AJAX Error: ' + status + error);
+            }
+        });
+    }
+
+    function openInNewTab(url) {
+        var win = window.open(url, '_blank');
+        win.focus();
+    }
+                </script>
+
+
+
+            }
+        }
+        </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+        // Submit the form with the action type (Approve/Reject)
+
+function submitForm(actionType) {
+    var appId = '@Session["PL_application_id"]';
+    var loanNo = $('#loan-number').val();
+    var loanAmt = $('#loan-amount').val();
+    var charges = $('#charges').val();
+    var DisbAmt = $('#disb-amount').val();
+
+    $.ajax({
+        url: '@Url.Action("ApproveApplication")',
+        type: 'POST',
+        data: { appId: appId, loanNo: loanNo, loanAmt: loanAmt, charges: charges, DisbAmt: DisbAmt, actionType: actionType },
+        success: function (result) {
+            if (result.success) {
+                // Success case (success: true)
+                Swal.fire({
+                    /*title: actionType + " Successful!",*/
+                    title: result.message,
+                    /* text: result.message,*/
+                    text: "",
+                   icon: "success",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    window.location.reload();
+                });
+            } else {
+             
+                Swal.fire({
+                    title: "",
+                    text: result.message,
+                    icon: "error",
+                    confirmButtonText: "OK"
+
+                });
+
+                //alert(result.message);
+                //return;
+            }
+        },
+        error: function (xhr, status, error) {
+            Swal.fire({
+                title: "An error occurred",
+                text: "Error: " + error,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
+        }
+    });
+}
+
+
+
+
+
+$(document).ready(function () {
+    // Prevent double submission and handle via AJAX
+    $('#approve-button').click(function (e) {
+        e.preventDefault(); // Prevent default form submission
+        submitForm('Approve');
+    });
+
+    $('#reject-button').click(function (e) {
+        e.preventDefault(); // Prevent default form submission
+        submitForm('Reject');
+    });
+});
+    </script>
+
+
+</body>
+</html>

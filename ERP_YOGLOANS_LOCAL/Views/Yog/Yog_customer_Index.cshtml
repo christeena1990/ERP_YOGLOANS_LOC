@@ -1,0 +1,236 @@
+﻿
+
+@{
+    // Layout = "~/Views/Shared/_Layout_Home.cshtml";
+    List<int> moduleIds = ViewBag.ModuleIds;}
+
+
+
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    #homdiv {
+        position: relative;
+        width: 15%;
+        padding-right: 5px;
+        padding-left: 5px;
+    }
+
+
+    .home_image {
+        height: 150px;
+        width: 160px;
+        border-radius: 25px;
+    }
+</style>
+
+
+
+@*<div class="tab-content" style="background-color:#eee;width:100%">
+    <div class="tab-pane tabs-animation fade show active" id="tab-content-0" role="tabpanel">
+        <div class="main-card mb-3 card">
+            <div class="card-body" style="background-color:#eee;width:100%">*@
+
+
+<div class="app-main__inner" style="margin-top: -30px;padding:10px;">
+
+
+    <marquee behavior="scroll" direction="left" style="color:black; width:100%"> <h4> Here is some  important message scrolling ... right to left!</h4></marquee>
+
+    @*</div>
+            </div>
+        </div>*@
+
+
+
+    @*<img src="../images/module_intro_images/index_customer.jpg" style="width:900px;height:100px;" />*@
+
+
+    <h4 style="text-align: center;color:crimson"> <b> <i> "Step into a world of efficiency and collaboration <br /> welcome to the Customer Module @*of our ERP website*@!"</i></b></h4>
+
+    <br />
+
+
+
+    @*/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+    <div class="row">
+        <div class="col-sm-12 col-md-6 col-xl-4" style="border-radius: 40px;">
+            <div class="card mb-3 widget-chart"style="border-radius: 40px;">
+                <img src="../images/module_intro_images/clock-Photo.png" style="height: 190px; border-radius: 40px;" />
+            </div>
+        </div>
+
+
+        <div class="col-sm-12 col-md-6 col-xl-4">
+
+            <div class="card mb-3 widget-chart"style="border-radius: 40px;">
+                <div style="background-color: #a1d3f1;border-radius: 40px;">
+                    <img src="../images/module_intro_images/pan_aadhar.png" style="width:40%;height:100px;" />
+                    <h6 style=" color:blue;"> <b> &nbsp; &nbsp; Documents Required</b> </h6>
+
+
+                    <h6>
+                        <b>
+                              Aadhaar card,PAN card,   Driving License, or Voter ID card.
+                        </b>
+                    </h6>
+                    <div style="height:9px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-12 col-md-12 col-xl-4">
+            <div class="card mb-3 widget-chart"style="border-radius: 40px;">
+                <div style="background-color: #a1d3f1;border-radius:40px;">
+                    <div style="height:5px;"></div>
+                    <img src="../images/module_intro_images/agelimit.png" style="width:31%;height:85px; padding-top:5px;" />
+                    <br />
+                    <div style="height:7px"></div>
+
+                    <h6 style=" color:blue"> <b> Who Is Eligible ? </b> </h6>
+                    <h6>
+                        <b>
+                            &nbsp;Applicants should be between 18 and 90 years old.
+
+
+                            @*<br />    • Professionals, Self-employed <br />  &nbsp;&nbsp;&nbsp; individuals, Business owners, and <br /> &nbsp;&nbsp; Others.*@
+                        </b>
+                    </h6>
+                    <div style="height:10px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*//////////////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+<div class="row">
+    <div class="col-sm-12 col-md-6 col-xl-3">
+        <div class="card mb-3 widget-chart" style="border-radius: 40px;">
+
+            <a href="@Url.Action("incomplete_list_view", "incomplete_list")" style="text-decoration: none; color: inherit;">
+                <div class="widget-chart-content">
+                    <div class="icon-wrapper rounded">
+                        <div class="icon-wrapper-bg bg-warning"></div>
+                        <i class="fa fa-fw" aria-hidden="true" style="color:orange"></i>
+                    </div>
+                    <div class="widget-numbers">
+                        <span style="color: #099ffc;">@(Model.FirstTable.Rows.Count > 0 ? Model.FirstTable.Rows[0][0] : "N/A")</span>
+                    </div>
+                    <div class="widget-subheading fsize-1 pt-2 opacity-10 text-warning font-weight-bold">
+                        <h5 style="font-size:larger;color:orange"><b>Creation Incomplete/Return</b></h5>
+                    </div>
+                </div>
+                <div class="widget-chart-wrapper" style="border-radius: 40px;">
+                    <div id="dashboard-sparklines-simple-1" style="border-radius: 40px;"></div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-6 col-xl-3">
+
+        <div class="card mb-3 widget-chart" style="border-radius: 40px;">
+
+
+            <a href="@Url.Action("modify_return_view", "modify_return")" style="text-decoration: none; color: inherit;">
+                <div class="widget-chart-content">
+                    <div class="icon-wrapper rounded">
+                        <div class="icon-wrapper-bg bg-danger"></div>
+                        <i class="fa fa-fw fa-pencil" aria-hidden="true" style="color:deeppink"></i>
+                    </div>
+                    <div class="widget-numbers">
+                        <span style="color:orange;">@(Model.FirstTable.Rows.Count > 0 ? Model.SecondTable.Rows[0][0] : "N/A")</span>
+                    </div>
+                    <div class="widget-subheading fsize-1 pt-2 opacity-10 text-danger font-weight-bold">
+                        <h6 style="font-size:larger"><b>Modification Incomplete/Return</b></h6>
+
+                    </div>
+                </div>
+                <div class="widget-chart-wrapper" style="border-radius: 40px;">
+                    <div id="dashboard-sparklines-simple-2" style="border-radius: 40px;"></div>
+                </div>
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="col-sm-12 col-md-12 col-xl-3">
+        <div class="card mb-3 widget-chart" style="border-radius: 40px;">
+
+
+
+            <a href="@Url.Action("Cus_approvelist", "Customer_approvelist")" style="text-decoration: none; color: inherit;">
+                <div class="widget-chart-content">
+                    <div class="icon-wrapper rounded">
+                        <div class="icon-wrapper-bg bg-info"></div>
+                        <i class="fa fa-fw" aria-hidden="true" style="color: #099ffc"></i>
+                    </div>
+                    <div class="widget-numbers text-success">
+                        <span>@(Model.FirstTable.Rows.Count > 0 ? Model.ThirdTable.Rows[0][0] : "N/A")</span>
+                    </div>
+                    <div class="widget-subheading fsize-1 pt-2 opacity-10 text-info font-weight-bold">
+                        @*<h5><b>Approval Pending</b></h5>*@
+                        <h6 style="font-size:larger"><b> Approval <br />Pending</b></h6>
+
+                    </div>
+                </div>
+                <div class="widget-chart-wrapper" style="border-radius: 40px;">
+                    <div id="dashboard-sparklines-simple-3" style="border-radius: 40px;"></div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <div class="col-sm-12 col-md-12 col-xl-3">
+        <div class="card mb-3 widget-chart" style="border-radius: 40px;">
+
+
+
+            <a href="@Url.Action("KYC_return_list_View", "KYC_return_list")" style="text-decoration: none; color: inherit;">
+                <div class="widget-chart-content">
+                    <div class="icon-wrapper rounded">
+                        <div class="icon-wrapper-bg bg-success"></div>
+                        <i class="fa fa-fw" style="color: green" aria-hidden="true"></i>
+                    </div>
+                    <div class="widget-numbers text-danger">
+                        <span>@(Model.FirstTable.Rows.Count > 0 ? Model.forthTable.Rows[0][0] : "N/A")</span>
+                    </div>
+                    <div class="widget-subheading fsize-1 pt-2 opacity-10 text-success font-weight-bold">
+                        <h6 style="font-size:larger"><b>KYC <br />Return </b></h6>
+
+                    </div>
+                </div>
+             
+
+                <div class="widget-chart-wrapper" style="border-radius: 40px;">
+                    <img src="~/images/module_intro_images/purple.png" alt="Pink Graph" style="border-radius: 40px; width: 85%; height: auto; ">
+                </div>
+
+            </a>
+
+        </div>
+    </div>
+
+
+
+   
+
+
+
+
+
+
+
+    </div>
+
+            </div>
+

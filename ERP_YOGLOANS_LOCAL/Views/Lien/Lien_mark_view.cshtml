@@ -1,0 +1,788 @@
+﻿
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>canvasser registration</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <style>
+
+        .app-main__inner {
+            margin-top: -30px;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        .card-title h6 {
+            font-weight: bold;
+            font-size: 25px;
+            margin: 0;
+            color: maroon;
+        }
+
+
+
+        .radio-label {
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 14px;
+            color: black;
+        }
+
+
+            .radio-label.selected {
+                color: red;
+            }
+
+
+        .search-container {
+            margin-top: 8px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%; /* Set width to 100% to occupy full container width */
+        }
+
+            /* Style for labels inside the search container */
+            .search-container label {
+                font-weight: bold;
+                margin-right: 10px;
+                font-size: 14px;
+            }
+
+            /* Style for radio buttons inside the search container */
+            .search-container input[type="radio"] {
+                margin-right: 8px;
+                transform: scale(0.9); /* Adjusted scale for radio button size */
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                border: 2px solid #007bff;
+                border-radius: 50%;
+                width: 18px;
+                height: 18px;
+                outline: none;
+            }
+
+                .search-container input[type="radio"]:checked {
+                    background-color: #007bff;
+                }
+
+            /* Style for text input field */
+            .search-container input[type="text"] {
+                padding: 10px; /* Adjust padding as needed */
+                margin-right: 8px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                font-size: 14px;
+                width: 300px; /* Increased width for input text */
+            }
+
+            /* Style for buttons inside the search container */
+            .search-container button {
+                padding: 8px 12px; /* Increased padding for button */
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+                font-size: 14px;
+                margin-left: 10px; /* Added space between buttons */
+            }
+
+                .search-container button:hover {
+                    background-color: #0056b3;
+                }
+
+        /* Style for the dropdown container */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Style for the suggestions dropdown */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            max-height: 200px; /* Set a maximum height for scrolling */
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Hide horizontal scrolling */
+            width: 100%; /* Ensure it occupies the same width as the input */
+        }
+
+            /* Style for individual suggestion items */
+            .dropdown-content div {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+                cursor: pointer;
+            }
+
+                .dropdown-content div:hover {
+                    background-color: #f1f1f1;
+                }
+
+        /* New CSS styles for the cus_detailsTable box */
+        #cus_detailsTable {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        #cus_detailsDataGrid, #cus_bankdetailsDataGrid, #cus_bankdetailsDataGrid_Modify {
+            overflow-y: auto;
+            font-size: 14px;
+            width: 100%;
+            font-weight: 500;
+            border-collapse: collapse; /* Ensures table borders are collapsed */
+        }
+
+            #cus_detailsDataGrid th,
+            #cus_detailsDataGrid td, #cus_bankdetailsDataGrid th,
+            #cus_bankdetailsDataGrid td, #cus_bankdetailsDataGrid_Modify th,
+            #cus_bankdetailsDataGrid_Modify td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: center; /* Adjust alignment as needed */
+            }
+
+            /* Styling for table header */
+            #cus_detailsDataGrid th, #cus_bankdetailsDataGrid th, #cus_bankdetailsDataGrid_Modify th {
+                background-color: #4D759A; /* Light blue background color for headers */
+                color: white; /* Dark text color for headers */
+            }
+
+
+        /* Adjusted styles for input fields */
+        .input-group {
+            width: 100%; /* Ensures inputs take full width of parent container */
+        }
+
+        .input-group-text {
+            width: 140px; /* Adjusted width for the label spans */
+            text-align: left; /* Left-align text in labels */
+        }
+
+        .form-control {
+            width: calc(100% - 150px); /* Adjusted width for input fields */
+        }
+
+        .ui-menu-item-custom {
+            font-size: 8px; /* Adjust this value as needed */
+            padding: 10px;
+        }
+
+        /* Ensure the autocomplete dropdown has scrolling */
+        .ui-autocomplete {
+            max-height: 200px; /* Height before scrolling starts */
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Hide horizontal scrolling */
+            /* Optional: add padding and border to make it more visible */
+            padding: 0;
+            border: 1px solid #ccc;
+        }
+
+        /* Additional styles for better appearance */
+        .ui-menu-item-custom {
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+
+            .ui-menu-item-custom:hover {
+                background-color: #f1f1f1;
+            }
+
+
+        .modify-bank-details-container {
+            border: 1px solid #ccc; /* Border style */
+            padding: 10px; /* Padding inside the container */
+            border-radius: 5px; /* Rounded corners */
+            display: inline-block; /* Display as inline block */
+            min-width: fit-content; /* Adjust width based on content */
+            margin: 0 auto; /* Center the container horizontally */
+        }
+
+        .modify-bank-details {
+            color: blue; /* Text color */
+            font-size: 16px; /* Font size */
+        }
+
+        /* ----------------------------------------------------------------------*/
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .popup {
+            display: none;
+            position: absolute;
+            width: 600px; /* Fixed width */
+            height: 500px; /* Fixed height */
+            background-color: white;
+            border: 1px solid #888;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+            cursor: move;
+            overflow: hidden; /* Ensure content doesn't overflow */
+        }
+
+
+        .popup-content {
+            width: 100%;
+            height: 100%;
+            /* overflow: auto;*/ /* Enable scrolling */
+        }
+
+            .popup-content img {
+                max-width: 100%;
+                max-height: 100%;
+                display: block;
+                margin: auto;
+            }
+
+            .popup-content object {
+                width: 100%;
+                height: 100%;
+            }
+
+        .popup-header {
+            background-color: #f1f1f1;
+            padding: 10px;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .popup-title {
+            margin: 0;
+        }
+
+        .close {
+            color: #000;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+            .close:hover {
+                color: red;
+            }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 999;
+        }
+    </style>
+    @*Table grid style*@
+
+    <style>
+        #gvdata {
+            overflow-y: auto;
+            font-size: 12px;
+            width: 100%;
+            font-weight: 500;
+            border-collapse: collapse;
+        }
+
+            #gvdata th, #gvdata td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: center;
+            }
+
+            /* Styling for table header */
+            #gvdata th {
+                background-color: #4D759A;
+                color: white;
+            }
+
+            /* Align CustomerName to left */
+            #gvdata td.align-left {
+                text-align: left;
+            }
+
+            /* Align DueAmount to right */
+            #gvdata td.align-right {
+                text-align: right;
+            }
+
+            /* Style for checkboxes in the header and rows */
+            #gvdata td input[type="checkbox"], #gvdata th input[type="checkbox"] {
+                margin: 0;
+                padding: 0;
+            }
+    </style>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+        function fetchCertificates() {
+            document.getElementById("div_content_data").style.display = "none";
+            const issueNo = document.getElementById('issue_no').value;
+
+            if (issueNo.length > 0) {
+                $.ajax({
+                    url: '/Lien/GetCertificateNumbers',
+                    type: 'POST',
+                    data: { issue_no: issueNo },
+                    success: function (response) {
+                        const dropdown = $('#certificate_no');
+                        dropdown.empty(); // Clear previous options
+
+                        if (response.success) {
+                            // Add default "Select" option
+                            dropdown.append($('<option>', {
+                                value: '',
+                                text: '--Select--',
+                                disabled: true,
+                                selected: true
+                            }));
+
+                            // Populate with data
+                            $.each(response.data, function (index, item) {
+                                dropdown.append($('<option>', {
+                                    value: item.Value,
+                                    text: item.Text
+                                }));
+                            });
+                        } else {
+                            // Handle case where no data is returned
+                            dropdown.append($('<option>', {
+                                value: '',
+                                text: '-- No Data Found --',
+                                disabled: true,
+                                selected: true
+                            }));
+                            alert(response.message || "No Data found.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error: " + error);
+                        alert("An error occurred while fetching certificates.");
+                    }
+                });
+            } else {
+                alert("Please enter an Issue Number.");
+            }
+        }
+
+        function hideDivContent() {
+            document.getElementById("div_content_data").style.display = "none";
+        }
+
+        function searchData() {
+            const issue_no = document.getElementById('issue_no').value;
+            const cert = document.getElementById('certificate_no').value;
+
+            if (!issue_no || !cert || cert === "0") {
+                alert("Please enter an Issue Number and select a Certificate Number.");
+                return;
+            }
+
+            $.ajax({
+                url: '/Lien/GetLienData',
+                type: 'POST',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({ issue_no: issue_no, cert: cert }),
+                success: function (response) {
+                    if (response.success) {
+                        // Populate the table
+                        const tbody = $('#gvdata tbody');
+                        tbody.empty();
+
+                        document.getElementById("div_content_data").style.display = "block";
+
+                        response.table1.forEach(row => {
+                            tbody.append(`<tr>
+                            <td>${row.IssueNo}</td>
+                            <td>${row.CertificateNo}</td>
+                            <td>${row.Customer}</td>
+                            <td>${row.CustomerID}</td>
+                            <td>${row.PANCard}</td>
+
+                        </tr>`);
+                        });
+
+                        $('#dataContainer').show();
+
+                        // Display additional info
+                        if (response.table2) {
+                            // Populate text inputs
+                            $('#lien_marked').val(response.table2.lien_markedto);
+                            $('#status').val(response.table2.status);
+
+                            // Set radio buttons based on response data
+                            if (response.table2.lien === 'Y') {
+                                $('#Lien_yes').prop('checked', true);
+                            } else if (response.table2.lien === 'N') {
+                                $('#Lien_no').prop('checked', true);
+                            }
+                            $('#h_id').val(response.table2.id);
+                            $('#h_lien').val(response.table2.lien);
+
+                     
+                            //txt_againstlien.Text = ds.Tables[1].Rows[0]["lien_markedto"].ToString();
+                            //txt_st.Text = ds.Tables[1].Rows[0]["status"].ToString();
+                            //lbl_head.Text = ds.Tables[1].Rows[0]["lbl"].ToString();
+
+                            // Display additional information if needed
+                            $('#additionalInfo').show();
+                        }
+
+                    } else {
+                        document.getElementById("div_content_data").style.display = "none";
+                        alert(response.message || "An error occurred while fetching data.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    document.getElementById("div_content_data").style.display = "none";
+                    console.error("Error: " + error);
+                    alert("Failed to fetch data.");
+                }
+            });
+        }
+
+        function Update() {
+
+            
+            var issueNo = document.getElementById("issue_no").value;
+            var certNo = document.getElementById("certificate_no").value;
+            var radioYes = document.getElementById("Lien_yes").checked;
+            var radioNo = document.getElementById("Lien_no").checked;
+            var lienMarked = document.getElementById("lien_marked").value;
+           
+
+
+            if (radioYes == true)
+                document.getElementById("h_lien").value = 'Y';
+            if (radioNo == true)
+                document.getElementById("h_lien").value = 'N'; 
+                
+
+           /* check form validation before updation*/
+
+            if (issueNo === "") {
+                alert("Please Enter ISSUE Number!");
+                document.getElementById("issue_no").focus();
+                return false;
+            }
+            else if (certNo === "" || certNo === "0") {
+                alert("Please Select Certificate Number!");
+                return false;
+            }
+            else if (!radioYes && !radioNo) {
+                alert("Please Select Lien Mark Option (Yes/No)!");
+                return false;
+            }
+            else if (radioYes && lienMarked === "") {
+                alert("Please Enter Lien Marked Against!");
+                document.getElementById("lien_marked").focus();
+                return false;
+            }
+            else { 
+                    var data = {
+                        type_id: document.getElementById("h_lien").value,
+                        id: document.getElementById("h_id").value,
+                        marked_against: document.getElementById("lien_marked").value
+                    
+                    };
+
+                    $.ajax({
+                        url: '/Lien/UpdateLien',
+                        type: 'POST',
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify(data),
+                        success: function (response) {
+                           
+                            if (response.success) {
+
+                                Swal.fire({
+                                    title: "",
+                                    text: response.message,
+                                    icon: "success",
+                                    confirmButtonText: "OK"
+                                }).then(() => {
+                                    window.location.reload();
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "",
+                                    text: response.message,
+                                    icon: "error",
+                                    confirmButtonText: "OK"
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                title: "An error occurred while updating the data. Please try again.",
+                                text: "Error: " + error,
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                        }
+                    });
+
+
+                 }
+ 
+        }
+
+        $(document).ready(function () {
+
+            $('input[name="Lien_status"]').on('change', function () {
+                const selectedValue = $('input[name="Lien_status"]:checked').val();
+                console.log("Selected value: ", selectedValue);
+
+                if (selectedValue === 'Y')
+                {
+                  
+                } else if (selectedValue === 'N')
+                {
+                    document.getElementById("h_lien").value = '';
+                  
+                }
+            });
+        });
+
+    </script>
+
+</head>
+<body>
+    <div class="app-main__inner">
+
+
+        <div style="height: 100px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">LIEN MARK/REMOVE</h6>
+            </div>
+        </div>
+
+        <div class="card-body" id="div_content">
+            <div class="row">
+               
+                <div class="col-md-3">
+                    <div class="input-container">
+                        <input type="text" id="issue_no" name="issue_no" class="form-control"
+                               onkeyup="fetchCertificates()" maxlength="10"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                        <label for="issue_no">Issue Number</label>
+                    </div>
+                </div>
+
+                <!-- Certificate Number Dropdown -->
+                <div class="col-md-3">
+                    <div class="input-container">
+                        <select id="certificate_no" name="certificate_no" class="form-control" onchange="hideDivContent()" required>
+                            @if (ViewBag.Certi_no_List != null)
+                            {
+                                foreach (SelectListItem item in ViewBag.Certi_no_List)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            }
+                            else
+                            {
+                                <option value="0">-- No Data --</option>
+                            }
+                        </select>
+                        <label for="certificate_no">Certificate Number</label>
+                    </div>
+                </div>
+
+                <!-- Get Data Button -->
+
+                <div class="col-md-3">
+                    <div class="input-container">
+                        <button type="button" id="searchButton" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary"
+                                style="width: 125px;" onclick="searchData()">
+                            Get Data
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Reset Button -->
+
+                <div class="col-md-3">
+                    <div class="input-container">
+                        <button type="button" id="resetButton" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary"
+                                style="width: 125px;" onclick="window.location.reload();">
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div id="div_content_data" style="display: none;">
+
+                <!-- Data Table -->
+                <div id="dataContainer" style="display: none; overflow-x: auto; height:100px">
+                    <table id="gvdata" class="table table-hover table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>IssueNo</th>
+                                <th>CertificateNo</th>
+                                <th>Customer</th>
+                                <th>CustomerID</th>
+                                <th>PAN Card</th>
+                                <!-- Add other column headers dynamically based on your dataset -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows will be dynamically populated here -->
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div class="row">
+                    <!-- Issue Number Input -->
+                    <div class="col-md-4">
+                        <div class="input-container">
+                            <input type="text" id="status" name="status" class="form-control" readonly style="background-color:lightgray" />
+                            <label for="status">Current Lien Status</label>
+                        </div>
+                    </div>
+
+                    <!-- Certificate Number Dropdown -->
+                    <div class="col-md-4">
+                        <div class="input-container">
+                            
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-4">
+                        <div class="input-container">
+                           
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+
+
+                <div class="row">
+                    <!-- Issue Number Input -->
+                    <div class="col-md-4">
+                        <div class="input-container">
+                          
+
+                            <label for="Lien_remov" style="top: -3px; font-size: 12px; font-weight: bold;">Mark Lien</label>
+                            <div class="radio-container">
+                                <div class="radio-option">
+                                    <input type="radio" id="Lien_yes" name="Lien_status" value="Y" required />
+                                    <label for="Lien_yes">Yes</label>
+                                </div>
+                                &nbsp; &nbsp; &nbsp;
+                                <div class="radio-option">
+                                    <input type="radio" id="Lien_no" name="Lien_status" value="N" required />
+                                    <label for="Lien_no">No</label>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                    <!-- Certificate Number Dropdown -->
+                    <div class="col-md-4">
+                        <div class="input-container">
+                            @*<input type="text" id="status" name="status" class="form-control" readonly style="background-color:lightgray" />
+        <label for="status">Status</label>*@
+
+                            <input type="text" id="lien_marked" name="lien_marked" class="form-control" />
+                            <label for="lien_marked">Lien Marked Against</label>
+
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-4">
+                        <div class="input-container">
+                          
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="row">
+                    <!-- Issue Number Input -->
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="hidden" id="h_id" name="h_id" />
+
+                        </div>
+                    </div>
+
+                    <!-- Certificate Number Dropdown -->
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="hidden" id="h_lien" name="h_lien" />
+                        </div>
+                    </div>
+
+                    <!-- Get Data Button -->
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <button type="button" id="update" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary"
+                                    style="width: 125px;" onclick="Update()">
+                                Update
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Reset Button -->
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <button type="button" id="cancel" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary"
+                                    style="width: 125px;" onclick="window.location.reload();">
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+            </div>
+
+            </div>
+    </div>
+</body>
+
+</html>

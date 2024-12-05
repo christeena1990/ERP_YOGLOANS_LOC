@@ -1,0 +1,775 @@
+﻿
+@model System.Data.DataTable
+@using System.Data
+
+<html>
+<head>
+
+    <style>
+      
+        .hidden-column 
+        {
+            display: none;
+        }
+
+        button 
+        {
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: #f5f5f5;
+            color: #333;
+            border-radius: 5px;
+        }
+
+        button.selected 
+        {
+                background-color: lightblue;
+                color: #007FFF;
+        }
+
+        .search-container 
+        {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-container input[type="text"] 
+        {
+                width: 250px;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 14px;
+        }
+
+        .search-container .search-btn 
+        {
+                background-color: #6cb2eb;
+                color: #fff;
+                border: none;
+                padding: 10px;
+                margin-left: 5px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 14px;
+        }
+
+        .search-container .search-btn:hover 
+        {
+                    background-color: #4e96d8;
+        }
+
+        .scrollable-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .scrollable-container {
+            max-height: 500px; 
+            overflow-y: auto;
+        }
+        .input-container 
+        {
+            position: relative;
+            margin: 20px 0;
+            height: 40px; 
+        }
+        .input-container input[type="text"] 
+        {
+                border: 1px solid darkblue; 
+                border-radius: 4px;
+                padding: 5px 10px; 
+                font-size: 16px;
+                outline: none;
+                width: 100%;
+                box-sizing: border-box;
+                height: 100%; 
+        }
+        .input-container label 
+        {
+                position: absolute;
+                top: 50%;
+                left: 10px;
+                transform: translateY(-50%);
+                color: darkblue; 
+                background-color: #fff;
+                padding: 0 5px;
+                transition: 0.3s ease;
+                pointer-events: none;
+        }
+
+        .input-container input[type="text"]:focus + label,
+            .input-container input[type="text"]:not(:placeholder-shown) + label 
+        {
+                top: -5px;
+                font-size: 12px;
+                color: darkblue; 
+                font-weight: bold;
+        }
+
+        #bank-details-table th {
+            font-size: 12px;
+        }
+
+        /* Reduce font size for the table data */
+        #bank-details-table td {
+            font-size: 11px; 
+        }
+
+
+
+    </style>
+
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="~/Scripts/jquery-3.6.4.min.js"></script>
+    <script src="~/Scripts/spin.min.js"></script>
+
+
+</head>
+
+<body>
+    <div class="app-main__inner" style="margin-top: -30px;padding:10px;">
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+
+                <h6 style="font-weight: bold; font-size: 25px; margin:0;color:maroon">Personal Loan Disbursement</h6>
+            </div>
+        </div>
+
+
+        @if (ViewBag.IsEmpty)
+        {
+
+            <div>
+                No records available.
+            </div>
+        }
+        else
+        {
+
+            @*@if (!string.IsNullOrEmpty(ViewBag.Message))*@
+            if (!string.IsNullOrEmpty(ViewBag.Message))
+            {
+                <div>@ViewBag.Message</div>
+            }
+            else
+            {
+
+                <div class="card-body" style="width:100%;">
+                    <div class="tab-content">
+                        <div class="tab-pane tabs-animation fade show active" id="tab-content-0" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-12 col-lg-4">
+                                    <div class="main-card mb-3 card">
+                                        <!-- Search Region -->
+
+                                        <div class="search-container">
+                                            <div class="region-dropdown" style="width:300px">
+                                                <select id="regionSelect" class="form-control" onchange="updateScrollableContainer()">
+
+                                                    @foreach (SelectListItem item in ViewBag.RegionList)
+                                                    {
+                                                        <option value="@item.Value">@item.Text</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                @*///////////////////////////////////////////////////////////////////////*@
+
+                                <div class="col-lg-8 col-md-12">
+                                    <div class="main-card mb-3 card">
+                                        <!-- Conditional message for no records -->
+                                        @*@if (ViewBag.IsEmpty)
+                                        {
+
+                                            <div>
+                                                No records available.
+                                            </div>
+                                        }
+                                        else
+                                        {
+
+                                        }*@
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+                    <div class="card-body" style="width:100%;">
+                        <div class="tab-content">
+                            <div class="tab-pane tabs-animation fade show active" id="tab-content-0" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-12 col-lg-4">
+                                        <div class="main-card mb-3 card">
+                                            <div class="card-header">Customer Details</div>
+
+                                            <div id="scrollable-container" class="scrollable-container">
+                                                <ul class="todo-list-wrapper list-group list-group-flush">
+                                                    @foreach (DataRow row in Model.Rows)
+                                                    {
+                                                        var customerloanId = row["application_id"];
+                                                        <li class="list-group-item">
+                                                            <div class="todo-indicator bg-primary"></div>
+                                                            <div class="widget-content p-0">
+                                                                <div class="widget-content-wrapper">
+                                                                    <div class="widget-content-left mr-2">
+                                                                        <div class="custom-checkbox custom-control">
+                                                                            <input type="checkbox" name="option" class="custom-control-input checkbox-option" data-customer-id="@customerloanId" id="checkbox-@customerloanId">
+                                                                            <label class="custom-control-label" for="checkbox-@customerloanId">&nbsp;</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="widget-content-left">
+                                                                        <div class="widget-heading" style="font-size:small">
+                                                                            @row["customer_name"]
+                                                                        </div>
+                                                                        <div class="widget-subheading" style="font-size:small">
+                                                                            ID: @row["application_id"]
+                                                                        </div>
+
+                                                                        <div class="widget-subheading" style="font-size:small">
+                                                                            @row["branch_name"]
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @*///////////////////////////////////////////////////////////////////////*@
+
+                                    <div class="col-lg-8 col-md-12">
+                                        <div class="main-card mb-3 card">
+                                            <div class="card-body">
+                                                <div id="smartwizard">
+                                                    <ul class="forms-wizard">
+                                                        <li>
+                                                            <a href="#step-1">
+
+                                                                <span></span>
+                                                            </a>
+                                                        </li>
+
+                                                    </ul>
+
+                                                    @*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+                                                    <div class="form-wizard-content">
+
+                                                        <div id="step-1">
+
+                                                            @*<form id="loan-form" method="post" enctype="multipart/form-data" action="/Personal_Loan_Approve/ApproveApplication">*@
+                                                                <input type="hidden" id="branchId" name="branchId" value="@Session["branch_id"]" />
+                                                                <input type="hidden" id="userId" name="userId" value="@Session["login_user"]" />
+
+                                                                <div class="form-row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="customername" name="customername" readonly />
+                                                                            <label for="customername">Customer Name</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="customerid" name="customerid" readonly />
+                                                                            <label for="customerid">Customer ID</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-row">
+                                                                    <div class="col-md-6">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="applicationid" name="applicationid" readonly />
+                                                                            <label for="applicationid">Application ID</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="loan-number" name="loan-number" readonly />
+                                                                            <label for="loan-number">Gold Loan No</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-row">
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="loan-amount" name="loan-amount" readonly />
+                                                                            <label for="loan-amount">Loan Amount</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="receivables" name="receivables" readonly />
+                                                                            <label for="receivables">Receivables</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="disburse-amt" name="disburse-amt" readonly />
+                                                                            <label for="disburse-amt">Disbursement Amount</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+
+                                                                <div class="divider"></div>
+
+                                                                <div id="bank-details-heading" style="font-size: 12px; font-weight: bold; display: none;">Bank Details</div>
+
+
+                                                                <div class="form-row">
+
+                                                                    <table id="bank-details-table" class="table table-bordered" style="display: none;">
+                                                                        <thead>
+                                                                            <tr>
+                                                                                <th>Acc No</th>
+                                                                                <th>IFSC</th>
+                                                                                <th>Bank</th>
+                                                                                <th>Branch</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <!-- Rows will be dynamically populated here -->
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+
+                                                                <div class="form-row">
+                                                                    <button type="button" class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-warning" onclick="openInNewTab('@Url.Action("BankAttachments_View", "Attachment")')">Bank Details</button>
+                                                                    @*<button type="button" class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-warning">Disbursement Memo</button>*@
+
+                                                                    <button type="button" class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-warning" onclick="openInNewTab('@Url.Action("PL_Disbursement_Memo_View", "PL_Disbursement_Memo")')">Disbursement Memo</button>
+                                                                </div>
+
+                                                                <div class="divider"></div>
+
+
+
+                                                                <div class="form-row">
+
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <div class="bank-dropdown">
+
+
+                                                                                <select id="bankSelect" class="form-control">
+                                                                                    @if (ViewBag.BankList != null)
+                                                                                    {
+                                                                                        foreach (SelectListItem item in ViewBag.BankList)
+                                                                                        {
+                                                                                           
+                                                                                            <option value="@item.Value">@item.Text</option>
+                                                                                        }
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <option value="0">-- No  Details Available --</option>
+                                                                                    }
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <div class="paymenttype-dropdown">
+                                                                                <select id="paymenttypeSelect" class="form-control">
+
+                                                                                    @if (ViewBag.PaymentTypeList != null)
+                                                                                    {
+                                                                                        foreach (SelectListItem item in ViewBag.PaymentTypeList)
+                                                                                        {
+
+                                                                                            <option value="@item.Value">@item.Text</option>
+                                                                                        }
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <option value="0">-- No  Details Available --</option>
+                                                                                    }
+
+                                                                                </select>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+
+
+                                                                            <div class="paymode-dropdown">
+                                                                                <select id="paymodeSelect" class="form-control">
+                                                                                    @if (ViewBag.PaymodeList != null)
+                                                                                    {
+                                                                                        foreach (SelectListItem item in ViewBag.PaymodeList)
+                                                                                        {
+                                                                                           
+                                                                                            <option value="@item.Value">@item.Text</option>
+                                                                                        }
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <option value="0">-- No  Details Available --</option>
+                                                                                    }
+
+
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                                <div class="divider"></div>
+                                                                <div class="clearfix">
+                                                                    <button type="button" id="reset-button" name="actionType" value="Reset" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Reset</button>
+
+
+                                                                    <button type="button" id="disburse-button" name="actionType" value="Disburse" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary" @*OnClientClick="this.disabled = true; this.value = 'please wait ..';" UseSubmitBehavior="false"*@>Disburse</button>
+                                                                </div>
+
+
+
+                                                            @*</form>*@
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="divider"></div>
+                                                <div class="clearfix">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+@*<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>*@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+<script>
+
+                 $(document).on('change', '.checkbox-option', function () {
+                     if ($(this).is(':checked')) {
+                         // Hide other checkboxes
+
+                        $('.checkbox-option').not(this).prop('checked', false);
+                        var ApplicationID = $(this).data('customer-id');
+
+                        // Show the bank details section
+                        resetDropdowns();
+                        $('#bank-details-table').show();
+                        $('#bank-details-heading').show();
+
+                        $.ajax({
+                            url: '@Url.Action("PL_Disburse_details", "Personal_Loan_Disburse")',
+                            type: 'POST',
+                            data: { applicationid: ApplicationID },
+                            success: function (response) {
+                                if (response) {
+                                    // Populate form fields with response data
+                                    $('#customername').val(response.CustomerName);
+                                    $('#customerid').val(response.CustomerId);
+                                    $('#loan-number').val(response.LoanNo);
+                                    $('#applicationid').val(response.ApplicationID);
+                                    $('#loan-amount').val(response.LoanAmt);
+                                    $('#branch-id').val(response.BranchId);
+                                    $('#receivables').val(response.Receivables);
+                                    $('#disburse-amt').val(response.Disbursement);
+
+                                    // Populate bank details
+                                    populateBankDetails(response.BankDetails);
+                                } else {
+                                    console.log('No data found for ApplicationID: ' + ApplicationID);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error('AJAX Error: ' + status + ' ' + error);
+                            }
+                        });
+                     } else
+                     {
+                        // Hide the bank details section and clear the form if the checkbox is unchecked
+                        $('#bank-details-table').hide();
+                        $('#bank-details-heading').hide();
+
+                        clearFormFields();
+                        resetDropdowns();
+
+                     }
+                 });
+
+
+                 function populateBankDetails(bankDetails) {
+
+                       var tableBody = $('#bank-details-table tbody');
+                       tableBody.empty(); 
+
+                       if (bankDetails && bankDetails.length > 0) {
+
+                           bankDetails.forEach(function (detail) {
+
+                               localStorage.setItem("bankAccNo", detail.AccNo);
+                               localStorage.setItem("ifsc", detail.IFSC);
+                                
+
+                                var row = '<tr>' +
+                                '<td>' + detail.AccNo + '</td>' +
+                                '<td>' + detail.IFSC + '</td>' +
+                                '<td>' + detail.BankName + '</td>' +
+                                '<td>' + detail.BranchName + '</td>' +
+                                '</tr>';
+                                tableBody.append(row);  
+                           });
+                       }
+                       else
+                       {
+                                localStorage.setItem("bankAccNo", "0");
+                                tableBody.append('<tr><td colspan="4">No bank details available</td></tr>');  
+
+
+                       }
+
+                 }
+
+
+                  $('#regionSelect').change(function ()
+                  {
+                      clearFormFields();
+                      resetDropdowns();
+
+                  });
+
+                  function clearFormFields() {
+
+                            $('#customername').val('');
+                            $('#customerid').val('');
+                            $('#loan-number').val('');
+                            $('#applicationid').val('');
+                            $('#loan-amount').val('');
+                            $('#branch-id').val('');
+                            $('#receivables').val('');
+                            $('#disburse-amt').val('');
+
+                            //Bank details hd and data hide
+                            $('#bank-details-table tbody').empty();
+                            $('#bank-details-table').hide();  
+                            $('#bank-details-heading').hide();
+
+                  }
+
+                  function resetDropdowns() {
+                            $('#bankSelect').val("0");  
+                            $('#paymodeSelect').val("0");  
+                            $('#paymenttypeSelect').val("0");  
+                  }
+
+                  function updateScrollableContainer()
+                  {
+                      var regionId = $('#regionSelect').val();
+
+                      $.ajax({
+                         url: '@Url.Action("UpdateScrollableContainer", "Personal_Loan_Disburse")',
+                         type: 'POST',
+                         data: { region_id: regionId },
+                          success: function (response)
+                          {
+
+                             $('#scrollable-container').html(response);
+                          },
+                          error: function (xhr, status, error)
+                          {
+                             console.error('AJAX Error: ' + status + error);
+                          }
+                      });
+
+                      function openInNewTab(url)
+                      {
+                              var win = window.open(url, '_blank');
+                              win.focus();
+                      }
+
+                  }
+
+                  //  (DISBURSE/RESET)  : Submit the form with the action type
+
+            function submitForm(actionType, event) {
+                event.preventDefault();
+                        if (actionType === "Reset") {
+                            window.location.reload();
+                            //ResetForm();
+                            return; 
+                        }
+
+                        // Disbursement action continues below
+                        var appId = $('#applicationid').val();
+                        var loanNo = $('#loan-number').val();
+                        var loanAmt = $('#loan-amount').val();
+                        var disAmt = $('#disburse-amt').val();
+                        var bankId = $('#bankSelect').val();
+                        var paymenttype = $('#paymenttypeSelect').val();
+                        var paymode_value = $('#paymodeSelect').val();
+                        var paymode = $('#paymodeSelect option:selected').text(); // Get the selected text of the dropdown
+                        //alert(paymodeText);
+                        var bankAcNo = localStorage.getItem("bankAccNo");
+                       var ifsc = localStorage.getItem("ifsc");
+                       var customerName = $('#customername').val();
+                        // Validation checks
+                        if (bankAcNo == "0") {
+                            Swal.fire({
+                                title: "",
+                                text: "Please Add Bank Details.",
+                                icon: "warning",
+                                confirmButtonText: "OK",
+                                
+                            });
+                            return;
+                        }
+                        if (bankId == 0) {
+                            Swal.fire({
+                                title: "",
+                                text: "Please select a bank.",
+                                icon: "warning",
+                                confirmButtonText: "OK",
+
+                                didClose: () => {
+                                    document.getElementById("bankSelect").focus();
+                                }
+                            });
+                            return;
+                        }
+                        if (paymenttype == 0) {
+                            Swal.fire({
+                                title: "",
+                                text: "Please select a payment type.",
+                                icon: "warning",
+                                confirmButtonText: "OK",
+                                
+
+                                didClose: () => {
+                                    document.getElementById("paymenttypeSelect").focus();
+                                }
+                            });
+                            return;
+                        }
+                        if (paymode_value == 0) {
+                            Swal.fire({
+                                title: "",
+                                text: "Please select a payment mode.",
+                                icon: "warning",
+                                confirmButtonText: "OK",
+
+                                didClose: () => {
+                                    document.getElementById("paymodeSelect").focus();
+                                }
+                            });
+                            return;
+                       }
+
+                       var formData = new FormData();
+                       formData.append('appId', appId);
+                       formData.append('loanAmt', loanAmt);
+                       formData.append('disAmt', disAmt);
+                       formData.append('bankId', bankId);
+                       formData.append('paymode', paymode);
+                       formData.append('paymenttype', paymenttype);
+                       formData.append('actionType', actionType);
+                       formData.append('custAccntNumb', bankAcNo);
+                       formData.append('ifsc', ifsc);
+                       formData.append('custName', customerName);
+                        // Perform the AJAX request for disbursement
+                        $.ajax({
+                            url: '@Url.Action("DisburseLoan")',
+                            type: 'POST',
+                            data: formData,
+                             processData: false, // Prevent jQuery from converting the form data into a query string
+                             contentType: false, // Prevent jQuery from setting content type header
+                            success: function (result) {
+                                if (result.success) {
+                                    Swal.fire({
+                                        title: " ",
+                                        text: result.message,
+                                        icon: "success",
+                                        confirmButtonText: "OK"
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                } else
+                                {
+                                    
+
+                                    Swal.fire({
+                                        title: " ",
+                                        text: result.message,
+                                        icon: "error",
+                                        confirmButtonText: "OK"
+                                    });
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                Swal.fire({
+                                    title: "An error occurred",
+                                    text: "Error: " + error,
+                                    icon: "error",
+                                    confirmButtonText: "OK"
+                                });
+                            }
+                        });
+
+                        localStorage.setItem("bankAccNo", "0");
+                   }
+
+                   function ResetForm()
+                   {
+                        clearFormFields();
+                        resetDropdowns();
+                   }
+
+
+                    $(document).ready(function ()
+                    {
+                        
+                        $('#disburse-button').click(function(e) {
+                            alert("click");
+                            //e.preventDefault(); // Prevent default form submission
+                            submitForm('Disburse',e);
+                        });
+
+                        $('#reset-button').click(function(e) {
+                           // e.preventDefault(); // Prevent default form submission
+                            submitForm('Reset',e);
+                        });
+                    });
+
+
+                </script>
+
+            }
+        }
+    </div>
+</body>
+</html>

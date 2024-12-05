@@ -1,0 +1,273 @@
+﻿
+
+
+@{
+    ViewBag.Title = "Equifax_Enquiry";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equifax Enquiry</title>
+
+    <style>
+        /* Existing Styles */
+        .input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+            .input-container input,
+            .input-container select {
+                width: 100%;
+                padding: 6px 6px 6px 5px; /* Matching padding */
+                display: block;
+                border: none;
+                border-bottom: 1px solid #757575; /* Bottom border for input and select */
+                font-size: 14px; /* Font size to match other inputs */
+                background-color: transparent; /* Background color to match inputs */
+                position: relative; /* To position the arrow */
+                background-color: white; /* Ensure background color is white */
+            }
+
+                .input-container input:focus,
+                .input-container select:focus {
+                    outline: none;
+                }
+
+            .input-container label {
+                color: #999;
+                font-size: 14px;
+                font-weight: normal;
+                position: absolute;
+                pointer-events: none;
+                left: 5px;
+                top: 6px; /* Label's default position */
+                transition: 0.2s ease all;
+            }
+
+            .input-container input:focus ~ label,
+            .input-container input:valid ~ label,
+            .input-container select:focus ~ label,
+            .input-container select:not(:placeholder-shown) ~ label {
+                top: -14px; /* Adjusted label floating position */
+                font-size: 12px;
+                color: #5264AE;
+            }
+
+        /* Custom Dropdown Arrow */
+        .custom-dropdown {
+            appearance: menulist;
+            background: transparent; /* Transparent background */
+        }
+
+        /* Remove borders on other sides */
+        .input-container .custom-dropdown {
+            border-left: none;
+            border-right: none;
+            border-top: none;
+        }
+
+        /* Custom styles specific to the Date of Birth field */
+        #dob {
+            padding: 6px 6px 6px 5px;
+        }
+
+            #dob:focus ~ label,
+            #dob:valid ~ label {
+                top: -10px; /* Moves the label above the border */
+                font-size: 12px;
+                color: #5264AE;
+            }
+
+        #dob-label {
+            position: absolute;
+            top: -10px; /* Position the label above the textbox */
+            left: 5px; /* Align it with the text input */
+            font-size: 12px; /* Set the smaller font size */
+            color: #5264AE; /* Set the label color */
+            pointer-events: none;
+            transition: 0.2s ease all;
+        }
+    </style>
+</head>
+<body>
+    <form action="" method="post" id="register_form" enctype="multipart/form-data" autocomplete="off" style="width:100%;">
+        <br />
+        <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+            <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+                <div class="card-title">
+                    <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Equifax Enquiry</h6>
+                </div>
+            </div>
+            <br />
+
+            <div class="row">
+                <div id="form-container" style="width:100%;">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-container">
+                                <select id="loan-type" name="loan-type" class="custom-dropdown" required>
+                                    <option value="" disabled selected>Select an Option</option>
+                                    <option value="option1">Option 1</option>
+                                    <option value="option2">Option 2</option>
+                                    <option value="option3">Option 3</option>
+                                </select>
+                                <label for="loan-type">Loan Type</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-container">
+                                <input type="text" id="customer-name" name="customer-name" required />
+                                <label for="customer-name">Name</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-container">
+                                <input type="text" id="customer-address" name="customer-address" required />
+                                <label for="customer-address">Address</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="date" id="dob" name="dob" required />
+                                <label for="dob" id="dob-label">Date of Birth</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="contactno1" name="contactno1" required />
+                                <label for="contactno1">Contact No.1</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="contactno2" name="contactno2" required />
+                                <label for="contactno2">Contact No.2</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="pincode" name="pincode" required />
+                                <label for="pincode">Pin Code</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="postoffice" name="postoffice" required />
+                                <label for="postoffice">Post Office</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="state" name="state" required />
+                                <label for="state">State</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-container">
+                                <input type="text" id="loan-amount" name="loan-amount" required />
+                                <label for="loan-amount">Loan Amount</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-container">
+                                <input type="text" id="remarks" name="remarks" required />
+                                <label for="remarks">Remarks</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-container">
+                                <input type="text" id="vehicle-type" name="vehicle-type" required />
+                                <label for="vehicle-type">Vehicle Type</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="pan-number" name="pan-number" required />
+                                <label for="pan-number">PAN Number</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="aadhar-no" name="aadhar-no" required />
+                                <label for="aadhar-no">Aadhar No.</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="voters-id" name="voters-id" required />
+                                <label for="voters-id">Voters ID</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="passport" name="passport" required />
+                                <label for="passport">Passport</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="driving-licence" name="driving-licence" required />
+                                <label for="driving-licence">Driving Licence</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="ration-card" name="ration-card" required />
+                                <label for="ration-card">Ration Card</label>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <br />
+
+                    <div class="d-block text-center ">
+
+                        <button type="submit" class="btn btn-lg btn-primary">Submit</button>
+                        <a href="" class="btn btn-lg btn-danger">Close</a>
+                        <button class="btn btn-lg btn-gradient-secondary" type="button" id="resetButton">Reset</button>
+
+                    </div>
+
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
+
+
+

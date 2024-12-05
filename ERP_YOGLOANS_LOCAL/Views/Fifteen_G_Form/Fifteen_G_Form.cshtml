@@ -1,0 +1,668 @@
+﻿@{
+    Layout = null;
+    var sessionValuepan_no = Session["pan_no"];
+    var sessionValueTrack_ID = Session["Track_ID"];
+    var applicationId = Session["appid"];
+
+}
+@{
+    ViewBag.Title = "Fifteen_G_Form";
+}
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form No. 15G</title>
+
+    <style>
+        .page-break {
+            page-break-before: always;
+            break-before: page;
+        }
+
+        .table3 {
+            border-collapse: collapse;
+        }
+
+            .table3 td {
+                border: none;
+            }
+        #table3 {
+            border: none;
+        }
+        .table3 td {
+            border: none; /* Remove border for td elements in this table */
+            padding: 5px; /* Optional: Add some padding for spacing */
+        }
+
+        .table3 th {
+            border: none; /* Remove border for th elements in this table */
+        }
+        .table3 td.right-align {
+            text-align: right; /* Right align specific cells */
+        }
+        body {
+            font-size: 9pt;
+            margin: 0;
+            padding: 0;
+        }
+
+        .form-container {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h4, h5 {
+            text-align: center;
+        }
+
+        table {
+            width: 96%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        tr {
+            border: 1px solid #000;
+            /* Border for the entire row */
+        }
+
+        td {
+            padding: 2px;
+            text-align: left;
+            border-left: 1px solid #000; /* Add left border between columns */
+        }
+
+            td:first-child {
+                border-left: none; /* Remove left border from the first column */
+            }
+
+        .section-header {
+            text-align: center;
+            font-weight: bold;
+            background-color: #f0f0f0;
+        }
+
+        .grid-container {
+            display: grid;
+            /* gap: 10px;*/
+            gap: 3px;
+        }
+
+            .grid-container td {
+                height: 45px;
+                padding: 10px;
+            }
+
+        .small-height {
+            height: 45px !important; /* Force height to 30px */
+        }
+
+
+        .two-column td {
+            text-align: left;
+        }
+
+
+        .grid-container.two-column {
+            grid-template-columns: 1fr 1fr; /* Two columns taking 50% each */
+        }
+
+        .grid-container.three-column {
+            grid-template-columns: 1fr 1fr 1fr; /* Three columns taking 33.33% each */
+        }
+
+        .grid-container.four-column {
+            grid-template-columns: 1fr 1fr 1fr 1fr; /* Four columns taking 25% each */
+        }
+
+        .grid-container.five-column {
+            grid-template-columns: 1fr 1fr 1fr 1fr 1fr; /* Four columns taking 25% each */
+        }
+
+        .no-border {
+            border: none;
+        }
+
+        .conditional-field {
+            display: none;
+            margin-top: 8px;
+        }
+    </style>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+         $(document).ready(function () {
+           //  alert("function ready.");
+             var sessionValuepan_no = '@(sessionValuepan_no ?? "null")';
+             var sessionValueTrack_ID = '@(sessionValueTrack_ID ?? "null")';
+              var applicationId = '@(applicationId ?? "null")';
+           //alert(applicationId);
+
+              if (sessionValuepan_no !== "null" && sessionValueTrack_ID !== "null") {
+
+              initializeScript();
+             }
+             else if (applicationId !== "null") {
+                 initializeScript();
+               }
+             //if (sessionValuepan_no !== "null" && sessionValueTrack_ID !== "null") {
+             //    initializeScript();
+             //} else {
+             //  //  alert("Session values are not set, skipping script initialization.");
+             //}
+         });
+
+        function initializeScript() {
+           // alert("Initializing form data.");
+
+            $.ajax({
+                url: '/Fifteen_G_Form/fifteen_H_details',
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success && Array.isArray(response.data) && response.data.length > 0) {
+                        const data = response.data;
+
+                        // Loop through each item in the data array
+                        data.forEach((item, index) => {
+
+
+                            //alert("Customer Name: " + item.customer_name);
+
+                            $('#pantrack_label').text(item.pantrack);
+                            $('#customerNameLabel').text(item.customer_name);
+                            $('#customerNameLabel2').text(item.customer_name);
+                            //  alert("Mobile No: " + item.mobile_no);
+                            $('#mobileNoLabel').text(item.mobile_no);
+                            $('#emailIdLabel').text(item.email_id);
+                            $('#houseNameLabel').text(item.c_housename);
+                            $('#streetNameLabel').text(item.c_street_name);
+                            $('#cityLabel').text(item.c_city);
+                            $('#cityLabel2').text(item.city);
+                            $('#cityLabel3').text(item.city);
+                            $('#postNameLabel').text(item.post_name);
+                            $('#pinCodeLabel').text(item.pin_code);
+                            $('#districtNameLabel').text(item.district_name);
+                            $('#stateNameLabel').text(item.state_name);
+                            $('#panCardNoLabel').text(item.PancARdno);
+                            $('#totNo15FieldLabel').text(item.tot_no_15_field);
+                            $('#totIntCifLabel').text(item.tot_int_cif);
+                            $('#aggregateAmtLabel').text(item.aggregate_amt);
+                            $('#statusLabel').text(item.status);
+                            $('#fyLabel').text(item.fy);
+                            $('#premisesLabel').text(item.premises);
+                            $('#estIncomeLabel').text(item.estincome);
+                            $('#estTotIncomeLabel').text(item.esttotincom);
+                            $('#estTotIncomeLabel2').text(item.esttotincom);
+                            // alert(item.esttotincom);
+                            $('#resStatusLabel').text(item.resstatus);
+                            $('#assYrLabel').text(item.assyr);
+                            $('#assYrLabel2').text(item.assyr);
+                            $('#endDateLabel').text(item.enddt);
+                            $('#endDateLabel1').text(item.enddt);
+                            $('#endDateLabel2').text(item.enddt);
+                            // $('#panTrackLabel').text(item.pantrack);
+                            $('#dobLabel').text(item.dob);
+
+                            $('#dtLabel').text(item.dt);
+                            $('#dtLabel2').text(item.dt);
+                            $('#dtLabel3').text(item.dt);
+                            $('#otpDateLabel').text(item.otpdt);
+                            $('#signatureLabel').text(item.signature);
+                            $('#signatureLabel2').text(item.signature);
+                            $('#signatureLabel3').text(item.signature);
+                        });
+
+                        //  alert("Data retrieved successfully. Check console for details.");
+                    } else {
+                        alert("Failed to retrieve data.");
+                    }
+                    if (response.table1 && Array.isArray(response.table1)) {
+                        //  alert("table two");
+                        const table1Data = response.table1;
+                        const table2 = $('#table2');
+
+                        // Clear existing rows except the header
+                        table2.find("tr:gt(0)").remove();
+
+                        table1Data.forEach((item, index) => {
+                            // Create new row for table1
+                            const row = $('<tr>');
+
+                            // Generate Sl. No. dynamically
+                            row.append($('<td>').text(index + 1));
+
+                            // Add other columns from table1
+                            row.append($('<td>').text(item.a1));  // Identification number
+                            row.append($('<td>').text(item.a2));  // Nature of income
+                            row.append($('<td>').text(item.a3));  // Section under which tax is deductible
+                            row.append($('<td>').text(item.a4));  // Amount of income
+
+                            // Append the row to the table
+                            table2.append(row);
+                        });
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error in AJAX request:", error);
+                    alert("Error initializing form data.");
+                }
+            });
+        }
+    </script>
+
+
+
+</head>
+<body>
+    <div id="part1" class="page-break">
+
+
+
+
+
+        <div style="width:100%; text-align: center;">
+
+            <h4 style="margin-bottom: 1px;">FORM NO. 15G</h4>
+            <p1 style="margin-top: 1px;">[See section 197A (1), 197A (1A) and rule 29C]</p1><br />
+            <p4 style="margin-top: 1px; font-weight: 800;">Declaration under section 197A (1) and section 197A (1A) to be made by an individual or a person <br /> (not being a company or firm) claiming certain incomes without deduction of tax.</p4> <br />
+            <p2 style="margin-top: 1px; font-weight: 800;"> PART I </p2>
+
+        </div>
+        <table>
+
+            <tr class="grid-container two-column">
+                <td>
+                    1. Name of Assessee (Declarant)
+                    <label><span id="customerNameLabel" style="display: block; "></span></label>
+                </td>
+                <td>
+                    2. PAN of the Assessee<sup>1</sup>
+                    <label><span id="panCardNoLabel" style="display: block; "></span></label>
+                </td>
+            </tr>
+
+            <tr class="grid-container three-column">
+                <td>
+                    3. Status<sup>2</sup>
+
+                    <label><span id="statusLabel" style="display: block; "></span></label>
+                </td>
+                <td>
+                    4. Previous year(P.Y)<sup>3</sup>(for which declaration is being made):
+
+                    <label><span id="fyLabel" style="display: block; "></span></label>
+                </td>
+                <td>
+                    5. Residential Status<sup>4</sup>
+
+                    <label><span id="resStatusLabel" style="display: block; "></span></label>
+                </td>
+            </tr>
+
+            <tr class="grid-container four-column ">
+                <td class="small-height">
+                    6. Flat/Door/Block No.
+                    <label><span id="houseNameLabel" style="display: block; "></span></label>
+                </td>
+                <td class="small-height">
+                    7. Name of Premises
+                    <label><span id="premisesLabel" style="display: block; "></span></label>
+                </td>
+                <td class="small-height">
+                    8. Road/Street/Lane
+
+                    <label><span id="streetNameLabel" style="display: block; "></span></label>
+                </td>
+                <td class="small-height">
+                    9. Area/Locality
+
+                    <label><span id="cityLabel" style="display: block; "></span></label>
+                </td>
+            </tr>
+
+            <tr class="grid-container four-column">
+                <td>
+                    10. Town/City/District
+
+                    <label><span id="districtNameLabel" style="display: block; "></span></label>
+                </td>
+                <td>
+                    11. State
+                    <label><span id="stateNameLabel" style="display: block; "></span></label>
+                </td>
+                <td>
+                    12. PIN
+                    <label><span id="pinCodeLabel" style="display: block; "></span></label>
+                </td>
+                <td>
+                    13.Email
+                    <label><span id="emailIdLabel" style="display: block; "></span></label>
+                </td>
+            </tr>
+
+            <tr class="grid-container two-column">
+                <td>
+                    14. Telephone No. (with STD Code) & Mobile No.:
+
+                    <label><span id="mobileNoLabel" style="display: block; "></span></label>
+                </td>
+                <td>
+                    15. (a) Whether assessed to tax under the Income Tax Act, 1961<sup>5</sup>:<br />
+                    <label>
+                        <input type="checkbox" name="assessed" value="yes" disabled> Yes
+                    </label>
+                    <label>
+                        <input type="checkbox" name="assessed" value="no" checked disabled> No
+                    </label>
+                    <br>
+                    (b) If yes, latest assessment year for which assessed:
+                    @*<input type="text" name="assessmentYear">*@
+                </td>
+            </tr>
+
+
+            <tr class="grid-container two-column">
+                <td>
+                    16. Estimated income for which this declaration is made:
+                    <label><span id="estIncomeLabel" style="display: block; "></span></label>
+                </td>
+                <td>
+                    17.  Estimated total income of the P.Y. in which income mentioned in column 16 to be included<sup>6</sup>
+                    <label><span id="estTotIncomeLabel" style="display: block; "></span></label>
+                </td>
+            </tr>
+
+            <tr class="no-border">
+                <td colspan="2" class="no-border">
+                    18.  Details of Form No. 15G other than this form filed during the previous year, if any<sup>7</sup>
+                </td>
+            </tr>
+            <tr class="grid-container two-column">
+                <td>
+                    Total No. of Form No. 15G filed
+
+                    <label><span id="totNo15FieldLabel" style="display: block; "></span></label>
+                </td>
+                <td>
+                    Aggregate amount of income for which Form No.15G filed
+                    <label><span id="aggregateAmtLabel" style="display: block; "></span></label>
+                </td>
+            </tr>
+
+
+
+
+            <tr class="no-border">
+                <td colspan="2" class="no-border">
+                    19. Details of income for which the declaration is filed
+                </td>
+            </tr>
+            @*<tr class="grid-container five-column">
+                <td> Sl.No. </td>
+                <td> Identification number of relevant investment/account, etc.<sup>8</sup> </td>
+                <td> Nature of income</td>
+                <td>Section under which tax is deductible </td>
+                <td>Amount of income</td>
+            </tr>
+            <tr class="grid-container five-column">
+                <td></td>
+                <td></td>
+                <td> </td>
+                <td></td>
+                <td></td>
+            </tr>*@
+        </table>
+
+        <table id="table2">
+            <thead>
+                <tr>
+                    <td>Sl.No</td>
+                    <td>Identification number of relevant investment/account,etc<sup>8</sup></td>
+                    <td>Nature of income</td>
+                    <td>Section under which tax is deductible</td>
+                    <td>Amount of income</td>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+
+        <div class="table3" style="width: 97%;">
+            <div style="display: flex; justify-content: space-between;">
+                <div>
+                   
+                </div>
+                <div class="right-align">
+                    <label style="width:50px;" id="signatureLabel3">....................................</label>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                <div>
+                  
+                </div>
+                <div class="right-align">Signature of the Declarant</div>
+            </div>
+        </div>
+
+        <div style="width:97%">
+            <p style=" font-size:14px;font-weight:700;text-align:center"> Declaration/Verification<sup>10</sup> </p>
+            <p style=" font-size:12px;text-align:justify;">
+                *I/We
+                <label style="width:50px;" id="customerNameLabel2">................................</label>
+                .do hereby declare that to the best of *my/our knowledge and belief what is stated
+                above is correct, complete and is truly stated. *I/We declare that the incomes referred to in this form are not includible
+                in the total income of any other person under sections 60 to 64 of the Income-tax Act, 1961. *I/We further declare that
+                the tax *on my/our estimated total income including *income/incomes referred to in column 16 *and aggregate amount
+                of *income/incomes referred to in column 18 computed in accordance with the provisions of the Income-tax Act, 1961,
+                for the previous year ending on
+                <label style="width:50px;" id="endDateLabel">................................</label>
+                relevant to the assessment year
+                <label style="width:50px;" id="assYrLabel">................................</label>
+                will be nil. *I/We also declare
+                that *my/our *income/incomes referred to in column 16 *and the aggregate amount of *income/incomes referred to in
+                column 18 for the previous year ending on
+                <label style="width:50px;" id="endDateLabel1">................................</label>
+                relevant to the assessment year
+                <label style="width:50px;" id="assYrLabel2">................................</label>
+                will not exceed
+                the maximum amount which is not chargeable to income-tax.
+            </p>
+
+
+
+            <div class="table3" style="width: 100%;">
+                <div style="display: flex; justify-content: space-between;">
+                    <div>
+                        Place:
+                        <label id="cityLabel2">..........................................</label>
+                    </div>
+                    <div class="right-align">
+                        <label style="width:50px;" id="signatureLabel2">....................................</label>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                    <div>
+                        Date:
+                        <label id="dtLabel">...........................................</label>
+                    </div>
+                    <div class="right-align">Signature of the Declarant</div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+    <div id="part2" class="page-break">
+        <p style="text-align: center;font-size: 14px;font-weight:600;"> PART II <br />[To be filled by the person responsible for paying the income]</p>
+
+        <table id="table1">
+            <tr>
+                <td colspan="2" style="padding-bottom:20px;">
+                    1.Name of the person responsible for paying<br />
+                    @*<label>YOGAKSHEMAM LOANS LTD.</label>*@
+                    <label><span>YOGAKSHEMAM LOANS LTD.</span></label>
+                </td>
+
+                <td style="padding-bottom:20px;" colspan="3">
+                    2.Unique Idetification No.<sup>9</sup><br />
+                    <label id="pantrack_label"></label>
+                </td>
+
+
+            </tr>
+            <tr>
+                <td style="padding-bottom:20px;">
+                    3.PAN of the person responsible for paying<br />
+                    <label><span>AAACY0903F</span></label>
+                </td>
+                <td colspan="3" style="padding-bottom:20px;">
+                    4.Complete Address<br />
+                    <label><span>Door No.28/315-D2, 3rd Floor, Ottappath<br /> Tower,Aswini Junction, Thiruvambady P.O, Thrissur <br />680 022</span></label>
+                </td>
+
+                <td style="padding-bottom:20px;">
+                    5.TAN of the person responsible for paying<br />
+                    <label><span>AAACY0903F</span></label>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-bottom:20px;">
+                    6.Email
+                    <br />
+                   
+
+                    <label><span>mail@yogloans.com</span></label>
+                </td>
+
+                <td colspan="3" style="padding-bottom:20px;">
+                    7.Telephone No.(with STD Code)and Mobile No
+                    <br />
+                   
+
+                    <label><span>0487-2320102</span></label>
+                </td>
+
+                <td style="padding-bottom:20px;">
+                    8.Amount of income paid<sup>10</sup>
+                    <br />
+                    <label id="estTotIncomeLabel2"></label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding-bottom:20px;">
+                    9.Date on which Declaration is received(DD/MM/YYYY)
+                    <br />
+                    <label id="dtLabel2"></label>
+                </td>
+
+                <td style="padding-bottom:20px;" colspan="3">
+                    10.Date on which the income has been paid/credited (DD/MM/YYYY)
+
+                    <sup>9</sup>
+                    <br />
+                    <label id="endDateLabel2"></label>
+                </td>
+            </tr>
+
+        </table>
+
+
+        <div class="table3" style="width: 95%;">
+            <div style="display: flex; justify-content: space-between;">
+                <div>
+                    Place:
+                    <label id="cityLabel3">..........................................</label>
+                </div>
+                <div class="right-align">
+                    ..........................................
+                    @*<label style="width:50px;">Signature of the person responsible for paying<br /> the income referred to in column 15 of Part I</label>*@
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                <div>
+                    Date:
+                    <label id="dtLabel3">...........................................</label>
+                </div>
+                <div class="right-align">
+                    <label style="width:50px;">Signature of the person responsible for paying<br /> the income referred to in column 15 of Part I</label>
+                </div>
+            </div>
+        </div>
+
+
+        <div style="width:97%">
+            <p style=" font-size:13px;text-align:justify;">
+
+                *Delete whichever is not applicable.<br />
+
+                <sup> 1</sup>As per provisions of section 206AA (2), the declaration under section 197A (1) or 197A (1A) shall be invalid if the
+                declarant fails to furnish his valid Permanent Account Number (PAN).<br />
+
+                <sup>2</sup>Declaration can be furnished by an individual under section 197A (1) and a person (other than a company or a
+                firm) under section 197A (1A).<br />
+
+                <sup>3</sup>The financial year to which the income pertains.<br />
+
+                <sup>4</sup>Please mention the residential status as per the provisions of section 6 of the Income-tax Act, 1961.<br />
+
+                <sup>5</sup>Please mention “Yes” if assessed to tax under the provisions of Income- tax Act, 1961 for any of the assessment
+                year out of six assessment years preceding the year in which the declaration is filed.<br />
+
+                <sup>6</sup>Please mention the amount of estimated total income of the previous year for which the declaration is filed
+                including the amount of income for which this declaration is made.<br />
+
+                <sup>7</sup>In case any declaration(s) in Form No. 15G is filed before filing this declaration during the previous year, mention
+                the total number of such Form No. 15G filed along with the aggregate amount of income for which said
+                declaration(s) have been filed.<br />
+
+                <sup>8</sup>Mention the distinctive number of shares, account number of term deposit, recurring deposit, National Savings
+                Schemes, life insurance policy number, employee code, etc.<br />
+
+                <sup>9</sup>Indicate the capacity in which the declaration is furnished on behalf of a HUF, AOP, etc.<br />
+                <sup>10</sup>Before signing the declaration/verification, the declarant should satisfy himself that the information furnished in
+                this form is true, correct and complete in all respects. Any person making a false statement in the declaration shall
+                be liable to prosecution under section 277 of the Income-tax Act, 1961 and on conviction be punishable- <br />
+            </p>
+            <p style="padding-left: 20px;font-size:13px;text-align:justify;">
+                (i) In a case where tax sought to be evaded exceeds twenty-five lakh rupees, with rigorous imprisonment
+                which shall not be less than six months but which may extend to seven years and with fine;<br />
+                (ii) In any other case, with rigorous imprisonment which shall not be less than three months but which may
+                extend to two years and with fine.<br />
+            </p>
+            <p style="font-size:13px;text-align:justify;">
+                <sup>11</sup>The person responsible for paying the income referred to in column 16 of Part I shall allot a unique identification
+                number to all the Form No. 15G received by him during a quarter of the financial year and report this reference
+                number along with the particulars prescribed in rule 31A (4) (vii) of the Income-tax Rules, 1962 in the TDS statement
+                furnished for the same quarter. In case the person has also received Form No.15H during the same quarter, please
+                allot separate series of serial number for Form No.15G and Form No.15H.<br />
+                <sup>12</sup>The person responsible for paying the income referred to in column 16 of Part I shall not accept the declaration
+                where the amount of income of the nature referred to in sub-section (1) or sub-section (1A) of section 197A or the
+                aggregate of the amounts of such income credited or paid or likely to be credited or paid during the previous year
+                in which such income is to be included exceeds the maximum amount which is not chargeable to tax. For deciding
+                the eligibility, he is required to verify income or the aggregate amount of incomes, as the case may be, reported by
+                the declarant in columns 16 and 18.
+            </p>
+
+        </div>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+

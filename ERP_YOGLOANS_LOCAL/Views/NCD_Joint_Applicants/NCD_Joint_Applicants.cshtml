@@ -1,0 +1,546 @@
+﻿
+@{
+    ViewBag.Title = "NCD_Joint_Applicants";
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+    <link rel="stylesheet" href="~/Content/table_styles.css" />
+
+
+    <script type="text/javascript">
+    @*function redirectToCustomerSearch() {
+        window.location.href = '@Url.Action("CustomerSearch", "Customer_search")';
+        }*@
+           function redirectToCustomerSearch() {
+
+       $.ajax({
+           url: '/NCD_Joint_Applicants/SetSessionValue',
+               type: 'POST',
+               data: { key: 'YourKey', value: 'YourValue' },
+               success: function (response) {
+                   if (response.success) {
+                       alert("Session value updated successfully.");
+                       window.location.href = '@Url.Action("CustomerSearch", "Customer_search")';
+                   }
+               },
+               error: function () {
+                   console.error('Error updating session value.');
+               }
+           });
+
+
+   }
+
+
+
+    </script>
+
+
+
+    @*/////////////form submission output message shown here///////////*@
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+  $(document).ready(function () {
+      // Get the message and alert type from TempData
+      var message = '@TempData["Message"]';
+      var alertType = '@TempData["AlertType"]';
+
+      if (message) {
+          // Determine the icon based on the alert type
+          var icon = alertType === "success" ? "success" : "error";
+
+          Swal.fire({
+              //title: alertType === "success" ? "Success" : "Error",
+              //text: message,
+              title: alertType === "success" ? "Joint Applicants added successfully..!" : "An error occurred.Please try again.",
+              /* text: message,*/
+              icon: icon,
+              confirmButtonText: "OK"
+          });
+      }
+  });
+    </script>
+
+    @*/////////////form submission output message shown here///////////*@
+
+
+
+
+
+    <!-- Check if TempData contains a message and display it as an alert -->
+    <!--
+    if (TempData["Message"] != null)
+    {
+        <script type="text/javascript">
+         alert('TempData["Message"]');
+        </script>
+    }-->
+
+
+
+
+
+
+
+
+
+
+</head>
+<body>
+
+
+
+
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            @*<br />*@
+            <div class="card-title">
+
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">  Joint Applicants </h6>
+            </div>
+        </div>
+
+        <form method="post" id="SubmitSchemeRegistration" onsubmit="return validateForm();" action="@Url.Action("JointAplcnt_Btn_clk", "NCD_Joint_Applicants")" enctype="multipart/form-data" autocomplete="off" style="width: 100%; ">
+
+            <div class="card-body">
+
+
+
+                <div class="row" id="jointcustomersearchdiv" style="padding-bottom: 5px;">
+                    <div class="col-md-6 col-lg-3">
+                        <div class="input-container">
+                            <button style="font-size:12px;" class="mb-2 mr-2 btn-icon btn btn-primary" type="button" id="jointcustsearch" onclick="redirectToCustomerSearch()" name="jointcustsearch"><i class="fa fa-fw" aria-hidden="true"></i> &nbsp; Search Joint Applicant</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="input-container">
+                            <input type="text" id="jointApplicantname" name="jointApplicantname" required value="@ViewBag.jointApplicantname" readonly />
+                            <label for="jointApplicantname"> Joint Applicant Name</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3">
+                        <div class="input-container">
+                            <input type="text" id="customerid" name="customerid" required value=" @Session["application_custId_150"]" readonly />
+                            <label for="customerid">Customer ID </label>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-3">
+                        <div class="input-container">
+                            <input type="text" id="jointApplicantpan" name="jointApplicantpan" value="@ViewBag.jointApplicantpan" readonly />
+                            <label for="jointApplicantpan">PAN Number</label>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+
+                @*<div class="row" style="padding-bottom: 5px;">*@
+
+
+                <div id="Joinapplicationaccttablediv" style="width: 100%; overflow-y: auto; max-height: 180px; ">
+                    <!-- Adjust max-height as needed -->
+                    <div id="ncd_schemetbl1" style="overflow-y: auto; max-height: 180px; ">
+                        <table id="cus_detailsDataGrid" class="table table-hover table-striped table-bordered" style="width: 500px; font-size: 13px; font-weight: 500;">
+                            <thead>
+                                <tr>
+                                    <th>Select</th> <!-- Selection column header -->
+                                    @if (ViewBag.JointaccountDetails != null && ViewBag.JointaccountDetails.Columns.Count > 0)
+                                    {
+                                        foreach (System.Data.DataColumn column in ViewBag.JointaccountDetails.Columns)
+                                        {
+                                            if (column.ColumnName != "status_id" && column.ColumnName != "cnt") // Exclude specific columns
+                                            {
+                                                <th>@column.ColumnName</th>
+                                            }
+                                        }
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.JointaccountDetails != null && ViewBag.JointaccountDetails.Rows.Count > 0)
+                                {
+                                    foreach (System.Data.DataRow row in ViewBag.JointaccountDetails.Rows)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" name="selectedRow" class="select-checkbox" value="@row[0]" /> <!-- Checkbox for selecting the row -->
+                                            </td>
+                                            @foreach (System.Data.DataColumn column in ViewBag.JointaccountDetails.Columns)
+                                            {
+                                                if (column.ColumnName != "status_id" && column.ColumnName != "cnt") // Exclude specific columns
+                                                {
+                                                    <td>@row[column]</td>
+                                                    <!-- Display the value of the current column -->
+                                                }
+                                            }
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="10">No data available</td> <!-- Updated colspan to account for the selection column -->
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                @*</div>*@
+
+                <br />
+
+                <div class="row" id="applicantdetailsdiv" style="padding-bottom: 5px; display: none;">
+                    <div class="col-md-6 col-lg-3">
+                        <span style="color: maroon; font-weight: 500; font-size:medium;padding-bottom:20px;">  Applicant's Details : </span>
+
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="input-container">
+                            <input type="text" id="applicationIdTextbox" name="applicationIdTextbox" required readonly />
+                            <label for="issue_no">Application ID </label>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-3">
+                        <div class="input-container">
+                            <input type="text" id="applicantNameTextbox" name="applicantNameTextbox" required readonly />
+                            <label for="issue_no">Applicant Name</label>
+                        </div>
+                    </div>
+                </div>
+
+
+
+              
+
+                <!--<div id="existingjointapplicantstablediv" style="padding-bottom: 5px; display:none;">
+                    <span style="color: maroon; font-weight: 500; font-size:medium;padding-bottom:20px;"> Existing Joint Applicant's Details </span>
+                    <br />
+                    <div style="overflow-x:auto; max-height: 200px;" id="added_row_table_div">
+                        <table id="added_row_table" class="table table-hover table-striped table-bordered">
+                            <thead>
+                                <tr>-->
+                                    <!-- Headers will be dynamically added here -->
+                                <!--</tr>
+                            </thead>
+                            <tbody>
+                                <tr>-->
+                                    <!-- Rows will be dynamically added here -->
+                                <!--</tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>-->
+
+
+                <div class="row d-block text-center" id="submit_resetbtndiv" style="padding-bottom: 5px;">
+                    <button type="submit" class="btn btn-success " id="submitbutton" style="height: 38px; display: none;">SUBMIT</button> <!-- Button height adjusted -->
+                    &nbsp; &nbsp; &nbsp;&nbsp;
+                    <button type="button" id="resetbutton" onclick="resetForm()" class="btn btn-gradient-secondary" style="height: 38px;">RESET</button>
+                </div>
+
+
+
+
+
+            </div>
+
+        </form>
+    </div>
+
+    <script src="~/Scripts/jquery-3.6.4.min.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //alert("pageloadedd");
+            $('#applicantdetailsdiv').hide();
+            $('#existingjointapplicantstablediv').hide();
+            $('#submitbutton').hide();
+
+                  // Retrieve the session customer ID
+           var sessionCustId = '@Session["application_custId_150"]';
+            
+
+            // Allow only one checkbox to be selected at a time
+            $('input[type="checkbox"].select-checkbox').on('change', function () {
+
+                // First, validate that all fields in 'jointcustomersearchdiv' are filled
+                var isFormValid = validateJointCustomerSearchDiv();
+
+                if (!isFormValid) {
+                    // If the form is not valid, uncheck the checkbox and prevent further action
+                    alert("Please fill all fields in the Joint Customer Search section before selecting a checkbox.");
+                    $(this).prop('checked', false); // Uncheck the current checkbox
+                    return; // Exit the function
+                }
+
+                $('input[type="checkbox"].select-checkbox').not(this).prop('checked', false);
+
+                // If a checkbox is checked, fill the textboxes and call the function to update the second table
+                if ($(this).is(':checked')) {
+                    var selectedRow = $(this).closest('tr'); // Get the closest row of the selected checkbox
+                    var applicationId = selectedRow.find('td:eq(1)').text(); // Assuming the 2nd column is Application ID
+                    var applicantName = selectedRow.find('td:eq(3)').text(); // Assuming the 4th column is Applicant Name
+                    var customerId = selectedRow.find('td:eq(4)').text();
+                    // Log the values to debug
+
+// check the selected joint applicant and the customer id is same or different
+                    if (customerId === sessionCustId) {
+                        alert("The Application ID cannot be the same as the customer ID.");
+                        $(this).prop('checked', false); // Uncheck the current checkbox
+                        location.reload(); // Reload the page
+                        return; // Exit the function
+                    }
+
+
+
+
+                    // Set the values in the textboxes
+                    $('#applicationIdTextbox').val(applicationId);
+                    $('#applicantNameTextbox').val(applicantName);
+
+                    // Show the additional divs
+                    $('#applicantdetailsdiv').show();
+                    $('#existingjointapplicantstablediv').show();
+                    $('#submitbutton').show();
+
+                    //$.ajax({
+                    //    url: '/NCD_Joint_Applicants/ExistingjointApplicantsGrid',  // Update the URL to your actual endpoint
+                    //    type: 'POST',
+                    //    data: { applicationId: applicationId },  // Send the customerid as a parameter
+                    //    success: function (response) {
+                    //        var columns = response.columns;  // Get columns from the response
+                    //        var data = response.data;  // Get data from the response
+
+                    //        // Get table elements
+                    //        var tableHead = $('#added_row_table thead tr');
+                    //        var tableBody = $('#added_row_table tbody');
+
+                    //        // Clear existing table head and body content
+                    //        tableHead.empty();
+                    //        tableBody.empty();
+
+                    //        // Check if data exists
+                    //        if (data.length > 0) {
+                    //            // Generate table headers, skipping the 9th, 10th, and 11th columns
+                    //            $.each(columns, function (index, columnName) {
+                    //                if (index !== 8 && index !== 9 && index !== 10) { // Skip 9th, 10th, and 11th columns
+                    //                    tableHead.append('<th>' + columnName + '</th>');
+                    //                }
+                    //            });
+
+                    //            // Generate table rows
+                    //            $.each(data, function (index, rowData) {
+                    //                // Add the row with data attributes
+                    //                var rowHtml = '<tr data-rowid="' + rowData[columns[0]] + '"';  // Assuming the first column is the ID
+
+                    //                // Add additional data-* attributes for each relevant column value
+                    //                $.each(rowData, function (key, value) {
+                    //                    var columnIndex = columns.indexOf(key);
+                    //                    if (columnIndex !== 8 && columnIndex !== 9 && columnIndex !== 10) {
+                    //                        rowHtml += ' data-col' + columnIndex + '="' + value + '"';  // Store values as data attributes
+                    //                    }
+                    //                });
+
+                    //                rowHtml += '>';  // Close the opening <tr> tag
+
+                    //                $.each(rowData, function (key, value) {
+                    //                    var columnIndex = columns.indexOf(key);
+                    //                    if (columnIndex !== 8 && columnIndex !== 9 && columnIndex !== 10) {
+                    //                        rowHtml += '<td>' + value + '</td>';  // Add the visible cells
+                    //                    }
+                    //                });
+
+                    //                rowHtml += '</tr>';
+
+                    //                tableBody.append(rowHtml);  // Append the row to the table body
+                    //            });
+
+                    //            // Make the table visible
+                    //            $('#added_row_table_div').show();
+
+                    //        } else {
+                    //            // Handle the case when no data is returned
+                    //            tableBody.append('<tr><td colspan="' + (columns.length - 3) + '">No data found.</td></tr>'); // Update colspan for checkbox column
+                    //            $('#added_row_table_div').show();  // Still show the table even if it's empty
+                    //        }
+
+                    //        // Add event listener for action buttons if needed in the future
+                    //    },
+                    //    error: function (xhr, status, error) {
+                    //        console.error('AJAX Error:', error);
+                    //    }
+                    //});
+                }
+            });
+
+
+
+
+            function validateJointCustomerSearchDiv() {
+                var isValid = true;
+                $('#jointcustomersearchdiv input').each(function () {
+                    if ($(this).val() === "") {
+                        isValid = false;
+                        $(this).addClass('error');
+                    } else {
+                        $(this).removeClass('error');
+                    }
+                });
+                return isValid;
+            }
+
+
+
+
+        });
+
+
+
+
+
+        //function resetForm() {
+        //   // alert("resetbtn");
+        //    // Reset all form fields, including read-only fields
+        //    $('#SubmitSchemeRegistration')[0].reset(); // This will reset all non-readonly fields
+
+        //    // Manually reset read-only fields
+        //    $('#jointApplicantname').val('');  // Clear Joint Applicant Name
+        //    $('#customerid').val('');          // Clear Customer ID
+        //    $('#jointApplicantpan').val('');   // Clear PAN Number
+        //    $('#applicationIdTextbox').val(''); // Clear Application ID
+        //    $('#applicantNameTextbox').val(''); // Clear Applicant Name
+
+        //    // Hide the divs that were shown after selecting a checkbox
+        //    $('#applicantdetailsdiv').hide();
+        //    $('#existingjointapplicantstablediv').hide();
+        //    $('#submitbutton').hide();
+
+        //    // Uncheck any checkboxes if applicable
+        //    $('input[type="checkbox"].select-checkbox').prop('checked', false);
+
+        //    // Hide the existing joint applicants table if necessary
+        //    $('#added_row_table_div').hide();
+
+
+
+
+
+        //}
+
+
+        function resetForm() {
+    // Reset all form fields, including read-only fields
+    $('#SubmitSchemeRegistration')[0].reset(); // This will reset all non-readonly fields
+
+    // Manually reset read-only fields
+    $('#jointApplicantname').val('');  // Clear Joint Applicant Name
+    $('#customerid').val('');          // Clear Customer ID
+    $('#jointApplicantpan').val('');   // Clear PAN Number
+    $('#applicationIdTextbox').val(''); // Clear Application ID
+    $('#applicantNameTextbox').val(''); // Clear Applicant Name
+
+    // Hide the divs that were shown after selecting a checkbox
+    $('#applicantdetailsdiv').hide();
+    $('#existingjointapplicantstablediv').hide();
+    $('#submitbutton').hide();
+
+    // Uncheck any checkboxes if applicable
+    $('input[type="checkbox"].select-checkbox').prop('checked', false);
+
+    // Hide the existing joint applicants table if necessary
+    $('#added_row_table_div').hide();
+
+    // Make an AJAX call to clear the session
+    $.ajax({
+        url: '@Url.Action("ClearSession", "NCD_Joint_Applicants")', // Adjust as necessary
+        type: 'POST',
+        success: function(response) {
+            if (response.success) {
+                console.log("Session cleared successfully.");
+            } else {
+                console.log("Failed to clear session.");
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error clearing session: " + error);
+        }
+    });
+}
+
+
+
+
+
+
+
+        function validateForm() {
+           // alert("validate form");
+            // Get the values of all the readonly fields
+            var jointApplicantName = $('#jointApplicantname').val();
+            var customerId = $('#customerid').val();
+            var jointApplicantPan = $('#jointApplicantpan').val();
+            var applicationId = $('#applicationIdTextbox').val();
+            var applicantName = $('#applicantNameTextbox').val();
+
+            // Validate that all read-only fields are filled
+            if (!jointApplicantName || jointApplicantName.trim() === "") {
+                alert("Joint Applicant Name is required.");
+                return false;
+            }
+
+            if (!customerId || customerId.trim() === "") {
+                alert("Customer ID is required.");
+                return false;
+            }
+
+            if (!jointApplicantPan || jointApplicantPan.trim() === "") {
+                alert("PAN Number is required.");
+                return false;
+            }
+
+            if (!applicationId || applicationId.trim() === "") {
+                alert("Application ID is required.");
+                return false;
+            }
+
+            if (!applicantName || applicantName.trim() === "") {
+                alert("Applicant Name is required.");
+                return false;
+            }
+
+            // If all fields are valid, allow form submission
+            return true;
+        }
+
+
+    </script>
+
+   
+
+
+
+
+</body>
+</html>
+
+
+

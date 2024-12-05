@@ -1,0 +1,843 @@
+﻿@model ERP_YOGLOANS_LOCAL.Models.CustomerBlock
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Add Bank Details</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+
+    <style>
+
+
+        /* -------------------Style for Autosuggestion ------------------------------------------------*/
+
+        .suggestionsclass {
+            font-size: 14px; /* Adjust this value to your desired font size */
+            position: absolute;
+            top: 100%; /* Position below the search box */
+            left: 0;
+            width: 300px; /* Match the width of the search box */
+            background-color: white;
+            border: 1px solid white;
+            border-radius: 3px;
+            z-index: 1000; /* Ensure the suggestions appear above other elements */
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            /*margin-left: 30px;*/
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+            .suggestionsclass li {
+                padding: 5px;
+            }
+
+                .suggestionsclass li:hover {
+                    background-color: darkgray;
+                    cursor: pointer;
+                    color: blue;
+                }
+
+        .fixed-width-card {
+            flex: 1 1 300px; /* Flex-grow: 1, Flex-shrink: 1, Flex-basis: 300px */
+            min-width: 250px; /* Ensure a minimum width */
+            word-wrap: break-word;
+            word-break: break-word;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+    </style>
+
+
+</head>
+<body>
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Customer Block/Merge</h6>
+            </div>
+        </div>
+
+
+        @*--- Buttons ---*@
+        <div class="card-body" style="width:100%;">
+
+            @* ---------Buttons for Block/Close/Merge------------------- *@
+            <div role="group" class="mb-2 btn-group-lg btn-group btn-group-toggle">
+                <button type="button" class="btn btn-outline-primary" value="B">Block</button>
+                <button type="button" class="btn btn-outline-primary" value="C">Close/Merge</button>
+            </div>
+            <br />
+            <label id="lbl_message" style="color: orange; font-weight:bold; font-size:medium;"></label>
+            @* ---------Div for Customer Search------------------- *@
+            <div class="row">
+                <div class="col-md-6 col-lg-10">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            @*<div class="input-group-text">
+                                    <i class="fa fa-search"></i>
+                                </div>*@
+                        </div>
+                        <input id="searchBox" placeholder="Customer ID/Name/Phone" type="text" class="form-control" autocomplete="off">
+                        <div class="input-group-text" style="height:39px;" onclick="search()">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <ul id="suggestions" class="suggestionsclass"></ul>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-2">
+                    <div class="input-group mb-3">
+                        <input type="text" id="selectedCustomerId" placeholder="ID" class="form-control" style="width:120px;" readonly />
+                    </div>
+                </div>
+            </div>
+
+            @*<input type="hidden" id="selectedCustomerId" />*@
+
+            @*---------------------- Div for Customer Details ---------------------*@
+            <!--<div class="tabs-animation" id="div_cust_details" style="display:none;">
+                <div class="mb-3 card">
+                    <div class="card-header-tab card-header">
+                        <div class="card-header-title font-size-md text-capitalize font-weight-bold">
+                            <i class="header-icon lnr-charts icon-gradient bg-happy-green"> </i>
+
+                        </div>-->
+            @*<div class="btn-actions-pane-right text-capitalize">
+                    <button class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm">View All</button>
+                </div>*@
+            <!--</div>
+
+                    <div class="text-center d-block p-3 card-footer">
+                        <button class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-primary">
+                            <span class="mr-2 opacity-7">
+                                <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+                            </span>
+                            <span class="mr-1">Customer Details</span>
+                        </button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-primary">
+                            <span class="mr-2 opacity-7">
+                                <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+                            </span>
+                            <span class="mr-1">Customer History</span>
+                        </button>
+                    </div>
+                </div>
+            </div>-->
+
+
+
+            <div class="tabs-animation" id="div_cust_details" style="display:none;">
+                <div class="mb-3 card">
+                    <div class="card-header-tab card-header">
+
+                    </div>
+                    <div class="row">
+                        <!-- Customer Details here -->
+
+                    </div>
+                    <div class="text-center d-block p-3 card-footer">
+                        <button class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-primary" onclick="openInNewTab('@Url.Action("FillDetails", "Customer_CustView")')">
+                            <span class="mr-2 opacity-7">
+                                <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+                            </span>
+                            <span class="mr-1">Customer Details</span>
+                        </button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <button class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-primary" onclick="openInNewTab('@Url.Action("cus_history", "Customer_History")')">
+                            <span class="mr-2 opacity-7">
+                                <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+                            </span>
+                            <span class="mr-1">Customer History</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+            @*------------------ End of Customer Details -----------------------*@
+
+            @*------------------ Div for Active Loans Details -----------------------*@
+            <div class="main-card mb-2 card" style="display:none;" id="div_activeloan">
+                <div class="card-body">
+                    <h5 class="card-title">Active Accounts</h5>
+                    <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
+                        <div class="vertical-timeline-item vertical-timeline-element">
+                            @* Details here *@
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+            @*------------------ Div for comments -----------------------*@
+
+            <div class="row" id="div_comments" style="display:none;">
+                <div class="col-md-6 col-lg-12">
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">Comments <span style="color:red;">*</span></span>
+                            </div>
+                        </div>
+                        <textarea name="text" id="txt_comments" class="form-control" placeholder="Please Enter Comments here..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            @* ---------Div for Second Customer ID Search------------------- *@
+            <div class="row" id="secondCustomer_div" style="display:none;">
+
+                <div class="col-md-6 col-lg-10">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            @*<div class="input-group-text">
+                                    <i class="fa fa-search"></i>
+                                </div>*@
+                        </div>
+                        @*<input id="secondSearchBox" placeholder="Search New Customer ID/Name/Phone" type="text" class="form-control" autocomplete="off">*@
+                        <input id="secondSearchBox" placeholder="Search New Customer ID/Name/Phone" type="text" class="form-control" autocomplete="off" onkeydown="checkBackspace(event)">
+
+                        <div class="input-group-text" style="height:39px;" onclick="search2()">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <ul id="secondSuggestions" class="suggestionsclass"></ul>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-2">
+                    <div class="input-group mb-3">
+                        <input type="text" id="secondSelectedCustomerId" placeholder="ID" class="form-control" style="width: 100px; display: none; " />
+                    </div>
+                </div>
+            </div>
+
+            @*------------------ second div for customer details -----------------------*@
+            <div class="tabs-animation" id="div_cust_details2" style="display:none;">
+                <div class="mb-3 card">
+                    <div class="card-header-tab card-header">
+                        <div class="card-header-title font-size-md text-capitalize font-weight-bold">
+                            <i class="header-icon lnr-charts icon-gradient bg-happy-green"> </i>
+
+                        </div>
+                        @*<div class="btn-actions-pane-right text-capitalize">
+                                <button class="btn-wide btn-outline-2x mr-md-2 btn btn-outline-focus btn-sm">View All</button>
+                            </div>*@
+                    </div>
+                </div>
+            </div>
+
+            @*------------------ div for Attachment -----------------------*@
+            <div class="row" id="div_upload" style="display:none;">
+                <div class="col-md-6 col-lg-12">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Upload Customer Request</span>
+                        </div>
+                        <input type="file" id="attachment" name="attachment" style="font-size: 15px;padding:2px;">
+                        <span style="color:red;font-size:small">Acceptable format: .png/.jpg/.jpeg/.bmp/.pdf</span>
+                    </div>
+                </div>
+            </div>
+            @*<hr />*@
+
+            @*------------------ div for Buttons -----------------------*@
+            <div class="tabs-animation" id="div_btn" style="display:none;">
+                <div class="mb-3 card">
+                    <div class="card-header-tab card-header">
+                        <div class="card-header-title font-size-md text-capitalize font-weight-bold">
+                            <i class="header-icon lnr-charts icon-gradient bg-happy-green"> </i>
+                            <button type="submit" class="mb-2 mr-2 btn btn-success active" id="btn_submit" style="width:150px;" onclick="request()">Submit</button>
+                        </div>
+                        <div class="btn-actions-pane-right text-capitalize">
+                            <button type="submit" class="mb-2 mr-2 btn btn-danger active" id="btn_reset" style="width:150px;">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script>
+
+
+        function checkBackspace(event) {
+            if (event.key === 'Backspace') {
+                // Clear and hide the divs
+                $("#div_cust_details2").hide();
+                $("#div_btn").hide();
+                $("#div_upload").hide();
+
+                // Optionally, clear any content in the details div
+                $("#div_cust_details2 .card-header-title").empty();
+            }
+        }
+
+
+
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // Initialize the search functionality
+        initSearch("searchBox", "suggestions", "selectedCustomerId");
+        initSearch("secondSearchBox", "secondSuggestions", "secondSelectedCustomerId");
+
+        // Clear the search boxes and localStorage values on page load
+        document.getElementById("searchBox").value = "";
+        document.getElementById("selectedCustomerId").value = "";
+        localStorage.setItem('activeButton', "");
+        localStorage.setItem('onceSearched', false.toString());
+
+        // Manage button group functionality
+        const buttons = document.querySelectorAll('.btn-group .btn');
+
+        // Function to update active class and save to localStorage
+        function setActiveButton(button) {
+            // Remove active class from all buttons
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Add active class to the clicked button
+            button.classList.add('active');
+
+            // Save the value of the active button to localStorage
+            localStorage.setItem('activeButton', button.value);
+            var activeValue1 = localStorage.getItem('activeButton');
+
+            // Display appropriate message based on the button value
+            if (activeValue1 == "B") {
+                document.getElementById('lbl_message').textContent = "You are trying to BLOCK the following Customer.";
+            } else if (activeValue1 == "C") {
+                document.getElementById('lbl_message').textContent = "You are trying to CLOSE the following Customer ID.";
+            }
+
+            //alert(activeValue1);
+        }
+
+        // Attach event listener to each button
+        buttons.forEach(button => {
+            button.addEventListener('click', function () {
+                let isActive = (localStorage.getItem('onceSearched') === 'true');
+
+                if (isActive) {
+                    // Store the clicked button value before reloading
+                    localStorage.setItem('clickedButtonValue', button.value);
+                    location.reload(); // Reload the page
+                } else {
+                    setActiveButton(button);
+                }
+            });
+        });
+
+        // After page reload, apply the setActiveButton to the clicked button
+        const clickedButtonValue = localStorage.getItem('clickedButtonValue');
+        if (clickedButtonValue) {
+            buttons.forEach(button => {
+                if (button.value === clickedButtonValue) {
+                    setActiveButton(button);
+                }
+            });
+            localStorage.removeItem('clickedButtonValue'); // Clear after applying
+        }
+
+        // Load the active button from localStorage on page load
+        const activeButtonValue = localStorage.getItem('activeButton');
+        if (activeButtonValue) {
+            buttons.forEach(button => {
+                if (button.value === activeButtonValue) {
+                    button.classList.add('active');
+                }
+            });
+        }
+    });
+        /*---------------------------new code-------------------------------------------*/
+
+
+    function initSearch(searchBoxId, suggestionsId, selectedCustomerIdId) {
+    const searchBox = document.getElementById(searchBoxId);
+    const suggestions = document.getElementById(suggestionsId);
+    const selectedCustomerId = document.getElementById(selectedCustomerIdId);
+
+    searchBox.addEventListener("input", function () {
+        const search_txt = searchBox.value;
+        if (search_txt.length >= 2) {
+            fetch(`@Url.Action("GetSearchSuggestions", "Customer_Block")?search_txt=${search_txt}`)
+                .then(response => response.json())
+                .then(data => {
+                    suggestions.innerHTML = "";
+                    data.forEach(item => {
+                        const li = document.createElement("li");
+                        li.textContent = item;
+                        li.addEventListener("click", function () {
+                            const selectedValue = item.split('~')[0];
+                            selectedCustomerId.value = selectedValue;
+                            searchBox.value = item;
+                            suggestions.innerHTML = "";
+
+                            // Clear details for the first search input
+                            $("#div_cust_details .row").empty();
+                            $("#div_cust_details2 .row").empty();
+                            $("#div_activeloan .vertical-timeline-item").empty();
+                            $("#div_comments").hide();
+                            $("#div_btn").hide();
+                            $("#div_cust_details").hide(); // Hide customer details
+                            $("#div_cust_details2").hide();
+                            $("#div_activeloan").hide(); // Hide active loans
+
+                            $("#secondCustomer_div .row").empty();
+                            $("#secondCustomer_div").hide(); // Hide second customer div
+
+
+
+
+                        });
+                        suggestions.appendChild(li);
+                    });
+                });
+        } else {
+            suggestions.innerHTML = "";
+            selectedCustomerId.value = "";
+        }
+    });
+
+    //    secondSearchBox.addEventListener("keydown", function (event) {
+    //    if (event.key === "Backspace") {
+    //        let isActive = (localStorage.getItem('onceSearched') === 'true');
+    //        if (isActive) {
+    //            event.preventDefault();
+    //            location.reload();
+    //        }
+    //    }
+    //});
+
+    document.addEventListener("click", function (event) {
+        if (!suggestions.contains(event.target) && event.target !== searchBox) {
+            suggestions.innerHTML = "";
+        }
+    });
+}
+            $(document).ready(function () {
+    // First search input logic
+    $("#searchBox").on("input", function () {
+        // Clear details when typing in the first search box
+        $("#div_cust_details .row").empty();
+        $("#div_activeloan .vertical-timeline-item").empty();
+        $("#div_comments").hide();
+        $("#div_btn").hide();
+        $("#div_cust_details").hide();
+        $("#div_activeloan").hide();
+        $("#div_upload").hide(); secondCustomer_div
+        $("#secondSearchBox .row").empty();
+    });
+
+    $("#searchBox").on("change", function () {
+        // Clear details when a suggestion is selected in the first search box
+        $("#div_cust_details .row").empty();
+        $("#div_activeloan .vertical-timeline-item").empty();
+        $("#div_cust_details").hide();
+        $("#div_activeloan").hide();
+        $("#div_comments").hide();
+        $("#div_btn").hide();
+    });
+
+    // Second search input logic
+    $("#secondSearchBox").on("input", function () {
+        // Logic for second search box suggestions
+        const search_txt = $(this).val();
+        if (search_txt.length >= 2) {
+            fetch(`@Url.Action("GetSearchSuggestions", "Customer_Block")?search_txt=${search_txt}`)
+                .then(response => response.json())
+                .then(data => {
+                    const suggestions = $("#secondSuggestions");
+                    suggestions.empty();
+                    data.forEach(item => {
+                        const li = $("<li>").text(item);
+                        li.on("click", function () {
+                            const selectedValue = item.split('~')[0];
+                            $("#secondSelectedCustomerId").val(selectedValue);
+                            $("#secondSearchBox").val(item);
+                            suggestions.empty();
+
+                            // Clear and hide details for the second search
+                            $("#div_cust_details2").hide();
+                            $("#div_btn").hide();
+                            $("#div_upload").hide();
+                            $("#div_cust_details2 .card-header-title").empty(); // Clear any content
+
+                            // Optionally, you can also clear the first search box details
+                            //$("#div_cust_details .row").empty();
+                            //$("#div_activeloan .vertical-timeline-item").empty();
+                            //$("#div_comments").hide();
+                            //$("#div_btn").hide();
+                            //$("#div_cust_details").hide();
+                            //$("#div_activeloan").hide();
+                        });
+                        suggestions.append(li);
+                    });
+                });
+        } else {
+            $("#secondSuggestions").empty();
+            $("#secondSelectedCustomerId").val("");
+        }
+    });
+});
+
+
+
+
+
+
+         
+
+         //Function for Search button click.
+    function search() {
+
+        localStorage.setItem('onceSearched', true.toString()); // Stores "true" as a string
+
+        var activeValue = localStorage.getItem('activeButton');
+        //alert(activeValue);
+        if (activeValue != "") {
+
+            if ($("#selectedCustomerId").val() == "") {
+                alert("Please enter a value");
+                $("#searchBox").focus();
+                return; // Exit function early if input is empty
+            }
+
+            var input = $("#selectedCustomerId").val();
+            firstCustomerId = input; // Store the first customer ID
+
+
+            //var input = $("#selectedCustomerId").val();
+
+            $.ajax({
+                url: "@Url.Action("GetCustomerDetails", "Customer_Block")",
+                type: "GET",
+                data: { customer_id: input },
+                success: function (data) {
+
+                    $("#div_cust_details").css("display", "block");
+                    $("#div_activeloan").css("display", "block");
+                    $("#div_comments").css("display", "block");
+                    if (activeValue == 'B') {
+                        if (data.Customer.Message == 'OK') {
+                            //$("#div_comments").css("display", "block");
+                            $("#div_btn").css("display", "block");
+                        }
+
+                    }
+                    else {
+                        if (data.Customer.Message == 'OK') {
+                            $("#secondCustomer_div").css("display", "block");
+                        }
+                    }
+
+
+
+                    var divActiveLoan = $("#div_activeloan .vertical-timeline-item");
+                    divActiveLoan.empty(); // Clear any existing content
+
+                    var divDtls = $("#div_cust_details .row");
+                    divDtls.empty();
+
+                    var divMsg = $("#div_cust_details .card-header");
+                    divMsg.empty();
+
+                    if (data.Loans.length > 0) {
+                        localStorage.setItem('noActiveLoan', false.toString());
+                        data.Loans.forEach(function (loan) {
+                            var loanHtml = `
+                            <div class="vertical-timeline-item vertical-timeline-element">
+                                <div>
+                                    <span class="vertical-timeline-element-icon bounce-in">
+                                        <i class="badge badge-dot badge-dot-xl badge-primary"> </i>
+                                    </span>
+                                    <div class="vertical-timeline-element-content bounce-in">
+                                        <h4 class="timeline-title text-success">${loan.Module}</h4>
+                                        <p>
+                                            Account No: &nbsp;<span style="font-weight:bold;color:#3f6ad8">${loan.AccountNo}</span>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            Start Date: &nbsp;<span style="font-weight:bold;color:orange">${convertDate(loan.StartDt)}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            Maturity Date: &nbsp;<span style="font-weight:bold;color:#444054">${convertDate(loan.MaturityDt)}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            Amount: &nbsp;<span style="font-weight:bold;color:#16aaff">${loan.Amount}/-</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                            divActiveLoan.append(loanHtml);
+                        });
+                    } else {
+                        localStorage.setItem('noActiveLoan', true.toString()); // Stores "true" as a string
+
+                        var loanHtml = `
+                            <div class="vertical-timeline-item vertical-timeline-element">
+                                <div>
+                                    <span class="vertical-timeline-element-icon bounce-in">
+                                        <i class="badge badge-dot badge-dot-xl badge-primary"></i>
+                                    </span>
+                                    <div class="vertical-timeline-element-content bounce-in">
+                                        <h4 class="timeline-title text-danger">No Active Loans...</h4>
+                                    </div>
+                                </div>
+
+                            </div>
+                        `;
+                        divActiveLoan.append(loanHtml);
+                    }
+
+                    if (data.Customer && data.Customer.CustomerId) {
+
+                        var dtlHtml = `
+                                     <div class="col-sm-6 col-md-4 col-xl-2">
+                                <div class="card no-shadow rm-border bg-transparent widget-chart text-left fixed-width-card">
+                                    <div class="widget-chart-content small" >
+                                        <div class="widget-subheading" >Customer ID</div>
+                                        <div style="font-weight:bold;font-size:13px">${data.Customer.CustomerId}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6 col-md-4 col-xl-4">
+                                <div class="card no-shadow rm-border bg-transparent widget-chart text-left fixed-width-card">
+                                    <div class="widget-chart-content small">
+                                        <div class="widget-subheading">Name</div>
+                                        <div style="font-weight:bold;font-size:13px">${data.Customer.CustomerName}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 col-xl-2">
+                                <div class="card no-shadow rm-border bg-transparent widget-chart text-left fixed-width-card">
+                                    <div class="widget-chart-content small">
+                                        <div class="widget-subheading">Mobile</div>
+                                        <div style="font-weight:bold;font-size:13px">${data.Customer.MobileNo}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-4 col-xl-4">
+                                <div class="card no-shadow rm-border bg-transparent widget-chart text-left fixed-width-card">
+                                    <div class="widget-chart-content small">
+                                        <div class="widget-subheading">Branch</div>
+                                        <div style="font-weight:bold;font-size:13px">
+                                           ${data.Customer.Branch}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                             `;
+                        divDtls.append(dtlHtml);
+                        var message = "";
+                        if (data.Customer.Message == 'OK') {
+                            message = "New Request Allowed";
+                        }
+                        else {
+                            message = data.Customer.Message;
+                            alert(message);
+                            $("#div_comments").hide();
+                        }
+
+                        var msgHtml = `<div class="card-header-title font-size-md text-capitalize font-weight-bold">
+                                        <i class="header-icon lnr-charts icon-gradient bg-royal"> </i>
+                                        <span style="color:red">${message}</span>
+                                    </div>`;
+                       
+
+                        divMsg.append(msgHtml);
+
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    alert("error" + error);
+
+                }
+            });
+
+        }
+        else {
+            document.getElementById("searchBox").value = "";
+            document.getElementById("selectedCustomerId").value = "";
+            alert("Please select any of the buttons Block/Close!..");
+            return;
+
+        }
+
+        }
+
+
+
+
+
+      function search2() {
+    if ($("#secondSelectedCustomerId").val() == "") {
+        alert("Please enter a value");
+        $("#secondSearchBox").focus();
+        return; // Exit function early if input is empty
+    }
+
+    var input = $("#secondSelectedCustomerId").val();
+
+    // Check if the customer ID is the same as the first search
+    if (input === firstCustomerId) {
+        alert("Same Customer ID can't merge");
+        $("#div_cust_details2").hide();
+        $("#div_btn").hide();
+        return; // Exit early if the IDs match
+    }
+
+    $.ajax({
+        url: "@Url.Action("GetCustomerDetails2", "Customer_Block")",
+        type: "GET",
+        data: { customer_id: input },
+        success: function (data) {
+            $("#div_cust_details2").css("display", "block");
+            $("#div_btn").css("display", "block");
+
+            let noActiveLoans = (localStorage.getItem('noActiveLoan') === 'false');
+            if (noActiveLoans) {
+                $("#div_upload").css("display", "block");
+            }
+
+            var divDtls = $("#div_cust_details2 .card-header-title");
+            divDtls.empty();
+
+            if (data.message === 'OK') {
+                if (data.customerDetails.CustomerId) {
+                    var dtlHtml = `
+                         <p>
+                             Customer ID: &nbsp;<span style="font-weight:bold;color:maroon">${data.customerDetails.CustomerId}</span> &nbsp;&nbsp;&nbsp;&nbsp;
+                             Name: &nbsp;<span style="font-weight:bold;color:maroon">${data.customerDetails.CustomerName}</span> &nbsp;&nbsp;&nbsp;&nbsp;
+                             Mobile: &nbsp;<span style="font-weight:bold;color:maroon">${data.customerDetails.MobileNo}</span>
+                         </p>
+                     `;
+                    divDtls.append(dtlHtml);
+                }
+            } else {
+                alert("Request already Pending");
+                $("#div_cust_details2").hide();
+                $("#div_btn").hide();
+            }
+        },
+        error: function (xhr, status, error) {
+            alert("error: " + error);
+        }
+    });
+}
+    function convertDate(jsonDate) {
+            var date = new Date(parseInt(jsonDate.replace('/Date(', '').replace(')/', '')));
+
+            // Extract the day, month, and year
+            var day = date.getDate().toString().padStart(2, '0'); // Ensure day is 2 digits
+            var month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ensure month is 2 digits
+            var year = date.getFullYear();
+
+            return `${day}-${month}-${year}`; // Format as dd-mm-yyyy
+        }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('btn_reset').addEventListener('click', function (event) {
+            // Prevent the default action first
+            event.preventDefault();
+
+            localStorage.setItem('onceSearched', false.toString());
+
+            location.reload();
+        });
+    });
+
+        function request() {
+
+        var comments = document.getElementById('txt_comments').value;
+        var activeValue = localStorage.getItem('activeButton');
+        var documentFile = document.getElementById('attachment').files[0];
+
+        var type_value = "";
+        if (activeValue == 'B') type_value = '9';
+            else type_value = '0';
+
+
+      
+            if (comments == '') {
+                alert("Please Enter comments!.."); document.getElementById('txt_comments').focus(); return;
+            }
+       
+        let noActiveLoans = (localStorage.getItem('noActiveLoan') === 'false');
+
+            if (type_value == '0') {
+               
+                if (noActiveLoans) {
+
+                    if (!documentFile) {
+                        alert("Please upload the customer request!");
+                        document.getElementById('attachment').focus();
+                        return false; // Return false to prevent form submission or further execution
+                    }
+                }
+            }
+
+        var customerId = document.getElementById('selectedCustomerId').value;
+        var newCustomerId = document.getElementById('secondSelectedCustomerId').value;
+        var type = type_value;
+
+
+
+        if (documentFile && documentFile.size > 1 * 1024 * 1024) { // Check if the first file exceeds 1 MB
+            alert("The file size exceeds 1 MB limit.");
+            return false; // Prevent form submission
+        }
+
+        var formData = new FormData();
+        formData.append('CustomerId', customerId);
+        formData.append('NewCustomerId', newCustomerId);
+        formData.append('Type', type);
+        formData.append('Comments', comments);
+        formData.append('Document', documentFile);
+
+        $.ajax({
+            url: "@Url.Action("SaveRequest", "Customer_Block")",
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    window.location.reload();
+                }
+
+                //console.log('Data sent successfully:', response);
+            },
+            error: function (error) {
+                alert("error");
+                console.error('Error sending data:', error);
+            }
+        });
+
+
+
+    }
+
+
+    </script>
+
+
+
+</body>
+</html>

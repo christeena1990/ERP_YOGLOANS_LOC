@@ -1,0 +1,94 @@
+﻿
+@{
+    ViewBag.Title = "modify_return_view";
+}
+
+
+<div>
+    <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+        <div class="card-title">
+            <br />
+            <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon"> Customer Modification Incomplete / Return List </h6>
+        </div>
+    </div>
+    <br />
+
+    <div style="width: 100%; overflow-y: auto;">
+        <table id="dataGrid2" class="table table-hover table-striped table-bordered" style="overflow-y: auto; font-size:14px;width:100%;font-weight:500;">
+
+            <thead style="color:white; font-size:15px;font-weight:900;">
+                @*<p style="color: darkblue; font-size: large;font-weight: 500;">Modify Return List</p>*@
+                <tr>
+                    @if (ViewBag.Columns != null && ViewBag.Columns.Count > 0)
+                    {
+                        foreach (var column in ViewBag.Columns)
+                        {
+                            <th style="background-color: #4D759A;">@column</th>
+                        }
+                        <th style="background-color: #4D759A;">Action</th>
+                        <!-- Add extra column header -->
+                    }
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (ViewBag.ModifyCustomerList != null && ViewBag.ModifyCustomerList.Count > 0)
+                {
+                    foreach (var item in ViewBag.ModifyCustomerList)
+                    {
+                        <tr>
+                            @foreach (var column in ViewBag.Columns)
+                            {
+                                var propertyValue = item.GetType().GetProperty(column)?.GetValue(item);
+                                <td>
+                                    @(propertyValue != null ? propertyValue.ToString() : "")
+                                </td>
+                            }
+                            <td>
+                                <a href="#" class="continue-link">Continue</a> <!-- Link in the "Action" column -->
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="@ViewBag.Columns.Count + 1">No data available.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+     $(document).ready(function () {
+         $(".continue-link").on("click", function (e) {
+             //alert("click on");
+        e.preventDefault();
+
+        var row = $(this).closest('tr');
+        var id = parseInt(row.find('td:eq(0)').text()); // Assuming ID is in the first column and converting to integer
+        var sl_no = parseInt(row.find('td:eq(6)').text()); // Assuming sl_no is in the second column and converting to integer
+        //alert(id);
+        //alert(sl_no);
+        $.ajax({
+
+            url: '@Url.Action("modify_return_continue", "modify_return")',
+            type: 'POST',
+            data: { id: id, sl_no: sl_no },
+            success: function (result) {
+               // alert("modifyreturncontinue");
+                if (result.success === true) {
+                    window.location.href = '@Url.Action("customer_modification", "Customer_modification")';
+                }
+            },
+            error: function (error) {
+                // Handle the error if needed
+            }
+        });
+    });
+ });
+</script>

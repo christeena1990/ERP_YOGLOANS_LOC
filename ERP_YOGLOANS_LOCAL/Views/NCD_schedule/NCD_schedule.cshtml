@@ -1,0 +1,552 @@
+﻿
+@{
+    ViewBag.Title = "NCD_schedule";
+}
+
+@{
+    Layout = "~/Views/Shared/_Layout_reports.cshtml";
+
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCD SCHEDULE</title>
+    <style>
+        .fixed-width-card {
+            flex: 1 1 300px; /* Flex-grow: 1, Flex-shrink: 1, Flex-basis: 300px */
+            min-width: 200px; /* Ensure a minimum width */
+            word-wrap: break-word;
+            word-break: break-word;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .highlight-fixed {
+            background-color: #ffa69e; /* Light red background */
+            color: #000; /* Optional: Black text for better visibility */
+        }
+
+        .highlight-issue {
+            /*background-color: #faf3dd;*/ /* Light red background */
+            background-color: #aed9e0;
+            color: #000; /* Optional: Black text for better visibility */
+        }
+
+        .highlight-cumulative {
+            background-color: #cbdfbd; /* Light red background */
+            color: #000; /* Optional: Black text for better visibility */
+        }
+
+        .highlight-total {
+            /*background-color: #aed9e0;*/ /* Light red background */
+            background-color: #15616d;
+            color: white; /* Optional: Black text for better visibility */
+        }
+
+        .highlight-normal {
+            background-color: #e9ecef; /* Light red background */
+            color: #000; /* Optional: Black text for better visibility */
+        }
+
+        #tbl_schedule th {
+            position: sticky;
+            top: 0; /* Stick to the top */
+            z-index: 10; /* Ensure it stays above other elements */
+            background-color: #4D759A; /* Header background color */
+            color: white; /* Header text color */
+        }
+
+        
+    </style>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+    <link rel="stylesheet" href="~/Content/table_styles.css" />
+
+</head>
+<body>
+
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">SCHEDULE REPORT</h6>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <div class="overlay" id="loadingOverlay">
+            </div>
+            <div id="form-container">
+                @*<form method="post" id="ncd_scheme_form" enctype="multipart/form-data" autocomplete="off" action="@Url.Action("btn_report_Click", "NCD_schedule")">*@
+
+                <div class="row">
+
+                    <div class="col-md-6 col-lg-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+
+                            </div>
+                            <div class="input-container fixed-width-card">
+
+                                <select name="scheme_type" id="scheme_type" class="form-control" required>
+                                </select>
+
+                                <label for="scheme_type">Scheme Type</label>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+
+                            </div>
+                            <div class="input-container fixed-width-card ">
+                                <input type="date" id="toDate" name="toDate" required />
+                                <label for="toDate" id="toDate-label">Date</label>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6 col-lg-3">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+
+                            </div>
+
+                            <div class="input-container fixed-width-card">
+                                <select name="issue_no" id="issue_no" class="form-control" required>
+                                </select>
+                                <label for="issue_no">Issue Number</label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6 col-lg-1">
+                        <button class="mb-2 mr-2 btn-pill btn btn-primary" id="btn_report" type="submit" style="margin-top:10px">
+                            <span class="mr-1">REPORT</span>
+                        </button>
+
+                    </div>
+
+                    <div class="col-md-6 col-lg-2">
+
+                        <button id="exportButton" title="Download Excel Report" style="border: none;  background-color: transparent; padding:0;" onclick="exportTableToExcel()">
+                            <img src="~/images/excel-icon1.png" alt="excel Button" style="height: 60px; width: 60px; " />
+                        </button>
+
+                        <button id="generatePdf" type="button" title="Download Pdf Report" style="border: none; background-color: transparent;" onclick="exportTableToPdf()">
+                            <img src="~/images/pdf_icon.png" alt="pdf Button" style="height: 40px; width: 40px;padding-top:2px; padding-left:10px; " />
+                        </button>
+
+                    </div>
+
+
+
+                </div>
+
+
+                <div class="row" id="div_count" style="display:none;font-size:medium;">
+                    <div class="col-md-6 col-lg-12">
+                        <div class="input-group mb-3">
+
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span>Total Count:</span>
+                                </div>
+                                <label id="lbl_count" style="color:red"></label>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Amount:<label id="lbl_amount" style="color:red"></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row" id="div_grid" style="width: 1000px;height:450px; overflow-y: auto;">
+                    <div id="pdf-content">
+                        <table id="tbl_schedule" class="table table-hover table-bordered" style="font-size:10px;font-weight:bold;">
+
+
+                            <thead style="display: none;">
+                                <tr>
+                                    <th style="background-color: #4D759A; color: white;">Issue NO</th>
+                                    <th style="background-color: #4D759A; color: white;">Branch</th>
+                                    <th style="background-color: #4D759A; color: white;">Certificate</th>
+                                    <th style="background-color: #4D759A; color: white;">Customer Name</th>
+                                    <th style="background-color: #4D759A; color: white;">Amount</th>
+                                    <th style="background-color: #4D759A; color: white;">Rate</th>
+                                    <th style="background-color: #4D759A; color: white;">Interest_type</th>
+                                    <th style="background-color: #4D759A; color: white;">Duration</th>
+                                    <th style="background-color: #4D759A; color: white;">Dist_From</th>
+                                    <th style="background-color: #4D759A; color: white;">Dist_To</th>
+                                    <th style="background-color: #4D759A; color: white;">Allotment_Dt</th>
+                                    <th style="background-color: #4D759A; color: white;">Maturity_Dt</th>
+                                    <th style="background-color: #4D759A; color: white;">Deb_ID</th>
+                                    <th style="background-color: #4D759A; color: white;">IFSC_Set</th>
+                                    <th style="background-color: #4D759A; color: white;">Bank_Set</th>
+                                    <th style="background-color: #4D759A; color: white;">A/C No Set</th>
+                                    <th style="background-color: #4D759A; color: white;">IFSC_Int</th>
+                                    <th style="background-color: #4D759A; color: white;">Bank_Int</th>
+                                    <th style="background-color: #4D759A; color: white;">A/C No Int</th>
+                                    <th style="background-color: #4D759A; color: white;">Customer ID</th>
+                                    <th style="background-color: #4D759A; color: white;">PAN</th>
+                                    <th style="background-color: #4D759A; color: white;">Payable</th>
+                                    <th style="background-color: #4D759A; color: white;">DP ID</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+    <script src="~/Scripts/preloader_script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            fill_schemeType_ddl();
+            fill_issueNo_ddl();
+
+            $('#tree_report input[type="checkbox"]').on('change', function () {
+                // Hide the divs when a checkbox state changes after button click
+                $('#div_count').hide();   // Hide the div count
+                $('#div_grid').hide();     // Hide the div grid
+
+            });
+
+        });
+
+        function fill_schemeType_ddl() {
+            $.ajax({
+             url: "@Url.Action("fill_schemeType", "NCD_schedule")",
+             type:'GET',
+
+             success: function (response) {
+                 // Clear existing options
+                 $('#scheme_type').empty();
+
+                 // Iterate through the response data and add each option
+                 $.each(response, function (index, scheme) {
+                     // Assuming your data contains `SchemeId` and `SchemeName` as keys for each item
+                     $('#scheme_type').append(
+                         $('<option>', {
+                             value: scheme.value, // Use the appropriate field for the value
+                             text: scheme.text // Use the appropriate field for the display text
+                         })
+                     );
+                 });
+                },
+                error: function (error) {
+                    alert("Error fetching data.");
+
+                }
+            });
+        }
+
+        function fill_issueNo_ddl() {
+            $.ajax({
+             url: "@Url.Action("fill_issueNumber", "NCD_schedule")",
+             type:'GET',
+
+             success: function (response) {
+                 // Clear existing options
+                 $('#issue_no').empty();
+
+                 // Iterate through the response data and add each option
+                 $.each(response, function (index, issues) {
+                     // Assuming your data contains `SchemeId` and `SchemeName` as keys for each item
+                     $('#issue_no').append(
+                         $('<option>', {
+                             value: issues.issue_no, // Use the appropriate field for the value
+                             text: issues.iss // Use the appropriate field for the display text
+                         })
+                     );
+                 });
+                },
+                error: function (error) {
+                    alert("Error fetching data.");
+
+                }
+            });
+        }
+
+        $(document).ready(function () {
+
+            $('#btn_report').click(function (event) {
+
+                // Prevent default action
+                event.preventDefault();
+
+                // Validate the form and store the result
+                if (!validateForm()) {
+                    return; // Exit if validation fails
+                }
+                showLoadingIndicator();
+
+                var scheme_type = $('#scheme_type').val();
+                var _date = $('#toDate').val();
+                var issue_no = $('#issue_no').val();
+
+                var formData = new FormData();
+                formData.append('scheme_type', scheme_type);
+                formData.append('toDate', _date);
+                formData.append('issue_no', issue_no);
+
+
+
+               $.ajax({
+                    url: "@Url.Action("btn_report_Click", "NCD_schedule")",
+                    type:'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                   success: function (response) {
+
+                       $('#div_count').show();   // Hide the div count
+                       $('#div_grid').show();     // Hide the div grid
+
+                       if (response.success) {
+
+                           hideLoadingIndicator();
+
+                           $('#div_count').css('display', 'block');
+
+                           var data = response.data;
+                           var tbody = $('#tbl_schedule tbody');
+                           tbody.empty(); // Clear existing data
+
+                           var totalCount = data.length;
+                           // Show the table header
+                           $('#tbl_schedule thead').css('display', 'table-header-group');
+
+                           data.forEach(function (row) {
+
+                               var rowClass = '';
+                               if ((row.Branch === null) && row.Customer_Name === "Cumulative Total") {
+                                   rowClass = 'highlight-cumulative'; // Custom CSS class for the row
+                               }
+                               else if ((row.Branch === null) && row.Customer_Name === "Fixed Total") {
+                                   rowClass = 'highlight-fixed';
+                               }
+                               else if ((row.Branch === null) && row.Customer_Name === "Issue Total") {
+                                   rowClass = 'highlight-issue';
+                               }
+                               else if ((row.Branch === null) && row.Customer_Name === "TOTAL") {
+                                   rowClass = 'highlight-total';
+                               }
+                               else {
+                                   rowClass = 'highlight-normal';
+                               }
+
+                               var newRow = '<tr class="' + rowClass + '">' +
+                                   '<td>' + (row.Issue_NO || '') + '</td>' +
+                                   '<td>' + (row.Branch || '') + '</td>' +
+                                   '<td>' + (row.Certificate || '') + '</td>' +
+                                   '<td>' + (row.Customer_Name || '') + '</td>' +
+                                   '<td>' + (row.Amount || '') + '</td>' +
+                                   '<td>' + (row.Rate || '') + '</td>' +
+                                   '<td>' + (row.Interest_type || '') + '</td>' +
+                                   '<td>' + (row.Duration || '') + '</td>' +
+                                   '<td>' + (row.Dist_From || '') + '</td>' +
+                                   '<td>' + (row.Dist_To || '') + '</td>' +
+                                   '<td>' + (row.Allotment_Dt || '') + '</td>' +
+                                   '<td>' + (row.Matirity_Dt || '') + '</td>' +
+                                   '<td>' + (row.Deb_ID || '') + '</td>' +
+                                   '<td>' + (row.IFSC_Set || '') + '</td>' +
+                                   '<td>' + (row.Bank_Set || '') + '</td>' +
+                                   '<td>' + (row.A_C_No_Set || '') + '</td>' +
+                                   '<td>' + (row.IFSC_Int || '') + '</td>' +
+                                   '<td>' + (row.Bank_Int || '') + '</td>' +
+                                   '<td>' + (row.A_C_No_Int || '') + '</td>' +
+                                   '<td>' + (row.Customer_ID || '') + '</td>' +
+                                   '<td>' + (row.PAN || '') + '</td>' +
+                                   '<td>' + (row.Payable || '') + '</td>' +
+                                   '<td>' + (row.DP_ID || '') + '</td>' +
+                                   '</tr>';
+                               tbody.append(newRow);
+                           });
+
+                           // Retrieve the Amount from the last row, if there are rows
+                           var lastRowAmount = data.length > 0 ? data[data.length - 1].Amount : 0;
+
+                           // Update labels with total count and last row amount
+                           $('#lbl_count').text(totalCount); // Total row count
+                           $('#lbl_amount').text(lastRowAmount || '0'); // Last row amount, defaults to '0' if empty
+
+                       } else {
+                           alert(response.message);
+                       }
+
+                    },
+                    error: function (error) {
+                        alert("error");
+                        console.error('Error sending data:', error);
+                    }
+                });
+            });
+
+
+
+
+        });
+        function validateForm() {
+            var todate = $('#toDate').val();
+
+            if (todate == "") {
+                alert("Please select Date!..");
+                return;
+            }
+            else {
+                return true;
+            }
+
+        }
+        function exportTableToExcel() {
+            // Create an array to hold the data
+            let tableData = [];
+
+            // Get table headers
+            let headers = [];
+            $('#tbl_schedule thead th').each(function () {
+                headers.push($(this).text().trim());
+            });
+            tableData.push(headers); // Add headers to the data array
+
+            // Alert headers
+            //alert("Headers: " + headers.join(", "));
+
+            // Get table rows
+            $('#tbl_schedule tbody tr').each(function () {
+                let rowData = [];
+                $(this).find('td').each(function () {
+                    rowData.push($(this).text().trim());
+                });
+                if (rowData.length > 0) {
+                    tableData.push(rowData);
+                }
+            });
+
+            // Alert data
+            //alert("Data:\n" + tableData.map(row => row.join(", ")).join("\n"));
+
+            // Check if tableData has valid data
+            if (tableData.length <= 1 || tableData[1].length === 0) {
+                alert("No data to export!");
+                return;
+            }
+
+            // Convert the table data to CSV format
+            let csvContent = tableData.map(row => row.join(",")).join("\n");
+
+            // Create a link to download the CSV
+            let encodedUri = "data:text/csv;charset=utf-8," + encodeURIComponent(csvContent);
+            let link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "NCD_schedule.csv");
+
+            document.body.appendChild(link); // Required for Firefox
+            link.click(); // Trigger the download
+            document.body.removeChild(link); // Cleanup
+        }
+
+        //function exportTableToPdf() {
+
+        //    var element = document.getElementById('pdf-content');
+        //    showLoadingIndicator();
+
+        //    setTimeout(function () {
+        //        var element = document.getElementById('pdf-content');
+
+        //        if (element) {
+        //            generateAndSendPDF(element);
+        //            hideLoadingIndicator();
+        //        } else {
+        //            alert('No PDF content found in partial view.');
+        //        }
+        //    }, 1000); // Ensuring enough delay to load content
+
+        //}
+        //function generateAndSendPDF(element) {
+        //    // alert("Element found: " + element); // Confirm element presence
+
+        //    var opt = {
+        //        margin: [0.3, 0.2, 1.5, 0.2], // Adjust as needed
+        //        filename: 'Business_Loan_Document.pdf',
+        //        image: { type: 'jpeg', quality: 0.75 }, // Reduced quality to lower file size
+        //        html2canvas: { scale: 2, useCORS: true },
+        //        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        //    };
+
+
+        //    html2pdf().from(element).set(opt).toPdf().output('blob').then(function (pdfBlob) {
+        //        //alert("PDF generated"); // PDF generation successful
+
+        //        html2pdf().from(element).set(opt).save();
+
+        //    }).catch(function (err) {
+        //        console.error("Error generating PDF: ", err);
+        //        alert("There was an error generating the PDF: " + err.message);
+        //    });
+        //}
+
+        function exportTableToPdf() {
+            var element = document.getElementById('pdf-content');
+            showLoadingIndicator();
+
+            setTimeout(function () {
+                if (element) {
+                    adjustTableForPDF(element);
+
+                    var opt = {
+                        margin: [0.5, 0.5, 0.5, 0.5], // Standard margins
+                        filename: 'NCD_schedule.pdf',
+                        image: { type: 'jpeg', quality: 0.75 },
+                        html2canvas: {
+                            scale: 2, // Increase scale for higher quality
+                            useCORS: true
+                        },
+                        jsPDF: {
+                            unit: 'pt', // Use points for better precision
+                            format: 'a4',
+                            orientation: 'landscape' // Use landscape for wide tables
+                        }
+                    };
+
+                    html2pdf().from(element).set(opt).save();
+                    hideLoadingIndicator();
+                } else {
+                    alert('No PDF content found in partial view.');
+                }
+            }, 1000);
+        }
+
+
+        function adjustTableForPDF(element) {
+            element.style.width = '100%'; // Ensure table width is 100% of the container
+            element.style.tableLayout = 'fixed'; // Force equal column widths
+            element.querySelectorAll('th, td').forEach(cell => {
+                cell.style.wordWrap = 'break-word'; // Prevent overflow
+            });
+        }
+
+
+    </script>
+</body>
+</html>
+

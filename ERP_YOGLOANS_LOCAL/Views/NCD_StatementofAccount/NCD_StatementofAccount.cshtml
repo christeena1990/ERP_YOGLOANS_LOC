@@ -1,0 +1,490 @@
+﻿
+@model ERP_YOGLOANS_LOCAL.Models.NCD_Models.StatementOfAccountModel
+@{
+    Layout = null;
+}
+
+@using System.Data
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   
+    @*<link rel="stylesheet" href="~/Content/table_styles.css" />*@
+
+
+    <style>
+        /* Common container for uniform padding */
+        .container {
+            font-family: Cambria;
+            font-size: 12px;
+            margin: 0 auto;
+            padding: 0px;
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-left,
+        .header-right {
+            width: 30%;
+            text-align: left;
+            padding: 2px;
+        }
+
+        .header-center {
+            /* text-align: left;*/
+            text-align: center;
+            width: 40%;
+        }
+
+        .header img {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .section {
+            margin-top: 10px;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+            .details-table th,
+            .details-table td {
+                padding: 2px;
+                border: 1px solid #ddd;
+                text-align: left;
+            }
+
+                .details-table td:nth-child(odd) {
+                    font-weight: bold;
+                    background-color: #f1f1f1 !important;
+                    -webkit-print-color-adjust: exact;
+                    color-adjust: exact;
+                }
+
+                .details-table td:nth-child(even) {
+                    background-color: transparent;
+                }
+
+                /* Targeting td with .td_coloured to make sure it has a blue background and white text */
+                .details-table td.td_coloured {
+                    background-color: #0b4c97 !important; /* Blue background */
+                    /*background-color: #ba292f !important;*/ /* red background */
+                    color: white !important; /* White text */
+                    font-size: 14px !important; /* Ensure font size is 14px */
+                    text-align: left !important; /* Center the text */
+                    border: none !important; /* Remove the border */
+                }
+
+
+
+        /* Box styling for the address and details */
+        .info-box {
+            border: 0.5px solid #ddd;
+            background-color: #f1f1f1 !important;
+            -webkit-print-color-adjust: exact;
+            color-adjust: exact;
+            padding: 5px;
+            margin-bottom: 1px;
+            /* font-weight:500;*/
+            font-weight: bold; /* Make the text bold */
+        }
+
+        .table {
+            border: 1px solid #ccc;
+        }
+            .table th {
+                /* background-color: #4D759A;*/
+                background-color: #0b4c97 !important;
+                color: white !important; /* White text */
+                font-size: 12px; /* Ensure font size is 14px */
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+                color: white;
+            }
+            /*.table td{
+                text-align:center;
+            }*/
+
+        .alternate-rows tbody tr:nth-child(odd) {
+            background-color: #ffffff; /* White for odd rows */
+        }
+
+        .alternate-rows tbody tr:nth-child(even) {
+            background-color: #D8D8D8 !important; /* Light grey for even rows */
+            -webkit-print-color-adjust: exact;
+            color-adjust: exact;
+        }
+
+        .signature-section {
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 10px;
+            color: #555;
+        }
+
+    </style>
+
+</head>
+    <body>
+        <div class="container">
+            <!-- Header Section -->
+            <div class="header">
+                <div class="header-left">
+                    <!-- Company Logo -->
+                    <img src="~/images/logo.jpg" alt="Company Logo" style="height: 40px;">
+                </div>
+
+                <div class="header-center">
+                    <!-- Heading -->
+                    <h2 style="padding-top:-13px;color:maroon">STATEMENT OF ACCOUNT</h2>
+                </div>
+
+                <div class="header-right">
+                    <!-- Date and Branch Details -->
+              
+
+                    <p>
+                        <strong>DATE :</strong> @Model.CurrentDate<br>
+                        <strong>BRANCH NAME :</strong> @Model.BranchName<br>
+                        <strong>CONTACT NO:</strong> @Model.Branch_tel<br>
+
+                    </p>
+
+                </div>
+            </div>
+            <hr style="color:black;" />
+            <!-- Company Address and Customer Details Section -->
+            <div class="header">
+                <div class="header-left info-box" @*style="color:mediumblue"*@>
+                    <p style="text-transform: uppercase;">
+                        YOGAKSHEMAM LOANS LTD.<br>
+                        Regd. Office, 3rd Floor, Ottappath Tower, Aswini Junction
+                        P.O. Thiruvambady, Thrissur, Kerala
+                        Pin - 680 022, CONTACT NO: 0487-2320102
+                    </p>
+                </div>
+
+                <div class="header-right info-box">
+                    <p>
+                        @Model.CustomerName.ToUpper()<br>
+                        @Model.Address.ToUpper()<br>
+                    </p>
+                </div>
+            </div>
+
+
+
+            @*////////////////////////////////////////////////////////////*@
+
+            <!-- Combined Table Section -->
+            <div class="section">
+                <table class="details-table">
+                    <!-- First Row with Two Headings -->
+                    <thead>
+                        <tr>
+                            <td class="td_coloured" colspan="4" style="border: none; text-align: center; ">
+                                <strong> Customer Details </strong>
+                            </td>
+                        </tr>
+                    </thead>
+                    <!-- Customer Details -->
+                    <tr>
+                        <td><strong>Customer Name</strong></td>
+                        <td>@Model.CustomerName</td>
+                        <td><strong>Customer ID</strong></td>
+                        <td>@Model.CustomerId</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pancard Number</strong></td>
+                        <td>@Model.PanNumber</td>
+                        <td><strong>Pan Track ID</strong></td>
+                        <td>@Model.PanTrackID</td>
+
+                    </tr>
+                    <tr>
+                       
+                        <td><strong>15 Status</strong></td>
+                        <td>@Model.Status</td>
+                        <td><strong>15 Update Date</strong></td>
+                        <td>@Model.UpdateDate</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nominee Name</strong></td>
+                        <td>@Model.NomineeName</td>
+                        <td><strong>Nominee Relation</strong></td>
+                        <td>@Model.NomineeRelation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Nominee Address</strong></td>
+                        <td colspan="3">@Model.NomineeAddress</td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="4" style="border: none;">
+
+                    </tr>
+                    <tr>
+                        <td colspan="4" style="border: none;">
+
+                    </tr>
+                    <!-- Account Details -->
+
+                    <tr>
+                        <td class="td_coloured" colspan="4" style="border: none;">
+                            <strong> Account Details  </strong>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>Issue Number </strong></td>
+                        <td>@Model.IssueNumber</td>
+                        <td><strong>Certificate Number </strong></td>
+                        <td>@Model.CertificateNo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Distinctive No. From </strong></td>
+                        <td>@Model.DistinctiveNoFrom</td>
+                        <td><strong>Distinctive No. To </strong></td>
+                        <td>@Model.DistinctiveNoTo</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Interest Type </strong></td>
+                        <td>@Model.InterestType</td>
+                        <td><strong>Period </strong></td>
+                        <td>@Model.Period</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Interest Rate </strong></td>
+                        <td>@Model.InterestRate %</td>
+                        <td><strong>Issue Date </strong></td>
+                        <td>@Model.IssueDate</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Maturity Date </strong></td>
+                        <td>@Model.MaturityDate</td>
+                        <td><strong>Amount </strong></td>
+                        <td>@Model.Amount/-</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Maturity Amount </strong></td>
+                        <td>@Model.MaturityAmount</td>
+                        <td><strong>Short Recovery Marked </strong></td>
+                        <td>@Model.ShortRecoveryMarked</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Account Type </strong></td>
+                        <td>@Model.AccountType</td>
+                        <td><strong>ISIN Number </strong></td>
+                        <td>@Model.IsinNumber</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DP ID </strong></td>
+                        <td>@Model.DpId</td>
+                        <td><strong>DP Name </strong></td>
+                        <td>@Model.DpName</td>
+                    </tr>
+                    <tr>
+
+                        <td><strong>Status </strong></td>
+                        <td>@Model.acstatus</td>
+                        <td><strong>Closing Date </strong></td>
+                        <td>@Model.ClosingDate</td>
+                    </tr>
+
+                </table>
+            </div>
+
+            @*///////////////////////////////////////////////////////////*@
+
+
+
+            <div class="section">
+
+                @if (Model.JointApplicants != null && Model.JointApplicants.Rows.Count > 0)
+                {
+
+                    <p style="font-size:14px;color:maroon;font-weight:800">Joint Applicant Details</p> <!-- Heading appears only if data exists -->
+                    <table class="table  alternate-rows" style="width:100%">
+
+
+                        <thead>
+                            <tr>
+                                @foreach (DataColumn column in Model.JointApplicants.Columns)
+                                {
+                                    <th>@column.ColumnName</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (DataRow row in Model.JointApplicants.Rows)
+                            {
+                                <tr>
+                                    @foreach (var item in row.ItemArray)
+                                    {
+                                        <td style="text-align:center">@item</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                }
+
+
+
+
+                @*///////////////////////////////////////////////////////////*@
+
+
+
+
+                @if (Model.Bankdetails != null && Model.Bankdetails.Rows.Count > 0)
+                {
+                    <p style="font-size: 14px; color: maroon; font-weight:800">Bank Details</p> <!-- Heading appears only if data exists -->
+
+                    <table class="table  alternate-rows" style="width:100%">
+
+                        <thead class="">
+                            <tr>
+                                @foreach (DataColumn column in Model.Bankdetails.Columns)
+                                {
+                                    <th>@column.ColumnName</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (DataRow row in Model.Bankdetails.Rows)
+                            {
+                                <tr>
+                                    @foreach (var item in row.ItemArray)
+                                    {
+                                        <td style="text-align:center">@item</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                }
+
+                @*///////////////////////////////////////////////////////////////////////////////*@
+
+
+
+
+                @if (Model.Transferdetails != null && Model.Transferdetails.Rows.Count > 0)
+                {
+                    <p style="font-size: 14px;color:maroon; font-weight: 800">Transfer Details</p> <!-- Heading appears only if data exists -->
+
+                    <table class="table  alternate-rows" style="width:100%;">
+
+                        <thead>
+                            <tr>
+                                @foreach (DataColumn column in Model.Transferdetails.Columns)
+                                {
+                                    <th>@column.ColumnName</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (DataRow row in Model.Transferdetails.Rows)
+                            {
+                                <tr>
+                                    @foreach (var item in row.ItemArray)
+                                    {
+                                        <td style="text-align:center">@item</td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                }
+
+                @*/////////////////////////////////////////////////////////////*@
+
+
+                @*///////////////////////////////////////////////////////////*@
+                @if (Model.Transactiondetails != null && Model.Transactiondetails.Rows.Count > 0)
+                {
+                    <p style="font-size: 14px;color:maroon; font-weight: 800">Transaction Details</p> <!-- Heading appears only if data exists -->
+
+                    <table class="table alternate-rows" style="width:100%;">
+
+                        <thead>
+                            <tr>
+                                @foreach (DataColumn column in Model.Transactiondetails.Columns)
+                                {
+                                    <th>@column.ColumnName</th>
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (DataRow row in Model.Transactiondetails.Rows)
+                            {
+                                <tr>
+                                    @{
+                                        int columnIndex = 0; // Initialize a column index tracker
+                                    }
+                                    @foreach (var item in row.ItemArray)
+                                    {
+                                        <td style="text-align:@(columnIndex == 0 || columnIndex == 1 ? "center" : columnIndex >= 3 && columnIndex <= 5 ? "right" : "left");">
+                                            @item
+                                        </td>
+                                        columnIndex++; // Increment the column index
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+
+
+
+
+            </div>
+
+
+            <!-- Signature Section -->
+            <div class="signature-section">
+                <p>Authorized Signature: ____________________</p>
+                <p>For: YOGAKSHEMAM LOANS LTD.</p>
+            </div>
+
+            <!-- Footer Section -->
+            <div class="footer">
+                <p>Disclaimer: This statement is computer generated and does not require a signature.</p>
+            </div>
+
+
+
+
+        </div>
+
+
+    </body>
+</html>
+
+
+
+
+
+
+

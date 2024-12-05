@@ -1,0 +1,2080 @@
+﻿@{
+    Layout = null;
+}
+@model ERP_YOGLOANS_LOCAL.Models.Legality_Model.ApplicationAndKFSViewModel
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+        body {
+            font-family: 'Times New Roman';
+            margin: 0;
+            padding: 0;
+            position: relative;
+            text-align: justify;
+        }
+
+        .page {
+            page-break-before: avoid;
+            page-break-inside: avoid;
+            page-break-after: avoid;
+            min-height: calc(100vh - 50px); /* Adjust to ensure enough space for footer */
+            margin-bottom: 50px; /* Space to prevent overlapping */
+            padding-bottom: 60px; /* Add padding to avoid content overlapping with the footer */
+        }
+
+        .content {
+            padding: 20px;
+            font-size: 10px;
+            text-align: justify;
+        }
+
+        .company-info {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .application-title {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 5px;
+        }
+        /* -------------------KFS------------------------------------*/
+
+        .heading-container {
+            margin: 10px 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+            width: 100%; /* Adjust width to 100% */
+            margin: 5px auto; /* Reduce margin */
+            text-align: justify;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 1px; /* Reduced padding */
+            text-align: left;
+            font-size: 10px;
+        }
+
+
+        .pdf-button {
+            margin: 10px;
+            padding: 5px 10px;
+            font-size: 12px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        td {
+            padding: 8px; /* Adds some padding for better readability */
+            vertical-align: top;
+        }
+
+        F
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #ADB1B1;
+            margin: 20px 0; /* Adjust margin for spacing */
+        }
+
+        .page-break {
+            page-break-before: auto; /* Start on a new page */
+            break-before: page; /* For better compatibility */
+        }
+
+        table, .content {
+            page-break-inside: auto; /* Avoid page breaks within the table or content block */
+        }
+
+        tr, td {
+            page-break-inside: avoid; /* Prevents rows from splitting across pages */
+        }
+
+        p, li, ol {
+            text-align: justify;
+        }
+
+        /*   p, li , ol{
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }*/
+    </style>
+</head>
+<body>
+
+
+    <div id="pdf-content" class="page">
+
+        @*-------------------------------------------2nd section---------------------------------------------------*@
+        <div @*style="height:95%;"*@ id="SanctionLetter">
+            <div class="logo-src" style="height: 42px; vertical-align: top; text-align: center; margin-top: 0px; margin-bottom: 3px;">
+                <img style="width:170px;" src="~/images/logowithtext.png" />
+            </div>
+
+            <div class="company-info" style="margin-bottom: -10px; line-height: 1.2;">
+
+                <div>YOGAKSHEMAM LOANS LIMITED</div>
+                <div style="font-weight:normal;">Ottappath Tower, Aswini Junction, Thiruvambady P.O, Thrissur 680022.</div>
+
+            </div><br />
+            <hr />
+            <div class="content">
+                <div class="section">
+                    <p>To,</p>
+                    <div>
+                        &nbsp;@Model.ApplicationFormData.PrimaryApplicantName_SL<br />
+                        &nbsp;@Model.ApplicationFormData.CoApplicant1_Name_SL<br />
+                        &nbsp;@Model.ApplicationFormData.CoApplicant2_Name_SL<br />
+                        &nbsp;@Model.ApplicationFormData.CoApplicant3_Name_SL<br />
+                    </div>
+                    @*<p>&nbsp;@Model.ApplicationFormData.PrimaryApplicantName_SL</p>
+                    <p>&nbsp;@Model.ApplicationFormData.CoApplicant1_Name_SL</p>
+                    <p>&nbsp;@Model.ApplicationFormData.CoApplicant2_Name_SL</p>
+                    <p>&nbsp;@Model.ApplicationFormData.CoApplicant3_Name_SL</p>*@
+                </div>
+
+                <div class="section">
+                    <span>Sanction No.:&nbsp;@Model.ApplicationFormData.SanctionNumber_SL</span>
+                    <span style="margin-left:500px;">Date:&nbsp;@Model.ApplicationFormData.SanctionDate_SL</span>
+                </div><br />
+
+                <p style="margin-bottom:2px;">Dear Sir/Madam,</p>
+                <p style="font-weight: bold; margin-bottom: 2px;">Sanction of Business Loan against your application.</p>
+                <p>We are pleased to advise sanction of a Business Loan against hypothecation of the business as under:</p>
+
+                <ol>
+                    <li>
+                        <span>Loan amount: Rs.&nbsp;@Model.ApplicationFormData.SanctionedLoanAmt_SL&nbsp;</span>
+                        <span style="margin-left:60px;">EMIs of Rs.&nbsp;@Model.ApplicationFormData.EMIAmt_SL &nbsp;&nbsp;&nbsp;&nbsp;(Rupees &nbsp;@Model.ApplicationFormData.EMIAmtWords_SL).</span><br /> Repayable in:&nbsp;@Model.ApplicationFormData.NoOfMonths_SL months.
+                    </li>
+                    <li>
+                        Detailed terms and conditions are contained in the attached Schedule. Please go through the terms and conditions carefully and affix your signature on the duplicate copy of this sanction letter in acceptance thereof. Thereafter, you will be required to execute a Demand Promissory Note for the loan amount along with a stamped legal agreement containing the
+                        detailed terms and conditions of the loan contents of which will be explained to you before you sign the documents.
+                    </li>
+                    <br />
+
+                    <li>This sanction letter is valid for a period of 3 months from the date of this letter.</li>
+
+                </ol>
+
+                <p style="text-align: left; font-weight: bold;">Yours faithfully,</p>
+                <br /><br /><br />
+                <p style="text-align: left; font-weight: bold;">Authorised Signatory</p>
+
+                <div class="signature" style="text-align:center;">
+                    <p>Accepted and agreed to avail the loan as per terms and <br /> conditions prescribed by the Company.</p>
+                </div><br /><br /><br />
+
+                <div>
+                    <p style="font-weight:bold; text-align:center;">(Signature of Applicant and Co-Applicants)</p>
+                </div><hr />
+            </div>
+        </div>
+        <div class="page-break" @*style="height:95%;"*@ id="SanctionLetter_Malayalam">
+            <br />
+            <div class="logo-src" style="height: 42px; vertical-align: top; text-align: center; margin-top: 0px; margin-bottom: 3px;">
+                <img style="width:170px;" src="~/images/logowithtext.png" />
+            </div>
+
+            <div class="company-info" style="margin-bottom: -10px; line-height: 1.2;">
+
+                <div>യോഗക്ഷേമം ലോണ്‍സ് ലിമിറ്റഡ്</div>
+                <div style="font-weight:normal;"><u>രജി.ഓഫീസ്: ഒറ്റപ്പത്ത് ടവര്‍, അശ്വിനി ജംഗ്ഷന്‍, തിരുവമ്പാടി പോസ്റ്റ്, തൃശൂര്‍ - 680022,<br /> കേരളം.</u></div>
+
+            </div><br />
+            <hr />
+            <div class="content">
+                <div class="section">
+                    <p>സ്വീകര്‍ത്താവ്,</p>
+                    <div>
+                        &nbsp;@Model.ApplicationFormData.PrimaryApplicantName_SL<br />
+                        &nbsp;@Model.ApplicationFormData.CoApplicant1_Name_SL<br />
+                        &nbsp;@Model.ApplicationFormData.CoApplicant2_Name_SL<br />
+                        &nbsp;@Model.ApplicationFormData.CoApplicant3_Name_SL<br />
+                    </div>
+                    @*<p>&nbsp;@Model.ApplicationFormData.PrimaryApplicantName_SL</p>
+                    <p>&nbsp;@Model.ApplicationFormData.CoApplicant1_Name_SL</p>
+                    <p>&nbsp;@Model.ApplicationFormData.CoApplicant2_Name_SL</p>
+                    <p>&nbsp;@Model.ApplicationFormData.CoApplicant3_Name_SL</p>*@
+                </div>
+
+                <div class="section">
+                    <span>സാങ്ഷന്‍ നമ്പര്:&nbsp;@Model.ApplicationFormData.SanctionNumber_SL</span>
+                    <span style="margin-left:450px;">തീയതി:&nbsp;@Model.ApplicationFormData.SanctionDate_SL</span>
+                </div><br />
+
+                <p style="margin-bottom:2px;">പ്രിയപ്പെട്ട സർ / മാഡം,</p>
+                <p style="font-weight: bold; margin-bottom: 2px;">താങ്കളുടെ അപേക്ഷ പ്രകാരം ബിസിനസ്സ് ലോണിന്‍റെ അനുമതി:-</p>
+                <p>താഴെ കൊടുത്തിരിക്കുന്ന ബിസിനസ്സിന്‍റെ ഹൈപ്പോതിക്കേഷനെതിരെ ഒരു ബിസിനസ്സ് ലോണ്‍ അനുവദിക്കാന്‍ ഉപദേശിക്കുന്നതില്‍ ഞങ്ങള്‍ക്ക് സന്തോഷമുണ്ട്.</p>
+
+                <ol>
+                    <li>
+                        <span>വായ്പാതുക:&nbsp;@Model.ApplicationFormData.SanctionedLoanAmt_SL&nbsp; രൂപ</span>
+                        <span style="margin-left:60px;">മാസ തവണകള്:&nbsp;@Model.ApplicationFormData.EMIAmt_SL &nbsp;രൂ &nbsp;&nbsp;&nbsp;(രൂപ &nbsp;@Model.ApplicationFormData.EMIAmtWords_SL).</span><br /> തിരിച്ചടവ്:&nbsp;@Model.ApplicationFormData.NoOfMonths_SL മാസങ്ങൾ.
+                    </li>
+                    <li>
+                        2. വിശദമായ നിബന്ധനകളും വ്യവസ്ഥകളും അറ്റാച്ച് ചെയ്ത ഷെഡ്യൂളില്‍ അടങ്ങിയിരിക്കുന്നു. ദയവായി നിബന്ധനകളും വ്യവസ്ഥകളും ശ്രദ്ധാപൂര്‍വ്വം പരിശോധിച്ച് ഈ അനുമതി കത്തിന്‍റെ പകര്‍പ്പില്‍ നിങ്ങളുടെ ഒപ്പ് പതിക്കുക. അതിനുശേഷം, നിങ്ങള്‍ വായ്പാ തുകയ്ക്കായി ഒരു ഡിമാന്‍ഡ് പ്രോമിസറി നോട്ട് എക്സിക്യൂട്ട് ചെയ്യേണ്ടതുണ്ട്. ഒപ്പം വായ്പ ഉള്ളടക്കങ്ങളുടെ വിശദമായ നിബന്ധനകളും വ്യവസ്ഥകളും അടങ്ങുന്ന സ്റ്റാമ്പ് ചെയ്ത നിയമ ഉടമ്പടിയും നിങ്ങള്‍ ഡോക്യുമെന്‍റുകളില്‍ ഒപ്പിടുന്നതിന് മുമ്പ് നിങ്ങളോട് വിശദീകരിക്കുന്നതാണ്.
+
+
+                    </li>
+                    <br />
+
+                    <li>ഈ കത്ത് ലഭിച്ച തീയ്യതി മുതല്‍ 3 മാസത്തേക്ക് ഈ അനുമതി കത്തിന് സാധുതയുണ്ട്.	</li>
+
+                </ol>
+
+                <p style="text-align: left; font-weight: bold;">വിശ്വസ്തതയോടെ</p>
+                <br /><br /><br />
+                <p style="text-align: left; font-weight: bold;">ഒപ്പിടാന്‍ അധികാരപ്പെടുത്തിയ ആൾ</p>
+
+                <div class="signature" style="text-align:center;">
+                    <p>കമ്പനി നിര്‍ദ്ദേശിക്കുന്ന നിബന്ധനകളും വ്യവസ്ഥകളും അനുസരിച്ച്<br />വായ്പ സ്വീകരിക്കുകയും അംഗീകരിക്കുകയും ചെയ്തു.</p>
+                </div><br /><br /><br />
+
+                <div>
+                    <p style="font-weight:bold; text-align:center;">(അപേക്ഷകന്‍റെയും സഹ അപേക്ഷകരുടെയും ഒപ്പുകള്‍)</p>
+                </div><hr />
+            </div>
+        </div>
+        @*----------------------------------------------3rd set forms------------------*@
+
+        <div class="outline-container content page-break" id=" main_agrmnt">
+
+            <br />
+            <div class="logo-src" style="height: 42px; vertical-align: top; text-align: center; margin-top: -5px; margin-bottom: 2px;">
+                <img style="width:170px;" src="~/images/logowithtext.png" />
+            </div>
+            <div class="company-info" style="margin-bottom: -20px; line-height: 1.2;">
+
+                <div>YOGAKSHEMAM LOANS LIMITED</div>
+                <div style="font-size:10px;">CIN: U65992KL1991PLC005965</div>
+                <div style="font-size:10px;">Regd. Office: 3rd Floor, Ottappath Tower, Aswini Junction, <br />Thriruvambady P.O., Thrissur, Kerala - 680 022. Ph: 0487 2320102, 2320103</div><br />
+            </div>
+            <hr style="margin-bottom: -18px;" />
+
+
+            <div class="content">
+                <p style="font-size:13px;margin-bottom:3px; text-align:center;"><u>LOAN CUM HYPOTHECATION AGREEMENT</u></p>
+                This LOAN AGREEMENT ("Agreement" includes any amendments hereto) made at &nbsp;  @Model.AgreementApplicationFormData.BranchName_Agrmnt    &nbsp;&nbsp;@Model.AgreementApplicationFormData.AgreementDate_Agrmnt &nbsp;&nbsp;this the&nbsp;&nbsp;@Model.AgreementApplicationFormData.AgreementDtInWords	 between
+                Yogakshemam Loans Limited, a Non-Banking Finance Company registered with the Reserve Bank of India under the provisions of
+                Chapter III B of Reserve Bank of India Act 1934, having its Registered/Administrative Office at 3rd Floor, Ottappath Tower,
+                Aswini Junction, Thriruvambady P.O., Thrissur, Kerala - 680 022. (hereinafter referred to as the "the Company") which
+                expression shall, unless it be repugnant to the context or meaning thereof, be deemed to mean and include its successors
+                and assigns of the One Part	AND<br />
+                <div>
+                    @{
+                        var primaryApplicantDetails = new[] {
+            Model.AgreementApplicationFormData.PrimaryApplicantName_Agrmnt,
+            Model.AgreementApplicationFormData.PrimaryApplicantPresentAddress1_Agrmnt,
+            Model.AgreementApplicationFormData.PrimaryApplicantPresentAddress2_Agrmnt,
+            Model.AgreementApplicationFormData.PrimaryApplicantPresentAddress3_Agrmnt,
+            Model.AgreementApplicationFormData.PrimaryApplicantPresentAddress4_Agrmnt,
+            Model.AgreementApplicationFormData.PrimaryApplicantPresentPost_Agrmnt,
+             Model.AgreementApplicationFormData.PrimaryApplicantPresentPinCode_Agrmnt,
+            Model.AgreementApplicationFormData.PrimaryApplicantPresentCity_Agrmnt,
+            Model.AgreementApplicationFormData.PrimaryApplicantPresentDistrict_Agrmnt,
+
+            Model.AgreementApplicationFormData.PrimaryApplicantPresentState_Agrmnt
+        };
+
+                        // Filter out null or empty values and join with commas
+                        var formattedDetails1 = string.Join(", ", primaryApplicantDetails.Where(detail => !string.IsNullOrEmpty(detail)));
+                    }
+                    @formattedDetails1
+                </div>
+
+                <div>
+                    @{
+                        var coApplicant1Details = new[] {
+
+            Model.AgreementApplicationFormData.CoApplicant1_Name_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant1_Address1_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant1_Address2_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant1_Address3_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant1_Address4_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant1_Post_Agrmnt,
+             Model.AgreementApplicationFormData.CoApplicant1_PinCode_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant1_City_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant1_District_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant1_State_Agrmnt
+        };
+
+                        // Filter out null or empty values and join with commas
+                        var formattedDetails = string.Join(", ", coApplicant1Details.Where(detail => !string.IsNullOrEmpty(detail)));
+                    }
+                    @formattedDetails
+                </div>
+                <div>
+                    @{
+                        var coApplicant2Details = new[] {
+            Model.AgreementApplicationFormData.CoApplicant2_Name_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant2_Address1_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant2_Address2_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant2_Address3_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant2_Address4_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant2_Post_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant2_City_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant2_District_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant2_PinCode_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant2_State_Agrmnt
+        };
+
+                        // Filter out null or empty values and join with commas
+                        var formattedDetails2 = string.Join(", ", coApplicant2Details.Where(detail => !string.IsNullOrEmpty(detail)));
+                    }
+                    @formattedDetails2
+                </div>
+                <div>
+                    @{
+                        var coApplicant3Details = new[] {
+                             Model.AgreementApplicationFormData.CoApplicant3_Name_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant3_Address1_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant3_Address2_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant3_Address3_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant3_Address4_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant3_Post_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant3_City_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant3_District_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant3_PinCode_Agrmnt,
+            Model.AgreementApplicationFormData.CoApplicant3_State_Agrmnt
+        };
+
+                        // Filter out null or empty values and join with commas
+                        var formattedDetails3 = string.Join(", ", coApplicant3Details.Where(detail => !string.IsNullOrEmpty(detail)));
+                    }
+                    @formattedDetails3
+                </div>
+
+                (The Borrower, Co-borrowers, hereinafter referred to as the Borrower(s), which expression shall unless the context otherwise requires include each and all the borrowers and co-borrower/s his/her/their heirs, executors administrators’ successors and permitted assigns of the Second Part.)
+                <br /> The Borrower(s) and the Company are hereinafter collectively referred to as "Parties' and individually as ‘the Party’.<br />
+                WHEREAS the undersigned Borrower(s) have required for grant of a Business Loan from the Company and the Company agrees to grant/extend to the Borrower(s), a Business Loan, details whereof are contained in Annexure A hereto, on the terms and conditions contained herein, subject to the Borrower(s) executing such documents and creating such security mentioned below as may be required by the Company from time to time.
+                <br />
+                <p style="font-weight:bold; margin-bottom: 0;">NOW THIS AGREEMENT WITNESSETH AND IT IS HEREBY MUTUALLY AGREED, DECLARED, CONFIRMED AND RECORDED BY AND BETWEEN THE PARTIES HERETO AS FOLLOWS: Definitions:</p>
+                <ol style="text-align:left; margin-left: -25px; margin-top: 2px;">
+                    <li>‘Additional Interest’ or ‘Penal Interest’ or 'Delay Interest' shall mean interest charged by the Company on overdue amounts for delay in payment.</li>
+                    <li>‘Agreement’ shall mean this Loan cum Hypothecation Agreement entered into between the Borrower(s) and the Company.</li>
+                    <li>‘Annexure(s)’ means the annexure to this Agreement, as amended/modified from time to time, which forms an integral part thereof.</li>
+                    <li>‘Borrower(s)’ shall mean and include any person(s)/entity to whom the Company has agreed to grant the facility including any co-borrower(s) whose details are given in this Agreement and who have received the loan pursuant to this Agreement and unless repugnant to the context or meaning thereof be deemed to include his/her/its/their heirs, Legal Representatives, successors, permitted assigns, Executors, Receivers, Administrators, as the case may be.</li>
+                    <li>‘Electronic Information’ shall mean such information which has been sent via electronic media including but not limited to Short Messaging Services (SMS), e-mail or such other means.</li>
+                    <li>‘Equated Monthly Installment’ (EMI) means the amount of monthly payment consisting of principal and interest necessary to amortise the loan amount with applicable interest, within such period, as may be determined by the Company, from time to time.</li>
+                    <li>‘Electronic Clearing System’ hereinafter referred to as "ECS" or "Automated Clearing House (ACH) Transfer", shall be deemed to include transfer of funds electronically, either through a message for transfer of funds sent electronically or through image of instrument of transfer of funds sent electronically or through an electronic file containing the details of the funds transfer sent by electronic media or payment through an electronic cheque or where funds are transferred through various types of plastic cards or such other debit clearing service notified by Reserve Bank of India, participation in which has been consented to in writing by the Borrower(s) for facilitating payment of Installments.</li>
+                    <li>'Outstanding Amount' or 'Dues' shall mean and include the principal amount of the loan together with accrued interest, additional interest, all other charges and dues payable by the Borrower(s) to the Company in accordance with the terms and conditions of this Agreement/schedule of charges and interest, and as reflected in the books and records maintained by the Company in its normal course of business.</li>
+                    <li>'Loan' shall mean the loan amount as entered in the Annexure A hereto.</li>
+                    <li>‘Prepayment’ means premature repayment as per the terms and conditions laid down by the Company in that behalf and in force at the time of prepayment.</li>
+                    <li>'Articles' shall mean the articles more specifically described in the Annexures.</li>
+                    <li>'Rate of Interest' (ROI) means the rate of interest referred in the Agreement and Annexures and as varied from time to time in terms of this Agreement.</li>
+                    <li>'Repayment' means the repayment of the principal amount of the loan, interest thereon, commitment and/or any other charges, premium, fees or other dues payable in terms of this Agreement to the Company.</li>
+                    <li>Any expression not defined in the Agreement but defined in the General Clauses Act, 1897, shall carry the statutory meaning or interpretation.</li>
+                    <li>NEFT or RTGS means electronic transfer of funds through Banks operated as National Electronics Funds Transfer or Real Time Gross Settlement.</li>
+                </ol>
+                <p style="font-weight:bold; margin-bottom: 0;">Interpretation:</p>
+                <ol style="text-align:left; margin-left: -25px; margin-top: 2px;">
+                    <li>A reference to a sub-clause, section or a schedule of this Agreement shall denote a reference to such sub-clause, section or schedule as specified, of this Agreement;</li>
+                    <li>The singular includes the plural (and vice versa);</li>
+                    <li>Reference to a gender shall include references to both male and female genders.</li>
+                </ol>
+
+                <p style="font-weight:bold; margin-bottom: 0;">ARTICLE 1: Terms and Conditions</p>
+                <ol style="text-align:left; margin-left: -25px; margin-top: 2px; list-style-type: none;">
+                    <li style="margin-bottom: 10px;">1.1 The loan will be utilised for the purpose for which it is sanctioned as per the Loan Sanction Letter and granted as per this Loan Agreement.</li>
+                    <li style="margin-bottom: 10px;">1.2 The loan amount will be repaid by the Borrower(s) by way of EMIs and at the rate of interest, arrived in accordance with the terms and conditions of this Agreement and Annexures. The Borrower(s) shall also pay such processing fees, other costs, charges and expenses as detailed in the Annexures and hereinafter. Each EMI shall be calculated on the basis of the monthly rests and the Company shall be entitled to vary/modify the EMI including increasing the amount of one or more EMIs in the event of changes in the interest rate on the loan.</li>
+                    <li style="margin-bottom: 10px;">1.3 The Company shall be at liberty not to grant additional limits at its sole discretion after review of the account and facilities.</li>
+                    <li style="margin-bottom: 10px;">1.4 The Borrower(s) shall not be entitled to cancel the loan granted under this Agreement or refuse to accept the disbursements or make withdrawals under the present Agreement. Any cancellation of the loan granted under the present Agreement shall be subject to the payment of the prepayment charges as mentioned in Annexure A and as may be required by the Company from time to time.</li>
+                    <li style="margin-bottom: 10px;">1.5 Provided that the interest payable by the Borrower(s) shall be subject to the changes in the interest rates made by the Company.</li>
+                    <li style="margin-bottom: 10px;">1.6 Provided further that from time to time, the Company may at its sole discretion, alter the rate of interest suitably and prospectively on account of change in the internal policies or if any unforeseen or extraordinary changes in the money market conditions take place from time to time. The Company would fix the EMI or vary the amount of EMI or the amount of principal/interest or increase/decrease the tenure of the loan as per the system adopted by the Company in this regard notwithstanding anything appearing in the Annexure A attached hereto.</li>
+                    <li style="margin-bottom: 10px;">1.7 The customer acknowledges the right of the Company to recall/cancel the loan in the event of the Borrower failing to submit all/any post disbursal documents.</li>
+                </ol>
+                <p style="font-weight:bold; margin-bottom: 0px;">2. Security</p>
+                <ol style="text-align:left; margin: 0; padding-left: 0; list-style-type: none;">
+                    <li style="margin-bottom: 10px;">2.1 The Borrower(s) hereby hypothecate/s, continue to hypothecate and has/have hypothecated and or deemed to have hypothecated in favour of the Company the articles/whole of the stocks of Shop No. ___ which now or hereinafter from time to time during this security shall be brought into or stored or be in or about the borrowers' go down/premises at ___ in Building Number ___ in Ward No. ___ Panchayath/ Municipality/ Corporation or wherever else the same may be including the goods/articles in transit more specifically mentioned in Annexures.</li>
+                    <li style="margin-bottom: 10px;">2.2 The said articles shall be insured against loss, fire, earthquake, floods and other damages with an insurance company, and the relevant municipal taxes, dues to the government and outgoings of the co-operative society and all kinds of dues connected with the said property would be paid in time by the Borrower(s) and nothing shall be done by the Borrower(s) which will adversely affect the security in any manner whatsoever.</li>
+                    <li style="margin-bottom: 10px;">
+                        2.3 All security furnished by the Borrower(s) to the Company shall remain a continuing security to the Company binding upon the Borrower(s) and shall:
+                        <ol style="list-style-type: none; padding-left: 20px; margin-top: 5px;">
+                            <li style="margin-bottom: 10px;">a) Not be discharged by any intermediate payment by the Borrower(s) or any settlement of accounts by the Borrower(s);</li>
+                            <li style="margin-bottom: 10px;">b) Be in addition to and not in derogation of any other security which the Company may at any time hold in respect of the Borrower(s)'s dues;</li>
+                            <li style="margin-bottom: 10px;">c) Be available to the Company until all accounts between the Company and the Borrower(s) are ultimately settled.</li>
+                        </ol>
+                    </li>
+                    <li style="margin-bottom: 10px;">2.4 The Borrower(s) shall notify the Company regarding the change in his/her/their status as a Resident/Non-Resident Indian. The Borrower(s) also undertakes and agrees to pay the interest on the loan, free from any deduction whether on account of tax or otherwise.</li>
+                </ol>
+                <p>
+                    Should any applicable law, at any time require any deduction or withholding to be made from a payment,
+                    Borrower(s)'s liability in respect of the payment shall be for a revised amount such that after making of
+                    such deduction or withholding the net payment, the revised amount shall be equal to the amount which the
+                    Company would have received, had no such deduction or withholding been made. Borrower(s) also confirms that
+                    any withholding tax obligation, in respect of the interest payable on the loan, whether under the Indian Law
+                    or the laws of any other country where he may reside, would be his responsibility. The Borrower(s) shall hold
+                    the Company harmless and fully indemnified for any claim which may be made in this regard by any tax
+                    authorities and undertake to pay forthwith any such demands which the Company may become liable to pay.
+                    If the Borrower(s) fails to pay the amount so demanded by the Company, then the Borrower(s) hereby authorises
+                    the Company to enforce the security created in their favour to avail this loan, for the purpose of recovery of
+                    the said tax amount.
+                </p>
+                <p style="font-weight:bold; margin-bottom: 0;">  3. Conditions for Disbursement </p>
+                <ol style="text-align:left; margin-left: -25px; margin-top: 2px; list-style-type: none;">
+                    <li style="margin-bottom: 10px;">
+                        3.1 Disbursements under the loan shall be made subject to fulfilment and compliance of this Agreement for loan and all other standard documents and writings executed by the Borrower(s) and as specified by the Company, including the following:
+                        <ol style="list-style-type: none; padding-left: 20px; margin-top: 5px;">
+                            <li style="margin-bottom: 10px;">a) No event of default has occurred or is subsisting;</li>
+                            <li style="margin-bottom: 10px;">b) The Borrower(s) furnishing the evidence that the disbursement requested is required by the Borrower(s) for the purpose for which the loan was initially approved;</li>
+                            <li style="margin-bottom: 10px;">c) The Borrower(s) furnishing such documents, evidences and writings, as may be required, in connection with the requested disbursement;</li>
+                            <li style="margin-bottom: 10px;">d) No circumstances shall have occurred, which, in the opinion of the Company, may make it impossible for the Borrower(s) to fulfill the obligations under the documents executed as per the Agreement for loan and other standard documents executed by the Borrower(s) for availing the loan;</li>
+                            <li style="margin-bottom: 10px;">e) The Borrower(s) delivering evidence to the Company's satisfaction that all consents, approvals and permissions required to avail the loan and to comply with all documentation related to availing the loan including creation of security are completed;</li>
+                        </ol>
+                    </li>
+                    <li style="margin-bottom: 10px;">3.2 The disbursement shall be deemed to have been made to the Borrower(s) on the date of the NEFT, RTGS, cheque or the payment advice as the case may be, under which such disbursement shall have been made irrespective of the date on which the disbursement may have been received or in terms of the loan which shall be made by the Company through a 'Pay order' duly crossed and marked 'A/c payee only'. Therefore, the interest on the loan shall accrue in favour of the Company from the date of the NEFT, RTGS, cheque/payment advice/pay order/transfer by the Company as the case may be, irrespective of the time taken for the transit/collection/realisation by the Borrower(s).</li>
+                </ol>
+                <p style="font-weight:bold; margin-bottom: 0;">4. Charges Payable to the Company</p>
+                <ol style="text-align:left; margin-left: -25px; margin-top: 2px; list-style-type: none;">
+                    <li style="margin-bottom: 10px;">4.1 The Borrower(s) shall pay to the Company interest at the rate/s stipulated by the Company from time to time at its sole discretion notwithstanding the ruling rate of interest appearing in the Annexures attached hereto. In addition, the Borrower(s) shall pay collection charges at the rates specified in Annexure A for facilitating daily collection of part EMIs by the Company's authorised agents/employees.</li>
+
+                    <li style="margin-bottom: 10px;">4.2 The Borrower(s) acknowledges and confirms that notice given by the Company on his address/email registered with the Company, with respect to any change in the rates/charges to the Borrower(s) shall be treated as sufficient and reasonable notice to the Borrower(s) and the Company is not duty bound to issue any further notice of changes to the Borrower(s).</li>
+
+                    <li style="margin-bottom: 10px;">4.3 The Borrower(s) shall pay all types of taxes, charges, duties, processing fees, stamp duties, and penalties, if any, registration charges, etc., as are payable, in connection with the loan and this Agreement and the security created or to be created in connection with the loan availed of by the Borrower(s) from the Company.</li>
+
+                    <li style="margin-bottom: 10px;">4.4 The Borrower(s) will tender postdated cheques, as required by the Company, which is a condition precedent for disbursement and which will be used at the sole discretion of the Company for recovery of amounts due from time to time. The Company may, at its discretion, levy penal interest at a rate specified by it, if this condition is not fulfilled.</li>
+
+                    <li style="margin-bottom: 10px;">4.5 The Borrower(s) will give suitable ECS or ACH Mandate to debit his/their saving/current account to recover the EMIs and the said standing instructions shall be irrevocable during the tenure of the loan. The Borrower(s) shall be duty bound to pay the EMI on the due dates. Any delay in payment of the EMI on the due dates shall authorise the Company to charge from the Borrower(s) a penal interest as per the policy of the Company.</li>
+
+                    <li style="margin-bottom: 10px;">4.6 The Borrower(s) will further furnish at his/their own cost and expenses, details of the pre-disbursal and post-disbursal documents, as required by the Company for the loan granted/to be granted.</li>
+                </ol>
+                <p style="font-weight:bold; margin-bottom: 0;">5. EVENTS OF DEFAULT AND REMEDIES OF THE COMPANY</p>
+                <p>
+                    If one or more of the events specified in this Article (hereinafter called
+                    "Events of Default") shall have happened, then the Company, by a written notice to the Borrower(s), may
+                    declare that the principal, all accrued interest and all other amounts payable by the Borrower(s), shall
+                    become payable forthwith by the Borrower(s) to the Company under or in terms of this Agreement, and upon such
+                    declaration, the same shall become due and payable forthwith and the security, created in favour of the
+                    Company for the Loan shall become enforceable.
+                </p>
+                <p style="font-weight:bold; margin-bottom: 0;">5.1. EVENTS OF DEFAULT</p>
+                <ol style="text-align:left; margin-left: -25px;  list-style-type: none;">
+                    <li style="margin-bottom: 10px;">a. Payment of Dues: If a default shall have occurred in payment of the Monthly Installment or any other amounts payable or the payment made falls short of any amount due and payable to the Company in terms of this Agreement.</li>
+
+                    <li style="margin-bottom: 10px;">b. Representations and Warranties: If any representations or statements or particulars made in the Borrower(s)'s proposal/Application herein are found to be incorrect or the Borrower(s) commits any breach or default in performance or observance of this Agreement or any documents creating security or fails to keep or perform any of the terms or provisions of any other agreement between the Company and Borrower(s) in respect of this Loan.</li>
+
+                    <li style="margin-bottom: 10px;">c. Performance of Covenants: If default shall have occurred in the performance of any covenants and conditions, on the part of the Borrower(s) under this Agreement between the Borrower(s) and the Company.</li>
+
+                    <li style="margin-bottom: 10px;">d. Non delivery of Cheques: If the Borrower(s) fails to deliver Post Dated Cheques in accordance with the terms of this Agreement.</li>
+                    <li style="margin-bottom: 10px;">e. Non-payment through direct instruction: Where the Borrower(s) has accepted payment of due amounts through direct deduction from Salary or direct debit from his Company Account or through Electronic Fund Transfer and any such payment is not received or honoured or cleared.</li>
+
+                    <li style="margin-bottom: 10px;">f. Depreciation of Security: If there is any deterioration or impairment of any of the securities created, including the Security, or any part thereof or any decline or depreciation in the value or market price thereof (whether actual or reasonably anticipated), which causes the Security, in the judgment of the Company, to become unsatisfactory as to character or value.</li>
+
+                    <li style="margin-bottom: 10px;">g. Insolvency: The insolvency, winding up, failure in business, commission of an act of insolvency, general assignment for the benefit of creditors, if the Borrower(s) suspends payment to any creditors or threatens to do so, filing of any petition in Bankruptcy of by, or against the Borrower(s) or filing up of any petition for winding up/insolvency of the Borrower(s) and not being withdrawn within 30 days of being admitted.</li>
+
+                    <li style="margin-bottom: 10px;">h. Divorce or Death: Where any of the Borrower(s) is divorced or dies or becomes a lunatic.</li>
+
+                    <li style="margin-bottom: 10px;">i. Inability to repay the Loan: If there is reasonable apprehension by the Company that the Borrower(s) is unable to pay their debts or either of the Borrower(s) has admitted its inability to pay its debts, as they become payable.</li>
+
+                    <li style="margin-bottom: 10px;">j. Change in Financial Position: If the Borrower(s) suffers any Material Adverse Effect on the Borrower(s)'s financial condition or profits or business and of any material change in the Borrower(s)'s business.</li>
+
+                    <li style="margin-bottom: 10px;">k. Legal conviction: If the Borrower(s) is convicted under any criminal law in force.</li>
+
+                    <li style="margin-bottom: 10px;">l. There exists any other circumstance, which in the sole opinion of the Company, is prejudicial to the interest of the Company.</li>
+
+                    <li style="margin-bottom: 10px;">m. Cross Default: If the Borrower(s) has made a default under any Loan either under this Agreement or other contract/s with the Company.</li>
+                </ol>
+                <p style="font-weight:bold; margin-bottom: 0;">5.2. NOTICE ON THE HAPPENING OF AN EVENT OF DEFAULT</p>
+                <ol style="text-align:left; margin-left: -25px; margin-top: 2px; list-style-type: none;">
+                    <li style="margin-bottom: 10px;">a. If any Event of Default or any event which after a lapse of time is capable of becoming an Event of Default takes place, the Company shall be entitled to forthwith<br /><br /> call upon the Borrower to repay the Loan and all Dues to the Company and in such case it shall be the obligation of the Borrower to immediately repay the Dues to the Company. In case of default by the Borrower(s) to immediately repay the Dues the Company shall be entitled to, without prejudice to the other rights and remedies available to the Company under this Agreement and in law, to enforce the security created by the Borrower(s) in favour of the Company in terms of this Agreement.</li>
+
+                    <li style="margin-bottom: 10px;">b. Upon the Security becoming enforceable, the Company shall, without prejudice to its other rights and remedies, be entitled to and shall have absolute power and authority to use its discretion to sell and dispose of the Security or any part of the same by private treaty, without (as far as may be) the intervention of the Court, as and when the Company may, at its absolute discretion, deem fit and to apply the net proceeds of such sale in satisfaction so far as the same will extend towards liquidation of the Loan. The Borrower(s) hereby agrees and undertakes not to raise any dispute as to the value at which the Security is transferred by the Company and the decision made by the Company shall be final and binding on the Borrower(s). The Company shall not be liable for any loss arising due to the sale or transfer of the Security under this Article.</li>
+
+                    <li style="margin-bottom: 10px;">c. The Company may also terminate this Agreement at any time after the expiry of the period of notice.</li>
+
+                    <li style="margin-bottom: 10px;">d. Notwithstanding any cancellation or termination pursuant to the provisions of this Article, all the provisions of this Agreement shall continue in full force and effect as herein specifically provided mutatis mutandis till such time as the Loan Amount is repaid by the Borrower(s), to the satisfaction of the Company.</li>
+                </ol>
+                <p style="font-weight:bold; margin-bottom: 0;">5.3 The Company shall be entitled:</p>
+                <ol style="text-align:left; margin-left: -25px; margin-top: 2px; list-style-type: none;">
+                    <li style="margin-bottom: 10px;">i. To recall the entire outstanding amount of the loan disbursed at any time at its own discretion, without prejudice to any other rights, if it has reason to believe that the loan was procured by improper declaration/information or the security offered is inadequate or affected in any way due to non-payment of dues, improper maintenance or for any other reason of whatsoever nature.</li>
+
+                    <li style="margin-bottom: 10px;">ii. To outsource the services of any agent for the purpose of procuring the loan applications, processing the loan requests, make detailed studies of the financial papers, disburse the loan, complete the legal requirements, if any, for and in relation to the creation of security including representing the Borrower(s) before regulatory authorities, co-operative housing society or elsewhere and appoint collection agents for recovering all the dues from the Borrower(s).</li>
+
+                    <li style="margin-bottom: 10px;">iii. To assign the debt, whether in full or part along with the underlying security, in favour of one or more entities on such terms and conditions at the Company's discretion, without seeking the consent of the Borrower(s).</li>
+
+                    <li style="margin-bottom: 10px;">iv. To declare all sums outstanding under the loan (including the principal, interest, costs, charges, expenses) to become due and payable forthwith if the value of the property or any security (including the guarantees) created or tendered by the Borrower(s), at the sole discretion and the decision of the Company, depreciates entitling the Company to call for further security and if the Borrower(s) fails to give such security.</li>
+
+                    <li style="margin-bottom: 10px;">v. To insure against fire the assets offered as security against any eventuality on behalf of the Borrower(s) and recover the premium and other associated charges paid by the Company to the insurance company from the Borrower(s).</li>
+                </ol>
+                <p style="font-weight:bold; margin-bottom: 0;">6. Cross Default</p>
+                <p>
+                    The Borrower(s), unconditionally and irrevocably, agree(s), confirm(s) and acknowledge(s) that any default by
+                    the Borrower(s) under any other Credit Facility Agreement/gold loan agreement or arrangement with the Company
+                    or its successors-in-interest or with any of the affiliates or group companies of the Company, shall be deemed
+                    to be a default under this Agreement for this present loan and vice versa entitling the Company to recall this
+                    facility and/or all other fund based or non-fund based facilities advanced to the Borrower(s). The Company
+                    shall, in the event of such default, be entitled to exercise any or all its rights under this Agreement and/or
+                    other Agreements entered into by the Borrower(s) with Company.
+                </p>
+                <p style="font-weight:bold; margin-bottom: 0;">7. Cross Collateralisation</p>
+                <p>
+                    Any security(ies) furnished by the Borrower(s), under any other Agreement entered into/to be entered into
+                    with the Company, shall be deemed to be the security(ies) under this Agreement. The Borrower(s) hereby
+                    agree(s) and accept(s) that in the event of default in respect of any credit facilities /gold loan granted by
+                    the Company to the Borrower(s), all the securities provided under this Agreement or under any other Agreement
+                    entered into/to be entered into with the Company shall operate as a continuing security for all the
+                    obligations/facilities extended to and availed by the Borrower(s) from the Company or and that the same shall
+                    continue to vest in the Company till the time any of the said obligations/facilities are open and have not
+                    been closed/liquidated or confirmed by the Company as closed notwithstanding the existence of a credit balance
+                    in the said account's or partial payment or fluctuation of accounts.
+                </p>
+                <p style="font-weight:bold; margin-bottom: 0;">8. LIEN AND SET OFF</p>
+                <ol style="text-align:left; margin-left: -25px; margin-top: 2px; list-style-type: none;">
+                    <li style="margin-bottom: 10px;">
+                        8.1 Notwithstanding anything herein contained, the Company shall have an
+                        overriding lien over all the security(ies)/monies of the Borrower(s) which are in the control/possession
+                        of the Company. This right of lien shall not be affected by any reason whatsoever.
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        8.2 The Borrower(s) hereby authorise(s) the Company to apply any credit
+                        balance to which the Borrower(s) may be entitled under any loan/facility(ies), in satisfaction of any sum
+                        due and payable herein but remaining unpaid. The Company shall also have the right of set off in respect
+                        of any amount standing to the credit of Borrower(s) in any/all of the loan/facility(ies) availed/to be
+                        availed from the Company.
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        8.3 It is hereby agreed and understood that in the event the Borrower(s)
+                        default(s) in payment of the outstanding amount and other charges mentioned herein, then without prejudice
+                        to the right of termination provided herein, the Company shall be entitled to set off its dues against any
+                        monies in its possession/control and due from it to the Borrower(s) whether by way of deposits or
+                        otherwise.
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        8.4 This Agreement shall not create any right, duty or obligation of
+                        whatsoever nature unless the same has been accepted by the Company. The Company shall be deemed to have
+                        accepted its rights, duties and obligations contained herein upon execution of this Agreement by the
+                        Company.
+                    </li>
+                    <li style="margin-bottom: 10px;">
+                        8.5 The Agreement shall be binding on the Borrower(s) and the Company on
+                        and from the date of execution hereof. This Agreement shall be deemed to be in full force and effect till
+                        such time as all monies due and payable to the Company under this Agreement have been repaid in full
+                        together with all interest, costs, charges due and payable thereon.
+                    </li>
+                </ol>
+
+
+                <p style="font-weight:bold; margin-bottom: 0;">9. MISCELLANEOUS</p>
+                <ol style="text-align:left; margin-left: -25px; margin-top: 2px; list-style-type: none;">
+                    <li style="margin-bottom: 10px;">9.1 The Company may, at its sole discretion, make available, or discontinue the provision of alerts and other information through electronic media, whether by way of Short Messaging Services (SMS), email or other such means, to the Borrower(s) in connection with his/her loan account. The Borrower(s) agrees that in case any such facilities are provided to the Borrower(s), the Company’s then applicable rules and regulations, by whatsoever name called, applicable for such facilities shall be deemed to be incorporated herein. The Borrower(s) accepts that the electronic information may contain certain information relating to the Borrower(s) and his/her/their loan account and hereby authorises the Company to send such information, even if the Borrower(s) does not specifically request for the same, if the Company deems that it is relevant. The Borrower(s) acknowledges that the Company may use the services of third-party service providers, such as cellular service providers for the purposes of sending the electronic information, and accordingly authorises the Company to make available information relating to the Borrower(s) and his/her/their loan account to such third-party service providers. The Borrower(s) acknowledges that the facility as mentioned above is dependent on the services of the third-party service providers and that the Company neither makes any representation nor provides any warranty with respect to the quality of the service provided by such third-party service providers nor does it guarantee the timely delivery, accuracy or security of the contents of the electronic information. The Company shall not be liable for any non-delivery, delays, errors, loss, distortions, interception or misuse of the information by unauthorised persons, during or after the transmission of the electronic information to the Borrower(s) and shall not be liable for any non-performance by the third-party service providers. The Borrower(s) acknowledges and understands that the electronic information will be provided only in India and in case of SMS alerts only to the subscribers of certain select cellular service providers at certain select regions. The Borrower(s) understands and acknowledges that any miscommunication or failure in receipt of any electronic information shall not be deemed to be a waiver or modification of the obligations of the Borrower(s) as per the terms and conditions of this Agreement. The Borrower(s) shall independently verify the authenticity and accuracy of the contents of any electronic information from the Company.</li>
+
+                    <li style="margin-bottom: 10px;">9.2 The Borrower(s) agree(s) that the Company shall be free to disclose his/her/their name(s) and/or other details to person(s)/agency(ies) situated in India or abroad which are duly authorised by the Company to assist in the Company's operations or for offering of services/products or for prevention of fraud (directly/indirectly) or to Credit Information Bureau (India) Limited (CIBIL) or any other licensed/authorised bureaus, and any other agency authorised in this behalf by the regulator, to the regulator, or to entity(ies) engaged in debt collection/recovery or to legal practitioner(s), and to whomsoever the Company in its interest deems it fit and appropriate. The Borrower(s) agree and accept that the Company may need to share or transfer data or information about the Borrower(s) to any third-party service provider, whether located overseas or in India, who provides outsourced services to the Company in connection with the operation of the Company's business, in accordance with the applicable guidelines of the Reserve Bank of India. Any such sharing or transfer of information will be done strictly on a confidential basis and the Company will endeavour to maintain strict confidentiality of such information. However, the Company or such third-party service providers, whether located in India or overseas, may disclose information, if required or permitted by any law, rule or regulation or at the request of any public or regulatory authority or if such disclosure is required for the purposes of preventing fraud.</li>
+
+                    <li style="margin-bottom: 10px;">9.3 If any of the Borrower(s) is a Non-Resident Indian (NRI)/Person of Indian Origin (PIO), the Borrower(s) shall abide by and fulfil the provisions of the Foreign Exchange Management Act, 1999, as amended from time to time, and all other applicable laws with respect to purchasing, retaining, using, selling immovable property in India and repatriating proceeds outside India and the Borrower(s) shall indemnify and keep indemnified the Company in that behalf.</li>
+
+                    <li style="margin-bottom: 10px;">9.4 The Borrower(s) declares that all the amounts including the amount of own contribution paid/payable in connection with the property as well as the security for the loan facility is/shall be through legitimate source and does not/shall not constitute an offence of Money Laundering under the Prevention of Money Laundering Act, 2002.</li>
+
+                    <li style="margin-bottom: 10px;">9.5 The Company has put in place an effective Customer Grievance Redressal mechanism across the organisation starting with the Branch and at head office. The detailed customer grievance policy is published on the website of the Company.</li>
+                </ol>
+
+
+                <p style="font-weight:bold; margin-bottom: 0;">10. STAMP DUTY</p>
+                <p>The Borrower(s) hereby agrees that in case the Company is required to make any payments such as stamp duty, penalty, registration charges, charge for EC and/or any other charges and duties on and in relation to the Agreement, the security documents or any other documents, whether at the time of execution or thereafter, then the Company shall be entitled/authorised to recover the same from the borrower(s).</p>
+
+                <p style="font-weight:bold; margin-bottom: 0;">11. Notice and acknowledgement</p>
+                <ol style="text-align:left; margin-left: -25px; margin-top: 2px; list-style-type: none;">
+                    <li style="margin-bottom: 10px;">
+                        11.1	The addresses of the parties shall be as mentioned under the Annexures. The Borrower(s) shall forthwith inform the Company of any change in his Address. Any notice or request required or permitted under this Agreement to be given by either party to the other shall be only in writing or email and sent on the address/mail ID of the other Party as mentioned in the Annexures (or in case to the Borrower(s), on the address of the Borrower(s) last known to the Company):
+                        <ol style="text-align:left; margin-left: -25px; margin-top: 2px; list-style-type: none;">
+                            <li style="margin-bottom: 10px;">a)	If given by the Company, may be given by personal delivery, e mail, fax or by post and shall be deemed to have been served upon or received by the Borrower(s), if given by personal delivery, when so delivered and if by post/email on expiration of 3 days after the same has been delivered to the post office for onward transmission to the Borrower(s) under certificate of posting or registered post or sent by e-mail.</li>
+
+                            <li style="margin-bottom: 10px;">b)	If given by the Borrower(s) to the Company when it is actually received by the Company.</li>
+
+
+                        </ol>
+                    </li>
+                </ol>
+
+                <p>12. The Borrower(s) hereby agrees that the Company will have the right to outsource the collection or recovery or engage one or more collection agents for such purpose at any stage of the loan.  Such agents  can  approach the borrower at all reasonable times.</p>
+
+
+                <p style="font-weight:bold; margin-bottom: 0;">13. INDEMNIFICATION</p>
+                <p>
+                    This Agreement shall be governed by and construed in all respects with the Laws in India and any matter or
+                    issues arising or any dispute hereunder shall, at the option/discretion of the Company, be subject to the
+                    exclusive jurisdiction of the Thrissur (Kerala) Courts. This shall not however limit the rights of the Company
+                    to file/initiate proceedings in any other Court of Law or Tribunal of Competent Jurisdiction.
+                </p>
+
+                <p style="font-weight:bold; margin-bottom: 0;">14. GOVERNING LAW AND JURISDICTION</p>
+                <p>This Agreement shall be governed by and construed in all respects with the Laws in India and any matter or issues arising or any dispute hereunder shall, at the option/discretion of the Company, be subject to the exclusive jurisdiction of the Thrissur (Kerala) Courts. This shall not however limit the rights of the Company to file/initiate proceedings in any other Court of Law or Tribunal of Competent Jurisdiction.</p>
+
+                <p style="font-weight:bold; margin-bottom: 0;">15. ARBITRATION</p>
+                <p>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    Notwithstanding anything to the contrary contained herein, any dispute, controversy and / or claim arising out of and / or relating to this contract, including its construction, interpretation, meaning, scope, operation, effect and / or validity thereof (“Dispute”), shall be resolved by arbitration, administered by Presolv360, an independent institution, in accordance with its Dispute Resolution Rules (“Rules”).
+
+                    The parties agree that the arbitration shall be before a sole arbitrator appointed under the Rules. The juridical seat of arbitration shall be Thrissur, India. The language of arbitration shall be English. The law governing the arbitration proceedings shall be Indian law. The decision of the arbitrator shall be final and binding on the parties. Subject to the above, the competent courts at the seat shall have exclusive jurisdiction.
+
+                    The parties agree to carry out the arbitration proceedings virtually through the online dispute resolution (“ODR”) platform of Presolv360 (https://presolv360.com/) and, for such purpose, the email addresses and / or mobile numbers available, provided or otherwise referenced in the contract shall be considered. Each party shall be responsible for intimating such institution in the event of any change in its email address and / or mobile number throughout the arbitration proceedings. In the event the arbitration proceedings cannot be administered virtually in the opinion of the arbitrator, the proceedings shall be conducted physically, and the venue of the proceedings shall be as determined by the arbitrator having regard to the circumstances of the case, including the convenience of the parties.
+                </p>
+
+                <p>16.This Loan Agreement is provided in both English and the local language of the place of execution of this agreement  for the convenience of the borrowers. In the event of any inconsistency or conflict between the provisions of the English version and the local language version, the terms and conditions as set forth in the English version shall prevail and be binding.</p>
+
+                <br /><br /><br /><br />
+
+                <div style="text-align: left; padding: 8px; font-size: 13px; display: flex; align-items: center;">
+                    <div style="margin-right: 20px;">
+                        <hr style="margin: 0; border: none; border-top: 0.5px dashed; width: 100px;" />
+                        <span>BORROWER</span>
+                    </div> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <div style="margin-right: 20px;">
+                        <hr style="margin: 0; border: none; border-top: 1px dashed; width: 100px;" />
+                        <span>CO-BORROWER (1)</span>
+                    </div> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <div style="margin-right: 20px;">
+                        <hr style="margin: 0; border: none; border-top: 1px dashed; width: 100px;" />
+                        <span>CO-BORROWER (2)</span>
+                    </div> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <div>
+                        <hr style="margin: 0; border: none; border-top: 1px dashed; width: 100px;" />
+                        <span>CO-BORROWER (3)</span>
+                    </div>
+                </div>
+                <div style="text-align:left;">
+                    <p>(Signature & Name)</p><br />
+                    <p>By <strong>The Yogakshemam Loans Limited</strong></p><br />
+                    <p>(Authorised Signatory)</p>
+                    <p>(Signature & Name)</p>
+                </div>
+
+            </div>
+
+
+        </div>
+        <div class="outline-container content page-break" id=" main_agrmnt_Malayalam">
+
+            <br />
+            <div class="logo-src" style="height: 42px; vertical-align: top; text-align: center; margin-top: -5px; margin-bottom: 2px;">
+                <img style="width:170px;" src="~/images/logowithtext.png" />
+            </div>
+            <div class="company-info" style="margin-bottom: -20px; line-height: 1.2;">
+
+                <div>YOGAKSHEMAM LOANS LIMITED</div>
+                <div style="font-size:10px;">CIN: U65992KL1991PLC005965</div>
+                <div style="font-size:10px;">Regd. Office: 3rd Floor, Ottappath Tower, Aswini Junction, <br />Thriruvambady P.O., Thrissur, Kerala - 680 022. Ph: 0487 2320102, 2320103</div><br />
+            </div>
+            <hr style="margin-bottom: -18px;" />
+
+
+            <div class="content">
+                <p style="font-size:12px;margin-bottom:3px; text-align:center;"><u>ലോണ്‍ കം ഹൈപ്പോതിക്കേഷന്‍ കരാര്‍</u></p>
+                <p style="font-size:9px; margin-bottom:-2px;">
+                    ഈ ലോണ്‍ എഗ്രിമെന്‍റ് ('കരാര്‍' എന്നതില്‍ ഇതിലെ ഏതെങ്കിലും ഭേദഗതികളും ഉള്‍പ്പെടുന്നു) ഈ ദിവസം
+                    തീയതി @*-----------മാസം--------- വര്‍ഷം*@ @Model.AgreementApplicationFormData.AgreementDate_Agrmnt റിസര്‍വ് ബാങ്ക് ഓഫ് ഇന്ത്യ ആക്ട് 1934 ലെ ചാപ്റ്റര്‍ III B യുടെ
+                    വ്യവസ്ഥകള്‍ പ്രകാരം റിസര്‍വ് ബാങ്ക് ഓഫ് ഇന്ത്യയില്‍ രജിസ്റ്റര്‍ ചെയ്തിട്ടുള്ള നോണ്‍-ബാങ്കിംഗ് ഫിനാന്‍സ്
+                    കമ്പനിയായ യോഗക്ഷേമം ലോണ്‍സ് ലിമിറ്റഡ് ഒന്നാം കക്ഷിയായും അതിന്‍റെ രജിസ്ട്രേഡ്/അഡ്മിനിസ്ട്രേറ്റീവ്
+                    ഓഫീസ് മൂന്നാം നിലയില്‍, ഒറ്റപ്പത്ത് ടവര്‍, അശ്വിനി ജംഗ്ഷന്‍, തിരുവമ്പാടി പി.ഒ., തൃശൂര്‍, കേരളം - 680 022.
+                    (ഇനിമുതല്‍ 'കമ്പനി' എന്ന് വിളിക്കപ്പെടുന്നു) ഈ പദപ്രയോഗം, അതിന്‍റെ സന്ദര്‍ഭത്തിനോ അര്‍ത്ഥത്തിനോ
+                    വിരുദ്ധമല്ലെങ്കില്‍, അതിന്‍റെ പിന്‍ഗാമികളെയും നിയമനങ്ങളെയും അര്‍ത്ഥമാക്കുകയും ഉള്‍പ്പെടുത്തുകയും ചെയ്യും.
+                </p>
+                <div>
+                    @{
+                        var primaryApplicantDetails_M = new[] {
+      Model.AgreementApplicationFormData.PrimaryApplicantName_Agrmnt,
+      Model.AgreementApplicationFormData.PrimaryApplicantPresentAddress1_Agrmnt,
+      Model.AgreementApplicationFormData.PrimaryApplicantPresentAddress2_Agrmnt,
+      Model.AgreementApplicationFormData.PrimaryApplicantPresentAddress3_Agrmnt,
+      Model.AgreementApplicationFormData.PrimaryApplicantPresentAddress4_Agrmnt,
+      Model.AgreementApplicationFormData.PrimaryApplicantPresentPost_Agrmnt,
+       Model.AgreementApplicationFormData.PrimaryApplicantPresentPinCode_Agrmnt,
+      Model.AgreementApplicationFormData.PrimaryApplicantPresentCity_Agrmnt,
+      Model.AgreementApplicationFormData.PrimaryApplicantPresentDistrict_Agrmnt,
+
+      Model.AgreementApplicationFormData.PrimaryApplicantPresentState_Agrmnt
+  };
+
+                        // Filter out null or empty values and join with commas
+                        var formattedDetails1_M = string.Join(", ", primaryApplicantDetails.Where(detail => !string.IsNullOrEmpty(detail)));
+                    }
+                    @formattedDetails1
+                </div>
+
+                <div>
+                    @{
+                        var coApplicant1Details_M = new[] {
+
+      Model.AgreementApplicationFormData.CoApplicant1_Name_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant1_Address1_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant1_Address2_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant1_Address3_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant1_Address4_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant1_Post_Agrmnt,
+       Model.AgreementApplicationFormData.CoApplicant1_PinCode_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant1_City_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant1_District_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant1_State_Agrmnt
+  };
+
+                        // Filter out null or empty values and join with commas
+                        var formattedDetails_M = string.Join(", ", coApplicant1Details.Where(detail => !string.IsNullOrEmpty(detail)));
+                    }
+                    @formattedDetails
+                </div>
+                <div>
+                    @{
+                        var coApplicant2Details_M = new[] {
+      Model.AgreementApplicationFormData.CoApplicant2_Name_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant2_Address1_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant2_Address2_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant2_Address3_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant2_Address4_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant2_Post_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant2_City_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant2_District_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant2_PinCode_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant2_State_Agrmnt
+  };
+
+                        // Filter out null or empty values and join with commas
+                        var formattedDetails2_M = string.Join(", ", coApplicant2Details.Where(detail => !string.IsNullOrEmpty(detail)));
+                    }
+                    @formattedDetails2
+                </div>
+                <div>
+                    @{
+                        var coApplicant3Details_M = new[] {
+                       Model.AgreementApplicationFormData.CoApplicant3_Name_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant3_Address1_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant3_Address2_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant3_Address3_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant3_Address4_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant3_Post_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant3_City_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant3_District_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant3_PinCode_Agrmnt,
+      Model.AgreementApplicationFormData.CoApplicant3_State_Agrmnt
+  };
+
+                        // Filter out null or empty values and join with commas
+                        var formattedDetails3_M = string.Join(", ", coApplicant3Details.Where(detail => !string.IsNullOrEmpty(detail)));
+                    }
+                    @formattedDetails3
+                </div>
+                <p style="font-size:9px;">
+                    (അപേക്ഷകന്‍, സഹ അപേക്ഷകര്‍, ഇനി മുതല്‍ കടക്കാരന്‍ (ര്‍) എന്ന് വിളിക്കപ്പെടുന്നു. സന്ദര്‍ഭം ആവശ്യപ്പെടുന്നില്ലെങ്കില്‍,
+                    എല്ലാ വായ്പാ അപേക്ഷകരും സഹ-വായ്പക്കാരും/അവരുടെ/അവന്‍റെ/അവളുടെ അവകാശികളും, നടത്തിപ്പുകാരുടെ,
+                    അഡ്മിനിസ്ട്രേറ്റര്‍മാരുടെ പിന്‍ഗാമികളും ഉള്‍പ്പെടുന്നു. രണ്ടാം കക്ഷിയുടെ അനുവദനീയമായ നിയമനങ്ങളായി കണക്കാക്കുന്നു.)
+                    കടം വാങ്ങുന്നയാളെയും കമ്പനിയെയും ഇനി മുതല്‍ കൂട്ടായി 'പാര്‍ട്ടികള്‍' എന്നും വ്യക്തിഗതമായി 'പാര്‍ട്ടി' എന്നും വിളിക്കുന്നു.
+                    <br />കമ്പനിയില്‍ നിന്ന് ഒരു ബിസിനസ്സ് ലോണ്‍ അനുവദിക്കുന്നതിന് താഴെ ഒപ്പിട്ട വായ്പക്കാരന്‍ (ക്കാര്‍)
+                    ആവശ്യപ്പെടുകയും, കടം വാങ്ങുന്നയാള്‍ക്ക് (വര്‍), ഒരു ബിസിനസ്സ് ലോണ്‍ അനുവദിക്കുന്നതിനും / നീട്ടുന്നതിനും
+                    കമ്പനി സമ്മതിക്കുകയും ചെയ്യുന്നു. അതിന്‍റെ അനുബന്ധം A യില്‍ അടങ്ങിയിരിക്കുന്ന വിശദാംശങ്ങള്‍,
+                    നിബന്ധനകള്‍ എന്നിവയിലും ഇവിടെ അടങ്ങിയിരിക്കുന്ന വ്യവസ്ഥകള്‍, കടം വാങ്ങുന്നയാള്‍ (കള്‍) അത്തരം
+                    രേഖകള്‍ നിര്‍വ്വഹിക്കുന്നതിനും കമ്പനിക്ക് കാലാകാലങ്ങളില്‍ ആവശ്യമായേക്കാവുന്ന തരത്തില്‍ ചുവടെ
+                    സൂചിപ്പിച്ചിരിക്കുന്ന അത്തരം സുരക്ഷ സൃഷ്ടിക്കുന്നതിനും വിധേയമാണ്.
+                </p>
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">ഇപ്പോള്‍ ഈ ഉടമ്പടി സാക്ഷ്യപ്പെടുത്തുകയും അത് പരസ്പരം അംഗീകരിക്കുകയും പ്രഖ്യാപിക്കുകയും സ്ഥിരീകരിക്കുകയും താഴെ പറയുന്നതുപോലെ ഇവിടെ രേഖപ്പെടുത്തുകയും ചെയ്യുന്നു:</p>
+                <ol style="text-align: left; margin-left: -25px; margin-top: 2px; font-size: 9px;">
+                    <li>‘അധിക പലിശ' അല്ലെങ്കില്‍ 'പിഴ പലിശ' അല്ലെങ്കില്‍ 'കാലതാമസ പലിശ' എന്നത് പണമടയ്ക്കല്‍ കാലതാമസത്തിന് കമ്പനി ഈടാക്കുന്ന പലിശയെ അര്‍ത്ഥമാക്കുന്നു</li>
+                    <li>‘കരാര്‍' എന്നാല്‍ കടം വാങ്ങുന്നയാളും കമ്പനിയും തമ്മില്‍ ഉണ്ടാക്കിയ ഈ ലോണ്‍ കം ഹൈപ്പോതിക്കേഷന്‍ ഉടമ്പടി എന്നാണ് അര്‍ത്ഥമാക്കുന്നത്.</li>
+                    <li>‘അനുബന്ധം(കള്‍)' എന്നാല്‍ ഈ ഉടമ്പടിയുടെ അവിഭാജ്യ ഘടകമായ, കാലാകാലങ്ങളില്‍ ഭേദഗതി വരുത്തിയ/പരിഷ്ക്കരിക്കപ്പെട്ടിട്ടുള്ള അനുബന്ധമാണ്.</li>
+                    <li>‘വായ്പക്കാരന്‍(കള്‍)' എന്നത് അര്‍ത്ഥമാക്കുന്നത്, ഈ കരാറില്‍ നല്‍കിയിട്ടുള്ളതും അതുപ്രകാരം വായ്പ സ്വീകരിച്ചിട്ടുള്ളതുമായ ഏതെങ്കിലും സഹ-വായ്പക്കാരന്‍(ക്കാര്‍) (ഇവരുടെ വിശദാംശങ്ങള്‍ കരാറില്‍ ഉള്‍പ്പെടുത്തിയിട്ടുണ്ട്) ഉള്‍പ്പെടെയുള്ള സൗകര്യം നല്‍കാന്‍ കമ്പനി സമ്മതിച്ചിട്ടുള്ള ഏതൊരു വ്യക്തിയും (കള്‍)/സ്ഥാപനവും ഉള്‍പ്പെടുന്നു. ഈ ഉടമ്പടിയും അതിന്‍റെ സന്ദര്‍ഭത്തിനോ അര്‍ത്ഥത്തിനോ എതിരല്ലെങ്കില്‍, അവന്‍റെ/അവളുടെ/അതിന്‍റെ/അവരുടെ അവകാശികള്‍, നിയമപരമായ പ്രതിനിധികള്‍, പിന്‍ഗാമികള്‍, അനുവദനീയമായ നിയമനങ്ങള്‍, എക്സിക്യൂട്ടര്‍മാര്‍, സ്വീകര്‍ത്താക്കള്‍, അഡ്മിനിസ്ട്രേറ്റര്‍മാര്‍ എന്നിവരെല്ലാം ഉള്‍പ്പെടുന്നതായി കരുതപ്പെടുന്നു.</li>
+                    <li>‘എസ് എം എസ്, ഇ-മെയില്‍ സേവനങ്ങള്‍ അല്ലെങ്കില്‍ മറ്റ് മാര്‍ഗങ്ങള്‍ ഉള്‍പ്പെടെ എന്നാല്‍ അതില്‍ മാത്രം പരിമിതപ്പെടുത്താതെ ഇലക്ട്രോണിക് മീഡിയ വഴി അയച്ച സന്ദേശങ്ങളാണ് 'ഇലക്ട്രോണിക് വിവരങ്ങള്‍' എന്നതുകൊണ്ട് അര്‍ത്ഥമാക്കുന്നത്.</li>
+                    <li>‘ഇക്വേറ്റഡ് മന്ത്ലി ഇന്‍സ്റ്റാള്‍മെന്‍റ്' (ഇ എം ഐ) എന്നാല്‍ കമ്പനി കാലാകാലങ്ങളില്‍ നിര്‍ണ്ണയിക്കുന്ന കാലയളവിനുള്ളില്‍, ലോണ്‍ തുക ബാധകമായ പലിശ സഹിതം തിരിച്ചടക്കുന്നതിന് ആവശ്യമായ മുതലും പലിശയും അടങ്ങുന്ന പ്രതിമാസ പണമടയ്ക്കല്‍ തുക എന്നാണ് അര്‍ത്ഥമാക്കുന്നത്.</li>
+                    <li>
+                        ‘ഇനിമുതല്‍ 'ഇ സി എസ്' അല്ലെങ്കില്‍ 'ഓട്ടോമേറ്റഡ് ക്ലിയറിംഗ് ഹൗസ് (എ സി എച്ച്) ട്രാന്‍സ്ഫര്‍' എന്ന്
+                        വിളിക്കപ്പെടുന്ന 'ഇലക്ട്രോണിക് ക്ലിയറിംഗ് സിസ്റ്റം', ഇലക്ട്രോണിക് ആയി അയച്ച ഫണ്ട് കൈമാറ്റത്തിനുള്ള
+                        സന്ദേശത്തിലൂടെയോ അല്ലെങ്കില്‍ ട്രാന്‍സ്ഫര്‍ ഇന്‍സ്ട്രുമെന്‍റ് ഇമേജിലൂടെയോ ഇലക്ട്രോണിക് ആയി ഫണ്ട്
+                        ട്രാന്‍സ്ഫര്‍ ഉള്‍പ്പെടുത്തുന്നതായി കണക്കാക്കും. ഇലക്ട്രോണിക് മീഡിയ വഴിയോ ഇലക്ട്രോണിക് ചെക്ക്
+                        വഴിയോ പണമിടപാട് വഴിയോ അയയ്ക്കുന്ന പണ കൈമാറ്റത്തിന്‍റെ വിശദാംശങ്ങള്‍ അടങ്ങിയ ഇലക്ട്രോണിക്
+                        ഫയലിലൂടെയോ റിസര്‍വ് ബാങ്ക് അറിയിച്ചിട്ടുള്ള വിവിധ തരം പ്ലാസ്റ്റിക് കാര്‍ഡുകളിലൂടെയോ മറ്റ് ഡെബിറ്റ്
+                        ക്ലിയറിംഗ് സേവനത്തിലൂടെയോ പണം കൈമാറ്റം ചെയ്യപ്പെടുമ്പോള്‍, തവണകള്‍ അടയ്ക്കുന്നതിനുള്ള
+                        സൗകര്യത്തിനായി കടം വാങ്ങുന്നയാള്‍(കള്‍) രേഖാമൂലം സമ്മതിച്ചിട്ടുള്ള പങ്കാളിത്തം.
+                    </li>
+                    <li>
+                        'കുടിശ്ശികയുള്ള തുക' അല്ലെങ്കില്‍ 'കുടിശ്ശിക' എന്നത് അര്‍ത്ഥമാക്കുന്നത്, വായ്പയുടെ പ്രധാന തുകയും,
+                        അതിന്‍റെ നിബന്ധനകളും വ്യവസ്ഥകളും അനുസരിച്ച്, വായ്പക്കാരന്‍(ക്കാര്‍) കമ്പനിക്ക് അടയ്ക്കേണ്ട പലിശ,
+                        അധിക പലിശ, മറ്റെല്ലാ ചാര്‍ജുകളും കുടിശ്ശികകളും സഹിതം ഉള്‍പ്പെടെ ചാര്‍ജുകളുടെയും പലിശയുടെയും
+                        ഉടമ്പടി/ഷെഡ്യൂള്‍, കൂടാതെ കമ്പനി അതിന്‍റെ സാധാരണ ബിസിനസ്സില്‍ പരിപാലിക്കുന്ന പുസ്തകങ്ങളിലും
+                        രേഖകളിലും പ്രതിഫലിക്കുന്ന കാര്യങ്ങളും ഉള്‍പ്പെട്ടതാണ്.
+                    </li>
+                    <li>'വായ്പ' എന്നാല്‍ അനുബന്ധം A യില്‍ രേഖപ്പെടുത്തിയിരിക്കുന്ന വായ്പാ തുക എന്നാണ് അര്‍ത്ഥമാക്കുന്നത്.</li>
+                    <li>'മുന്‍കൂര്‍ പണമടയ്ക്കല്‍' എന്നതിനര്‍ത്ഥം മുന്‍കൂര്‍ പണമടയ്ക്കല്‍ സമയത്ത് കമ്പനി നിശ്ചയിച്ചിട്ടുള്ള നിബന്ധനകളും വ്യവസ്ഥകളും അനുസരിച്ച് കാലാവധിക്കു മുമ്പുള്ള തിരിച്ചടവ് എന്നാണ്.</li>
+                    <li>'ലേഖനങ്ങള്‍' എന്നത് അനുബന്ധങ്ങളില്‍ കൂടുതല്‍ വ്യക്തമായി വിവരിച്ചിരിക്കുന്ന ലേഖനങ്ങളെ അര്‍ത്ഥമാക്കുന്നു.</li>
+                    <li>'പലിശ നിരക്ക്' (ROI) എന്നാല്‍ കരാറിലും അനുബന്ധങ്ങളിലും പരാമര്‍ശിച്ചിരിക്കുന്നതും ഈ കരാറിന്‍റെ അടിസ്ഥാനത്തില്‍ കാലാകാലങ്ങളില്‍ വ്യത്യാസപ്പെടുന്നതുമായ പലിശനിരക്ക് എന്നാണ് അര്‍ത്ഥമാക്കുന്നത്.</li>
+                    <li>വായ്പയുടെ പ്രധാന തുക, അതിന്‍റെ പലിശ, പ്രതിബദ്ധത കൂടാതെ/അല്ലെങ്കില്‍ മറ്റേതെങ്കിലും ചാര്‍ജുകള്‍, പ്രീമിയം, ഫീസ് അല്ലെങ്കില്‍ കമ്പനിക്ക് ഈ ഉടമ്പടിയുടെ അടിസ്ഥാനത്തില്‍ അടയ്ക്കേണ്ട മറ്റ് കുടിശ്ശികകള്‍ എന്നിവയുടെ തിരിച്ചടവ് എന്നാണ് 'തിരിച്ചടവ്' അര്‍ത്ഥമാക്കുന്നത്.</li>
+                    <li>കരാറില്‍ നിര്‍വചിച്ചിട്ടില്ലാത്തതും എന്നാല്‍ 1897-ലെ ജനറല്‍ ക്ലോസ് ആക്ടില്‍ നിര്‍വചിച്ചിട്ടുള്ളതുമായ ഏതൊരു പദപ്രയോഗത്തിനും നിയമപരമായ അര്‍ത്ഥമോ വ്യാഖ്യാനമോ ഉണ്ടായിരിക്കും.</li>
+                    <li>NEFT അല്ലെങ്കില്‍ RTGS എന്നാല്‍ നാഷണല്‍ ഇലക്ട്രോണിക്സ് ഫണ്ട് ട്രാന്‍സ്ഫര്‍ അല്ലെങ്കില്‍ റിയല്‍ ടൈം ഗ്രോസ് സെറ്റില്‍മെന്‍റ് ആയി പ്രവര്‍ത്തിക്കുന്ന ബാങ്കുകള്‍ വഴിയുള്ള ഫണ്ടുകളുടെ ഇലക്ട്രോണിക് ട്രാന്‍സ്ഫര്‍ എന്നാണ് അര്‍ത്ഥമാക്കുന്നത്.</li>
+                </ol>
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">വ്യാഖ്യാനം</p>
+                <p style="font-weight: bold; margin-bottom: 0; margin-left: 25px; font-size: 9px;">ഈ കരാറില്‍, സന്ദര്‍ഭം ആവശ്യപ്പെടുന്നില്ലെങ്കില്‍:-</p>
+                <ol style="text-align: left; margin-left: -25px; margin-top: 2px; font-size: 9px;">
+                    <li>
+                        ഈ കരാറിന്റെ ഒരു ഉപവകുപ്പ്, വിഭാഗം അല്ലെങ്കില്‍ ഷെഡ്യൂള്‍ എന്നിവയെ കുറിച്ചുള്ള ഒരു റഫറന്‍സ്, ഈ കരാറില്‍ വ്യക്തമാക്കിയിട്ടുള്ള അത്തരം
+                        സബ്-     ക്ലോസ്, സെക്ഷന്‍ അല്ലെങ്കില്‍ ഷെഡ്യൂള്‍ എന്നിവയെ കുറിച്ചുള്ള ഒരു റഫറന്‍സ് സൂചിപ്പിക്കുന്നു.
+                    </li>
+                    <li>ഏകവചനത്തില്‍ ബഹുവചനം ഉള്‍പ്പെടുന്നു (തിരിച്ചും)</li>
+                    <li>ലിംഗഭേദത്തെക്കുറിച്ചുള്ള പരാമര്‍ശത്തില്‍ സ്ത്രീ-പുരുഷ ലിംഗഭേദങ്ങളെക്കുറിച്ചുള്ള പരാമര്‍ശങ്ങള്‍ ഉള്‍പ്പെടുന്നു</li>
+                </ol>
+
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">ആര്‍ട്ടിക്കിള്‍ 1: നിബന്ധനകളും വ്യവസ്ഥകളും</p>
+                <ol style="text-align: left; margin-left: -25px; margin-top: 2px; list-style-type: none; font-size: 9px;">
+                    <li style="margin-bottom: 9px;">1.1 വായ്പാ അനുമതി പത്രത്തിലും വായ്പാ കരാറിലും പറഞ്ഞിട്ടുള്ള കാര്യങ്ങള്‍ക്കു മാത്രമേ അനുവദിക്കപ്പെട്ട വായ്പ ഉപയോഗിക്കുകയുള്ളൂ.</li>
+                    <li style="margin-bottom: 9px;">1.2 ഈ ഉടമ്പടിയുടെയും അനുബന്ധങ്ങളുടെയും നിബന്ധനകള്‍ക്കും വ്യവസ്ഥകള്‍ക്കും അനുസൃതമായി വായ്പാ തുക പ്രതിമാസ തവണകള്‍ വഴിയും പലിശ നിരക്കിലും വായ്പയെടുക്കുന്നയാള്‍ തിരിച്ചടയ്ക്കും. കടം വാങ്ങുന്നയാള്‍ (കള്‍) അനുബന്ധങ്ങളില്‍ വിശദീകരിച്ചതു പ്രകാരം ഇനി മുതല്‍ അത്തരം പ്രോസസ്സിംഗ് ഫീസ്, മറ്റ് ചെലവുകള്‍, ചാര്‍ജുകള്‍, ചെലവുകള്‍ എന്നിവയും നല്‍കേണ്ടതാണ്. ഓരോ പ്രതിമാസ തവണയും പ്രതിമാസ നീക്കിയിരുപ്പിന്റെ അടിസ്ഥാനത്തിലാണ് കണക്കാക്കുന്നത്. വായ്പയുടെ പലിശ നിരക്കില്‍ മാറ്റമുണ്ടായാല്‍ ഒന്നോ അതിലധികമോ ഇ എം ഐകളുടെ തുക വര്‍ധിപ്പിക്കുന്നതുള്‍പ്പെടെ ഇ എം ഐയില്‍ മാറ്റം വരുത്താന്‍/മാറ്റാന്‍ കമ്പനിക്ക് അധികാരമുണ്ട്.</li>
+                    <li style="margin-bottom: 9px;">1.3 അക്കൗണ്ടും സൗകര്യങ്ങളും അവലോകനം ചെയ്തതിന് ശേഷം അതിന്റെ സ്വന്തം വിവേചനാധികാരത്തില്‍ അധിക പരിധികള്‍ നല്‍കാതിരിക്കാന്‍ കമ്പനിക്ക് സ്വാതന്ത്ര്യമുണ്ട്.</li>
+                    <li style="margin-bottom: 9px;">1.4	ഈ ഉടമ്പടി പ്രകാരം അനുവദിച്ച വായ്പ റദ്ദാക്കുന്നതിനോ ഈ കരാറിന് കീഴിലുള്ള വിതരണങ്ങള്‍ സ്വീകരിക്കുന്നതിനോ പിന്‍വലിക്കല്‍ നടത്തുന്നതിനോ കടം വാങ്ങുന്നയാള്‍ക്ക് അര്‍ഹതയില്ല. ഈ ഉടമ്പടി പ്രകാരം അനുവദിച്ചിട്ടുള്ള വായ്പയുടെ ഏതെങ്കിലും റദ്ദാക്കല്‍, അനുബന്ധം A യില്‍ സൂചിപ്പിച്ചിരിക്കുന്നതും കാലാകാലങ്ങളില്‍ കമ്പനി ആവശ്യപ്പെടുന്നതുമായ മുന്‍കൂര്‍ പേയ്മെന്‍റ് ചാര്‍ജുകള്‍ അടയ്ക്കുന്നതിന് വിധേയമായിരിക്കും.</li>
+                    <li style="margin-bottom: 9px;">1.5	എന്നാല്‍, കടം വാങ്ങുന്നയാള്‍ (കള്‍) നല്‍കേണ്ട പലിശ കമ്പനി വരുത്തുന്ന പലിശ നിരക്കുകളിലെ മാറ്റങ്ങള്‍ക്ക് വിധേയമായിരിക്കും.</li>
+                    <li style="margin-bottom: 9px;">1.6	കൂടാതെ, കാലാകാലങ്ങളില്‍, കമ്പനിയുടെ സ്വന്തം വിവേചനാധികാരത്തില്‍, ആഭ്യന്തര നയങ്ങളില്‍ മാറ്റം വരുത്തുകയോ അല്ലെങ്കില്‍ മണി മാര്‍ക്കറ്റ് അവസ്ഥകളില്‍ എന്തെങ്കിലും അപ്രതീക്ഷിതമോ അസാധാരണമോ ആയ മാറ്റങ്ങള്‍ സംഭവിക്കുകയോ ചെയ്താല്‍, പലിശ നിരക്ക് അനുയോ ജ്യമായ രീതിയില്‍ ഭാവിയില്‍ മാറ്റം വരുത്തുകയും ചെയ്യാം. കമ്പനി ഇ എം ഐ നിശ്ചയിക്കുകയോ ഇ എം ഐ തുകയിലോ പ്രിന്‍സിപ്പല്‍/പലിശ തുകയിലോ വ്യത്യാസപ്പെടുത്തുകയോ ലോണിന്‍റെ കാലാവധി കൂട്ടുകയോ കുറയ്ക്കുകയോ ചെയ്യും.</li>
+                    <li style="margin-bottom: 9px;">1.7	കടം വാങ്ങുന്നയാള്‍ വായ്പാ തുക സ്വീകരിച്ചതിനുശേഷം മുഴുവനോ/ഭാഗികമായോ രേഖകള്‍ സമര്‍പ്പിക്കുന്നതില്‍ പരാജയപ്പെടുന്ന സാഹചര്യത്തില്‍, വായ്പ തിരിച്ചുവിളിക്കാനും/റദ്ദാക്കാനുമുള്ള കമ്പനിയുടെ അവകാശം ഉപഭോക്താവ് അംഗീകരിക്കുന്നു.</li>
+                </ol>
+                <p style="font-weight: bold; margin-bottom: 0px; font-size: 9px;">2. പണയം</p>
+                <ol style="text-align: left; margin: 0; padding-left: 0; list-style-type: none; font-size: 9px;">
+                    <li style="margin-bottom: 9px;">
+                        2.1 കടം വാങ്ങുന്നയാള്‍ (കള്‍) ഇതിനാല്‍, ഇപ്പോള്‍ ഇന്നുമുതല്‍
+                        കാലാകാലങ്ങളില്‍ --------------- ഷോപ്പ് നമ്പറിലെ മുഴുവന്‍ സ്റ്റോക്കുകളും കമ്പനിക്ക് അനുകൂലമായി
+                        ഹൈപ്പോതിക്കേറ്റ് ചെയ്യുകയും ഹൈപ്പോതിക്കേറ്റ് ചെയ്യുന്നത് തുടരുകയും ചെയ്യുന്നു. സെക്യൂരിറ്റി
+                        കൊണ്ടുവരുകയോ സംഭരിക്കുകയോ ചെയ്യുന്നത് കടം വാങ്ങുന്നയാളുടെ ------------ ബില്‍ഡിംഗ് നമ്പറില്‍
+                        ------- വാര്‍ഡ് നമ്പര്‍, ----------------- പഞ്ചായത്ത്/ മുനിസിപ്പാലിറ്റി/ കോര്‍പ്പറേഷന്‍ അല്ലെങ്കില്‍
+                        മറ്റെവിടെയെങ്കിലും അനുബന്ധങ്ങളില്‍ കൂടുതല്‍ വ്യക്തമായി പരാമര്‍ശിച്ചിരിക്കുന്ന
+                        ചരക്കുകള്‍/ജംഗമസവ്തുക്കള്‍ എന്നിവ സൂക്ഷിച്ചിരിക്കുന്ന സ്ഥലത്തോ പരിസരത്തോ ആയിരിക്കണം
+                    </li>
+                    <li style="margin-bottom: 9px; font-size: 9px;">2.2 പ്രസ്തുത ജംഗമസവ്തുക്കള്‍ ഒരു ഇന്‍ഷുറന്‍സ് കമ്പനിയുമായി നാശനഷ്ടം, അഗ്നിബാധ, ഭൂകമ്പം, വെള്ളപ്പൊക്കം, മറ്റ് നാശനഷ്ടങ്ങള്‍ എന്നിവയ്ക്കെതിരെയും ഇന്‍ഷ്വര്‍ ചെയ്തിരിക്കുന്നു. ബന്ധപ്പെട്ട മുനിസിപ്പല്‍ നികുതികള്‍, ഗവണ്‍മെന്‍റിനുള്ള കുടിശ്ശിക, കോ-ഓപ്പറേറ്റീവ് സൊസൈറ്റിയുടെ ഔട്ട്ഗോയിംഗ്, പണയ വസ്തുവുമായി ബന്ധപ്പെട്ട മറ്റ് എല്ലാത്തരം കുടിശ്ശികകളും കടം വാങ്ങുന്നയാള്‍ (കള്‍) കൃത്യസമയത്ത് അടച്ചുതീര്‍ക്കുകയും കടം വാങ്ങുന്നയാള്‍ (കള്‍) ഏതെങ്കിലും വിധത്തില്‍ പണയവസ്തുവിനെ പ്രതികൂലമായി ബാധിക്കുന്ന യാതൊരു കാര്യങ്ങളും ചെയ്യാന്‍ പാടില്ലാത്തതുമാണ്.</li>
+                    <li style="margin-bottom: 9px; font-size: 9px;">
+                        കടം വാങ്ങുന്നയാള്‍(കള്‍) കമ്പനിക്ക് നല്‍കുന്ന എല്ലാ സെക്യൂരിറ്റിയും കമ്പനിയുടെ തുടര്‍ച്ചയായ സെക്യൂരിറ്റിയായി കണക്കാക്കും. കൂടാതെ:-
+                        <ol style="list-style-type: none; padding-left: 20px; margin-top: 5px;">
+                            <li style="margin-bottom: 9px;">a)കടം വാങ്ങുന്നയാളുടെ (കളുടെ) ഏതെങ്കിലും ഇന്‍റര്‍മീഡിയറ്റ് പേയ്മെന്‍റിലൂടെയോ കടം വാങ്ങുന്നയാളുടെ (കളുടെ) അക്കൗണ്ടുകളുടെ ഏതെങ്കിലും സെറ്റില്‍മെന്‍റിലൂടെയോ ഡിസ്ചാര്‍ജ് ചെയ്യരുത്</li>
+                            <li style="margin-bottom: 9px;">b)കടം വാങ്ങുന്നയാളുടെ (കളുടെ) കുടിശ്ശികയുമായി ബന്ധപ്പെട്ട് കമ്പനി എപ്പോള്‍ വേണമെങ്കിലും കൈവശം വച്ചേക്കാവുന്ന മറ്റേതെങ്കിലും സെക്യൂരിറ്റിക്ക് പുറമേയോ അതിന് പകരമോ ആയിരിക്കും.</li>
+                            <li style="margin-bottom: 9px;">c) കമ്പനിയും കടം വാങ്ങുന്നവരും തമ്മിലുള്ള എല്ലാ അക്കൗ ണ്ടുകളും അന്തിമമായി തീര്‍പ്പാക്കുന്നതുവരെ കമ്പനിയുടെ ഉടമസ്ഥതയില്‍ ആയിരിക്കും.</li>
+                        </ol>
+                    </li>
+                    <li style="margin-bottom: 9px; font-size: 9px;">
+                        2.4 ഒരു റസിഡന്‍റ്/നോണ്‍ റെസിഡന്‍റ് ഇന്‍ഡ്യന്‍ എന്ന നിലയിലുള്ള
+                        അവന്‍റെ/അവളുടെ/അവരുടെ പദവിയില്‍ വന്ന മാറ്റത്തെക്കുറിച്ച് കടം വാങ്ങുന്നയാള്‍(കള്‍) കമ്പനിയെ
+                        അറിയിക്കും. നികുതിയുടെ പേരിലോ മറ്റെന്തെങ്കിലുമോ കിഴിവില്‍ നിന്ന് മുക്തമായി വായ്പയുടെ പലിശ
+                        അടയ്ക്കാന്‍ കടം വാങ്ങുന്നയാള്‍ (കള്‍) ഏറ്റെടുക്കുകയും സമ്മതിക്കുകയും ചെയ്യുന്നു.<br />
+                    </li>
+                </ol>
+                <p style="font-size: 9px;">
+                    ബാധകമായ ഏതെങ്കിലും നിയമം, എപ്പോള്‍ വേണമെങ്കിലും ഒരു പേയ്മെന്‍റില്‍ നിന്ന് എന്തെങ്കിലും കിഴിവ് അല്ലെങ്കില്‍ തടഞ്ഞുവെക്കല്‍ ആവശ്യമായി വന്നാല്‍, പേയ്മെന്‍റുമായി ബന്ധപ്പെട്ട് കടം വാങ്ങുന്നയാളുടെ (കളുടെ) ബാധ്യത അത്തരം കിഴിവ് നടത്തിയതിന് ശേഷമോ നെറ്റ് പേയ്മെന്‍റ് തടഞ്ഞുവെച്ചതിന് ശേഷമോ പുതുക്കിയ തുകയ്ക്കായിരിക്കും. പുതുക്കിയ തുക കമ്പനിക്ക് ലഭിക്കുമായിരുന്ന തുകയ്ക്ക് തുല്യമായിരിക്കും. അത്തരത്തിലുള്ള കിഴിവ് അല്ലെങ്കില്‍ തടഞ്ഞുവെക്കല്‍ നടത്തിയിട്ടില്ലെങ്കില്‍ ഇന്ത്യന്‍ നിയമപ്രകാരമോ അല്ലെങ്കില്‍ താന്‍ താമസിക്കുന്ന മറ്റേതെങ്കിലും രാജ്യത്തിന്‍റെ നിയമപ്രകാരമോ ആകട്ടെ, വായ്പയ്ക്ക് നല്‍കേണ്ട പലിശയുമായി ബന്ധപ്പെട്ട് ഏതെങ്കിലും തടഞ്ഞുവെക്കല്‍ നികുതി ബാധ്യത തന്‍റെ ഉത്തരവാദിത്തമാണെന്ന് കടം വാങ്ങുന്നയാള്‍(കള്‍) സ്ഥിരീകരിക്കുന്നു. വായ്പയെടുക്കുന്നയാള്‍(കള്‍) കമ്പനിയെ നിരുപദ്രവകരവും പൂര്‍ണ്ണമായി നഷ്ടപരിഹാരം നല്‍കുന്നതുമായ ഏതെങ്കിലും നികുതി അധികാരികള്‍ ഇതുമായി ബന്ധപ്പെട്ട് ഉന്നയിക്കുന്ന ഏതൊരു ക്ലെയിമിനും കമ്പനി ബാധ്യസ്ഥരായേക്കാവുന്ന തരത്തിലുള്ള ഏതെങ്കിലും ഡിമാന്‍ഡുകള്‍ ഉടന്‍ അടയ്ക്കാന്‍ ഏറ്റെടുക്കും. കമ്പനി ആവശ്യപ്പെടുന്ന തുക അടയ്ക്കുന്നതില്‍ വായ്പക്കാരന്‍(കള്‍) പരാജയപ്പെടുകയാണെങ്കില്‍, പ്രസ്തുത നികുതി തുക വീണ്ടെടുക്കുന്നതിന്, ഈ വായ്പ ലഭിക്കുന്നതിന് അവര്‍ക്കനുകൂലമായി സൃഷ്ടിച്ച സെക്യൂരിറ്റി നടപ്പിലാക്കാന്‍ വായ്പക്കാരന്‍(കള്‍) കമ്പനിയെ അധികാരപ്പെടുത്തുന്നു.
+                </p>
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">  3. വിതരണം ചെയ്യുന്നതിനുള്ള വ്യവസ്ഥകള്‍ </p>
+                <ol style="text-align: left; margin-left: -25px; margin-top: 2px; list-style-type: none; font-size: 9px;">
+                    <li style="margin-bottom: 10px; font-size: 9px;">
+                        3.1 വായ്പയ്ക്കായുള്ള ഈ കരാറിന്‍റെ പൂര്‍ത്തീകരണത്തിനും അനുസരണത്തിനും വിധേയമായി വായ്പയ്ക്ക് കീഴിലുള്ള വിതരണങ്ങള്‍ നടത്തുകയും കടം വാങ്ങുന്നയാള്‍ (കള്‍) നടപ്പിലാക്കിയ മറ്റെല്ലാ സ്റ്റാന്‍ഡേര്‍ഡ് ഡോക്യുമെന്‍റുകളും മറ്റ് രേഖകളും താഴെ പറയുന്നവ ഉള്‍പ്പെടെ കമ്പനി വ്യക്തമാക്കിയതുമാണ്:-
+                        <ol style="list-style-type: none; padding-left: 20px; margin-top: 5px;">
+                            <li style="margin-bottom: 9px;">a) യാതൊരു വീഴ്ചകളും സംഭവിച്ചിട്ടില്ല അല്ലെങ്കില്‍ നിലനില്‍ക്കുന്നില്ല:</li>
+                            <li style="margin-bottom: 9px;">b) വായ്പയ്ക്ക് ആദ്യം അംഗീകാരം നല്‍കിയ ഉദ്ദേശ്യത്തിനായി വായ്പക്കാരന്‍ (കള്‍) ആവശ്യപ്പെട്ട തുകയുടെ വിതരണം ആവശ്യമാണെന്നതിന്‍റെ തെളിവുകള്‍ കടം വാങ്ങുന്നയാള്‍ (കള്‍) നല്‍കുന്നു.</li>
+                            <li style="margin-bottom: 9px;">c) അപേക്ഷ നല്‍കിയ വായ്പയുമായി ബന്ധപ്പെട്ട് ആവശ്യമായ രേഖകളും തെളിവുകളും എഴുത്തുകളും കടം വാങ്ങുന്നയാള്‍ നല്‍കുന്നു.</li>
+                            <li style="margin-bottom: 9px;">d) കമ്പനിയുടെ അഭിപ്രായത്തില്‍, വായ്പക്കായുള്ള ഉടമ്പടി പ്രകാരം എക്സിക്യൂട്ട് ചെയ്ത രേഖകള്‍ക്ക് കീഴിലുള്ള ബാധ്യതകളും കടം വാങ്ങുന്നയാള്‍ (കള്‍) എക്സിക്യൂട്ട് ചെയ്ത മറ്റ് സ്റ്റാന്‍ഡേര്‍ഡ് ഡോക്യുമെന്‍റുകളും കടം വാങ്ങുന്നയാള്‍ക്ക് അസാധ്യമാക്കുന്ന ഒരു സാഹചര്യവും ഉണ്ടാകരുത്. </li>
+                            <li style="margin-bottom: 9px;">e) വായ്പ ലഭ്യമാക്കുന്നതിന് ആവശ്യമായ എല്ലാ സമ്മതങ്ങളും അംഗീകാരങ്ങളും അനുമതികളും കമ്പനിയുടെ സംതൃപ്തിക്ക് തെളിവുകള്‍ കൈമാറുന്ന കടം വാങ്ങുന്നയാള്‍ (കള്‍) സെക്യൂരിറ്റി സൃഷ്ടിക്കല്‍ ഉള്‍പ്പെടെ വായ്പ ലഭ്യമാക്കുന്നതുമായി ബന്ധപ്പെട്ട എല്ലാ ഡോക്യുമെന്‍റേഷനുകളും പൂര്‍ത്തിയാക്കുന്നു.</li>
+                        </ol>
+                    </li>
+                    <li style="margin-bottom: 9px; font-size: 9px;">3.2 NEFT, RTGS, ചെക്ക് അല്ലെങ്കില്‍ പേയ്മെന്‍റ് ഉപദേശം എന്നിവയുടെ തീയതിയില്‍ വായ്പയെടുക്കുന്നയാള്‍ക്ക് (കള്‍) ആ തീയതി പരിഗണിക്കാതെ, അഥവാ ലോണിന്‍റെ അടിസ്ഥാനത്തില്‍ കമ്പനി നല്‍കേണ്ട 'പേ ഓര്‍ഡര്‍' വഴി കൃത്യമായി ക്രോസ് ചെയ്ത 'അക്കൗണ്ട് പേയി മാത്രം' എന്ന് അടയാളപ്പെടുത്തിയ ചെക്ക് മുഖേന അത്തരം വിതരണം നടത്തിയതായി കണക്കാക്കും. അതിനാല്‍ കടം വാങ്ങുന്നയാളുടെ (കളുടെ) ട്രാന്‍സിറ്റ് / കലക്ഷന്‍ / പണം സ്വീകരിക്കലിന് എടുത്ത സമയം പരിഗണിക്കാതെ, കമ്പനിയുടെ NEFT, RTGS, ചെക്ക്/പേയ്മെന്‍റ് ഉപദേശം/പേ ഓര്‍ഡര്‍/കൈമാറ്റം നടത്തിയ തീയ്യതി മുതല്‍ വായ്പയുടെ പലിശ കമ്പനിക്ക് അനുകൂലമായി ലഭിക്കേണ്ടതാണ്.  </li>
+                </ol>
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">4.കമ്പനിക്ക് നല്‍കേണ്ട ചാര്‍ജുകള്‍ </p>
+                <ol style="text-align: left; margin-left: -25px; margin-top: 2px; list-style-type: none; font-size: 9px;">
+                    <li style="margin-bottom: 9px;">4.1 കടം വാങ്ങുന്നയാള്‍(കള്‍) കമ്പനിയുടെ സ്വന്തം വിവേചനാധികാരത്തില്‍ കാലാകാലങ്ങളില്‍ നിശ്ചയിച്ചിട്ടുള്ള നിരക്കില്‍/നിരക്കുകളില്‍ കമ്പനിയുടെ പലിശ അടയ്ക്കും. കൂടാതെ, കമ്പനിയുടെ അംഗീകൃത ഏജന്‍റുമാര്‍/ജീവനക്കാര്‍ ഭാഗിക EMI യുടെ പ്രതിദിന ശേഖരണം സുഗമമാക്കുന്നതിന്, അനെക്സ് എ യില്‍ വ്യക്തമാക്കിയ നിരക്കുകളില്‍ വായ്പക്കാരന്‍(കള്‍) കലക്ഷന്‍ ചാര്‍ജ് നല്‍കണം.</li>
+
+                    <li style="margin-bottom: 9px;">4.2 കമ്പനിയില്‍ രജിസ്റ്റര്‍ ചെയ്തിരിക്കുന്ന തന്‍റെ വിലാസത്തില്‍/ഇമെയിലില്‍ കമ്പനി നല്‍കിയ അറിയിപ്പ്, കടം വാങ്ങുന്നയാള്‍ക്ക് (കള്‍) നിരക്കു കള്‍/ചാര്‍ജുകള്‍ എന്നിവയില്‍ എന്തെങ്കിലും മാറ്റം വരുത്തിയാല്‍ അത് മതിയായതും ന്യായവുമായ അറിയിപ്പായി കണക്കാക്കുമെന്ന് കടം വാങ്ങുന്നയാള്‍ (കള്‍) അംഗീകരിക്കുകയും സ്ഥിരീകരിക്കുകയും ചെയ്യുന്നു. കടം വാങ്ങുന്നയാള്‍ക്ക് മാറ്റങ്ങളെക്കുറിച്ച് കൂടുതല്‍ അറിയിപ്പ് നല്‍കാന്‍ കമ്പനി ബാധ്യസ്ഥരല്ല.</li>
+
+                    <li style="margin-bottom: 9px;">4.3 വായ്പയും ഈ ഉടമ്പടിയും സൃഷ്ടിച്ച സെക്യൂരിറ്റിയുമായി ബന്ധപ്പെട്ട് അടയ്ക്കേണ്ട എല്ലാത്തരം നികുതികളും, ചാര്‍ജുകളും, തീരുവകളും, പ്രോസസ്സിംഗ് ഫീസും, സ്റ്റാമ്പ് ഡ്യൂട്ടികളും, പെനാല്‍റ്റികളും, രജിസ്ട്രേഷന്‍ ചാര്‍ജുകളും മറ്റും കടം വാങ്ങുന്നയാള്‍ അടയ്ക്കേണ്ടതാണ്. അല്ലെങ്കില്‍ കമ്പനിയില്‍ നിന്ന് കടം വാങ്ങുന്നയാള്‍(കള്‍) നേടിയ വായ്പയുമായി ബന്ധപ്പെട്ട് സൃഷ്ടിക്കേണ്ടതാണ്.</li>
+
+                    <li style="margin-bottom: 9px;">4.4 കമ്പനി ആവശ്യപ്പെടുന്ന പ്രകാരം, കടം വാങ്ങുന്നയാള്‍ (കള്‍) കമ്പനിയുടെ ആവശ്യപ്രകാരം പോസ്റ്റ്-ഡേറ്റഡ് ചെക്കുകള്‍ ടെന്‍ഡര്‍ ചെയ്യും. ഇത് വായ്പ അനുവദിക്കുന്നതിനുള്ള വ്യവസ്ഥയാണ്. കാലാകാലങ്ങളില്‍ കുടിശ്ശികയുള്ള തുകകള്‍ വീണ്ടെടുക്കുന്നതിന് കമ്പനിയുടെ സ്വന്തം വിവേചനാധികാരത്തില്‍ ഇത് ഉപയോഗിക്കും. ഈ വ്യവസ്ഥ പാലിക്കുന്നില്ലെങ്കില്‍, കമ്പനി അതിന്‍റെ വിവേചനാധികാരത്തില്‍, അത് വ്യക്തമാക്കിയ നിരക്കില്‍ പിഴ പലിശ ഈടാക്കാം.</li>
+
+                    <li style="margin-bottom: 9px;">4.5 ഇ എം ഐകള്‍ വീണ്ടെടുക്കുന്നതിന് വായ്പക്കാരന്‍(കള്‍) അവന്‍റെ/അവരുടെ സേവിംഗ്/കറന്‍റ് അക്കൗണ്ടില്‍ നിന്ന് ഡെബിറ്റ് ചെയ്യുന്നതിന് അനുയോജ്യമായ ECS അല്ലെങ്കില്‍ ACH മാന്‍ഡേറ്റ് നല്‍കും. കൂടാതെ ലോണിന്‍റെ കാലയളവില്‍ പ്രസ്തുത സ്റ്റാന്‍ഡിംഗ് നിര്‍ദ്ദേശങ്ങള്‍ മാറ്റാനാകാത്തതായിരിക്കും. നിശ്ചിത തീയ്യതികളില്‍ ഇ എം ഐ അടയ്ക്കാന്‍ കടം വാങ്ങുന്നയാള്‍(കള്‍) ബാധ്യസ്ഥരായിരിക്കും. നിശ്ചിത തീയ്യതികളില്‍ ഇ എം ഐ അടയ്ക്കുന്നതില്‍ എന്തെങ്കിലും കാലതാമസം ഉണ്ടായാല്‍, കമ്പനിയുടെ പോളിസി അനുസരിച്ച് വായ്പക്കാരില്‍ നിന്ന് പിഴ പലിശ ഈടാക്കാന്‍ കമ്പനിയെ അധികാരപ്പെടുത്തും.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">
+                        4.6 ലോണ്‍ അനുവദിക്കപ്പെട്ടതിന്/അനുവദിക്കുന്നതിന് കമ്പനി
+                        ആവശ്യപ്പെടുന്ന പ്രകാരം, വായ്പക്കാരന്‍(കള്‍) അവന്‍റെ/അവരുടെ സ്വന്തം ചെലവിലും ചെലവുകളിലും,
+                        കമ്പനി ആവശ്യപ്പെടുന്നതു പ്രകാരം പ്രീ-ഡിസ്ബര്‍സല്‍, പോസ്റ്റ്-ഡിസ്ബര്‍സല്‍ ഡോക്യുമെന്‍റുകളുടെ
+                        വിശദാംശങ്ങള്‍ എന്നിവ നല്‍കും.
+
+                    </li>
+                </ol>
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">5.കുടിശ്ശിക വരുത്തുന്നതും കമ്പനിയുടെ പരിഹാരങ്ങളും</p>
+                <p style="font-size: 9px; margin-bottom:0px;">
+                    ഈ ആര്‍ട്ടിക്കിളില്‍ വ്യക്തമാക്കിയിട്ടുള്ള ഒന്നോ അതിലധികമോ സംഭവങ്ങള്‍ (ഇനിമുതല്‍ 'കുടിശ്ശിക' എന്ന് വിളിക്കപ്പെടുന്നവ) സംഭവിച്ചിട്ടുണ്ടെങ്കില്‍, കമ്പനി കടം വാങ്ങുന്നയാള്‍ക്ക് രേഖാമൂലമുള്ള അറിയിപ്പ് വഴി മുതലും സമാഹരിച്ച പലിശയും കടം വാങ്ങുന്നയാള്‍ (കള്‍) അടയ്ക്കേണ്ട മറ്റ് തുകകളും ഈ ഉടമ്പടിയുടെ കീഴില്‍ കമ്പനിക്ക് കടം വാങ്ങുന്നയാള്‍ (കള്‍) ഉടനടി അടയ്ക്കേണ്ടതായി മാറും. കൂടാതെ സത്യവാങ്മൂലം അനുസരിച്ച് വായ്പയുടെ ആവശ്യത്തിനായി അനുവദിച്ചിട്ടുള്ള ജാമ്യവസ്തുക്കള്‍ കമ്പനിക്ക് അനുകൂലമായി പ്രാബല്യത്തില്‍ വരുന്നതുമാണ്
+                </p>
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">5.1.സ്ഥിരസ്ഥിതി സംഭവങ്ങള്‍</p>
+                <ol style="text-align: left; margin-left: -25px; list-style-type: none; font-size: 9px;">
+                    <li style="margin-bottom: 9px; font-size: 9px;">a).കുടിശ്ശികയുടെ പേയ്മെന്‍റ്: പ്രതിമാസ ഇന്‍സ്റ്റാള്‍മെന്‍റോ അടയ്ക്കേണ്ട മറ്റേതെങ്കിലും തുകയോ അടയ്ക്കുന്നതില്‍ ഒരു വീഴ്ച സംഭവിച്ചിട്ടുണ്ടെങ്കില്‍ അഥവാ ഈ കരാറിന്‍റെ അടിസ്ഥാനത്തില്‍ കമ്പനിക്ക് അടയ്ക്കേണ്ട തുകയേക്കാള്‍ കുറവാണെങ്കില്‍.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">
+                        b). പ്രാതിനിധ്യങ്ങളും വാറന്‍റികളും: ഇവിടെയുള്ള കടം വാങ്ങുന്നയാളുടെ
+                        നിര്‍ദ്ദേശത്തില്‍/അപേക്ഷയില്‍ നല്‍കിയിട്ടുള്ള ഏതെങ്കിലും പ്രാതിനിധ്യങ്ങളോ പ്രസ്താവനകളോ വിശദാംശങ്ങളോ
+                        തെറ്റാണെന്ന് കണ്ടെത്തുകയോ അല്ലെങ്കില്‍ ഈ കരാറിന്‍റെ പ്രകടനത്തിലോ ഏതെങ്കിലും രേഖകള്‍ പാലിക്കുന്നതിലോ
+                        കടം വാങ്ങുന്നയാള്‍ എന്തെങ്കിലും ലംഘനമോ വീഴ്ചയോ വരുത്തിയാല്‍ ഈ ലോണുമായി ബന്ധപ്പെട്ട് കമ്പനിയും കടം
+                        വാങ്ങുന്നയാളും തമ്മിലുള്ള മറ്റേതെങ്കിലും കരാറിന്‍റെ ഏതെങ്കിലും നിബന്ധനകളോ വ്യവസ്ഥകളോ സുരക്ഷിതമാക്കുകയോ
+                        പാലിക്കുകയോ ചെയ്യുന്നതില്‍ പരാജയപ്പെടുകയോ ചെയ്യുക.
+                    </li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">c).ഉടമ്പടികളുടെ പ്രകടനം: കടം വാങ്ങുന്നയാളും കമ്പനിയും തമ്മിലുള്ള ഈ കരാറിന് കീഴിലുള്ള കടം വാങ്ങുന്നയാളുടെ ഭാഗത്തുനിന്ന് ഏതെങ്കിലും ഉടമ്പടികളുടെയും വ്യവസ്ഥകളുടെയും പ്രകടനത്തില്‍ ഡിഫോള്‍ട്ട് സംഭവിച്ചിട്ടുണ്ടെങ്കില്‍.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">d). ചെക്കുകള്‍ ഡെലിവറി ചെയ്യാത്തത്: ഈ ഉടമ്പടിയുടെ നിബന്ധനകള്‍ക്ക് അനുസൃതമായി കടം വാങ്ങുന്നയാള്‍ (കള്‍) പോസ്റ്റ് ഡേറ്റഡ് ചെക്കുകള്‍ നല്‍കുന്നതില്‍ പരാജയപ്പെട്ടാല്‍.</li>
+                    <li style="margin-bottom: 9px; font-size: 9px;">e).നേരിട്ടുള്ള നിര്‍ദ്ദേശങ്ങളിലൂടെ പണമടയ്ക്കാത്തത്: ശമ്പളത്തില്‍ നിന്ന് നേരിട്ടുള്ള കിഴിവ് വഴിയോ അല്ലെങ്കില്‍ തന്‍റെ കമ്പനി അക്കൗണ്ടില്‍ നിന്ന് നേരിട്ടുള്ള ഡെബിറ്റ് വഴിയോ ഇലക്ട്രോണിക് ഫണ്ട് ട്രാന്‍സ്ഫര്‍ വഴിയോ കടം വാങ്ങുന്നയാള്‍ കുടിശ്ശിക തുകയുടെ പേയ്മെന്‍റ് അടക്കുകയും അത്തരത്തിലുള്ള ഏതെങ്കിലും പേയ്മെന്‍റ് വരവ് വെക്കാതിരിക്കുകയോ അടവാക്കപ്പെടുകയോ ക്ലിയര്‍ ചെയ്യുകയോ ചെയ്തിട്ടില്ലെങ്കില്‍.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">f).സെക്യൂരിറ്റിയുടെ മൂല്യത്തകര്‍ച്ച: പണയവസ്തുക്കളായ ഏതെങ്കിലും സെക്യൂരിറ്റികളുടെ തകര്‍ച്ചയോ തകരാറോ, അല്ലെങ്കില്‍ അതിന്‍റെ ഏതെങ്കിലും ഭാഗമോ അല്ലെങ്കില്‍ അതിന്‍റെ മൂല്യത്തിലോ മാര്‍ക്കറ്റ് വിലയിലോ (യഥാര്‍ത്ഥമോ ന്യായമായതോ ആയ) കുറവോ മൂല്യത്തകര്‍ച്ചയോ ഉണ്ടായാല്‍, കമ്പനിയുടെ വിധിന്യായത്തില്‍, പണയവസ്തുവിന്‍റെ സ്വഭാവത്തിലോ മൂല്യത്തിലോ അതൃപ്തിക്ക് കാരണമാകുന്നു.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">g).പാപ്പരത്തം: പാപ്പരത്തം, അടച്ചുപൂട്ടല്‍, അവസാനിപ്പിക്കല്‍, ബിസിനസ്സിലെ പരാജയം, പാപ്പരത്വത്തിന്‍റെ കമ്മീഷന്‍, കടക്കാരുടെ പ്രയോജനത്തിനായുള്ള പൊതു നിയമനം, കടക്കാരന്‍ (കള്‍) ഏതെങ്കിലും കടക്കാര്‍ക്ക് പണം നല്‍കുന്നത് താല്‍ക്കാലികമായി നിര്‍ത്തിവെക്കുകയോ അല്ലെങ്കില്‍ അങ്ങനെ ചെയ്യുമെന്ന് ഭീഷണിപ്പെടുത്തുകയോ ചെയ്താല്‍, പാപ്പരത്തത്തിനുവേണ്ടി ഏതെങ്കിലും ഹര്‍ജി ഫയല്‍ ചെയ്യുകയോ അല്ലെങ്കില്‍ കടം വാങ്ങുന്നയാള്‍ (കള്‍)ക്കെതിരെ അടച്ചുപൂട്ടലിന് / പാപ്പരത്തത്തിനായി ഏതെങ്കിലും ഹര്‍ജി ഫയല്‍ ചെയ്യുകയും ഇത്തരം അപേക്ഷ 30 ദിവസത്തിനുള്ളില്‍ പിന്‍വലിക്കാതിരിക്കുകയും ചെയ്യുമ്പോള്‍..</li>
+
+                    <li style="margin-bottom: 9px;">h). വിവാഹമോചനം അല്ലെങ്കില്‍ മരണം: കടം വാങ്ങുന്നവരില്‍ ആരെങ്കിലും വിവാഹമോചനം നേടുകയോ മരണപ്പെടുകയോ ഭ്രാന്തനാകുകയോ ചെയ്യുന്ന സാഹചര്യം.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">i).ലോണ്‍ തിരിച്ചടക്കാനുള്ള കഴിവില്ലായ്മ: കടം വാങ്ങുന്നയാള്‍ക്ക് അവരുടെ കടം വീട്ടാന്‍ കഴിയില്ലെന്നോ അല്ലെങ്കില്‍ കടം വാങ്ങുന്നവരില്‍ ഒരാളോ (കള്‍) കടം തിരിച്ചടക്കാനുള്ള കഴിവില്ലായ്മ സമ്മതിച്ചിട്ടോ കമ്പനിക്ക് ന്യായമായ ആശങ്കയുണ്ടെങ്കില്‍.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">j).സാമ്പത്തിക സ്ഥിതിയിലെ മാറ്റം: കടം വാങ്ങുന്നയാള്‍ക്ക് (കള്‍) അയാളുടെ സാമ്പത്തിക സ്ഥിതിയിലോ ലാഭത്തിലോ ബിസിനസ്സിലോ എന്തെങ്കിലും കാര്യമായ മാറ്റമോ എന്തെങ്കിലും പ്രതികൂല സ്വാധീനമോ ഉണ്ടായാല്‍. </li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">k). നിയമപരമായ ശിക്ഷാവി ധി: പ്രാബല്യത്തിലുള്ള ഏതെങ്കിലും ക്രിമിനല്‍ നിയമപ്രകാരം കടം വാങ്ങുന്നയാള്‍ കുറ്റക്കാരനാണെങ്കില്‍.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">l). കമ്പനിയുടെ മാത്രം അഭിപ്രായത്തില്‍, കമ്പനിയുടെ താല്‍പ്പര്യത്തിന് മുന്‍വിധിയുള്ള മറ്റേതെങ്കിലും സാഹചര്യം നിലവിലുണ്ടെങ്കില്‍</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">m). ക്രോസ് ഡിഫോള്‍ട്ട്: ഈ കരാറുകളിലോ കമ്പനിയുമായുള്ള മറ്റ് ഏതെങ്കിലും കരാറുകളിലോ ഏതെങ്കിലും ലോണിന് കീഴില്‍ കടം വാങ്ങുന്നയാള്‍(കള്‍) ഡിഫോള്‍ട്ട് ചെയ്തിട്ടുണ്ടെങ്കില്‍.</li>
+                    <li style="margin-bottom: 9px; font-size: 9px;">n). ഏതെങ്കിലും വ്യവഹാരങ്ങളോ നടപടികളോ (ആര്‍ബിട്രേഷന്‍ അല്ലെങ്കില്‍ അനുരഞ്ജന നടപടികള്‍ ഉള്‍പ്പെടെ) ആരംഭിക്കുന്നതിന് കടം വാങ്ങുന്നയാള്‍ക്കെതിരെ ഉത്തരവുകള്‍ പുറപ്പെടുവിക്കുകയോ അല്ലെങ്കില്‍ കടം വാങ്ങുന്നയാള്‍ക്ക് നോട്ടീസ് ലഭിക്കുകയോ ചെയ്താല്‍.</li>
+
+                </ol>
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">5.2 ഡിഫോള്‍ട്ടിന്‍റെ ഒരു സംഭവം നടക്കുന്നതിനെക്കുറിച്ചുള്ള അറിയിപ്പ്</p>
+                <ol style="text-align: left; margin-left: -25px; margin-top: 2px; list-style-type: none; font-size: 9px;">
+                    <li style="margin-bottom: 9px; font-size: 9px;">a). വീഴ്ച വരുത്തുന്ന ഏതെങ്കിലും സംഭവമോ അല്ലെങ്കില്‍ ഒരു കാലപരിധിക്ക് ശേഷം ഡിഫോള്‍ട്ട് ആയി മാറാന്‍ കഴിവുള്ള ഏതെങ്കിലും സംഭവമോ സംഭവിക്കുകയാണെങ്കില്‍, വായ്പയും കമ്പനിക്കുള്ള എല്ലാ കുടിശ്ശികകളും തിരിച്ചടയ്ക്കാന്‍ കടം വാങ്ങുന്നയാളെ ഉടന്‍ വിളിക്കാന്‍ കമ്പനിക്ക് അര്‍ഹതയുണ്ട്. കമ്പനിക്കുള്ള കുടിശ്ശിക ഉടന്‍ തിരിച്ചടയ്ക്കേണ്ടത് കടം വാങ്ങുന്നയാളുടെ ബാധ്യതയായിരിക്കും. കടം വാങ്ങുന്നയാള്‍ (കള്‍) കുടിശ്ശിക ഉടനടി തിരിച്ചടയ്ക്കുന്നതില്‍ വീഴ്ച വരുത്തിയാല്‍, ഈ ഉടമ്പടിയിലും നിയമത്തിലും കമ്പനിക്ക് ലഭ്യമായ മറ്റ് അവകാശങ്ങള്‍ക്കും പരിഹാരങ്ങള്‍ക്കും മുന്‍വിധികളില്ലാതെ, കടം വാങ്ങുന്നയാള്‍ സൃഷ്ടിച്ച സുരക്ഷ നടപ്പിലാക്കാന്‍ കമ്പനിക്ക് അര്‍ഹതയുണ്ട്.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">b) 	സെക്യൂരിറ്റി പ്രാബല്യത്തില്‍ വരുമ്പോള്‍, കമ്പനിക്ക് അതിന്‍റെ മറ്റ് അവകാശങ്ങള്‍ക്കും പ്രതിവിധികള്‍ക്കും മുന്‍വിധികളില്ലാതെ, സെക്യൂരിറ്റി അല്ലെങ്കില്‍ അതിന്‍റെ ഏതെങ്കിലും ഭാഗം സ്വകാര്യ ഉടമ്പടി പ്രകാരം വില്‍ക്കാനും വിനിയോഗിക്കാനും അതിന്‍റെ വിവേചനാധികാരം ഉപയോഗിക്കുന്നതിന് പൂര്‍ണ്ണമായ അധികാരം ഉണ്ടായിരിക്കും. കോടതിയുടെ ഇടപെടല്‍ കൂടാതെ, കമ്പനി അതിന്‍റെ സമ്പൂര്‍ണ്ണ വിവേചനാധികാരത്തില്‍ അനുയോജ്യമെന്ന് കരുതുകയും അത്തരം വില്‍പ്പനയില്‍ നിന്നുള്ള അറ്റ വരുമാനം സംതൃപ്തിയോടെ പ്രയോഗിക്കുകയും ചെയ്യുമ്പോള്‍, അത് ലിക്വിഡേഷനിലേക്ക് വ്യാപിക്കും. കമ്പനി കൈമാറ്റം ചെയ്യുന്ന സെക്യൂരിറ്റിയുടെ മൂല്യം സംബന്ധിച്ച് ഒരു തര്‍ക്കവും ഉന്നയിക്കരുതെന്ന് കടം വാങ്ങുന്നയാള്‍ (കള്‍) ഇതിനാല്‍ സമ്മതിക്കുകയും ഏറ്റെടുക്കുകയും ചെയ്യുന്നു. കൂടാതെ കമ്പനി എടുക്കുന്ന തീരുമാനം അന്തിമവും കടം വാങ്ങുന്നയാള്‍ക്ക് ബാധ്യതയും ആയിരിക്കും. ഈ ആര്‍ട്ടിക്കിള്‍ പ്രകാരം സെക്യൂരിറ്റിയുടെ വില്‍പന അല്ലെങ്കില്‍ കൈമാറ്റം മൂലം ഉണ്ടാകുന്ന നഷ്ടത്തിന് കമ്പനി ബാധ്യസ്ഥനായിരിക്കില്ല.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">c) 	അറിയിപ്പിന്‍റെ കാലാവധി അവസാനിച്ചതിന് ശേഷം ഏത് സമയത്തും കമ്പനിക്ക് ഈ കരാര്‍ അവസാനിപ്പിക്കാവുന്നതാണ്.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">d) 	ഈ ആര്‍ട്ടിക്കിളിലെ വ്യവസ്ഥകള്‍ക്ക് അനുസൃതമായി എന്തെങ്കിലും റദ്ദാക്കുകയോ അവസാനിപ്പിക്കുകയോ ചെയ്താലും, ഈ കരാറിലെ എല്ലാ വ്യവസ്ഥകളും പൂര്‍ണ്ണ ശക്തിയിലും പ്രാബല്യത്തിലും ഇവിടെ പ്രത്യേകമായി നല്‍കിയിട്ടുള്ളതുപോലെ, കടം വാങ്ങുന്നയാള്‍ (കള്‍) കമ്പനിക്ക് തൃപ്തികരമായ വിധത്തില്‍ വായ്പ തുക പൂര്‍ണമായി തിരിച്ചടയ്ക്കുന്നത് വരെ തുടരും</li>
+                </ol>
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">5.3 കമ്പനിക്ക് അവകാശമുണ്ട്:</p>
+                <ol style="text-align: left; margin-left: -25px; margin-top: 2px; list-style-type: none; font-size: 9px;">
+                    <li style="margin-bottom: 9px; font-size: 9px;">i) അനുചിതമായ സാക്ഷ്യപത്രം/അറിയിപ്പ് വഴിയാണ് ലോണ്‍ വാങ്ങിയതെന്ന് വിശ്വസിക്കാന്‍ കാരണമുണ്ടെങ്കില്‍ അല്ലെങ്കില്‍ വാഗ്ദാനം ചെയ്തിരിക്കുന്ന സെക്യൂരിറ്റി അപര്യാപ്തമോ അല്ലെങ്കില്‍ ഏതെങ്കിലും തരത്തില്‍ ബാധ്യതയുള്ളതോ ആണെങ്കില്‍ മറ്റേതെങ്കിലും അവകാശങ്ങള്‍ക്ക് മുന്‍വിധികളില്ലാതെ, സ്വന്തം വിവേചനാധികാരത്തില്‍ എപ്പോള്‍ വേണമെങ്കിലും യാതൊരു മുന്‍വിധികളോ അവകാശങ്ങളോ കൂടാതെ വിതരണം ചെയ്ത വായ്പയുടെ കുടിശ്ശിക മുഴുവന്‍ തിരിച്ചുവിളിക്കാന്‍ കമ്പനിക്ക് അവകാശമുണ്ട്.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">ii) 	വായ്പാ അപേക്ഷകള്‍ വാങ്ങുന്നതിനും, വായ്പാ അപേക്ഷകള്‍ പ്രോസസ്സ് ചെയ്യുന്നതിനും, സാമ്പത്തിക രേഖകളെ കുറിച്ച് വിശദമായ പഠനങ്ങള്‍ നടത്തുന്നതിനും, വായ്പ വിതരണം ചെയ്യുന്നതിനും, നിയമപരമായ ആവശ്യകതകള്‍ ഉണ്ടെങ്കില്‍ പൂര്‍ത്തീകരിക്കുന്നതിനും, സെക്യൂരിറ്റി സൃഷ്ടിക്കുന്നതിനും അതുമായി ബന്ധപ്പെട്ട് ഏതെങ്കിലും ഏജന്‍റിന്‍റെ സേവനങ്ങള്‍ ഔട്ട്സോഴ്സ് ചെയ്യുക, റെഗുലേറ്ററി അതോറിറ്റികള്‍, കോ-ഓപ്പറേറ്റീവ് ഹൗസിംഗ് സൊസൈറ്റി അല്ലെങ്കില്‍ മറ്റെവിടെയെങ്കിലും മുമ്പാകെ കടം വാങ്ങുന്നവരെ പ്രതിനിധീകരിക്കുന്നതും കടം വാങ്ങുന്നവരില്‍ നിന്ന് എല്ലാ കുടിശ്ശികകളും വീണ്ടെടുക്കുന്നതിന് കലക്ഷന്‍ ഏജന്‍റുമാരെ നിയമിക്കുന്നതും ഉള്‍പ്പെടുന്നു.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">iii) 	കടം പൂര്‍ണ്ണമായോ ഭാഗികമായോ, അടിസ്ഥാനപരമായ സെക്യൂരിറ്റി സഹിതം, ഒന്നോ അതിലധികമോ സ്ഥാപനങ്ങള്‍ക്ക് അനുകൂലമായി, കമ്പനിയുടെ വിവേചനാധികാരത്തില്‍, കടം വാങ്ങുന്നയാളുടെ(കളുടെ) സമ്മതം തേടാതെ.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">iv) 	വായ്പക്ക് കീഴില്‍ കുടിശ്ശികയുള്ള എല്ലാ തുകയും (പ്രിന്‍സിപ്പല്‍, പലിശ, ചെലവുകള്‍, ചാര്‍ജുകള്‍ എന്നിവയുള്‍പ്പെടെ) കുടിശ്ശികയായി പ്രഖ്യാപിക്കുക, വസ്തുവിന്‍റെ മൂല്യമോ ഏതെങ്കിലും സെക്യൂരിറ്റിയോ (ഗാരന്‍റികള്‍ ഉള്‍പ്പെടെ) വായ്പയെടുക്കുന്നയാള്‍ സൃഷ്ടിച്ചതോ ടെന്‍ഡര്‍ ചെയ്തതോ ആണെങ്കില്‍ അഥവാ പ്രസ്തുത സെക്യൂരിറ്റിയുടെ മൂല്യത്തിന്  ഇടിവ് സംഭവിക്കുകയാണെങ്കില്‍, വായ്പയെടുക്കുന്നയാള്‍ സെക്യൂരിറ്റി നല്‍കുന്നതില്‍ വീഴ്ച വരുത്തിയാല്‍, കമ്പനിയുടെ സ്വന്തം വിവേചനാധികാരത്തിലും തീരുമാനത്തിലും പുതിയ സെക്യൂരിറ്റി സമര്‍പ്പിക്കാന്‍ ആവശ്യപ്പെടാവുന്നതാണ്.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">v)	കടം വാങ്ങുന്നയാള്‍ക്ക് (കള്‍) വേണ്ടി ഏതെങ്കിലും അപകടസാധ്യതകള്‍ക്കെതിരെ സെക്യൂരിറ്റിയായി വാഗ്ദാനം ചെയ്യുന്ന ആസ്തികള്‍ അഗ്നിബാധയില്‍ നിന്ന് ഇന്‍ഷ്വര്‍ ചെയ്യുന്നതിനും ഇന്‍ഷുറന്‍സ് കമ്പനിക്ക് അടച്ച പ്രീമിയവും മറ്റ് അനുബന്ധ ചാര്‍ജുകളും വായ്പക്കാരനില്‍ നിന്ന് വീണ്ടെടുക്കുന്നതിനും.</li>
+                </ol>
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">6. ക്രോസ് ഡിഫോള്‍ട്ട്</p>
+                <p style="font-size: 9px;">
+                    വായ്പക്കാരന്‍(കള്‍), മറ്റേതെങ്കിലും ക്രെഡിറ്റ് ഫെസിലിറ്റി ഉടമ്പടി/സ്വര്‍ണ്ണ വായ്പ കരാര്‍ കമ്പനിയുമായോ
+                    അവര്‍ക്ക് താത്പര്യമുള്ള പിന്‍ഗാമികള്‍ അല്ലെങ്കില്‍ കമ്പനിയുടെ ഏതെങ്കിലും അഫിലിയേറ്റുകള്‍ അല്ലെങ്കില്‍
+                    ഗ്രൂപ്പ് കമ്പനികള്‍ എന്നിവയ്ക്കൊപ്പം, നിരുപാധികമായും പിന്‍വലിക്കാനാവാത്ത വിധത്തിലും, വായ്പക്കാരന്‍
+                    കുടിശ്ശിക വരുത്തിയെന്ന് സമ്മതിക്കുകയോ സ്ഥിരീകരിക്കുകയോ സമ്മതിച്ചെഴുതിക്കൊടുക്കുകയോ ചെയ്താല്‍
+                    ഈ കരാറിന് കീഴിലുള്ള ഇതേ വായ്പയുടെ സ്ഥിരസ്ഥിതിയായി കണക്കാക്കുകയും, തിരിച്ച് കടം
+                    വാങ്ങുന്നയാള്‍ക്ക് (വര്‍ക്ക്) അനുവദിച്ചിട്ടുള്ള ഫണ്ട് അടിസ്ഥാനമാക്കിയുള്ളതോ അഥവാ ഫണ്ട് ഇതര
+                    സൗകര്യങ്ങളോ പിന്‍വലിക്കുന്നതിന് കമ്പനിക്ക് അര്‍ഹത ഉണ്ടായിരിക്കും. അത്തരത്തിലുള്ള ഡിഫോള്‍ട്ട്
+                    സംഭവിച്ചാല്‍, കമ്പനിക്ക് ഈ ഉടമ്പടി കൂടാതെ/അല്ലെങ്കില്‍ കമ്പനിയുമായി കടം വാങ്ങുന്നയാള്‍ (കള്‍)
+                    ഏര്‍പ്പെട്ടിരിക്കുന്ന മറ്റ് കരാറുകള്‍ക്ക് കീഴിലുള്ള ഏതെങ്കിലുമോ അല്ലെങ്കില്‍ എല്ലാ അവകാശങ്ങളും
+                    വിനിയോഗിക്കാന്‍ കമ്പനിക്ക് അര്‍ഹതയുണ്ട്.
+                </p>
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">7.ക്രോസ് കൊളാറ്ററലൈസേഷന്‍</p>
+                <p style="font-size: 9px;">
+                    കമ്പനിയുമായി ഏര്‍പ്പെട്ടിരിക്കുന്ന/ഏര്‍പ്പെടാന്‍ പോകുന്ന മറ്റേതെങ്കിലും കരാറിന് കീഴിലുള്ള വായ്പക്കാരന്‍(കള്‍) നല്‍കുന്ന ഏതെങ്കിലും സെക്യൂരിറ്റി(കള്‍) ഈ കരാറിന് കീഴിലുള്ള സെക്യൂരിറ്റി(കള്‍) ആയി കണക്കാക്കും. കടം വാങ്ങുന്നയാള്‍ക്ക് കമ്പനി അനുവദിച്ച ഏതെങ്കിലും വായ്പാ സൗകര്യങ്ങള്‍/സ്വര്‍ണ്ണ വായ്പ എന്നിവയുടെ കാര്യത്തില്‍ വീഴ്ച വരുത്തിയാല്‍, ഈ കരാറിന് കീഴിലോ മറ്റേതെങ്കിലും കരാറിന് കീഴിലോ നല്‍കിയിട്ടുള്ള എല്ലാ സെക്യൂരിറ്റികളും കടം വാങ്ങുന്നയാള്‍ (കള്‍) അംഗീകരിക്കുകയും കമ്പനിയുമായി ഏര്‍പ്പെട്ടിരിക്കുന്ന/ ഏര്‍പ്പെടാന്‍ പോകുന്ന മറ്റേതെങ്കിലും ഉടമ്പടി കമ്പനിയില്‍ നിന്ന് കടം വാങ്ങുന്നയാള്‍ക്ക് വിപുലീകരിക്കപ്പെട്ടതും പ്രയോജനപ്പെടുത്തുന്നതുമായ എല്ലാ ബാധ്യതകള്‍ക്കും / സൗകര്യങ്ങള്‍ക്കും തുടര്‍ച്ചയായ സുരക്ഷയായി പ്രവര്‍ത്തിക്കും. പ്രസ്തുത ബാധ്യതകള്‍/സൌകര്യങ്ങള്‍ ലഭ്യമാകുന്ന സമയം വരെ, അക്കൗണ്ട് ക്ലോസ് ചെയ്യുകയോ ലിക്വിഡേറ്റ് ചെയ്യപ്പെടുകയോ ചെയ്തുവെന്ന് കമ്പനി സ്ഥിരീകരിക്കുന്നതുവരെ, പ്രസ്തുത അക്കൗണ്ടിന്‍റെ ഭാഗിക പേയ്മെന്‍റോ അക്കൗണ്ടുകളുടെ ഏറ്റക്കുറച്ചിലുകളോ ഉണ്ടെങ്കിലും അത് കമ്പനിയില്‍ നിക്ഷിപ്തമായി തുടരും.
+                </p>
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">8.ലീന്‍ ആന്റ് സെറ്റ് ഓഫ്</p>
+                <ol style="text-align: left; margin-left: -25px; margin-top: 2px; list-style-type: none; font-size: 9px;">
+                    <li style="margin-bottom: 9px; font-size: 9px;">
+                        8.1 	ഇവിടെ അടങ്ങിയിരിക്കുന്ന എന്തുതന്നെയായാലും, കമ്പനിയുടെ നിയന്ത്രണത്തിലോ കൈവശത്തിലോ ഉള്ള കടം വാങ്ങുന്നയാളുടെ പണയവസ്തുക്കളിലും എല്ലാ സെക്യൂരിറ്റികളിലും കമ്പനിക്ക് ഒരു അസാധുവായ അവകാശം ഉണ്ടായിരിക്കും. പണയവസ്തുവിന്മേലുള്ള ഈ അവകാശം യാതൊരു കാരണവശാലും ഹനിക്കപ്പെടാന്‍ പാടില്ല.
+                    </li>
+                    <li style="margin-bottom: 9px; font-size: 9px;">
+                        8.2 	കടം വാങ്ങുന്നയാള്‍(കള്‍) കമ്പനിക്ക് ഏതെങ്കിലും വായ്പ/സൗകര്യം(കള്‍) പ്രകാരം അര്‍ഹതപ്പെട്ടേക്കാവുന്ന ഏതെങ്കിലും ക്രെഡിറ്റ് ബാലന്‍സ് ബാധകമാക്കാന്‍ കമ്പനിയെ അധികാരപ്പെടുത്തുന്നു. കമ്പനിയില്‍ നിന്ന് ലഭ്യമായ ഏതെങ്കിലും/എല്ലാ വായ്പകളിലും/ സൗകര്യങ്ങളിലും (ഇത്) കടം വാങ്ങുന്നയാളുടെ (കളുടെ) ക്രെഡിറ്റുമായി ബന്ധപ്പെട്ട ഏതെങ്കിലും തുകയുമായി ബന്ധപ്പെട്ട് കമ്പനിക്ക് സെറ്റ് ഓഫ് ചെയ്യാനുള്ള അവകാശവും ഉണ്ടായിരിക്കും.
+                    </li>
+                    <li style="margin-bottom: 9px; font-size: 9px;">
+                        8.3 	ഇവിടെ പറഞ്ഞിരിക്കുന്ന കുടിശ്ശിക തുകയും മറ്റ് ചാര്‍ജുകളും അടയ്ക്കുന്നതില്‍ കടം വാങ്ങുന്നയാള്‍(കള്‍) വീഴ്ച വരുത്തിയാല്‍, അനുവദിച്ചിട്ടുള്ള വായ്പ റദ്ദാക്കുന്നതിനുള്ള അവകാശത്തിന് മുന്‍വിധി കൂടാതെ, കമ്പനിക്ക് നടപടി ആരംഭിക്കാന്‍ അര്‍ഹതയുണ്ടെന്ന് ഇതിനാല്‍ സമ്മതിക്കുകയും മനസ്സിലാക്കുകയും ചെയ്യുന്നു. കമ്പനിയുടെ കൈവശമുള്ള/നിയന്ത്രണത്തിലുള്ള ഏതെങ്കിലും പണയത്തിനെതിരായ അതിന്‍റെ കുടിശ്ശികയും നിക്ഷേപം വഴിയോ മറ്റേതെങ്കിലും മാര്‍ഗ്ഗത്തിലൂടെയോ ഈടാക്കാന്‍ കമ്പനിക്ക് അവകാശമുണ്ട്.
+                    </li>
+                    <li style="margin-bottom: 9px; font-size: 9px;">
+                        8.4 	ഈ ഉടമ്പടി കമ്പനി അംഗീകരിച്ചിട്ടില്ലെങ്കില്‍ അത് ഏതെങ്കിലും തരത്തിലുള്ള അവകാശമോ കടമയോ ബാധ്യതയോ സൃഷ്ടിക്കുന്നതല്ല. കമ്പനി ഈ ഉടമ്പടി നടപ്പിലാക്കുമ്പോള്‍ കമ്പനിയുടെ അവകാശങ്ങളും കടമകളും ഇതില്‍ അടങ്ങിയിരിക്കുന്ന ബാധ്യതകളും അംഗീകരിച്ചതായി കണക്കാക്കും.
+                    </li>
+                    <li style="margin-bottom: 9px; font-size: 9px;">
+                        8.5 	ഈ ഉടമ്പടി ഇത് നടപ്പിലാക്കുന്ന തീയതിയിലും അതിനുശേഷവും കടം വാങ്ങുന്നയാള്‍ക്കും കമ്പനിക്കും ബാധകമായിരിക്കും. ഈ ഉടമ്പടി പ്രകാരം കമ്പനിക്ക് നല്‍കേണ്ടതും അടയ്ക്കേണ്ടതുമായ എല്ലാ പണവും എല്ലാ പലിശയും ചെലവുകളും ചാര്‍ജുകളും അടച്ചുതീര്‍ക്കേണ്ടതും അടയ്ക്കേണ്ടതായ എല്ലാ പണവും എല്ലാ പലിശയും ചെലവുകളും ചാര്‍ജുകളും പൂര്‍ണ്ണമായും തിരിച്ചടയ്ക്കുന്നതുവരെ ഈ ഉടമ്പടി പൂര്‍ണ്ണമായി പ്രാബല്യത്തില്‍ ഉള്ളതായി കണക്കാക്കുന്നതാണ്.
+                    </li>
+                </ol>
+
+
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">9. . മറ്റുള്ളവ</p>
+                <ol style="text-align: left; margin-left: -25px; margin-top: 2px; list-style-type: none; font-size: 9px;">
+                    <li style="margin-bottom: 9px; font-size: 9px;">9.1 	കടം വാങ്ങുന്നയാള്‍ക്ക് അവന്‍റെ/അവളുടെ ലോണ്‍ അക്കൗണ്ടുമായി ബന്ധപ്പെട്ട് ഹ്രസ്വ സന്ദേശമയയ്ക്കല്‍ സേവനങ്ങള്‍ (എസ് എം എസ്), ഇമെയില്‍ അല്ലെങ്കില്‍ മറ്റ് അത്തരം മാര്‍ഗങ്ങള്‍ മുഖേന, ഇലക്ട്രോണിക് മാധ്യമങ്ങളിലൂടെ അലേര്‍ട്ടുകളും മറ്റ് വിവരങ്ങളും നല്‍കുന്നത് കമ്പനി അതിന്‍റെ സ്വന്തം വിവേചനാധികാരത്തില്‍ ലഭ്യമാക്കുകയോ നിര്‍ത്തലാക്കുകയോ ചെയ്യാം. കടം വാങ്ങുന്നയാള്‍ക്ക് (കള്‍) അത്തരത്തിലുള്ള എന്തെങ്കിലും സൗകര്യങ്ങള്‍ നല്‍കിയിട്ടുണ്ടെങ്കില്‍, കമ്പനികളുടെ ബാധകമായ നിയമങ്ങളും നിയന്ത്രണങ്ങളും, ഏത് പേരില്‍ വിളിച്ചാലും, അത്തരം സൗകര്യങ്ങള്‍ക്ക് ബാധകമായത് ഇവിടെ സംയോജിപ്പിച്ചതായി കണക്കാക്കുമെന്ന് കടം വാങ്ങുന്നയാള്‍ (കള്‍) സമ്മതിക്കുന്നു. ഇലക്ട്രോണിക് വിവരങ്ങളില്‍ കടം വാങ്ങുന്നയാള്‍(കള്‍) അവന്‍റെ/അവളുടെ/അവരുടെ ലോണ്‍ അക്കൌണ്ടുമായി ബന്ധപ്പെട്ട ചില വിവരങ്ങള്‍ അടങ്ങിയിരിക്കാമെന്ന് അംഗീകരിക്കുകയും കടം വാങ്ങുന്നയാള്‍ (കള്‍) പ്രത്യേകമായി അഭ്യര്‍ത്ഥിക്കുന്നില്ലെങ്കിലും അത് പ്രസക്തമാണെന്ന് കമ്പനി  കരുതുന്നുവെങ്കില്‍ അത്തരം വിവരങ്ങള്‍ അയക്കാന്‍ കമ്പനിയെ അധികാരപ്പെടുത്തുകയും ചെയ്യുന്നു. ഇലക്ട്രോണിക് വിവരങ്ങള്‍ അയക്കുന്നതിന് സെല്ലുലാര്‍ സേവന ദാതാക്കള്‍ പോലുള്ള മൂന്നാം കക്ഷി സേവന ദാതാക്കളുടെ സേവനങ്ങള്‍ കമ്പനി ഉപയോഗിച്ചേക്കാമെന്ന് കടം വാങ്ങുന്നയാള്‍ (കള്‍) അംഗീകരിക്കുന്നു. അതനുസരിച്ച് കടം വാങ്ങുന്നയാളുമായി (കള്‍) ബന്ധപ്പെട്ട വിവരങ്ങള്‍ അഥവാ അവന്‍റെ/അവളുടെ/അവരുടെ ലോണ്‍ അക്കൗണ്ട് സംബന്ധിച്ച വിവരങ്ങള്‍ മൂന്നാം കക്ഷി സേവന ദാതാക്കള്‍ക്ക് ലഭ്യമാക്കാന്‍ കമ്പനിയെ അധികാരപ്പെടുത്തുന്നു. മുകളില്‍ സൂചിപ്പിച്ച സൗകര്യം മൂന്നാം കക്ഷി സേവന ദാതാക്കളുടെ സേവനങ്ങളെ ആശ്രയിച്ചിരിക്കുന്നുവെന്നും അത്തരം മൂന്നാം-കക്ഷികള്‍ നല്‍കുന്ന സേവനത്തിന്‍റെ ഗുണനിലവാരവുമായി ബന്ധപ്പെട്ട് കമ്പനി ഒരു പ്രാതിനിധ്യവും നല്‍കുന്നില്ലെന്നും വാറന്‍റി നല്‍കുന്നില്ലെന്നും കടം വാങ്ങുന്നയാള്‍ (കള്‍) അംഗീകരിക്കുന്നു. സേവന ദാതാക്കള്‍ ഇലക്ട്രോണിക് വിവരങ്ങളുടെ ഉള്ളടക്കത്തിന്‍റെ സമയബന്ധിതമായ ഡെലിവറി, കൃത്യത അല്ലെങ്കില്‍ സുരക്ഷ എന്നിവ ഉറപ്പുനല്‍കുന്നില്ല. കടം വാങ്ങുന്നയാള്‍ക്ക് ഇലക്ട്രോണിക് വിവരങ്ങള്‍ കൈമാറുന്ന സമയത്തോ അതിനുശേഷമോ, അനധികൃത വ്യക്തികളുടെ വിവരങ്ങള്‍ വിതരണം ചെയ്യാതിരിക്കല്‍, കാലതാമസം, പിശകുകള്‍, നഷ്ടം, വളച്ചൊടിക്കല്‍, തടസ്സപ്പെടുത്തല്‍ അല്ലെങ്കില്‍ ദുരുപയോഗം എന്നിങ്ങനെ മൂന്നാം കക്ഷി സേവന ദാതാക്കളുടെ ഏതെങ്കിലും തരത്തിലുള്ള കൃത്യവിലോപത്തിന് കമ്പനി ബാധ്യസ്ഥമായിരിക്കില്ല. ഇലക്ട്രോണിക് വിവരങ്ങള്‍ ഇന്ത്യയില്‍ മാത്രമേ നല്‍കൂ എന്നും എസ് എം എസ് അലേര്‍ട്ടുകളുടെ കാര്യത്തില്‍ തിരഞ്ഞെടുത്ത ചില പ്രദേശങ്ങളിലെ തിരഞ്ഞെടുത്ത സെല്ലുലാര്‍ സേവന ദാതാക്കളുടെ വരിക്കാര്‍ക്ക് മാത്രമാണെന്നും വായ്പക്കാരന്‍(കള്‍) അംഗീകരിക്കുകയും മനസ്സിലാക്കുകയും ചെയ്യുന്നു. ഈ കരാറിന്‍റെ നിബന്ധനകളും വ്യവസ്ഥകളും അനുസരിച്ച് ഏതെങ്കിലും ഇലക്ട്രോണിക് വിവരങ്ങള്‍ സ്വീകരിക്കുന്നതിലെ തെറ്റായ ആശയവിനിമയമോ പരാജയമോ കടം വാങ്ങുന്നയാളുടെ ബാധ്യതകളില്‍ ഇളവ് വരുത്തുന്നതോ പരിഷ്കരണമോ ആയി കണക്കാക്കില്ലെന്ന് കടം വാങ്ങുന്നയാള്‍ (കള്‍) മനസ്സിലാക്കുകയും അംഗീകരിക്കുകയും ചെയ്യുന്നു. കമ്പനിയില്‍ നിന്നുള്ള ഏതെങ്കിലും ഇലക്ട്രോണിക് വിവരങ്ങളുടെ ഉള്ളടക്കത്തിന്‍റെ ആധികാരികതയും കൃത്യതയും വായ്പക്കാരന്‍ (കള്‍) സ്വതന്ത്രമായി പരിശോധിക്കും.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">9.2 	വായ്പക്കാരന്‍റെ/അവളുടെ/അവരുടെ പേര്(കള്‍) അല്ലെങ്കില്‍ മറ്റ് വിശദാംശങ്ങള്‍ ഇന്ത്യയിലോ വിദേശത്തോ സ്ഥിതി ചെയ്യുന്ന വ്യക്തി(കള്‍)/ ഏജന്‍സി(കള്‍) എന്നിവയോട് യഥാവിധി അംഗീകരിക്കപ്പെട്ടിട്ടുള്ളതായി വെളിപ്പെടുത്താന്‍ കമ്പനിക്ക് സ്വാതന്ത്ര്യമുണ്ടെന്ന് വായ്പക്കാരന്‍(കള്‍) സമ്മതിക്കുന്നു. കമ്പനിയുടെ പ്രവര്‍ത്തനങ്ങളില്‍ അല്ലെങ്കില്‍ സേവനങ്ങള്‍/ഉല്‍പ്പന്നങ്ങള്‍ വാഗ്ദാനം ചെയ്യുന്നതിനോ വഞ്ചന തടയുന്നതിനോ (നേരിട്ട്/അല്ലാതെ) അല്ലെങ്കില്‍ ക്രെഡിറ്റ് ഇന്‍ഫര്‍മേഷന്‍ ബ്യൂറോ (ഇന്ത്യ) ലിമിറ്റഡ് (CIBIL) അല്ലെങ്കില്‍ മറ്റേതെങ്കിലും ലൈസന്‍സുള്ള/അംഗീകൃത ബ്യൂറോകള്‍ എന്നിവയെ സഹായിക്കുന്നതിന് കമ്പനി മുഖേന ഇതിനായി റെഗുലേറ്റര്‍, അല്ലെങ്കില്‍ കടം ശേഖരണം/വീണ്ടെടുക്കല്‍ എന്നിവയില്‍ ഏര്‍പ്പെട്ടിരിക്കുന്ന സ്ഥാപനങ്ങള്‍ അല്ലെങ്കില്‍ നിയമ പ്രാക്ടീഷണര്‍(കള്‍) എന്നിവക്ക് വേണ്ടി അധികാരപ്പെടുത്തിയ ഏജന്‍സി തുടങ്ങി കമ്പനി അതിന്‍റെ താല്‍പ്പര്യപ്രകാരം അത് അനുയോജ്യവും ഉചിതവുമാണെന്ന് കരുതുന്ന സ്ഥാപനത്തിന് വായ്പക്കാരന്‍റെ വിശദാംശങ്ങള്‍ കൈമാറുന്നതാണ്. വിദേശത്തോ ഇന്ത്യയിലോ സ്ഥിതി ചെയ്യുന്ന, കമ്പനിക്ക് ഔട്ട്സോഴ്സ് ചെയ്ത സേവനങ്ങള്‍ നല്‍കുന്ന ഏതെങ്കിലും മൂന്നാം കക്ഷി സേവന ദാതാവിന്, കടം വാങ്ങുന്നയാളെ(കളെ) കുറിച്ചുള്ള ഡാറ്റയോ വിവരങ്ങളോ, റിസര്‍വ് ബാങ്ക് ഓഫ് ഇന്ത്യയുടെ ബാധകമായ മാര്‍ഗ്ഗനിര്‍ദ്ദേശങ്ങള്‍ക്കനുസൃതമായി, കമ്പനിയുടെ ബിസിനസ്സിന്‍റെ പ്രവര്‍ത്തനത്തോടൊപ്പം കമ്പനി പങ്കിടുകയോ കൈമാറുകയോ ചെയ്യേണ്ടതായി വരുമെന്ന് കടം വാങ്ങുന്നവര്‍ (കള്‍) സമ്മതിക്കുകയും അംഗീകരിക്കുകയും ചെയ്യുന്നു. അത്തരത്തിലുള്ള ഏതെങ്കിലും പങ്കുവെക്കല്‍ അല്ലെങ്കില്‍ വിവരങ്ങള്‍ കൈമാറുന്നത് കര്‍ശനമായി രഹസ്യാത്മക അടിസ്ഥാനത്തില്‍ ആയിരിക്കുമെന്നും അത്തരം വിവരങ്ങളുടെ കര്‍ശനമായ രഹസ്യാത്മകത നിലനിര്‍ത്താന്‍ കമ്പനി ശ്രമിക്കുമെന്നും കമ്പനി ഉറപ്പുനല്‍കുന്നു. എന്നിരുന്നാലും, കമ്പനി അല്ലെങ്കില്‍ അത്തരം മൂന്നാം കക്ഷി സേവന ദാതാക്കള്‍, ഇന്ത്യയിലോ വിദേശത്തോ സ്ഥിതി ചെയ്യുന്നതാണെങ്കിലും ഏതെങ്കിലും നിയമമോ ചട്ടമോ നിയന്ത്രണമോ ആവശ്യപ്പെടുകയോ അനുവദിക്കുകയോ ചെയ്താല്‍ അല്ലെങ്കില്‍ ഏതെങ്കിലും പൊതു അല്ലെങ്കില്‍ റെഗുലേറ്ററി അതോറിറ്റിയുടെ അഭ്യര്‍ത്ഥന പ്രകാരം അല്ലെങ്കില്‍ അത്തരം വെളിപ്പെടുത്തല്‍ ആവശ്യമെങ്കില്‍ വഞ്ചന തടയുന്നതിനുള്ള ഉദ്ദേശ്യങ്ങള്‍ക്കായി വിവരങ്ങള്‍ വെളിപ്പെടുത്താവുന്നതാണ്.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">9.3 	കടം വാങ്ങുന്നവരില്‍ ആരെങ്കിലും പ്രവാസി ഇന്ത്യക്കാരന്‍ (എന്‍ ആര്‍ ഐ) അല്ലെങ്കില്‍ ഇന്ത്യന്‍ വംശജനായ വ്യക്തി (പി ഐ ഒ) ആണെങ്കില്‍, 1999-ലെ ഫോറിന്‍ എക്സ്ചേഞ്ച് മാനേജ്മെന്‍റ് ആക്ടിന്‍റെ വ്യവസ്ഥകള്‍ കടം വാങ്ങുന്നവര്‍ അനുസരിക്കുകയും പാലിക്കുകയും ചെയ്യും. കാലാകാലങ്ങളില്‍, ഇന്ത്യയിലെ സ്ഥാവര വസ്തു വാങ്ങല്‍, നിലനിര്‍ത്തല്‍, ഉപയോഗിക്കല്‍, വില്‍ക്കല്‍, ഇന്ത്യക്ക് പുറത്ത് വരുമാനം സ്വദേശത്തേക്ക് കൊണ്ടുപോകല്‍ എന്നിവയുമായി ബന്ധപ്പെട്ട് ബാധകമായ മറ്റെല്ലാ നിയമങ്ങളും, കടം വാങ്ങുന്നയാള്‍ (കള്‍) നഷ്ടോത്തരവാദം ചെയ്യുകയും കമ്പനിക്ക് നഷ്ടപരിഹാരം നല്‍കുകയും ചെയ്യും.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">9.4 സ്വത്തുമായി ബന്ധപ്പെട്ട് അടച്ച/അടയ്ക്കേണ്ട സ്വന്തം സംഭാവനയുടെ തുകയും അതുപോലെ വായ്പാ സൗകര്യത്തിനുള്ള സെക്യൂരിറ്റിയും ഉള്‍പ്പെടെയുള്ള എല്ലാ തുകയും നിയമാ    നുസൃതമായ സ്രോതസ്സ് മുഖേനയുള്ളതാണെന്നും അത് കള്ളപ്പണം വെളുപ്പിക്കല്‍ തടയല്‍ നിയമം, 2002 പ്രകാരം കള്ളപ്പണം വെളുപ്പിക്കല്‍ കുറ്റത്തിന്‍റെ പരിധിയില്‍ വരില്ലെന്നും വായ്പ  ക്കാരന്‍ (കള്‍) പ്രഖ്യാപിക്കുന്നു.</li>
+
+                    <li style="margin-bottom: 9px; font-size: 9px;">9.5 ബ്രാഞ്ച് മുതല്‍ ഹെഡ് ഓഫീസില്‍ തുടങ്ങി സ്ഥാപനത്തിലുടനീളം ഫലപ്രദമായ ഉപഭോക്തൃ പരാതി പരിഹാര സംവിധാനം കമ്പനി ഏര്‍പ്പെടുത്തിയിട്ടുണ്ട്. വിശദമായ ഉപഭോക്തൃ പരാതി നയം കമ്പനിയുടെ വെബ്സൈറ്റില്‍ പ്രസിദ്ധീകരിച്ചിട്ടുണ്ട്.</li>
+                </ol>
+
+
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">10. സ്റ്റാമ്പ് ഡ്യൂട്ടി</p>
+                <p style="font-size: 9px;">സ്റ്റാമ്പ് ഡ്യൂട്ടി, പെനാല്‍റ്റി, രജിസ്ട്രേഷന്‍ ചാര്‍ജുകള്‍, ഇസിയുടെ ചാര്‍ജ് കൂടാതെ/അല്ലെങ്കില്‍ കരാറിന്മേലുള്ള മറ്റേതെങ്കിലും ചാര്‍ജുകളും ഡ്യൂട്ടികളും പോലുള്ള ഏതെങ്കിലും പേയ്മെന്‍റുകള്‍ കമ്പനി നടത്തേണ്ടതുണ്ടെങ്കില്‍, കടം വാങ്ങുന്നയാള്‍ (കള്‍) ഇതിനാല്‍ സമ്മതിക്കുന്നു. സെക്യൂരിറ്റി രേഖകള്‍ അല്ലെങ്കില്‍ മറ്റേതെങ്കിലും രേഖകള്‍, നിര്‍വ്വഹിക്കുന്ന സമയത്തോ അതിനു ശേഷമോ ആകട്ടെ, വായ്പയെടുക്കുന്നവരില്‍ നിന്ന് അത് വീണ്ടെടുക്കാന്‍ കമ്പനിക്ക് അധികാരം/നിയമപരമായ അവകാശം ഉണ്ടായിരിക്കും.</p>
+
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">11.  അറിയിപ്പും സമ്മതപത്രവും</p>
+                <ol style="text-align:left; margin-left: -25px; margin-top: 2px; list-style-type: none;">
+                    <li style="margin-bottom: 10px; font-size: 9px;">
+                        11.1 	കക്ഷികളുടെ മേല്‍വിലാസങ്ങള്‍ അനുബന്ധങ്ങള്‍ക്ക് കീഴില്‍ സൂചിപ്പിച്ചിരിക്കുന്നതായിരിക്കും. കടം വാങ്ങുന്നയാള്‍ (കള്‍) തന്‍റെ വിലാസത്തില്‍ എന്തെങ്കിലും മാറ്റമുണ്ടായാല്‍ ഉടന്‍ തന്നെ കമ്പനിയെ അറിയിക്കും. ഈ ഉടമ്പടി പ്രകാരം ഏതെങ്കിലും ഒരു അറിയിപ്പ് അല്ലെങ്കില്‍ അഭ്യര്‍ത്ഥന മറ്റേതെങ്കിലും കക്ഷിക്ക് നല്‍കേണ്ടത് രേഖാമൂലമോ ഇമെയിലായോ മാത്രമായിരിക്കണം. കൂടാതെ അനുബന്ധങ്ങളില്‍ (അല്ലെങ്കില്‍ കടം വാങ്ങുന്നയാള്‍ക്ക്) സൂചിപ്പിച്ചിരിക്കുന്ന മറ്റ് കക്ഷിയുടെ വിലാസം/മെയില്‍ ഐഡിയില്‍ അല്ലെങ്കില്‍ കമ്പനിക്ക് അവസാനം അറിയാവുന്ന കടം വാങ്ങുന്നയാളുടെ (കളുടെ) വിലാസത്തില്‍ അയക്കണം:-
+                        <ol style="text-align: left; margin-left: -25px; margin-top: 2px; list-style-type: none; font-size: 9px;">
+                            <li style="margin-bottom: 10px; font-size: 9px;">a)	കമ്പനി അയക്കുമ്പോള്‍ വ്യക്തിഗത ഡെലിവറി, ഇ-മെയില്‍, ഫാക്സ് അല്ലെങ്കില്‍ തപാല്‍ മുഖേന നല്‍കാം. ഇങ്ങനെ അയക്കുമ്പോള്‍ കടം വാങ്ങുന്നയാള്‍ക്ക് നല്‍കപ്പെട്ടതോ അഥവാ അയാള്‍ സ്വീകരിച്ചതോ ആയി കണക്കാക്കും. വ്യക്തിഗത ഡെലിവറി മുഖേന നല്‍കിയാല്‍, ഡെലിവറി ചെയ്യുന്ന ദിവസവും പോസ്റ്റ് ഓഫീസില്‍ സര്‍ട്ടിഫിക്കറ്റ് ഓഫ് പോസ്റ്റ് വഴിയോ രജിസ്റ്റേഡ് പോസ്റ്റ് വഴിയോ ഇമെയില്‍ വഴിയോ അയക്കുകയാണെങ്കില്‍ അത് പോസ്റ്റ് അഥവാ മെയില്‍ ചെയ്ത് 3 ദിവസം കഴിയുമ്പോഴോ കടം വാങ്ങുന്നയാള്‍ക്ക് ലഭിച്ചതായി കണക്കാക്കും.</li>
+
+                            <li style="margin-bottom: 10px; font-size: 9px;">b)	വായ്പക്കാരന്‍(കള്‍) കമ്പനിക്ക് അയക്കുമ്പോള്‍ അത് കമ്പനിക്ക് യഥാര്‍ത്ഥത്തില്‍ ലഭിക്കുമ്പോള്‍ സ്വീകരിച്ചതായി കണക്കാക്കും.</li>
+
+
+                        </ol>
+                    </li>
+                </ol>
+
+                <p style="font-size: 9px;">12. 	വായ്പയുടെ ഏത് ഘട്ടത്തിലും ശേഖരണമോ വീണ്ടെടുക്കലോ ഔട്ട്സോഴ്സ് ചെയ്യാനോ ഒന്നോ അതിലധികമോ കലക്ഷന്‍ ഏജന്‍റുമാരെ അത്തരം ആവശ്യത്തിനായി ഏര്‍പ്പാടാക്കാനോ കമ്പനിക്ക് അവകാശമുണ്ടെന്ന് വായ്പക്കാരന്‍(കള്‍) ഇതിനാല്‍ സമ്മതിക്കുന്നു. അത്തരം ഏജന്‍റുമാര്‍ക്ക് ന്യായമായ എല്ലാ സമയത്തും കടം വാങ്ങുന്നയാളെ സമീപിക്കാം.</p>
+
+
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">13. നഷ്ടപരിഹാരം</p>
+                <p style="font-size: 9px;">
+                    ഈ കരാറിന്‍റെ ഏതെങ്കിലും നിബന്ധനകള്‍, വ്യവസ്ഥകള്‍, പ്രസ്താവനകള്‍, ഏറ്റെടുക്കലുകള്‍, പ്രാതിനിധ്യങ്ങള്‍, വാറന്‍റികള്‍ എന്നിവയുടെ ലംഘനത്തിന്‍റെ എല്ലാ അനന്തരഫലങ്ങളില്‍ നിന്നും കമ്പനിക്കും അതിന്‍റെ ഉദ്യോഗസ്ഥര്‍ക്കും / ജീവനക്കാര്‍ക്കും പൂര്‍ണ്ണമായും നഷ്ടപരിഹാരം നല്‍കാനും നിരുപദ്രവകരമാക്കാനും കടം വാങ്ങുന്നയാള്‍ (കള്‍) സമ്മതിക്കുന്നു. അതിന്‍റെ ഏതെങ്കിലും പ്രാതിനിധ്യങ്ങളോ വാറന്‍റികളോ ഏതെങ്കിലും ഘട്ടത്തില്‍ ശരിയാണെന്ന് കണ്ടെത്താനാകുന്നില്ല. ഏതെങ്കിലും പ്രവര്‍ത്തനങ്ങള്‍, സ്യൂട്ടുകള്‍, ക്ലെയിമുകള്‍, നടപടിക്രമങ്ങള്‍, നാശനഷ്ടങ്ങള്‍, ബാധ്യതകള്‍, നഷ്ടങ്ങള്‍, ചെലവുകള്‍ അല്ലെങ്കില്‍ മൂല്യം (ഇനിമുതല്‍ 'ക്ലെയിമുകള്‍' എന്ന് വിളിക്കപ്പെടുന്നു) എന്നിവ ഉള്‍പ്പെടെ കമ്പനിക്ക് വഹിക്കേണ്ടിവന്നതും ചെലവാക്കേണ്ടിവന്നതും. ഈ നഷ്ടപരിഹാരം വാറന്‍റികളുടെയും കൂടാതെ/അല്ലെങ്കില്‍ കടം വാങ്ങുന്നയാളുടെ (അല്ലെങ്കില്‍) പ്രതിനിധാനങ്ങളുടെയും ഭാഗത്തുള്ള എല്ലാ പ്രവൃത്തികളും ഒഴിവാക്കലുകളും ഉള്‍പ്പെടെ ആയിരിക്കുമെന്ന് കടം വാങ്ങുന്നയാള്‍ (കള്‍) ഇതിനാല്‍ അംഗീകരിക്കുകയും സമ്മതിച്ചെഴുതിക്കൊടുക്കുകയും ചെയ്യുന്നു. അതുപോലെ, ഏതെങ്കിലും വാറന്‍റി ലംഘനം, പ്രാതിനിധ്യം, ബാധകമായ ഏതെങ്കിലും നിയമം പാലിക്കാത്തത്, അനധികൃത പ്രവൃത്തി, വഞ്ചന, കടം വാങ്ങുന്നയാള്‍ ചെയ്യുന്നതില്‍ നിന്ന് വിട്ടുനില്‍ക്കുന്ന കാര്യങ്ങള്‍ എന്നിവയുടെ അടിസ്ഥാനത്തില്‍ കമ്പനിയില്‍ എന്തെങ്കിലും ക്ലെയിമുകള്‍ ഉണ്ടാകുന്ന സാഹചര്യത്തില്‍ (കള്‍) അല്ലെങ്കില്‍ അതിന്‍റെ ജീവനക്കാര്‍, ഏജന്‍റുമാര്‍, വ്യാജമായതിനാല്‍, വായ്പക്കാരന്‍ (കള്‍) ഈ അക്കൗണ്ടില്‍ കമ്പനി ആവശ്യപ്പെടുന്ന തുകയുടെ അടിസ്ഥാനത്തില്‍, കമ്പനി ആവശ്യപ്പെടുന്നതിന്‍റെ 7 പ്രവൃത്തി ദിവസങ്ങള്‍ക്കുള്ളില്‍ യാതൊരു മടിയോ, സംവരണമോ, മത്സരമോ, പ്രതിഷേധമോ കൂടാതെ അടക്കാമെന്ന് ഉറപ്പുനല്‍കുന്നു
+                </p>
+
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">14.ഭരണനിയമവും അധികാരപരിധിയും</p>
+                <p>ഈ ഉടമ്പടി ഇന്ത്യയിലെ നിയമങ്ങള്‍ക്കനുസൃതമായി എല്ലാ അര്‍ത്ഥത്തിലും നിയന്ത്രിക്കപ്പെടുന്നു. കൂടാതെ എന്തെങ്കിലും വിഷയമോ പ്രശ്നങ്ങളോ ഇവിടെ ഉണ്ടാകുന്ന ഏതെങ്കിലും തര്‍ക്കമോ കമ്പനിയുടെ ഓപ്ഷന്‍/വിവേചനാധികാരത്തില്‍ തൃശൂരിലെ (കേരളം) കോടതികളുടെ പ്രത്യേക അധികാരപരിധിക്ക് വിധേയമായിരിക്കും. എന്നിരുന്നാലും, മറ്റേതെങ്കിലും കോടതിയിലോ അല്ലെങ്കില്‍ യോഗ്യതയുള്ള അധികാരപരിധിയിലുള്ള ട്രൈബ്യൂണലിലോ ഫയല്‍ ചെയ്യുന്നതിനും നടപടിക്രമങ്ങള്‍ ആരംഭിക്കുന്നതിനുമുള്ള കമ്പനിയുടെ അവകാശങ്ങളെ ഇത് പരിമിതപ്പെടുത്തുന്നതല്ല.</p>
+
+                <p style="font-weight: bold; margin-bottom: 0; font-size: 9px;">15. ആര്‍ബിട്രേഷന്‍</p>
+                <p style="font-size: 9px;">
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    ഇവിടെ അടങ്ങിയിരിക്കുന്ന വിരുദ്ധമായ എന്തെങ്കിലും ഉണ്ടായിരുന്നിട്ടും, ഈ കരാറിന്‍റെ നിര്‍മ്മാണം, വ്യാഖ്യാനം, അര്‍ത്ഥം, വ്യാപ്തി, പ്രവര്‍ത്തനം, പ്രഭാവം കൂടാതെ / അല്ലെങ്കില്‍ അതിന്‍റെ സാധുത ("തര്‍ക്കം") എന്നിവയുള്‍പ്പെടെ ഈ കരാറില്‍ നിന്ന് ഉണ്ടാകുന്ന കൂടാതെ / അല്ലെങ്കില്‍ ബന്ധപ്പെട്ട ക്ലെയിമുകള്‍, അതിന്‍റെ തര്‍ക്ക പരിഹാര നിയമങ്ങള്‍ ('നിയമങ്ങള്‍') അനുസരിച്ച്, ഒരു സ്വതന്ത്ര സ്ഥാപനമായ Presolv360 ഭരിക്കുന്ന, ആര്‍ബിട്രേഷന്‍ വഴി പരിഹരിക്കപ്പെടും
+
+                    റൂള്‍സ് പ്രകാരം നിയമിക്കപ്പെട്ട ഏക മദ്ധ്യസ്ഥന്‍റെ മുമ്പാകെയാണ് ആര്‍ബിട്രേഷന്‍ എന്ന് കക്ഷികള്‍ സമ്മതിക്കുന്നു. ഇന്ത്യയിലെ തൃശൂര്‍ ആയിരിക്കും മധ്യസ്ഥതയുടെ നിയമപരമായ സീറ്റ്. വ്യവഹാരത്തിന്‍റെ ഭാഷ ഇംഗ്ലീഷ് ആയിരിക്കും. ആര്‍ബിട്രേഷന്‍ നടപടികളെ നിയന്ത്രിക്കുന്ന നിയമം ഇന്ത്യന്‍ നിയമമായിരിക്കും. ആര്‍ബിട്രേറ്ററുടെ തീരുമാനം അന്തിമവും കക്ഷികള്‍ക്ക് ബാധ്യസ്ഥവുമാണ്.
+
+                    മുകളില്‍ പറഞ്ഞ കാര്യങ്ങള്‍ക്ക് വിധേയമായി, സീറ്റിലെ യോഗ്യതയുള്ള കോടതികള്‍ക്ക് പ്രത്യേക അധികാരപരിധി ഉണ്ടായിരിക്കും. Presolv360 (https://Presolv 360.com/) ന്‍റെ ഓണ്‍ലൈന്‍ തര്‍ക്ക പരിഹാര (ODR) പ്ലാറ്റ്ഫോം വഴിയും ഈ ആവശ്യത്തിനായി നല്‍കിയിരിക്കുന്ന ഇമെയില്‍ വിലാസങ്ങളും കൂടാതെ/അല്ലെങ്കില്‍ ലഭ്യമായ മൊബൈല്‍ നമ്പറുകളും വഴി മധ്യസ്ഥ നടപടികള്‍ നടപ്പിലാക്കാന്‍ കക്ഷികള്‍ സമ്മതിക്കുന്നു. അല്ലെങ്കില്‍ കരാറില്‍ പരാമര്‍ശിച്ചിരിക്കുന്നത് പരിഗണിക്കും. ആര്‍ബിട്രേഷന്‍ നടപടികളില്‍ ഉടനീളം ഇമെയില്‍ വിലാസത്തിലും കൂടാതെ/അല്ലെങ്കില്‍ മൊബൈല്‍ നമ്പറിലും എന്തെങ്കിലും മാറ്റമുണ്ടായാല്‍ അക്കാര്യം സ്ഥാപനത്തെ അറിയിക്കുന്നതിന് ഓരോ കക്ഷിക്കും ഉത്തരവാദിത്തമുണ്ട്. ആര്‍ബിട്രേറ്ററുടെ അഭിപ്രായത്തില്‍ ആര്‍ബിട്രേഷന്‍ നടപടികള്‍ ഫലത്തില്‍ നിര്‍വഹിക്കാന്‍ കഴിയാത്ത സാഹചര്യത്തില്‍, നടപടിക്രമങ്ങള്‍ ശാരീരികമായി നടത്തപ്പെടും. കൂടാതെ കേസിന്‍റെ സൗകര്യം ഉള്‍പ്പെടെ, കേസിന്‍റെ സാഹചര്യങ്ങളും പാര്‍ട്ടികളുടെ സൗകര്യവും കണക്കിലെടുത്ത് നടപടികളുടെ വേദി നിര്‍ണ്ണയിക്കുന്നത് മദ്ധ്യസ്ഥന്‍ ആയിരിക്കും.
+                </p>
+
+                <p style="font-size: 9px;">
+                    16. വായ്പ എടുക്കുന്നവരുടെ സൗകര്യാര്‍ത്ഥം ഈ കരാര്‍ നടപ്പിലാക്കുന്ന സ്ഥലത്തെ ഇംഗ്ലീഷിലും പ്രാദേശിക ഭാഷയിലും ഈ ലോണ്‍ കരാര്‍ നല്‍കിയിരിക്കുന്നു. ഇംഗ്ലീഷ് പതിപ്പിലേയും പ്രാദേശിക ഭാഷാ പതിപ്പിലേയും വ്യവസ്ഥകള്‍ തമ്മില്‍ എന്തെങ്കിലും പൊരുത്തക്കേടുകളോ വൈരുദ്ധ്യമോ ഉണ്ടായാല്‍, ഇംഗ്ലീഷ് പതിപ്പില്‍ പറഞ്ഞിരിക്കുന്ന നിബന്ധനകളും വ്യവസ്ഥകളും നിലനില്‍ക്കും.
+                </p>
+
+
+                <div style="text-align: left; padding: 8px; font-size: 9px; display: flex; align-items: center; margin-bottom:-2px;">
+                    <div style="margin-right: 20px;">
+                        <hr style="margin: 0; border: none; border-top: 0.5px dashed; width: 100px;" />
+                        <span>വായ്പക്കാരന്‍</span>
+                    </div> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <div style="margin-right: 20px;">
+                        <hr style="margin: 0; border: none; border-top: 1px dashed; width: 100px;" />
+                        <span>സഹ വായ്പക്കാരന്‍(1)</span>
+                    </div> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <div style="margin-right: 20px;">
+                        <hr style="margin: 0; border: none; border-top: 1px dashed; width: 100px;" />
+                        <span>സഹ വായ്പക്കാരന്‍(2)</span>
+                    </div> &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <div>
+                        <hr style="margin: 0; border: none; border-top: 1px dashed; width: 100px;" />
+                        <span>സഹ വായ്പക്കാരന്‍(3)</span>
+                    </div>
+                </div>
+                <div style="text-align: left; font-size: 9px; margin-bottom: -2px;">
+                    <p>പേര് & ഒപ്പ്</p>
+                    <p><strong>യോഗക്ഷേമം ലോൺസ് ലിമിറ്റഡ് </strong></p>
+                    <p style="margin-bottom:-2px;">(അംഗീകൃത ഒപ്പ്)</p>
+                    <p>(ഒപ്പും പേരും)</p>
+                </div>
+
+            </div>
+
+
+        </div>
+        @*----------------------------------------------annexure------------------*@
+        <div class="outline-container content page-break" @*style="height:95%;"*@ id="annexure">
+
+            <br />
+            <div class="logo-src" style="height: 42px; vertical-align: top; text-align: center; margin-top: -5px; margin-bottom: 5px;">
+                <img style="width:170px;" src="~/images/logowithtext.png" />
+            </div>
+            <div class="company-info" style="margin-bottom: -10px; line-height: 1.2; font-size: 14px; font-weight: bold;">
+                <div style=" margin-bottom: 5px;">YOGAKSHEMAM LOANS LIMITED<br />യോഗക്ഷേമം ലോണ്‍സ് ലിമിറ്റഡ്.</div>
+                <div style="font-weight: normal; font-size: 14px; font-weight: bold;">Ottappath Tower, Aswini Junction, Thiruvambady P.O, Thrissur 680022.<br />ഒറ്റപ്പത്ത് ടവര്‍, അശ്വിനി ജങ്ഷന്‍, തിരുവമ്പാടി പി.ഒ, തൃശൂര്‍ 680022.</div>
+            </div><br />
+            <table style="width: 95%; border-collapse: collapse; margin: 10px; border: 1px thin black; border-radius: 5px; text-align: center; padding:2px;">
+                <tr>
+                    <td style="text-align: center; font-weight: bold; padding: 10px; border: 1px thin black; font-size: 14px;">
+                        <u>Annexure/ അനുബന്ധം</u>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: none; padding: 0;">
+                        <hr style="border: none; border-top: 1px thin black; margin: 0;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; font-weight: normal; padding: 5px; border: 1px thin black; font-size: 12px; ">
+                        <p style="margin: 0;">
+                            Loan Account No/വായ്പ അക്കൗണ്ട് നമ്പർ:&nbsp;<strong>@Model.AnnexureApplicationFormData.ApplicationID_annx</strong>
+                        </p>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <td style="text-align: left; font-weight: normal; padding: 5px; border: 1px thin black; font-size: 12px; ">
+                        <p style="margin: 0;">
+                            Branch Office Address/ ശാഖ ഓഫീസ് വിലാസം:&nbsp;<strong>@Model.AnnexureApplicationFormData.BranchAddress1_annx</strong>
+                        </p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="text-align: left; font-weight: normal; padding: 5px; border: 1px thin black; font-size: 12px; ">
+                        <span style="display: inline-block; margin-bottom: 5px;">
+                            Description of the Borrower/&nbsp;വായ്പക്കാരന്റെ വിവരണം
+                        </span><br />
+                        <span style="display: inline-block; margin-bottom: 5px;">
+                            Name/പേര്:&nbsp;<strong>@Model.AnnexureApplicationFormData.PrimaryApplicantName_annx </strong>
+                        </span><br />
+
+                        <span style="display: inline-block; margin-bottom: 5px;">
+                            Age/ വയസ്സ്:&nbsp;<strong>
+                                @{
+                                    // Extract age from the database string
+                                    var primaryApplicantAgeDOB = Model.AnnexureApplicationFormData.PrimaryApplicantAgeDOB_annx; // Example: "46, 30-Apr-1978"
+                                    var age = primaryApplicantAgeDOB.Split(',')[0].Trim(); // Extracts "46"
+                                }
+                                @age
+
+                            </strong>
+                        </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span style="display: inline-block; margin-bottom: 5px;">
+                            S/o, D/o, W/o / മകന്‍/മകള്‍/ഭാര്യ:&nbsp;<strong>@Model.AnnexureApplicationFormData.PrimaryApplicantGuardian_annx </strong>
+                        </span><br />
+                        <span style="display: inline-block; margin-bottom: 5px;">
+                            Address	/ വിലാസം:&nbsp;<strong>
+                                @(
+                                             string.Join(", ", new[] {
+                                             Model.AnnexureApplicationFormData.PrimaryApplicantPresentAddress1_annx,
+                                             Model.AnnexureApplicationFormData.PrimaryApplicantPresentAddress2_annx,
+                                             Model.AnnexureApplicationFormData.PrimaryApplicantPresentAddress3_annx,
+                                             Model.AnnexureApplicationFormData.PrimaryApplicantPresentAddress4_annx,
+                                             string.Join("-", new[] {
+                                             Model.AnnexureApplicationFormData.PrimaryApplicantPresentPost_annx,
+                                             Model.AnnexureApplicationFormData.PrimaryApplicantPresentPinCode_annx
+                                             }.Where(x => !string.IsNullOrEmpty(x))),
+                                             Model.AnnexureApplicationFormData.PrimaryApplicantPresentCity_annx,
+                                             Model.AnnexureApplicationFormData.PrimaryApplicantPresentDistrict_annx,
+                                             Model.AnnexureApplicationFormData.PrimaryApplicantPresentState_annx
+                                             }.Where(x => !string.IsNullOrEmpty(x)))
+                                             )
+                            </strong>
+                        </span>                                                                                                                                                                        </span>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="text-align: left; font-weight: normal; padding: 5px; border: 1px thin black; font-size: 12px; ">
+                        <span style="display: inline-block; margin-right: 300px; margin-bottom: 5px;">Constitution/ഭരണഘടന</span>
+                        <span style="display: inline-block; margin-right: 10px;">
+                            <span id="constitution-box" style="display: inline-block; width: 15px; height: 15px; border: 1px solid black; vertical-align: middle; margin-left: -250px;"></span>
+                            Individual/ വ്യക്തി
+                        </span>
+                        <br />
+                        <script>
+    const constitution = '@Model.AnnexureApplicationFormData.PrimaryApplicantConstitution_annx'; // Fetch from the model
+    if (constitution === "Individual") {
+        document.getElementById("constitution-box").innerHTML = "✓"; // Add tick mark
+    }
+                        </script>
+                        <span style="display: inline-block; margin-bottom: 5px;">Phone/ ഫോണ്‍:</span>&nbsp;<strong>@Model.AnnexureApplicationFormData.PrimaryApplicantMobile_annx</strong>&nbsp;&nbsp;
+                        <span style="display: inline-block; margin-bottom: 5px; ">E-mail/ ഇമെയില്‍:</span>&nbsp;<strong>@Model.AnnexureApplicationFormData.PrimaryApplicantEmail_annx</strong>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="text-align: left; font-weight: normal; padding: 5px; border: 1px thin black; font-size: 12px; ">
+                        <span style="display: inline-block; margin-bottom: 5px;">
+                            Description of the Borrower/&nbsp;വായ്പക്കാരന്റെ വിവരണം
+                        </span><br />
+                        <span style="display: inline-block; margin-bottom: 5px;">
+                            Name/പേര്:&nbsp;<strong>@Model.AnnexureApplicationFormData.CoApplicant1_Name_annx </strong>
+                        </span><br />
+
+                        <span style="display: inline-block; margin-bottom: 5px;">
+                            Age/ വയസ്സ്:&nbsp;<strong>
+                                @{
+                                    // Extract age from the database string
+                                    var primaryApplicantAgeDOB1 = Model.AnnexureApplicationFormData.CoApplicant1_AgeDOB_annx; // Example: "46, 30-Apr-1978"
+                                    var age1 = primaryApplicantAgeDOB1.Split(',')[0].Trim(); // Extracts "46"
+                                }
+                                @age1
+
+                            </strong>
+                        </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span style="display: inline-block; margin-bottom: 5px;">
+                            S/o, D/o, W/o / മകന്‍/മകള്‍/ഭാര്യ:&nbsp;<strong> @Model.AnnexureApplicationFormData.CoApplicant1_FatherName_annx </strong>
+                        </span><br />
+                        <span style="display: inline-block; margin-bottom: 5px;">
+                            Address	/ വിലാസം:&nbsp;<strong>
+                                @(
+               string.Join(", ", new[] {
+               Model.AnnexureApplicationFormData.CoApplicant1_Address1_annx,
+               Model.AnnexureApplicationFormData.CoApplicant1_Address2_annx,
+               Model.AnnexureApplicationFormData.CoApplicant1_Address3_annx,
+               Model.AnnexureApplicationFormData.CoApplicant1_Address4_annx,
+               string.Join("-", new[] {
+               Model.AnnexureApplicationFormData.CoApplicant1_Post_annx,
+               Model.AnnexureApplicationFormData.CoApplicant1_PinCode_annx
+               }.Where(x => !string.IsNullOrEmpty(x))),
+               Model.AnnexureApplicationFormData.CoApplicant1_City_annx,
+               Model.AnnexureApplicationFormData.CoApplicant1_District_annx,
+               Model.AnnexureApplicationFormData.CoApplicant1_State_annx
+               }.Where(x => !string.IsNullOrEmpty(x)))
+               )
+                            </strong>
+                        </span>                                                                                                                                                                        </span>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="text-align: left; font-weight: normal; padding: 5px; border: 1px thin black; font-size: 12px; ">
+                        <span style="display: inline-block; margin-right: 300px; margin-bottom: 5px;">Constitution/ഭരണഘടന</span>
+                        <span style="display: inline-block; margin-right: 10px;">
+                            <span id="constitution-box1" style="display: inline-block; width: 15px; height: 15px; border: 1px solid black; vertical-align: middle; margin-left: -250px;"></span>
+                            Individual/ വ്യക്തി
+                        </span>
+                        <br />
+                        <script>
+const constitution1 = '@Model.AnnexureApplicationFormData.CoApplicant1_Constitution_annx'; // Fetch from the model
+if (constitution1 === "Individual") {
+    document.getElementById("constitution-box1").innerHTML = "✓"; // Add tick mark
+}
+                        </script>
+                        <span style="display: inline-block; margin-bottom: 5px;">Phone/ ഫോണ്‍</span>&nbsp;<strong>@Model.AnnexureApplicationFormData.CoApplicant1_Mobile_annx</strong>&nbsp;&nbsp;
+                        <span style="display: inline-block; margin-bottom: 5px; ">E-mail/ ഇമെയില്‍</span>&nbsp;<strong>@Model.AnnexureApplicationFormData.CoApplicant1_Email_annx</strong>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="text-align: left; font-weight: normal; padding: 5px; border: 1px thin black; font-size: 12px; ">
+                        <span style="display: inline-block; margin-bottom: 5px;">
+                            Description of the Borrower/&nbsp;വായ്പക്കാരന്റെ വിവരണം
+                        </span><br />
+                        <span style="display: inline-block; margin-bottom: 5px;">
+                            Name/പേര്:&nbsp;<strong>@Model.AnnexureApplicationFormData.CoApplicant2_Name_annx </strong>
+                        </span><br />
+
+                        <span style="display: inline-block; margin-bottom: 5px;">
+                            Age/ വയസ്സ്:&nbsp;<strong>
+                                @{
+                                    // Extract age from the database string
+                                    var primaryApplicantAgeDOB2 = Model.AnnexureApplicationFormData.CoApplicant2_AgeDOB_annx; // Example: "46, 30-Apr-1978"
+                                    var age2 = primaryApplicantAgeDOB2.Split(',')[0].Trim(); // Extracts "46"
+                                }
+                                @age2
+
+                            </strong>
+                        </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <span style="display: inline-block; margin-bottom: 5px;">
+                            S/o, D/o, W/o / മകന്‍/മകള്‍/ഭാര്യ:&nbsp;<strong> @Model.AnnexureApplicationFormData.CoApplicant2_FatherName_annx</strong>
+                        </span><br />
+                        <span style="display: inline-block; margin-bottom: 5px;">
+                            Address	/ വിലാസം:&nbsp;<strong>
+                                @(
+            string.Join(", ", new[] {
+            Model.AnnexureApplicationFormData.CoApplicant2_Address1_annx,
+            Model.AnnexureApplicationFormData.CoApplicant2_Address2_annx,
+            Model.AnnexureApplicationFormData.CoApplicant2_Address3_annx,
+            Model.AnnexureApplicationFormData.CoApplicant2_Address4_annx,
+            string.Join("-", new[] {
+            Model.AnnexureApplicationFormData.CoApplicant2_Post_annx,
+            Model.AnnexureApplicationFormData.CoApplicant2_PinCode_annx
+            }.Where(x => !string.IsNullOrEmpty(x))),
+            Model.AnnexureApplicationFormData.CoApplicant2_City_annx,
+            Model.AnnexureApplicationFormData.CoApplicant2_District_annx,
+            Model.AnnexureApplicationFormData.CoApplicant2_State_annx
+            }.Where(x => !string.IsNullOrEmpty(x)))
+            )
+                            </strong>
+                        </span>                                                                                                                                                                        </span>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="text-align: left; font-weight: normal; padding: 5px; border: 1px thin black; font-size: 12px; ">
+
+                        <span style="display: inline-block; margin-right: 300px; margin-bottom: 5px;">Constitution/ഭരണഘടന</span>
+                        <span style="display: inline-block; margin-right: 10px;">
+                            <span id="constitution-box2" style="display: inline-block; width: 15px; height: 15px; border: 1px solid black; vertical-align: middle; margin-left: -250px;"></span>
+                            Individual/ വ്യക്തി
+                        </span>
+                        <br />
+                        <script>
+const constitution2 = '@Model.AnnexureApplicationFormData.CoApplicant2_Constitution_annx'; // Fetch from the model
+if (constitution2 === "Individual") {
+    document.getElementById("constitution-box2").innerHTML = "✓"; // Add tick mark
+}
+                        </script>
+                        <span style="display: inline-block; margin-bottom: 5px;">Phone/ ഫോണ്‍</span>&nbsp;<strong>@Model.AnnexureApplicationFormData.CoApplicant2_Mobile_annx</strong>&nbsp;&nbsp;
+                        <span style="display: inline-block; margin-bottom: 5px; ">E-mail/ ഇമെയില്‍</span>&nbsp;<strong>@Model.AnnexureApplicationFormData.CoApplicant2_Email_annx</strong>
+
+                    </td>
+                </tr>
+            </table>
+            <div style="text-align: center;">
+                <p style="text-align: center; margin-bottom:-1px;"><u>Accepted / സ്വീകരിച്ചു</u></p>
+                <p style="text-align: center; margin-bottom: -1px;">Borrower/ വായ്പക്കാരന്‍: &nbsp;@Model.TandCApplicationFormData.PrimaryApplicantName_TC</p>
+                <p style="text-align: center; margin-bottom: -1px;">Co-Borrower 1 / സഹവായ്പക്കാരന്‍ 1: &nbsp;@Model.ApplicationFormData.CoApplicant1_Name_SL</p>
+                <p style="text-align: center; margin-bottom: -1px;">Co-Borrower 2/ സഹവായ്പക്കാരന്‍ 2: &nbsp;@Model.ApplicationFormData.CoApplicant2_Name_SL</p>
+                <p style="text-align: center; margin-bottom: -1px;">Co-Borrower 3/ സഹവായ്പക്കാരന്‍ 3: &nbsp;@Model.ApplicationFormData.CoApplicant3_Name_SL </p>
+            </div>
+        </div>
+
+        @*---------------------------------------3rd Page Key Fact Sheets English------------------------------------------------------*@
+
+        <div id="partialViewContainerKFS">
+            <br />
+            @Html.Partial("_BL_KFS_Malayalam")
+        </div>
+        @*----------------------Terms&Conditions----------------------------------------*@
+
+        <div class="page-break content" id="Terms&Conditions">
+            <br /><br />
+
+
+            <div class="logo-src" style="height: 42px; vertical-align: top; text-align: center; margin-top: -5px; margin-bottom: 5px;">
+                <img style="width:170px;" src="~/images/logowithtext.png" />
+            </div>
+            <div class="company-info" style="margin-bottom: -10px; line-height: 1.2; font-size: 11px; font-weight: bold;">
+                <div style=" margin-bottom: 2px;">Yogakshemam Loans Ltd.<br /><p style="font-size: 10px; text-align: center;">യോഗക്ഷേമം ലോണ്‍സ് ലിമിറ്റഡ്.</p> </div>
+
+                <div style="font-weight: normal; font-size: 11px; margin-bottom:2px;">
+                    3rd floor, Ottappath Tower, Aswini Junction, Thiruvambady P.O, Thrissur, Kerala-680022.<br /><p style="font-size: 10px; text-align:center;"> ഒറ്റപ്പത്ത് ടവര്‍, അശ്വിനി ജങ്ഷന്‍, തിരുവമ്പാടി പി.ഒ, തൃശൂര്‍, കേരളം-680022.</p>
+
+                </div>
+            </div>
+            <p style="font-size: 11px; text-align: center; margin-bottom: -1px;">DETAILED TERMS & CONDITIONS/ SCHEDULE/ SANCTION MEMO<br />വിശദമായ നിബന്ധനകളും വ്യവസ്ഥകളും/ ഷെഡ്യൂള്‍/ അനുമതി മെമ്മോ</p>
+
+            <table style="width: 95%; border-collapse: collapse; margin: 10px; border: 1px thin black; padding:1px 1px 1px 1px;">
+                <thead>
+                    <tr style="text-align:center;">
+                        <th style="border: 1px thin black;  text-align: center;">S.NO<br /> <p style="font-size:8px;">സീരിയൽ നമ്പർ</p></th>
+                        <th style="border: 1px thin black;  text-align: center;">Particulars/വിവരണം</th>
+                        <th style="border: 1px thin black;  text-align: center;">Details/വിശദാംശങ്ങൾ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">1</td>
+                        <td style="border: 1px thin black;">Application No/അപേക്ഷ നമ്പർ</td>
+                        <td style="border: 1px thin black;">@Model.TandCApplicationFormData.ApplicationID_TC </td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black; text-align: center;">2</td>
+                        <td style="border: 1px thin black;">Purpose of the loan/ വായ്പയുടെ ലക്ഷ്യം</td>
+                        <td style="border: 1px thin black;">@Model.TandCApplicationFormData.PurposeOfLoan_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">3</td>
+                        <td style="border: 1px thin black; ">Loan disbursement Branch/ വായ്പ വിതരണ ശാഖ</td>
+                        <td style="border: 1px thin black;">@Model.TandCApplicationFormData.LoanDisbursementBranch_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black; text-align: center;">4</td>
+                        <td style="border: 1px thin black; ">Name & Address of Borrower/ വായ്പക്കാരന്റെ പേരും വിലാസവും</td>
+                        <td style="border: 1px thin black; ">
+                            @Model.TandCApplicationFormData.PrimaryApplicantName_TC &  @(
+                     string.Join(", ", new[] {
+                     Model.TandCApplicationFormData.PrimaryApplicantPresentAddress1_TC,
+                     Model.TandCApplicationFormData.PrimaryApplicantPresentAddress2_TC,
+                     Model.TandCApplicationFormData.PrimaryApplicantPresentAddress3_TC,
+                     Model.TandCApplicationFormData.PrimaryApplicantPresentAddress4_TC,
+                     string.Join("-", new[] {
+                     Model.TandCApplicationFormData.PrimaryApplicantPresentPost_TC,
+                     Model.TandCApplicationFormData.PrimaryApplicantPresentPinCode_TC
+                     }.Where(x => !string.IsNullOrEmpty(x))),
+                     Model.TandCApplicationFormData.PrimaryApplicantPresentCity_TC,
+                     Model.TandCApplicationFormData.PrimaryApplicantPresentDistrict_TC,
+                     Model.TandCApplicationFormData.PrimaryApplicantPresentState_TC
+                     }.Where(x => !string.IsNullOrEmpty(x)))
+                     )
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black; text-align: center;">5</td>
+                        <td style="border: 1px thin black;">Loan Amount/ വായ്പാ തുക</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.LoanAmount_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black; text-align: center;">6</td>
+                        <td style="border: 1px thin black; ">Processing Charges/ പ്രോസസ്സിംഗ് ചാര്ജുകള്</td>
+                        <td style="border: 1px thin black;">@Model.TandCApplicationFormData.ProcessingCharges_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">7</td>
+                        <td style="border: 1px thin black; ">Service charge/ സര്വീസ് ചാര്ജ്</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.ServiceCharge_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black; "></td>
+                        <td style="border: 1px thin black; ">a. Tenure of Loan (in Months))/ എ.വായ്പ കാലാവധി (മാസത്തില്)</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.TenureOfLoan_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;"></td>
+                        <td style="border: 1px thin black; ">b. Repayment Frequency by the Borrower/ ബി. കടം വാങ്ങുന്നയാളുടെ തിരിച്ചടവ് ആവൃത്തി</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.RepaymentFrequency_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;"></td>
+                        <td style="border: 1px thin black;">c. Number Of EMIs/EMI/EWI Amount തുകകളുടെ എണ്ണം</td>
+                        <td style="border: 1px thin black;">@Model.TandCApplicationFormData.NumberOfEMI_EMIAmount_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black; "></td>
+                        <td style="border: 1px thin black;">d. Number Of Advance Installment / ഡി. അഡ്വാന്സ് ഇന്സ്റ്റാള്മെന്റിന്റെ എണ്ണം</td>
+                        <td style="border: 1px thin black;">@Model.TandCApplicationFormData.NumberOfAdvanceInstallment_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;"></td>
+                        <td style="border: 1px thin black;">e. Manner Of Payment Of Monthly Installment /ഇ . പ്രതിമാസ തവണ അടയ്ക്കുന്ന രീതി</td>
+                        <td style="border: 1px thin black;">@Model.TandCApplicationFormData.MannerOfPayment_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black; "></td>
+                        <td style="border: 1px thin black;">f. Due date/ എഫ്. അടക്കേണ്ട തീയ്യതി</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.DueDate_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black; "></td>
+                        <td style="border: 1px thin black; ">g. Date Of Commencement Of EMI / ജി. ഇ എം ഐ ആരംഭിക്കുന്ന തീയ്യതി</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.DateOfCommencementEMI_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;"></td>
+                        <td style="border: 1px thin black; ">h. Due Date Of Payment Of First EMI/ എച്ച്. ആദ്യത്തെ ഇ എം ഐ അടക്കേണ്ട തീയ്യതി</td>
+                        <td style="border: 1px thin black;">@Model.TandCApplicationFormData.DueDateOfPaymentOfFirstEMI_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;"></td>
+                        <td style="border: 1px thin black; ">i. Date of Last EMI/ ഐ.അവസാനത്തെ ഇ എം ഐയുടെ തീയ്യതി</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.DueDateOfPaymentOfLastEMI_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black; "></td>
+                        <td style="border: 1px thin black; ">j. Date of Sanction/ജെ. അനുമതി ലഭിച്ച തീയ്യതി</td>
+                        <td style="border: 1px thin black; ">@Model.ApplicationFormData.SanctionDate_SL</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">8</td>
+                        <td style="border: 1px thin black; ">Advance EMI/ മുന്കൂര് ഇ എം ഐ</td>
+                        <td style="border: 1px thin black;">Rs.&nbsp;@Model.TandCApplicationFormData.AdvanceEMI_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black; text-align: center;">9</td>
+                        <td style="border: 1px thin black; ">Net disbursed amount/ ആകെ വിതരണം ചെയ്ത തുക</td>
+                        <td style="border: 1px thin black;">Rs.&nbsp;@Model.TandCApplicationFormData.NetDisbursedAmount_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">10</td>
+                        <td style="border: 1px thin black; ">Rate Of Interest/പലിശനിരക്ക്</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.RateOfInterest_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">11</td>
+                        <td style="border: 1px thin black;">Total interest charge during the entire tenor of the loan (in Rs)/വായ്പയുടെ മുഴുവന് കാലയളവിലെയും മൊത്തം പലിശ നിരക്ക് (രൂപയില്)</td>
+                        <td style="border: 1px thin black; ">Rs.&nbsp;@Model.TandCApplicationFormData.TotalInterestCharge_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">12</td>
+                        <td style="border: 1px thin black; ">Total Amount to be paid by the borrower/കടം വാങ്ങുന്നയാള് നല്കേണ്ട ആകെ തുക</td>
+                        <td style="border: 1px thin black; ">Rs.&nbsp;@Model.TandCApplicationFormData.TotalAmountPaidByBorrower_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black; text-align: center;">13</td>
+                        <td style="border: 1px thin black; ">Amortization Of Loan:/ വായ്പ തിരിച്ചടവ്:</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.AmortizationOfLoan</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black; text-align: center;">14</td>
+                        <td style="border: 1px thin black; ">Penal Charges/പിഴ അടക്കേണ്ട തുക</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.PenalInterest_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">15</td>
+                        <td style="border: 1px thin black; ">Prepayment Charges/ മുന്കൂര് പണമടയ്ക്കല് നിരക്കുകള്</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.PrepaymentCharges_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">16</td>
+                        <td style="border: 1px thin black; ">Annual percentage rate (effective annualized interest rate in % computed on net disbursement amount using IRR approach and reducing balance method)/ വാര്‍ഷിക ശതമാനം നിരക്ക് (ഐ ആര്‍ ആര് സമീപനവും ബാലന്‍സ് കുറയ്ക്കുന്ന രീതിയും ഉപയോഗിച്ച് മൊത്തം വിതരണ തുക കണക്കാക്കിയ %- ല്‍ ഫലവത്തായ വാര്‍ഷിക പലിശ നിരക്ക്)</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.%</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">17</td>
+                        <td style="border: 1px thin black;  ">Broken period interest/ മുറിഞ്ഞ കാലയളവിലെ പലിശ</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.BokenIntRate_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black; text-align: center;">18</td>
+                        <td style="border: 1px thin black; "> ACH/PDC Dishonour Charges (each case)/ഡിസോണര് ചാര്ജുകള് (ഓരോ കേസിലും)</td>
+                        <td style="border: 1px thin black; ">Rs.@Model.TandCApplicationFormData.ECS_PDC_DishonourCharges_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">19</td>
+                        <td style="border: 1px thin black; "> Submission of ACH Mandate/ . എ സി എച്ച് മാന്ഡേറ്റിന്റെ സമര്പ്പണം</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.SubmissionACHMandate_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">20</td>
+                        <td style="border: 1px thin black;">Registered Letter charges/ രജിസ്റ്റര് ചെയ്ത കത്ത് നിരക്കുകൾ</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.RegisteredLetterCharges_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">21</td>
+                        <td style="border: 1px thin black; ">Normal Letter charges/ സാധാരണ കത്ത് നിരക്കുകൾ</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.NormalLetterCharges_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">22</td>
+                        <td style="border: 1px thin black; ">Other Charges/ മറ്റ് ചാര്ജുകൾ</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.OtherCharges_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">23</td>
+                        <td style="border: 1px thin black; ">Security (details of Hypothecated Assets)/ സെക്യൂരിറ്റി (ഹൈപ്പോതെക്കേറ്റഡ് അസറ്റുകളുടെ വിശദാംശങ്ങൾ)</td>
+                        <td style="border: 1px thin black;">@Model.TandCApplicationFormData.Security_HypothecatedAssets_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">24</td>
+                        <td style="border: 1px thin black; ">Jurisdiction/ അധികാരപരിധി</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.Jurisdiction_TC</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">25</td>
+                        <td style="border: 1px thin black; ">Other disclosures (xiii) Cooling off/ look-up period during which borrower shall not be charged any penalty on prepayment of loan/ മറ്റ് വെളിപ്പെടുത്തലുകൾ (xiii) കൂളിംഗ് ഓഫ് / ലുക്ക്-അപ്പ് കാലയളവ്, വായ്പയുടെ മുന്കൂര് പേയ്മെന്റിന് വായ്പക്കാരനുമേല് പിഴ ഈടാക്കില്ല</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.OtherDisclosures</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">26</td>
+                        <td style="border: 1px thin black; ">Details of LSP acting as recovery agent and authorized to approach the borrower/ കടം വാങ്ങുന്നയാളെ സമീപിക്കാന് അധികാരമുള്ള, റിക്കവറി ഏജന്റായി പ്രവര്ത്തിക്കുന്ന എൽ എസ് പിയുടെ വിശദാംശങ്ങൾ</td>
+                        <td style="border: 1px thin black; ">@Model.TandCApplicationFormData.DetailsOfLSP</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin black;  text-align: center;">27</td>
+                        <td style="border: 1px thin black; ">Name, designation, address and phone number of nodal grievance redressal officer designated specifically to deal with lending related complaints/issues./ വായ്പയുമായി ബന്ധപ്പെട്ട പരാതികള്/പ്രശ്നങ്ങള് കൈകാര്യം ചെയ്യാന് പ്രത്യേകം നിയോഗിച്ചിട്ടുള്ള നോഡല് പരാതി പരിഹാര ഓഫീസറുടെ പേര്, പദവി, വിലാസം, ഫോണ് നമ്പര്.</td>
+                        <td style="border: 1px thin black; ">Mr. Sreenivas. K.K, Vice President Credit & Branch Operations,Email ID : customersupports@yogloans.com,Ph: 0487 2320102 , 0487 2320103/ശീനിവാസ്. കെ.കെ, വൈസ് പ്രസിഡന്റ്, ക്രെഡിറ്റ് & ബ്രാഞ്ച് ഓപ്പറേഷന്സ്, ഇമെയില് ഐഡി: customersupports@yogloans.com ഫോണ്: 0487 2320102 , 0487 2320103.</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="border: none;  text-align: left;">Note: Borrowers are advised to review the complete loan agreement for a comprehensive understanding of the terms and conditions./<br /><span style="font-size:9px;">കുറിപ്പ്: നിബന്ധനകളെയും വ്യവസ്ഥകളെയും കുറിച്ച് സമഗ്രമായ ധാരണയ്ക്കായി പൂര്ണ്ണമായ ലോണ് എഗ്രിമെന്റ് അവലോകനം ചെയ്യാന് വായ്പയെടുക്കുന്നവരോട് നിര്ദ്ദേശിക്കുന്നു</span></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+                Subject to the terms of the agreement or unless the same is revised by the lender, Payment/Repayment
+                Schedule shall be as follows:<br /><span style="font-size:9px;">കരാറിന്‍റെ നിബന്ധനകള്‍ക്ക് വിധേയമായി അല്ലെങ്കില്‍ കടം കൊടുക്കുന്നയാള്‍ അത് പുതുക്കിയില്ലെങ്കില്‍, പേയ്മെന്‍റ് / തിരിച്ചടവ്ഷെഡ്യൂള്‍ ഇനി പറയുന്നതായിരിക്കും:</span>
+            </p>
+            <p style="text-align: center; font-size: 11px; font-weight: bold; margin-bottom: -1px;">Detailed Repayment Schedule/<span style="font-size:9px;"> വിശദമായ തിരിച്ചടവ് ഷെഡ്യൂള്‍</span></p>
+            @if (Model.RepaymentSchedule != null && Model.RepaymentSchedule.Any())
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            @*<th style="text-align:center">Application ID</th>*@
+                            <th style="text-align:center">Instalment No.<br />ഗഡു നമ്പർ.</th>
+                            <th style="text-align:center">Outstanding Principal (in Rupees)<br />കുടിശ്ശികയായ മുതല് (രൂപയിൽ)</th>
+                            <th style="text-align:center">Principal (in Rupees)<br />പ്രിൻസിപ്പൽ <br />(രൂപയിൽ)</th>
+                            <th style="text-align:center">Interest (in Rupees)<br />പലിശ (രൂപയിൽ)</th>
+                            <th style="text-align:center">Amount (in Rupees)<br />തവണകള് (രൂപയിൽ)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.RepaymentSchedule)
+                        {
+                            <tr>
+                                @*<td style="text-align:center">@item.ApplicationID_RS</td>*@
+                                <td style="text-align:center">@item.InstNo_RS</td>
+                                <td style="text-align:center">@item.OutstandingPrincipal_RS</td>
+                                <td style="text-align:center">@item.Principal_RS</td>
+                                <td style="text-align:center">@item.Interest_RS</td>
+                                <td style="text-align:center">@item.Amount_RS</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            }
+            else
+            {
+                <div class="alert alert-warning" style="text-align:center;">
+                    <p>No repayment schedule data available.</p>
+                </div>
+            }
+
+
+            <p style="text-align: left; font-size: 11px; font-weight: bold; margin-bottom: -1px;"> <u>NPA and SMA Classification/<span style="font-size:10px;"> എന്‍ പി എ, എസ് എം എ വര്‍ഗ്ഗീകരണം</span></u></p>
+            <p>
+                As per the guidelines issued by the Reserve Bank of India (RBI), if an individual fails to repay the loan EMIs on time or defaults on the EMI payments, then the bank classifies the loan account of the individual as SMA (Special Mention Account) and NPA (Non-Performing Asset). The laws and guidelines relating to the classification of SMA and NPA issued by the RBI and other statutory authorities shall be binding on the borrower.
+                <br /><span style="font-size:9px;">
+                    റിസര്‍വ് ബാങ്ക് ഓഫ് ഇന്ത്യ (ആര്‍ ബി ഐ) പുറപ്പെടുവിച്ച മാര്‍ഗ്ഗനിര്‍ദ്ദേശങ്ങള്‍ അനുസരിച്ച്, ഒരു വ്യക്തി കൃത്യസമയത്ത് ലോണ്‍ ഇ എം ഐകള്‍ തിരിച്ചടയ്ക്കുന്നതില്‍ പരാജയപ്പെടുകയോ അല്ലെങ്കില്‍ ഇ എം ഐ പേയ്മെന്‍റുകളില്‍ വീഴ്ച വരുത്തുകയോ ചെയ്താല്‍, ബാങ്ക് ആ വ്യക്തിയുടെ ലോണ്‍ അക്കൗണ്ടിനെ എസ് എം എ (പ്രത്യേക പരാമര്‍ശ അക്കൗണ്ട്) ആയും എന്‍ പി എ (നോണ്‍ പെര്‍ഫോമിംഗ് അസറ്റ്) ആയും തരംതിരിക്കുന്നു. ആര്‍ ബി ഐയും മറ്റ് നിയമപരമായ അധികാരങ്ങളും നല്‍കുന്ന എസ് എം എ, എന്‍ പി എ എന്നിവയുടെ വര്‍ഗ്ഗീകരണവുമായി ബന്ധപ്പെട്ട നിയമങ്ങളും മാര്‍ഗ്ഗനിര്‍ദ്ദേശങ്ങളും കടം വാങ്ങുന്നയാള്‍ക്ക് ബാധകമായിരിക്കും. ലോണ്‍ അക്കൗണ്ട് എസ് എം എ അല്ലെങ്കില്‍ എന്‍ പി എ ആയി തരംതിരിക്കുകയാണെങ്കില്‍ അത് എക്സ്പീരിയന്‍, സി ആര്‍ ഐ എഫ്, സിബില്‍ തുടങ്ങിയ ക്രെഡിറ്റ് ബ്യൂറോകളില്‍ റിപ്പോര്‍ട്ട് ചെയ്യപ്പെടുകയും കടം വാങ്ങുന്നവരുടെയും ജാമ്യക്കാരുടെയും ക്രെഡിറ്റ് സ്കോര്‍ കുറയുകയും ചെയ്യും.
+                    If the loan account gets classified as SMA or NPA, then the same shall be reported to the credit bureaus like Experian, CRIF, CIBIL, etc and the credit score of the borrowers and guarantors will drop.
+                    ലോണ്‍ അക്കൗണ്ട് എസ് എം എ അല്ലെങ്കില്‍ എന്‍ പി എ ആയി തരംതിരിക്കുകയാണെങ്കില്‍, അത് എക്സ്പീരിയന്‍, CRIF,CIBIL തുടങ്ങിയ ക്രെഡിറ്റ് ബ്യൂറോകളില്‍ റിപ്പോര്‍ട്ട് ചെയ്യപ്പെടുകയും കടം വാങ്ങുന്നവരുടെയും ജാമ്യക്കാരുടെയും ക്രെഡിറ്റ് സ്കോര്‍ കുറയുകയും ചെയ്യും.
+                </span>
+            </p>
+            <p style="text-align: center; font-size: 11px; font-weight: bold; margin-bottom: -1px;">Classification of NPA / SMA sub-categories, i.e., SMA-0, SMA-1, and SMA-2<br /><span style="font-size:10px;">എന്‍ പി എ / എസ് എം എ ഉപവിഭാഗങ്ങളുടെ വര്‍ഗ്ഗീകരണം: എസ് എം എ-0, എസ് എം എ-1, എസ് എം എ-2</span></p>
+
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <thead>
+                    <tr>
+                        <th style="border: 1px thin #000; text-align: center;">Overdue Days from EMI Date<br />ഇ എം ഐ തീയതി മുതല്‍ കാലാവധി കഴിഞ്ഞ ദിവസങ്ങൾS</th>
+                        <th style="border: 1px thin #000;  text-align: center;">Status<br />തൽസ്ഥിതി</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border: 1px thin #000;  text-align: center;">Upto 30 Days Overdue<br />ഇ എം ഐ തീയതി മുതല്‍ 30 ദിവസം വരെ കുടിശ്ശിക</td>
+                        <td style="border: 1px thin #000; text-align: center;">SMA 0<br />എസ് എം എ 0</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin #000; text-align: center;">More than 30 days – upto 60 Days<br />30 ദിവസത്തില്‍ കൂടുതല്‍ 60 ദിവസം വരെ</td>
+                        <td style="border: 1px thin #000;  text-align: center;">SMA 1<br />എസ് എം എ 1</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin #000;  text-align: center;">More than 60 days - upto 120 Days<br />60 ദിവസത്തില്‍ കൂടുതല്‍ 120 ദിവസം വരെ</td>
+                        <td style="border: 1px thin #000;  text-align: center;">SMA 2<br />എസ് എം എ 2</td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px thin #000;  text-align: center;">Completed 120 days and above<br />120 ദിവസം പൂര്‍ത്തിയാക്കി അതില്‍ കൂടുതല്‍ ദിവസം</td>
+                        <td style="border: 1px thin #000;  text-align: center;">NPA<br />എന്‍ പി എS</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="font-style: italic;">
+                Example: If due date of a loan account is March 31, 2021, and full dues are not received before the lending
+                institution runs the day-end process for this date, the date of overdue shall be March 31, 2021. If it
+                continues to remain overdue, then this account shall get tagged as SMA-1 upon running day-end process on
+                April 30, 2021 i.e. upon completion of 30 days of being continuously overdue. Accordingly, the date of
+                SMA-1 classification for that account shall be April 30, 2021.<br />
+                <span style="font-size: 9px;">
+                    ഉദാഹരണം: ഒരു ലോണ്‍ അക്കൗണ്ടിന്‍റെ
+                    അവസാന തീയതി മാര്‍ച്ച് 31, 2021 ആണെങ്കില്‍, വായ്പ നല്‍കുന്ന സ്ഥാപനം ഈ തീയതിക്കുള്ള ഡേ എന്‍ഡ്
+                    പ്രോസസ്സ് നടത്തുന്നതിന് മുമ്പ് മുഴുവന്‍ കുടിശ്ശികയും ലഭിച്ചില്ലെങ്കില്‍, കാലാവധി തീരുന്ന തീയതി 2021 മാര്‍ച്ച്
+                    31 ആയിരിക്കും. അത് തുടരുകയാണെങ്കില്‍ കാലഹരണപ്പെട്ടതായി തുടരുന്നു. തുടര്‍ന്ന് 2021 ഏപ്രില്‍ 30-ന്
+                    ഡേ-എന്‍ഡ് പ്രോസസ്സ് നടത്തുമ്പോള്‍, അതായത് തുടര്‍ച്ചയായി 30 ദിവസം പൂര്‍ത്തിയാകുമ്പോള്‍, ഈ അക്കൗണ്ട്
+                    എസ് എം എ 1 ആയി ടാഗ് ചെയ്യപ്പെടും. അതനുസരിച്ച്, ആ അക്കൗണ്ടിന്‍റെ എസ് എം എ 1 വര്‍ഗ്ഗീകരണ
+                    തീയതി 2021 ഏപ്രില്‍ 30 ആയിരിക്കും.
+                </span>
+                Similarly, if the account continues to remain overdue, it shall get tagged as SMA-2 upon running d
+                ay-end process on May 30, 2021 and if continues to remain overdue further, it shall get classified as
+                NPA upon running day-end process on July 29th, 2021. Ie upon completion of 120th days as overdue.<br /><span style="font-size:9px;">അതുപോലെ, അക്കൗണ്ട് കാലഹരണപ്പെട്ടതായി തുടരുകയാണെങ്കില്‍, 2021 മെയ് 30-ന് ഡേ-എന്‍ഡ് പ്രോസസ്സ് നടത്തുമ്പോള്‍, അത് എസ് എം എ 2 ആയി ടാഗ് ചെയ്യപ്പെടും. കൂടുതല്‍ കാലഹരണപ്പെട്ടതായി തുടരുകയാണെങ്കില്‍, 2021 ജൂലൈ 29-ന് അതായത് 120- ദിവസം പൂര്‍ത്തിയാകുമ്പോള്‍, ഡേ-എന്‍ഡ് പ്രോസസ്സ് നടത്തുമ്പോള്‍ അത് എന്‍ പി എ ആയി വര്‍ഗ്ഗീകരിക്കപ്പെടും.</span>
+            </p>
+            <p>
+                If a loan account is classified as NPA, all other loan accounts of that customer gets automatically
+                classified as NPA even though there is no overdue amount in his/her other loan accounts. Ie.
+                NPA classification is done borrower wise and not loan account wise.<br /><span style="font-size:9px;">
+                    ഒരു ലോണ് അക്കൗണ്ടിനെ NPA ആയി തരംതിരിച്ചാല്‍, ആ ഉപഭോക്താവിന്‍റെ മറ്റ് ലോണ്‍ അക്കൗണ്ടുകളും സ്വയമേവ NPA ആയി വര്‍ഗ്ഗീകരിക്കപ്പെടും. അവന്‍റെ/അവളുടെ മറ്റ് ലോണ്‍ അക്കൗണ്ടുകളില് അടച്ചുതീര്‍ക്കേണ്ട തുക ഇല്ലെങ്കിലും ഇത് ബാധകമാണ്. അതായത്. NPA വര്‍ഗ്ഗീകരണം കടം വാങ്ങുന്നവരെ അടിസ്ഥാനമാക്കിയാണ്, ലോണ്‍ അക്കൗണ്ട് അടിസ്ഥാനമാക്കിയല്ല.
+                </span><br />If a customer is once classified as NPA, the entire overdue amount (in all his accounts with the company) must be paid for reclassifying as regular customer.<br />
+                <span style="font-size:9px;">
+                    ഒരു ഉപഭോക്താവിനെ ഒരിക്കല് NPA ആയി തരംതിരിച്ചാല്‍, സാധാരണ ഉപഭോക്താവായി വീണ്ടും തരംതിരിക്കുന്നതിന്, മുഴുവന്‍ കാലഹരണപ്പെട്ട തുകയും (കമ്പനിയിലെ അവന്‍റെ എല്ലാ അക്കൗണ്ടുകളിലും) തിരിച്ചടക്കണം.
+                </span><br />
+                As per RBI norms, the company needs to reduce the NPA identification norms to 120 days overdue and 90 days overdue days by 31 March 2025 & 31 March 2026 respectively. In order to make a smooth transition, the company at its own discretion, reduce the NPA identification criteria voluntarily to 120 days now and subsequently to 90 days as a conservative step and NPA / SMA reporting criteria gets changed accordingly and this change will be binding on the customer.<br />
+                <span style="font-size:9px;">ആര്‍ ബി ഐ മാനദണ്ഡങ്ങള്‍ അനുസരിച്ച്, കമ്പനിക്ക് NPA തിരിച്ചറിയല്‍ മാനദണ്ഡങ്ങള്‍ യഥാക്രമം 2025 മാര്‍ച്ച് 31, 2026 മാര്‍ച്ച് 31 എന്നിവയ്ക്കുള്ളില്‍ 120 ദിവസമായും 90 ദിവസങ്ങള്‍ കഴിഞ്ഞും കുറക്കേണ്ടതുണ്ട്. സുഗമമായ പരിവര്‍ത്തനം നടത്തുന്നതിന്, കമ്പനി സ്വന്തം വിവേചനാധികാരത്തില്, NPA തിരിച്ചറിയല്‍ മാനദണ്ഡം സ്വമേധയാ 120 ദിവസമായും പിന്നീട് യാഥാസ്ഥിതിക ഘട്ടമായി 90 ദിവസമായും കുറയ്ക്കുകയും NPA / SMA റിപ്പോര്‍ട്ടിംഗ് മാനദണ്ഡങ്ങള്‍ അതിനനുസരിച്ച് മാറുകയും ചെയ്യും. ഈ മാറ്റം ഉപഭോക്താവിന് ബാധകമായിരിക്കുകയും ചെയ്യും.</span>
+            </p>
+            <p style="font-size: 11px; font-weight: bold; text-align: center; margin-bottom: -1px;">Return of Original Documents After Loan Repayment<br /><span style="font-size:10px;">ലോണ്‍ തിരിച്ചടവിന് ശേഷം യഥാര്‍ത്ഥ രേഖകള്‍ തിരിച്ചുകൊടുക്കൽ</span></p>
+            <ol style="list-style-type: lower-roman;">
+                <li>
+                    <strong>SME Secured Loan (LAP)</strong>
+                    <p>
+                        Company will release the original title deed and other documents related to that within a period of 30 days from the date of full
+                        repayment/settlement of the loan account. At the option of the borrower, the same can be collected from the branch from where he has availed
+                        the loan or from the corporate office of the Company.
+                    </p>
+                    <p>
+                        In the event of the sad demise of the property owner, the title deeds shall be released to any legal heir upon furnishing a joint
+                        authorization letter signed by all the legal heirs, along with the death certificate of the property owner and legal heirship certificate.
+                    </p>
+                    <strong><span style="font-size:9px;"> i)	 എസ് എം ഇ സുരക്ഷിത വായ്പ (എല്‍ എ പി)</span></strong>
+                    <p style="font-size: 9px;">
+
+                        ലോണ്‍ അക്കൗണ്ടിന്‍റെ പൂര്‍ണ്ണമായ തിരിച്ചടവ്/സെറ്റില്‍മെന്‍റ് തീയതി മുതല്‍ 30 ദിവസത്തിനുള്ളില്‍ കമ്പനി യഥാര്‍ത്ഥ ടൈറ്റില്‍ ഡീഡും അതുമായി ബന്ധപ്പെട്ട മറ്റ് രേഖകളും പുറത്തുവിടും. കടം വാങ്ങുന്നയാളുടെ ഓപ്ഷനില്‍, അവന്‍/അവള്‍ വായ്പയെടുത്ത ശാഖയില്‍ നിന്നോ കമ്പനിയുടെ കോര്‍പ്പറേറ്റ് ഓഫീസില്‍ നിന്നോ ഇത് ശേഖരിക്കാം.  പ്രോപ്പര്‍ട്ടി ഉടമയുടെ ദുഃഖകരമായ വിയോഗത്തില്‍, ഉടമസ്ഥന്‍റെ മരണ സര്‍ട്ടിഫിക്കറ്റ്, നിയമപരമായ അവകാശ സര്‍ട്ടിഫിക്കറ്റ് എന്നിവയ്ക്കൊപ്പം എല്ലാ നിയമപരമായ അവകാശികളും ഒപ്പിട്ട ഒരു സംയുക്ത അംഗീകാര കത്ത് നല്‍കിയാല്‍, ഉടമസ്ഥാവകാശ രേഖകള്‍ ഏതെങ്കിലും നിയമപരമായ അവകാശിക്ക് വിട്ടുനല്‍കും.
+                    </p>
+
+                </li>
+
+
+                <li>
+                    <strong>Vehicle Loan</strong>
+                    <p>
+                        Company will release the required No Due Certificate along with the applicable forms to be submitted to the registering authority for
+                        cancellation of its lien within 30 days from the date of full repayment/settlement of the loan account by post to the registered address of
+                        the borrower.
+                    </p>
+                    <strong><span style="font-size:9px;"> ii)വാഹനവായ്പ</span></strong>
+                    <p style="font-size: 9px;">
+
+                        ലോണ്‍ അക്കൌണ്ട് പൂര്‍ണ്ണമായി തിരിച്ചടച്ച/ സെറ്റില്‍മെന്‍റ് ചെയ്ത തീയതി മുതല്‍ 30 ദിവസത്തിനകം രജിസ്ട്രേഷന്‍ അതോറിറ്റിക്ക് സമര്‍പ്പിക്കേണ്ട ബാധകമായ ഫോമുകള്‍ സഹിതം, കടം വാങ്ങുന്നയാളുടെ രജിസ്റ്റര്‍ ചെയ്ത വിലാസത്തിലേക്ക് കമ്പനി ബാധ്യതാരഹിത സര്‍ട്ടിഫിക്കറ്റ് പോസ്റ്റലായി അയക്കുന്നതാണ്.
+
+                    </p>
+                </li>
+
+
+
+            </ol>
+            <p style="text-align:right;">Agreed with the above terms & conditions Copy received<br /><span style="font-size:9px;">ലഭിച്ച മേല്‍പ്പറഞ്ഞ നിബന്ധനകളുടെയും വ്യവസ്ഥകളുടെയും പകര്‍പ്പ് അംഗീകരിച്ചു </span></p>
+            @*<p style="text-align:right;">Copy received.</p>*@
+            <p>For Yogakshemam Loan Ltd<br /><span style="font-size:9px;">യോഗക്ഷേമം ലോണ്‍ ലിമിറ്റഡിനു വേണ്ടി</span></p><br />
+            <p style="margin-bottom:-1px;">Through its authorized signatory Mr.: .........................</p>
+            <p style="margin-bottom: -2px; font-size: 9px;">ഔദ്യോഗികമായി ഒപ്പിടുന്നയാള്‍ മുഖാന്തരം ശ്രീ..........................				</p>
+            <p style="margin-bottom:-2px;">Date:</p>
+            <p style="margin-bottom: -2px; font-size: 9px;">തീയതി:&nbsp;@Model.DMApplicationFormData.AgreementDate_DM.</p><br />
+
+            <div style="text-align: center;">
+                <p style="text-align: center; margin-bottom:-1px;"><u>Accepted /<span style="font-size:9px;"> സ്വീകരിച്ചു</span></u></p>
+                <p style="text-align: center; margin-bottom: -1px;">Borrower/<span style="font-size:9px;"> വായ്പക്കാരന്‍:</span> &nbsp;@Model.TandCApplicationFormData.PrimaryApplicantName_TC</p>
+                <p style="text-align: center; margin-bottom: -1px;">Co-Borrower 1 /<span style="font-size:9px;"> സഹവായ്പക്കാരന്‍ 1:</span> &nbsp;@Model.ApplicationFormData.CoApplicant1_Name_SL</p>
+                <p style="text-align: center; margin-bottom: -1px;">Co-Borrower 2/ <span style="font-size:9px;">സഹവായ്പക്കാരന്‍ 2:</span> &nbsp;@Model.ApplicationFormData.CoApplicant2_Name_SL</p>
+                <p style="text-align: center; margin-bottom: -1px;">Co-Borrower 3/<span style="font-size:9px;"> സഹവായ്പക്കാരന്‍ 3:</span> &nbsp;@Model.ApplicationFormData.CoApplicant3_Name_SL </p>
+            </div>
+        </div>
+
+       
+
+        @*----------------------end----------------------------------------*@
+
+        <div class="outline-container page-break content" id="DTC_DisbursementMemo">
+            <br />  <br /><br />
+            <div class="logo-src" style="height: 42px; vertical-align: top; text-align: center; margin-top: -5px; margin-bottom: 5px;">
+                <img style="width:170px;" src="~/images/logowithtext.png" />
+            </div> <br />
+            <div class="company-info" style="margin-bottom: -10px; line-height: 1.2; font-size: 14px; font-weight: bold;">
+                <div style=" margin-bottom: 5px;">Yogakshemam Loan Ltd</div>
+
+            </div><br /><hr />
+
+            <div style="text-align: left;">
+                <p style="text-align:right;">Unique Proposal No:&nbsp;@Model.DMApplicationFormData.ApplicationID_DM</p>
+                <p>From,</p>
+                <div>
+                    &nbsp;@Model.ApplicationFormData.PrimaryApplicantName_SL<br />
+                    &nbsp;@Model.ApplicationFormData.CoApplicant1_Name_SL<br />
+                    &nbsp;@Model.ApplicationFormData.CoApplicant2_Name_SL<br />
+                    &nbsp;@Model.ApplicationFormData.CoApplicant3_Name_SL<br />
+                </div>
+                <p>To,</p>
+                <div>
+                    @{
+                        var branchAddressParts = new[] {
+            Model.DMApplicationFormData.BranchAddress1_DM,
+            Model.DMApplicationFormData.BranchAddress2_DM,
+            Model.DMApplicationFormData.BranchAddress3_DM,
+            Model.DMApplicationFormData.BranchAddress4_DM
+        };
+
+                        // Filter out null or empty values and join with commas
+                        var formattedAddress = string.Join(", ", branchAddressParts.Where(part => !string.IsNullOrEmpty(part)));
+                    }
+                    &nbsp;@formattedAddress
+                </div>
+                <p>Dear Sir/Madam,</p>
+
+                <p style="text-align:right;">Date:&nbsp;@Model.DMApplicationFormData.AgreementDate_DM.</p>
+
+                <p style="font-weight:bold;">Disbursement of Business Loan</p>
+                <p>In response to our loan application dated &nbsp;@Model.DMApplicationFormData.ApplicationDate_DM, you have sanctioned us a loan of Rs. &nbsp;@Model.DMApplicationFormData.SanctionedLoanAmt_DM (Rupees &nbsp;@Model.DMApplicationFormData.SanctionedLoanAmtWords_DM) for which we have already executed the necessary loan agreements on &nbsp;@Model.DMApplicationFormData.AgreementDate_DM.</p>
+
+                <p>Please disburse the sanctioned loan amount after deducting the applicable charges and the amount required to close the existing business loan, if any, at the earliest by:</p>
+
+
+                <p>i)&nbsp;Electronic transfer to the bank account detailed below.</p><br />
+
+                <p>Name of the Bank:&nbsp;@Model.DMApplicationFormData.BankName_DM</p>
+                <p>Name of the Branch:&nbsp;@Model.DMApplicationFormData.BankBranch_DM</p>
+                <p>Name of the account holder:&nbsp;@Model.DMApplicationFormData.AccountHolder_DM</p>
+                <p>Account Number:&nbsp;@Model.DMApplicationFormData.AccountNumber_DM</p>
+                <p>IFSC code:&nbsp;@Model.DMApplicationFormData.IFSC_DM</p>
+
+                <p>ii)&nbsp;Others (mention details):</p><br /><br />
+
+
+                <p>Yours faithfully,</p><br /><br /><br />
+                <div style="display: flex; justify-content: space-between; width: 100%; font-weight:bold;">
+                    <p style="text-align: left;">Signature of Borrower</p>
+                    <p style="text-align: center; flex: 1; text-align: center;">Signature of Co-Borrower</p>
+                    <p style="text-align: right;">Signature of Co-Borrower</p>
+                </div>
+                <hr />
+
+            </div>
+        </div>
+
+        <div class="outline-container page-break content" id="DTC_DisbursementMemo_Malayalam" @*style="page-break-after:avoid;"*@>
+            <br />  <br /><br />
+            <div class="logo-src" style="height: 42px; vertical-align: top; text-align: center; margin-top: -5px; margin-bottom: 5px;">
+                <img style="width:170px;" src="~/images/logowithtext.png" />
+            </div> <br />
+            <div class="company-info" style="margin-bottom: -10px; line-height: 1.2; font-size: 14px; font-weight: bold;">
+                <div style=" margin-bottom: 5px;">യോഗക്ഷേമം ലോൺസ് ലിമിറ്റഡ്</div>
+
+            </div><br /><hr />
+
+            <div style="text-align: left;">
+                <p style="text-align:right;">അദ്വിതീയ നിർദ്ദേശ നമ്പർ:&nbsp;@Model.DMApplicationFormData.ApplicationID_DM</p>
+                <p>പ്രേഷിതൻ,</p>
+                <div>
+                    &nbsp;@Model.ApplicationFormData.PrimaryApplicantName_SL<br />
+                    &nbsp;@Model.ApplicationFormData.CoApplicant1_Name_SL<br />
+                    &nbsp;@Model.ApplicationFormData.CoApplicant2_Name_SL<br />
+                    &nbsp;@Model.ApplicationFormData.CoApplicant3_Name_SL<br />
+                </div>
+                <p>സ്വീകർത്താവ്,</p>
+                <div>
+                    @{
+                        var branchAddressParts_M = new[] {
+     Model.DMApplicationFormData.BranchAddress1_DM,
+     Model.DMApplicationFormData.BranchAddress2_DM,
+     Model.DMApplicationFormData.BranchAddress3_DM,
+     Model.DMApplicationFormData.BranchAddress4_DM
+ };
+
+                        // Filter out null or empty values and join with commas
+                        var formattedAddress_M = string.Join(", ", branchAddressParts.Where(part => !string.IsNullOrEmpty(part)));
+                    }
+                    &nbsp;@formattedAddress_M
+                </div>
+                <p>പ്രിയ സർ/മാഡം,</p>
+
+                <p style="text-align:right;">തീയതി:&nbsp;@Model.DMApplicationFormData.AgreementDate_DM.</p>
+
+                <p style="font-weight:bold;">ബിസിനസ്സ് ലോൺ വിതരണം</p>
+                <p>
+                    ഞങ്ങളുടെ ലോൺ അപേക്ഷയ്ക്ക് മറുപടിയായി നിങ്ങൾ ഞങ്ങൾക്ക് &nbsp;@Model.DMApplicationFormData.SanctionedLoanAmt_DM രൂപ വായ്പ അനുവദിച്ചു.
+                    അതിനായി ഞങ്ങൾ ഇതിനകം ആവശ്യമായ വായ്പാ കരാറുകൾ നടപ്പിലാക്കിയിട്ടുണ്ട്. കിഴിച്ചതിന് ശേഷം അനുവദിച്ച ലോൺ
+                    തുകയും ബാധകമായ ചാർജുകളും നിലവിലുള്ള ബിസിനസ് ലോൺ ക്ലോസ് ചെയ്യുന്നതിന് ആവശ്യമായ തുകയും, ഉണ്ടെങ്കിൽ,
+                    എത്രയും വേഗം:
+                </p>
+
+
+                <p>i) താഴെ വിശദമായി ബാങ്ക് അക്കൗണ്ടിലേക്ക് ഇലക്ട്രോണിക് ട്രാൻസ്ഫർ ചെയ്യേണ്ടതാണ്.</p><br />
+
+                <p>ബാങ്കിൻറെ പേര്:&nbsp;@Model.DMApplicationFormData.BankName_DM</p>
+                <p>ശാഖയുടെ പേര്:&nbsp;@Model.DMApplicationFormData.BankBranch_DM</p>
+                <p>അക്കൗണ്ട് ഉടമയുടെ പേര്:&nbsp;@Model.DMApplicationFormData.AccountHolder_DM</p>
+                <p>അക്കൗണ്ട് നമ്പർ:&nbsp;@Model.DMApplicationFormData.AccountNumber_DM</p>
+                <p>IFSC കോഡ്:&nbsp;@Model.DMApplicationFormData.IFSC_DM</p>
+
+                <p>ii)&nbsp; മറ്റുള്ളവ (വിശദാംശങ്ങൾ സൂചിപ്പിക്കുക)</p><br /><br />
+
+
+                <p>വിശ്വസ്തതയോടെ,</p><br /><br /><br />
+                <div style="display: flex; justify-content: space-between; width: 100%; font-weight:bold;">
+                    <p style="text-align: left;">കടം വാങ്ങുന്നയാളുടെ ഒപ്പ്</p>
+                    <p style="text-align: center; flex: 1; text-align: center;">സഹ-വായ്പക്കാരൻറെ ഒപ്പ് 1</p>
+                    <p style="text-align: right;">സഹ-വായ്പക്കാരൻ ഒപ്പ്</p>
+                </div>
+                <hr />
+
+            </div>
+        </div>
+
+        @*----------------------------------------------DPN----------------------------------------------*@
+
+        <div id="DPN" style="padding: 10px 15px 0px 15px; font-size: 10px; text-align: justify;" class="page-break">
+            <br /><br /><br />
+            @*<div style="text-align: left;">*@
+            @*<p style="text-align: center; font-size: 14px; ">Loans Ltd.</p>*@
+            <p style="text-align: center; font-size: 14px; ">Demand Promissory Note</p><br /><br />
+
+            <div style="display: flex; justify-content: space-between; ">
+                <span style="text-align:left;">Rs. :&nbsp;@Model.DPNApplicationFormData.SanctionedLoanAmt_DPN</span>
+                <span style="text-align:left;">Place:&nbsp;@Model.DPNApplicationFormData.Place_DPN</span>
+            </div>
+
+            <p style="text-align:right;">Date:&nbsp;@Model.DPNApplicationFormData.DPNDate_DPN</p>
+
+            <p style="margin-bottom:-1px;">On demand, I/We</p>&nbsp;
+            <div>
+                @{
+                    var primaryApplicantDetails_DPN = new[] {
+    Model.DPNApplicationFormData.PrimaryApplicantName_DPN,
+    Model.DPNApplicationFormData.PrimaryApplicantAgeDOB_DPN,
+      Model.DPNApplicationFormData.PrimaryApplicantPresentAddress1_DPN,
+    Model.DPNApplicationFormData.PrimaryApplicantPresentAddress2_DPN,
+    Model.DPNApplicationFormData.PrimaryApplicantPresentAddress3_DPN,
+    Model.DPNApplicationFormData.PrimaryApplicantPresentAddress4_DPN,
+    Model.DPNApplicationFormData.PrimaryApplicantPresentPost_DPN,
+     Model.DPNApplicationFormData.PrimaryApplicantPresentPinCode_DPN,
+    Model.DPNApplicationFormData.PrimaryApplicantPresentCity_DPN,
+    Model.DPNApplicationFormData.PrimaryApplicantPresentDistrict_DPN,
+
+    Model.DPNApplicationFormData.PrimaryApplicantPresentState_DPN
+};
+
+                    // Filter out null or empty values and join with commas
+                    var formattedDetails1_DPN = string.Join(", ", primaryApplicantDetails.Where(detail => !string.IsNullOrEmpty(detail)));
+                }
+                @formattedDetails1
+            </div>
+
+            <div>
+                @{
+                    var coApplicant1Details_DPN = new[] {
+
+    Model.DPNApplicationFormData.CoApplicant1_Name_DPN,
+      Model.DPNApplicationFormData.CoApplicant1_AgeDOB_DPN,
+    Model.DPNApplicationFormData.CoApplicant1_Address1_DPN,
+    Model.DPNApplicationFormData.CoApplicant1_Address2_DPN,
+    Model.DPNApplicationFormData.CoApplicant1_Address3_DPN,
+    Model.DPNApplicationFormData.CoApplicant1_Address4_DPN,
+    Model.DPNApplicationFormData.CoApplicant1_Post_DPN,
+     Model.DPNApplicationFormData.CoApplicant1_PinCode_DPN,
+    Model.DPNApplicationFormData.CoApplicant1_City_DPN,
+    Model.DPNApplicationFormData.CoApplicant1_District_DPN,
+    Model.DPNApplicationFormData.CoApplicant1_State_DPN
+};
+
+                    // Filter out null or empty values and join with commas
+                    var formattedDetails_DPN = string.Join(", ", coApplicant1Details.Where(detail => !string.IsNullOrEmpty(detail)));
+                }
+                @formattedDetails
+            </div>
+
+            <div>
+                @{
+                    var coApplicant2Details_DPN = new[] {
+    Model.DPNApplicationFormData.CoApplicant2_Name_DPN,
+       Model.DPNApplicationFormData.CoApplicant2_AgeDOB_DPN,
+    Model.DPNApplicationFormData.CoApplicant2_Address1_DPN,
+    Model.DPNApplicationFormData.CoApplicant2_Address2_DPN,
+    Model.DPNApplicationFormData.CoApplicant2_Address3_DPN,
+    Model.DPNApplicationFormData.CoApplicant2_Address4_DPN,
+    Model.DPNApplicationFormData.CoApplicant2_Post_DPN,
+    Model.DPNApplicationFormData.CoApplicant2_City_DPN,
+    Model.DPNApplicationFormData.CoApplicant2_District_DPN,
+    Model.DPNApplicationFormData.CoApplicant2_PinCode_DPN,
+    Model.DPNApplicationFormData.CoApplicant2_State_DPN
+};
+
+                    // Filter out null or empty values and join with commas
+                    var formattedDetails2_DPN = string.Join(", ", coApplicant2Details.Where(detail => !string.IsNullOrEmpty(detail)));
+                }
+                @formattedDetails2
+            </div>
+            <div>
+                @{
+                    var coApplicant3Details_DPN = new[] {
+                     Model.DPNApplicationFormData.CoApplicant3_Name_DPN,
+                      Model.DPNApplicationFormData.CoApplicant3_AgeDOB_DPN,
+    Model.DPNApplicationFormData.CoApplicant3_Address1_DPN,
+    Model.DPNApplicationFormData.CoApplicant3_Address2_DPN,
+    Model.DPNApplicationFormData.CoApplicant3_Address3_DPN,
+    Model.DPNApplicationFormData.CoApplicant3_Address4_DPN,
+    Model.DPNApplicationFormData.CoApplicant3_Post_DPN,
+      Model.DPNApplicationFormData.CoApplicant3_PinCode_DPN,
+    Model.DPNApplicationFormData.CoApplicant3_City_DPN,
+    Model.DPNApplicationFormData.CoApplicant3_District_DPN,
+    Model.DPNApplicationFormData.CoApplicant3_State_DPN
+};
+
+                    // Filter out null or empty values and join with commas
+                    var formattedDetails3_DPN = string.Join(", ", coApplicant3Details.Where(detail => !string.IsNullOrEmpty(detail)));
+                }
+                @formattedDetails3
+            </div>
+            <!--<p style="margin-bottom: 25px;"></p>--> <!-- Placeholder for names -->
+
+            <p>jointly and severally promise to pay Yogakshemam Loans Ltd., or its assigns, a sum of Rs.&nbsp;@Model.DPNApplicationFormData.SanctionedLoanAmt_DPN (Rupees&nbsp;@Model.DPNApplicationFormData.SanctionedLoanAmtWords_DPN) for value received, together with interest at the rate of 26% per annum with monthly rests or such rates which Yogakshemam Loans Limited may specify from time to time.</p>
+
+            <p style="margin-top: 50px;"></p> <!-- Placeholder for signatures -->
+
+
+
+            <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                <!-- First Section with Dotted Lines -->
+                <div style="border-bottom: 1px dotted black; width: 30%; padding: 10px;">
+                    <!-- Content for the first section -->
+                </div>
+
+                <!-- Second Section with Dotted Lines and Label -->
+                <div style="width: 30%; text-align: center;">
+                    <label>Name of the Borrower</label><br />@Model.DPNApplicationFormData.PrimaryApplicantName_DPN
+
+                </div>
+
+                <!-- Third Section for Stamp -->
+                <div style="width: 30%; text-align: center;">
+                    <div style="border: 2px solid black; width: 100px; height: 100px; display: flex; justify-content: center; align-items: center;">
+                        Stamp
+                    </div>
+                </div>
+            </div><br />
+            <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                <!-- First Section with Dotted Lines -->
+                <div style="border-bottom: 1px dotted black; width: 30%; padding: 10px;">
+                    <!-- Content for the first section -->
+                </div>
+
+                <!-- Second Section with Dotted Lines and Label -->
+                <div style="width: 30%; text-align: center;">
+                    <label>Name of the Co-Borrower-1</label><br />@Model.DPNApplicationFormData.CoApplicant1_Name_DPN
+
+                </div>
+
+                <!-- Third Section for Stamp -->
+                <div style="width: 30%; text-align: center;">
+                    <div style="border: 2px solid black; width: 100px; height: 100px; display: flex; justify-content: center; align-items: center;">
+                        Stamp
+                    </div>
+                </div>
+            </div><br />
+            <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                <!-- First Section with Dotted Lines -->
+                <div style="border-bottom: 1px dotted black; width: 30%; padding: 10px;">
+                    <!-- Content for the first section -->
+                </div>
+
+                <!-- Second Section with Dotted Lines and Label -->
+                <div style="width: 30%; text-align: center;">
+                    <label>Name of the Co-Borrower-2</label><br />@Model.DPNApplicationFormData.CoApplicant2_Name_DPN
+
+                </div>
+
+                <!-- Third Section for Stamp -->
+                <div style="width: 30%; text-align: center;">
+                    <div style="border: 2px solid black; width: 100px; height: 100px; display: flex; justify-content: center; align-items: center;">
+                        Stamp
+                    </div>
+                </div>
+            </div><br />
+            <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                <!-- First Section with Dotted Lines -->
+                <div style="border-bottom: 1px dotted black; width: 30%; padding: 10px;">
+                    <!-- Content for the first section -->
+                </div>
+
+                <!-- Second Section with Dotted Lines and Label -->
+                <div style="width: 30%; text-align: center;">
+                    <label>Name of the Co-Borrower-3</label><br />@Model.DPNApplicationFormData.CoApplicant3_Name_DPN
+
+                </div>
+
+                <!-- Third Section for Stamp -->
+                <div style="width: 30%; text-align: center;">
+                    <div style="border: 2px solid black; width: 100px; height: 100px; display: flex; justify-content: center; align-items: center;">
+                        Stamp
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        @*</div>*@
+    </div>
+
+</body>
+</html>
+
+

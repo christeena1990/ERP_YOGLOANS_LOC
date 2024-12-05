@@ -1,0 +1,537 @@
+﻿@model ERP_YOGLOANS_LOCAL.Models.attendance_model
+
+@{
+    ViewBag.Title = "Mark_Attendance";
+    Layout = null;
+}
+
+@*<h2>Mark_Attendance</h2>*@
+
+<head>
+    <style>
+        .toggle-password {
+            cursor: pointer;
+        }
+    </style>
+</head>
+    @*<body>*@
+<form id="attendanceForm" action="#" method="post">
+    @*<form id="attendanceForm" action="@Url.Action("markattandance", "Attendance")" method="post">*@
+
+    <h3 class="legend" style="color:maroon; font-weight:600">
+        @*<br />*@
+        <div class="input_logo">
+            &nbsp; &nbsp; &nbsp;&nbsp;  Mark Attendance   &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
+            <img src="~/Smart_Login/images/yogloans_icon.jpg" style="height:50px; width:200px; margin-left:auto ; margin-right: 0;" />
+        </div>
+    </h3>
+    <div style="width:100%" id="employee_id_password">
+        <div class="input" id="employeeCodeContainer">
+            <span class="fa fa-user-o" aria-hidden="true"></span>
+            <input type="text" id="EmployeeCode_att" placeholder="Employee Code" name="EmployeeCode_att" required onkeyup="this.value=this.value.replace(/[^0-9]/g, '')" />
+        </div>
+        <div class="input">
+            <span class="fa fa-key" aria-hidden="true"></span>
+            <input type="password" placeholder="Password" name="Password_att" id="Password_att" required />
+            <span class="toggle-password"  style="display:none;" onclick="togglePassword(event)">👁️</span>
+        </div>
+    </div>
+    <div style="width:100%;height:5px;display:none" id="employee_details">
+        <div style="height: .25px;" class="input">
+            <span style="height: .25px;" @*class="fa fa-user-o"*@ aria-hidden="true"></span>
+            <input type="text" id="Employee_name" name="Employee_name" required value="@Model.Employee_name" />
+        </div>
+        <div style="height: .25px;" class="input">
+            <span style="height: .25px;" @*class="fa fa-user-o"*@ aria-hidden="true"></span>
+            <input type="text" id="Employee_branch" name="Employee_branch" required value="@Model.Employee_branch" />
+        </div>
+        <div style="height:.25px;" class="input">
+            <span style="height: .25px;" @*class="fa fa-user-o"*@ aria-hidden="true"></span>
+            <input type="text" id="Employee_shift_time" name="Employee_shift_time" required value="@Model.Employee_shift_time" />
+        </div>
+    </div>
+
+
+    <button id="punch_button" name="punch_button" @*type="submit"*@ class="btn submit">Punch</button>
+
+
+    <div style="height:8px" id="noneed_div1"> </div>
+    @*<div style="height:63px" id="noneed_div2"> </div>*@
+
+
+    <div id="server_time" name="server_time" data-server-time="@Model.server_time" style="margin-top: 10px; color:red; font-size: 20px; font-weight: bold;">
+        @*@ViewBag.ServerTime*@
+        @Model.server_time
+    </div>
+
+    <input type="hidden" id="hidden_time" name="hidden_time" value="@Model.hidden_time" />
+    <input type="hidden" id="hidden_trainTime" name="hidden_trainTime" />
+
+
+</form>
+@*</body>*@
+<script>
+
+    $('#Password_att').on('input', function () {
+      
+        const password = $(this).val().trim();
+        
+        const toggleIcon = $('.toggle-password');
+     
+        if (password !== '') {
+           
+            toggleIcon.show(); // Show the eye icon
+        } else {
+          
+            toggleIcon.hide(); // Hide the eye icon
+        }
+    });
+
+    function togglePassword(event) {
+        event.stopPropagation(); 
+        //alert("eye_click");
+        var passwordInput = document.getElementById('Password_att');
+        var passwordToggle = document.querySelector('.toggle-password');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordToggle.textContent = '👁️'; // Change eye icon to closed eye
+        } else {
+            passwordInput.type = 'password';
+            passwordToggle.textContent = '👁️'; // Change eye icon to open eye
+        }
+    }
+
+
+
+
+
+    document.getElementById('EmployeeCode_att').addEventListener('keypress', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent form submission
+            document.getElementById('Password_att').focus();
+        }
+    });
+
+    document.getElementById('Password_att').addEventListener('keypress', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent form submission
+            passwordclick();
+            document.getElementById('punch_button').style.visibility = 'visible'; // Make the button visible
+            document.getElementById('punch_button').focus(); // Set focus on the button
+            // console.log("punch_button focussed");
+        }
+    });
+
+    //document.getElementById('Password_att').addEventListener('change', function (event) {
+    //    //alert("pass_change");
+    //    event.preventDefault();
+    //    passwordclick();
+    //});
+
+
+    //document.getElementById('Password_att').addEventListener('focusout', function (event) {
+    //    event.stopPropagation(); 
+    //    //event.preventDefault();
+    //    alert("pass_change");
+    //    //passwordclick();
+    //});
+
+
+    // Add event listener to the punch button after making it visible
+    document.getElementById('punch_button').addEventListener('keypress', function (event) {
+        // console.log("punch_button key pressed");
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevent default button behavior
+            passwordclick();
+            //punchClick(); // Call punchClick function
+        }
+    });
+
+
+    document.getElementById('punch_button').addEventListener('click', function (event) {
+        // alert("mouse");
+        event.preventDefault();
+        passwordclick();
+        //punchClick(); // Call punchClick function on mouse click
+    });
+
+    $(document).ready(function () {
+        // alert("DOM is ready");
+        $('#EmployeeCode_att').focus();
+    });
+
+
+
+
+</script>
+
+
+<script>
+
+
+
+    $(document).ready(function () {
+        var serverTimeString = document.getElementById("server_time").getAttribute("data-server-time");
+        var serverTime = new Date(serverTimeString);
+       
+        ShowTime(serverTime); // Pass the server time to ShowTime function
+    });
+
+    function ShowTime_old(serverTime) {
+        alert(serverTimeString);
+        alert(serverTime);
+        setInterval(function () {
+            serverTime.setSeconds(serverTime.getSeconds() + 1);
+            var hours = serverTime.getHours();
+            var minutes = serverTime.getMinutes();
+            var seconds = serverTime.getSeconds();
+
+            var trainTime = hours + ':' + minutes + ':' + seconds;
+            document.getElementById("hidden_trainTime").value = trainTime;
+
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            hours = ((hours < 10 ? "0" : "") + hours);
+            minutes = ((minutes < 10 ? "0" : "") + minutes);
+            seconds = ((seconds < 10 ? "0" : "") + seconds);
+
+            var strTime1 = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
+            var strTime = hours + ':' + minutes + ':' + seconds;
+            document.getElementById("server_time").innerHTML = strTime1;
+            document.getElementById("hidden_time").value = strTime;
+        }, 1000);
+    }
+
+    function ShowTime2(serverTime) {
+      
+        setInterval(function () {
+          
+            serverTime.setSeconds(serverTime.getSeconds() + 1);
+            var hours = serverTime.getHours();
+            var minutes = serverTime.getMinutes();
+            var seconds = serverTime.getSeconds();
+
+            var trainTime = hours + ':' + (minutes < 10 ? '0' + minutes : minutes) + ':' + (seconds < 10 ? '0' + seconds : seconds);
+            alert(trainTime);
+            document.getElementById("hidden_trainTime").value = trainTime;
+
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            hours = ((hours < 10 ? "0" : "") + hours);
+            minutes = ((minutes < 10 ? "0" : "") + minutes);
+            seconds = ((seconds < 10 ? "0" : "") + seconds);
+
+            var strTime1 = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
+            var strTime = hours + ':' + minutes + ':' + seconds;
+            document.getElementById("server_time").innerHTML = strTime1;
+            document.getElementById("hidden_time").value = strTime;
+        }, 1000);
+    }
+
+    function ShowTime(serverTime) {
+        setInterval(function () {
+            serverTime.setSeconds(serverTime.getSeconds() + 1);
+
+            // Get hours, minutes, and seconds
+            var hours = serverTime.getHours();
+            var minutes = serverTime.getMinutes();
+            var seconds = serverTime.getSeconds();
+
+            // Ensure two digits for hours, minutes, and seconds
+            var formattedHours = hours < 10 ? '0' + hours : hours;
+            var formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+            var formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
+
+            // Create train time string
+            var trainTime = formattedHours + ':' + formattedMinutes + ':' + formattedSeconds;
+
+            // Update hidden input and alert
+            //alert(trainTime);
+            document.getElementById("hidden_trainTime").value = trainTime;
+
+            // AM/PM formatting
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            var formattedHours12 = hours < 10 ? '0' + hours : hours;
+
+            // Create formatted time strings
+            var strTime1 = formattedHours12 + ':' + formattedMinutes + ':' + formattedSeconds + ' ' + ampm;
+            var strTime = formattedHours12 + ':' + formattedMinutes + ':' + formattedSeconds;
+
+            // Update server time display and hidden input
+            document.getElementById("server_time").innerHTML = strTime1;
+            document.getElementById("hidden_time").value = strTime;
+        }, 1000);
+    }
+
+
+</script>
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+
+    $(document).ready(function () {
+        $('#employeeCodeContainer').on('focusout', function () {
+            var employeeCode = $('#EmployeeCode_att').val();
+            var time = $('#server_time').data('server-time');
+
+            $.ajax({
+                url:'@Url.Action("employeecode_checking", "Attendance")',
+                type: 'POST',
+                data: { employeCode: employeeCode, time: time },
+                success: function (response) {
+
+                    if (response.success) {
+                        alert(response.Message);
+
+                           // document.getElementById("EmployeeCode_att").value = "";
+                          //  document.getElementById("EmployeeCode_att").focus();
+
+                        //window.location.reload();
+                        //$('#attendanceArticle').html($(data).find('#attendanceArticle').html());
+                        window.location.href = "/Smart_Login/Login";
+                    } else {
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert(xhr.responseText);
+                    alert(status);
+                    alert(error);
+                }
+            });
+        });
+    });
+
+</script>
+
+
+
+<script>
+    function passwordclick() {
+
+        var employeeCode = $("#EmployeeCode_att").val();
+        var password = $("#Password_att").val();
+
+
+        if (!employeeCode) {
+            alert("Employee Code is required.");
+            $('#EmployeeCode_att').focus();
+            window.location.href = "/Smart_Login/Login";
+            return;
+        }
+        if (!password) {
+            alert("Password is required.");
+            $('#Password_att').focus();
+            window.location.href = "/Smart_Login/Login";
+            return;
+        }
+        /*var password = $(this).val();*/
+var empcode = $('#EmployeeCode_att').val();
+var password = $('#Password_att').val();
+
+$.ajax({
+     url:'@Url.Action("password_checking", "Attendance")',
+    type: 'POST',
+    dataType: 'json',
+    data: { empcode: empcode, password: password },
+    success: function (response) {
+        if (response.success) {
+            //alert("success");
+
+            $('#employee_details').removeAttr('style');
+            //$('#punch_button').removeAttr('style');
+            document.getElementById('punch_button').style.visibility = 'visible';
+
+            $('#employee_id_password').hide();
+            $('#noneed_div1').hide();
+            //$('#noneed_div2').hide();
+            $('#Employee_name').val(response.Employee_name);
+            $('#Employee_branch').val(response.Employee_branch);
+            $('#Employee_shift_time').val(response.Employee_shift_time);
+            punchClick();
+
+        } else {
+            //alert("password_checking_else");
+            // Handle failure
+            //console.error('Password check failed: ' + response.Message);
+            alert(response.Message);
+
+            clearPasswordField();
+            //return false;
+           window.location.href = "/Smart_Login/Login";
+            //window.location.reload();
+            //$('#attendanceArticle').html($(data).find('#attendanceArticle').html());
+        }
+    },
+
+    error: function (xhr, status, error) {
+        //console.error('Error occurred while checking password: ' + error);
+        alert(xhr.responseText); // Log the response text
+        alert(status);
+        alert(error);
+    }
+});
+    }
+
+
+</script>
+
+
+
+
+
+
+
+<script>
+    function clearPasswordField() {
+
+        document.getElementById("Password_att").value = "";
+    }
+
+
+</script>
+
+
+<script>
+    // Wait for the DOM to be fully loaded
+    function punchClick() {
+        var employeeCode = $("#EmployeeCode_att").val();
+        var password = $("#Password_att").val();
+
+
+        if (!employeeCode) {
+            alert("Employee Code is required.");
+            window.location.href = "/Smart_Login/Login";
+            return;
+        }
+        if (!password) {
+            alert("Password is required.");
+            window.location.href = "/Smart_Login/Login";
+            return;
+        }
+
+
+        //console.log("punchClick function called");
+        var hiddenValue = $("#hidden_trainTime").val();
+        alert(hiddenValue);
+        $.ajax({
+            type: "POST",
+            url: "/Attendance/markattandance",
+            data: JSON.stringify({ hidden_time: hiddenValue }),
+            contentType: "application/json;charset=UTF-8",
+            success: function (response) {
+              /*  "Are you sure want to Punch Out?   Punch Out Time : " + hidden_time */
+                //if (response.success) {
+                alert(response.Message);
+
+                // alert(hiddenValue);
+                $.ajax({
+                    type: "POST",
+                    url: "/Attendance/markattandance2",
+                    data: { hidden_time: hiddenValue },
+                    success: function (response) {
+
+                        if (response.success) {
+
+
+                            alert(response.Message1);
+                            window.location.href = "/Smart_Login/Login";
+                            //window.location.reload();
+                            //$('#attendanceArticle').html($(data).find('#attendanceArticle').html());
+                        }
+                        else {
+                            //alert(response.Message);
+                        }
+                    },
+                    error: function () {
+                        alert("Error occurred while calling markattandance2.");
+
+                    }
+                });
+
+
+                //}
+            },
+            error: function () {
+                alert("Error occurred.");
+            }
+        });
+    }
+
+</script>
+
+<script>
+    /*  --------------------------------------------page minimize------------------------------------------------------------*/
+    let timeoutId;
+    let minimized = false;
+    let timer;
+
+    function startMinimizedTimer() {
+        timer = setTimeout(() => {
+            if (minimized) {
+                window.location.href = "/Smart_Login/Login";// Replace with your desired URL
+            }
+        }, 0); // 60000 milliseconds = 1 minute
+    }
+
+    function checkWindowSize() {
+        if (window.outerWidth < 200 && window.outerHeight < 200) {
+            minimized = true;
+            startMinimizedTimer(); // Start the timer when the window is minimized
+        } else {
+            minimized = false;
+            clearTimeout(timer); // Clear the timer if the window is not minimized
+        }
+    }
+
+    window.addEventListener('resize', () => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(checkWindowSize, 100);
+    });
+
+    window.addEventListener('blur', () => {
+        // Wait a moment to check if the window is minimized
+        timeoutId = setTimeout(checkWindowSize, 100);
+    });
+
+    window.addEventListener('focus', () => {
+        minimized = false; // Reset the flag when the window is focused again
+        clearTimeout(timer); // Clear the timer if the window gains focus
+        clearTimeout(timeoutId);
+    });
+    /*  --------------------------------------------pageload------------------------------------------------------------*/
+    // Set a timer to load a new page after 1 minute (60,000 milliseconds)
+    let viewTimer = setTimeout(() => {
+        window.location.href = "/Smart_Login/Login";
+    }, 60000); // 1 minute
+
+    // Optional: Reset the timer if the user interacts with the page
+    function resetViewTimer() {
+        clearTimeout(viewTimer);
+        viewTimer = setTimeout(() => {
+            window.location.href = "/Smart_Login/Login";
+        }, 60000); // 1 minute
+    }
+
+    // Listen to user interactions to reset the timer (optional)
+    window.addEventListener('mousemove', resetViewTimer);
+    window.addEventListener('keydown', resetViewTimer);
+
+</script>
+
+
+
+
+

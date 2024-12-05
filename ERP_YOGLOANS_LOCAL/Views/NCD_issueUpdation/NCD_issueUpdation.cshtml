@@ -1,0 +1,731 @@
+﻿
+@{
+    ViewBag.Title = "NCD_issueUpdation";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+    <style>
+        table{
+            border:1px solid black;
+            font-size:12px;
+        }
+        tr, td {
+            border: 1px solid black;
+        }
+      th{
+            background-color: #4D759A;
+            color:white;
+        }
+      td{
+          padding:10px;
+      }
+    </style>
+</head>
+<body>    
+<div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Issue Updation</h6>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-8">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span style="width:140px;" class="input-group-text">Select Month</span>
+                        </div>
+                        <input type="month" class="form-control" aria-describedby="basic-addon1" id="issue_month" />
+                    </div>
+                </div>
+                <div class="col-4">
+                    <button class="mb-2 mr-2 btn-pill btn btn-gradient-success" id="btn_submit" type="button" style="width:150px">
+                        <span class="mr-1">Submit</span>
+                    </button>
+                </div>
+            </div>           
+
+            <div class="row" id="div_isinOuter">
+                <div class="col-12">
+                    <div class="main-card mb-2 card">
+                        <div class="card-body">
+                            <h5 class="card-title isin-toggle" data-target="div_isin" style="cursor:pointer;">
+                                <span name="isinArrow" style="font-size: 12px;">&#9654;</span> <!-- Right arrow for collapsed state -->
+                                ISIN
+                            </h5>
+                            <div id="div_isin" style="display: none;">
+                                <table width="100%" id="tbl_isin">
+                                    <thead style="display: none;">
+                                        <tr style="text-align:center">
+                                            <th>Issue</th>
+                                            <th>Reg start Date</th>
+                                            <th>Reg end Date</th>
+                                            <th>ISIN</th>
+                                            <th>Enter Date</th>
+                                            <th>#</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" id="div_trustOuter">
+                <div class="col-md-6 col-lg-12">
+                    <div class="main-card mb-2 card">
+                        <div class="card-body">
+                            <h5 class="card-title isin-toggle" data-target="div_trust" style="cursor:pointer;">
+                                <span name="isinArrow" style="font-size: 12px;">&#9654;</span>  <!-- Right arrow for collapsed state -->
+                                Trust Date
+                            </h5>
+                            <div class="row" id="div_trust" style="display: none;">
+                                <div class="col-md-6 col-lg-8">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span style="width:140px;" class="input-group-text">Trust Date</span>
+                                        </div>
+                                        <input type="date" class="form-control" aria-describedby="basic-addon1" id="txt_trust" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <button class="mb-2 mr-2 btn-pill btn btn-primary" id="btn_trust" type="button" style="width:150px" onclick="updateTrustDt()">
+                                        <span class="mr-1">Update</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row" id="div_ChargeOuter">
+                <div class="col-12">
+                    <div class="main-card mb-2 card">
+                        <div class="card-body">
+                            <h5 class="card-title isin-toggle" data-target="div_Charge" style="cursor:pointer;">
+                                <span name="isinArrow" style="font-size: 12px;">&#9654;</span>  <!-- Right arrow for collapsed state -->
+                                Charge Creation
+                            </h5>
+                            <div id="div_Charge" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-8">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span style="width:140px;" class="input-group-text">ROC Date</span>
+                                            </div>
+                                            <input type="date" class="form-control" aria-describedby="basic-addon1" id="txt_rocdate" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <button class="mb-2 mr-2 btn-pill btn btn-primary" id="btn_rocdate" type="button" style="width:150px" onclick="updateROC_dt()">
+                                            <span class="mr-1">Update</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-8">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span style="width:140px;" class="input-group-text">ID Number</span>
+                                            </div>
+                                            <input type="text" class="form-control" aria-describedby="basic-addon1" id="txt_rocId" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <button class="mb-2 mr-2 btn-pill btn btn-primary" id="btn_rocId" type="button" style="width:150px" onclick="updateROC_id()">
+                                            <span class="mr-1">Update</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-8">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span style="width:140px;" class="input-group-text">SRN Number</span>
+                                            </div>
+                                            <input type="text" class="form-control" aria-describedby="basic-addon1" id="txt_srnNo" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <button class="mb-2 mr-2 btn-pill btn btn-primary" id="btn_srnNo" type="button" style="width:150px" onclick="updateSRN_no()">
+                                            <span class="mr-1">Update</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" id="div_ChargeIdentificationOuter">
+                <div class="col-12">
+                    <div class="main-card mb-2 card">
+                        <div class="card-body">
+                            <h5 class="card-title isin-toggle" data-target="div_ChargeIdentification" style="cursor:pointer;">
+                                <span name="isinArrow" style="font-size: 12px;">&#9654;</span>  <!-- Right arrow for collapsed state -->
+                                Charge Identification Number
+                            </h5>
+                            <div class="row" id="div_ChargeIdentification" style="display: none;">
+                                <div class="col-md-6 col-lg-8">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span style="width:140px;" class="input-group-text">Number</span>
+                                        </div>
+                                        <input type="text" class="form-control" aria-describedby="basic-addon1" id="txt_chargeNo" 
+                                               minlength="9" maxlength="9" pattern="\d{9}" oninput="this.value = this.value.replace(/\D/g, '');"
+                                               oninvalid="this.setCustomValidity('Please enter a valid Charge ID')"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-4">
+                                    <button class="mb-2 mr-2 btn-pill btn btn-primary" id="btn_chargeNo" type="button" style="width:150px" onclick="updateChargeId()">
+                                        <span class="mr-1">Update</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row" id="div_SatisfactionOuter">
+                <div class="col-12">
+                    <div class="main-card mb-2 card">
+                        <div class="card-body">
+                            <h5 class="card-title isin-toggle" data-target="div_Satisfaction" style="cursor:pointer;">
+                                <span name="isinArrow" style="font-size: 12px;">&#9654;</span>  <!-- Right arrow for collapsed state -->
+                                Satisfaction Deb
+                            </h5>
+                            <div id="div_Satisfaction" style="display: none;">
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-8">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span style="width:140px;" class="input-group-text">Date</span>
+                                            </div>
+                                            <input type="date" class="form-control" aria-describedby="basic-addon1" id="txt_SatisfactionDt" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <button class="mb-2 mr-2 btn-pill btn btn-primary" id="btn_SatisfactionDt" type="button" style="width:150px" onclick="updateSatisfaction()">
+                                            <span class="mr-1">Update</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-8">
+                                        <div class="input-group mb-3">
+                                            <div class="input-group-prepend">
+                                                <span style="width:140px;" class="input-group-text">No</span>
+                                            </div>
+                                            <input type="text" class="form-control" aria-describedby="basic-addon1" id="txt_SatisfactionNo" />
+                                        </div>
+                                    </div>
+                                    @*<div class="col-md-6 col-lg-4">
+                                    <button class="mb-2 mr-2 btn-pill btn btn-primary" id="btn_SatisfactionNo" type="button" style="width:150px">
+                                        <span class="mr-1">Update</span>
+                                    </button>
+                                </div>*@
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+<link rel="stylesheet" href="~/Content/cust_apprvlmsgbox1.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    $(document).ready(function () {
+        $('#div_isinOuter').css('display', 'none');
+        $('#div_trustOuter').css('display', 'none');
+        $('#div_ChargeOuter').css('display', 'none');
+        $('#div_ChargeIdentificationOuter').css('display', 'none');
+        $('#div_SatisfactionOuter').css('display', 'none');
+    });
+
+    $(document).ready(function () {
+    $('#btn_submit').click(function (event) {
+        event.preventDefault();
+        var month_year = $('#issue_month').val();
+
+        if (month_year === "") {
+            alert("Please select a Month!");
+            $('#issue_month').focus();
+            return;
+        }
+
+        
+
+        localStorage.setItem("MonthYear", month_year);
+        submit_click(month_year);
+        
+    });
+    });
+
+    function div_visibility(div_id) {
+        var targetDiv = div_id;       
+
+        $('#div_isin').css('display', 'none');
+        $('#div_trust').css('display', 'none');
+        $('#div_Charge').css('display', 'none');
+        $('#div_ChargeIdentification').css('display', 'none');
+        $('#div_Satisfaction').css('display', 'none');
+        
+        if (targetDiv) {
+            var dest_div = document.getElementById(targetDiv);
+            dest_div.style.display = 'block';
+
+        }
+    }
+
+    function submit_click(month_year) {
+        $.ajax({
+    url: "@Url.Action("getData", "NCD_issueUpdation")",
+    type: 'GET',
+    data: { inputMonth: month_year },
+    success: function (response) {
+        if (response.success) {
+            $('#div_isinOuter').css('display', 'block');
+            $('#div_trustOuter').css('display', 'block');
+            $('#div_ChargeOuter').css('display', 'block');
+            $('#div_ChargeIdentificationOuter').css('display', 'block');
+            $('#div_SatisfactionOuter').css('display', 'block');
+            // Clear the existing table body
+            $('#tbl_isin tbody').empty();
+            //console.log(JSON.stringify(response)); // Debug the exact format
+            const table1 = response.data.Table1;
+            const table2 = response.data.Table2;
+            const table3 = response.data.Table3;
+            const table4 = response.data.Table4;
+            const table5 = response.data.Table5;
+            const table6 = response.data.Table6;
+
+            // Check if response and Table1 exist
+            if (table1 && table1.length > 0) {
+                // Show the table header
+                $('#tbl_isin thead').css('display', 'table-header-group');
+                // Render Table1 data
+                $.each(table1, function (index, item) {
+                    // Determine if the textbox should be readonly and if the button should be hidden
+                    var textBoxValue = item.isin_no || ""; // Set the text box value
+                    var isReadOnly = item.isin_no ? 'readonly' : ''; // Set readonly if isin_no has a value
+                    var buttonStyle = item.isin_no ? 'display:none;' : '';  // Disable button if isin_no has a value
+
+                    // Construct the table row
+                    var row = '<tr>' +
+                        '<td>' + item.issue_no + '</td>' +
+                        '<td>' + item.reg_startdate + '</td>' +
+                        '<td>' + item.reg_enddate + '</td>' +
+                        '<td><input type="text" class="form-control" value="' + textBoxValue + '" name="dynamicInput' + index + '" id="dynamicInput' + index + '" ' + isReadOnly + ' ></td>' +
+                        '<td>' + item.enter_date + '</td>' +
+                        '<td>' +
+                        '<button class="mb-2 mr-2 btn-pill btn btn-primary" id="btn_isin' + index + '" type="button" style="' + buttonStyle + '" data-issue_no="' + item.issue_no + '" data-reg_startdate="' + item.reg_startdate + '">' +
+                        '<span class="mr-1">Update</span>' +
+                        '</button>' +
+                        '</td>' +
+                        '</tr>';
+
+                    // Append the row to the table body
+                    $('#tbl_isin tbody').append(row);
+                });
+
+                $(document).on('click', '[id^="btn_isin"]', function () {
+                    // Get the issue_no and reg_startdate from the button's data attributes
+                    var issue_no = $(this).data('issue_no');
+                    var reg_startdate = $(this).data('reg_startdate');
+
+                    // Get the value of the corresponding input in the same row
+                    var inputValue = $(this).closest('tr').find('input').val();
+
+                    // Call the updateISIN function with the required parameters
+                    updateISIN(issue_no, reg_startdate, inputValue);
+                });
+            }
+
+            if (table2 && table2.length > 0) {
+                $.each(table2, function (index, item) {
+                    // Handle DD-MM-YYYY format
+                    var textBoxValue = item.trust_Date
+                        ? item.trust_Date.split('-').reverse().join('-') // Convert to YYYY-MM-DD
+                        : "";
+
+                    // Set the value to the input field
+                    $('#txt_trust').val(textBoxValue);
+
+                    if (item.trust_Date) {
+                        $('#txt_trust').prop('readonly', true); // Make it readonly
+                        $('#btn_trust').css('display', 'none'); // Disable the button
+                    } else {
+                        $('#txt_trust').prop('readonly', false); // Make it editable
+                        $('#btn_trust').css('display', 'block'); // Disable the button
+                    }
+                });
+
+            }
+
+            if (table3 && table3.length > 0) {  //ROC
+                $.each(table3, function (index, item) {
+                    //alert(item.roc_date);
+                    // Handle DD-MM-YYYY format
+                    var roc_date = item.roc_date
+                        ? item.roc_date.split('-').reverse().join('-') // Convert to YYYY-MM-DD
+                        : "";
+                    var roc_id = item.roc_id || "";
+                    var srn_no = item.srn_no || "";
+
+                    // Set the value to the input field
+                    $('#txt_rocdate').val(roc_date);
+                    $('#txt_rocId').val(roc_id);
+                    $('#txt_srnNo').val(srn_no);
+
+                    if (item.roc_date) {
+                        $('#txt_rocdate').prop('readonly', true); // Make it readonly
+                        $('#btn_rocdate').css('display', 'none'); // Disable the button
+                    } else {
+                        $('#txt_rocdate').prop('readonly', false); // Make it editable
+                        $('#btn_rocdate').css('display', 'block'); // Disable the button
+                    }
+
+                    if (item.roc_id) {
+                        $('#txt_rocId').prop('readonly', true); // Make it readonly
+                        $('#btn_rocId').css('display', 'none'); // Disable the button
+                    } else {
+                        $('#txt_rocId').prop('readonly', false); // Make it editable
+                        $('#btn_rocId').css('display', 'block'); // Disable the button
+                    }
+
+                    if (item.srn_no) {
+                        $('#txt_srnNo').prop('readonly', true); // Make it readonly
+                        $('#btn_srnNo').css('display', 'none'); // Disable the button
+                    } else {
+                        $('#txt_srnNo').prop('readonly', false); // Make it editable
+                        $('#btn_srnNo').css('display', 'block'); // Disable the button
+                    }
+                });
+
+            }
+
+            if (table4 && table4.length > 0) {  //ROC
+                $.each(table4, function (index, item) {
+
+                    var charge_id = item.charge_id || "";
+                    $('#txt_chargeNo').val(charge_id);
+
+
+                    if (item.charge_id) {
+                        $('#txt_chargeNo').prop('readonly', true); // Make it readonly
+                        $('#btn_chargeNo').css('display', 'none'); // Disable the button
+                    } else {
+                        $('#txt_chargeNo').prop('readonly', false); // Make it editable
+                        $('#btn_chargeNo').css('display', 'block'); // Disable the button
+                    }
+
+
+                });
+
+            }
+
+            if (table5 && table5.length > 0) {  //ROC
+                $.each(table5, function (index, item) {
+
+                    var satisfaction_dt = item.satisfaction_dt
+                        ? item.satisfaction_dt.split('-').reverse().join('-') // Convert to YYYY-MM-DD
+                        : "";
+                    var satisfaction_no = item.satisfaction_no || "";
+                    $('#txt_SatisfactionDt').val(satisfaction_dt);
+                    $('#txt_SatisfactionNo').val(satisfaction_no);
+
+
+                    if (item.satisfaction_dt) {
+                        $('#txt_SatisfactionDt').prop('readonly', true); // Make it readonly
+                        $('#btn_SatisfactionDt').css('display', 'none'); // Disable the button
+                    } else {
+                        $('#txt_SatisfactionDt').prop('readonly', false); // Make it editable
+                        $('#btn_SatisfactionDt').css('display', 'block'); // Disable the button
+                    }
+
+                    if (item.satisfaction_no) {
+                        $('#txt_SatisfactionNo').prop('readonly', true); // Make it readonly
+                        $('#btn_SatisfactionNo').css('display', 'none'); // Disable the button
+                    } else {
+                        $('#txt_SatisfactionNo').prop('readonly', false); // Make it editable
+                        $('#btn_SatisfactionNo').css('display', 'block'); // Disable the button
+                    }
+
+
+                });
+
+            }
+            if (table6 && table6.length > 0) {
+                var id = "";
+                var div_id = "";
+                $.each(table6, function (index, item) {
+                    // Handle DD-MM-YYYY format
+                    id = item.IsinNoNullFlag;
+
+                    if (id == "1") div_id = "div_isin";
+                    else if (id == "2") div_id = "div_trust";
+                    else if (id == "3") div_id = "div_Charge";
+                    else if (id == "4") div_id = "div_ChargeIdentification";
+                    else if (id == "5") div_id = "div_Satisfaction";
+                    else div_id = "";
+
+                    div_visibility(div_id);
+
+                });
+            }
+        }
+        else {
+            $('#div_isinOuter').css('display', 'none');
+            $('#div_trustOuter').css('display', 'none');
+            $('#div_ChargeOuter').css('display', 'none');
+            $('#div_ChargeIdentificationOuter').css('display', 'none');
+            $('#div_SatisfactionOuter').css('display', 'none');
+            alert(response.data);
+            return;
+        }
+       
+
+        
+    },
+    error: function (error) {
+        alert("Error occurred while fetching data.");
+        console.error('Error sending data:', error);
+    }
+});
+    }
+
+    function updateISIN(issue_no, reg_startdate, inputValue) {
+        var month_year = localStorage.getItem("MonthYear");
+
+        $.ajax({
+            url: "@Url.Action("updateISIN_number", "NCD_issueUpdation")",
+            type:'POST',
+            data: { issue_no: issue_no, reg_startdate: reg_startdate, inputValue: inputValue },
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    submit_click(month_year);
+                }
+                else {
+                    alert("Updation Failed!");
+                }
+            },
+            error: function (error) {
+                alert("Error fetching data.");
+
+            }
+        });
+    }
+
+    function updateTrustDt() {
+        var month_year = localStorage.getItem("MonthYear");
+        var trust_date = $('#txt_trust').val();
+        //alert(trust_date);
+        $.ajax({
+            url: "@Url.Action("updateTrustDate", "NCD_issueUpdation")",
+            type:'POST',
+            data: { month_year: month_year, trust_date: trust_date },
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    submit_click(month_year);
+                }
+                else {
+                    alert("Updation Failed!");
+                }
+            },
+            error: function (error) {
+                alert("Error fetching data.");
+
+            }
+        });
+    }
+
+function updateROC_dt() {
+    var month_year = localStorage.getItem("MonthYear");
+    var roc_date = $('#txt_rocdate').val();
+    //alert(roc_date);
+    $.ajax({
+        url: "@Url.Action("updateROC_Date", "NCD_issueUpdation")",
+        type:'POST',
+        data: { month_year: month_year, roc_date: roc_date },
+        success: function (response) {
+            if (response.success) {
+                alert(response.message);
+                submit_click(month_year);
+            }
+            else {
+                alert("Updation Failed!");
+            }
+        },
+        error: function (error) {
+            alert("Error fetching data.");
+
+        }
+    });
+}
+
+function updateROC_id() {
+    var month_year = localStorage.getItem("MonthYear");
+    var roc_id = $('#txt_rocId').val();
+    //alert(roc_id);
+    $.ajax({
+        url: "@Url.Action("updateROC_id", "NCD_issueUpdation")",
+        type:'POST',
+        data: { month_year: month_year, roc_id: roc_id },
+        success: function (response) {
+            if (response.success) {
+                alert(response.message);
+                submit_click(month_year);
+            }
+            else {
+                alert("Updation Failed!");
+            }
+        },
+        error: function (error) {
+            alert("Error fetching data.");
+
+        }
+    });
+}
+
+function updateSRN_no() {
+    var month_year = localStorage.getItem("MonthYear");
+    var srnNo = $('#txt_srnNo').val();
+    //alert(srnNo);
+    $.ajax({
+        url: "@Url.Action("updateSRN_No", "NCD_issueUpdation")",
+        type:'POST',
+        data: { month_year: month_year, srnNo: srnNo },
+        success: function (response) {
+            if (response.success) {
+                alert(response.message);
+                submit_click(month_year);
+            }
+            else {
+                alert("Updation Failed!");
+            }
+        },
+        error: function (error) {
+            alert("Error fetching data.");
+
+        }
+    });
+}
+
+function updateChargeId() {
+    var month_year = localStorage.getItem("MonthYear");
+    var chargeNo = $('#txt_chargeNo').val();
+    alert(chargeNo);
+    $.ajax({
+        url: "@Url.Action("updateCharge_Id", "NCD_issueUpdation")",
+        type:'POST',
+        data: { month_year: month_year, chargeNo: chargeNo },
+        success: function (response) {
+            if (response.success) {
+                alert(response.message);
+                submit_click(month_year);
+            }
+            else {
+                alert("Updation Failed!");
+            }
+        },
+        error: function (error) {
+            alert("Error fetching data.");
+
+        }
+    });
+}
+
+function updateSatisfaction() {
+    var month_year = localStorage.getItem("MonthYear");
+    var satisfy_dt = $('#txt_SatisfactionDt').val();
+    var satisfy_no = $('#txt_SatisfactionNo').val();
+    alert(satisfy_dt);
+    $.ajax({
+        url: "@Url.Action("updateSatisfactionDt", "NCD_issueUpdation")",
+        type:'POST',
+        data: { month_year: month_year, satisfy_dt: satisfy_dt,satisfy_no:satisfy_no },
+        success: function (response) {
+            if (response.success) {
+                alert(response.message);
+                submit_click(month_year);
+            }
+            else {
+                alert("Updation Failed!");
+            }
+        },
+        error: function (error) {
+            alert("Error fetching data.");
+
+        }
+    });
+    }
+
+    //validation for SRN number
+    document.getElementById('txt_srnNo').addEventListener('input', function () {
+        var srnNo = this.value;
+        var regex = /^[A-Za-z]{2}\d{7}$/;  // Regex for 2 letters followed by 7 digits
+        var errorMessage = document.getElementById('error-message');
+
+        // Check if the value matches the regex
+        if (srnNo.length >= 9) {
+            if (!regex.test(srnNo)) {
+                //errorMessage.style.display = 'block';  // Show error message if validation fails
+                alert("Please enter a valid SRN (2 letters followed by 7 digits)");
+                $('#txt_srnNo').val("");
+                $('#txt_srnNo').focus();
+                return;
+            } else {
+                //errorMessage.style.display = 'none';  // Hide error message if validation passes
+
+            }
+        }
+        
+    });
+
+
+
+    // Add an event listener to all elements with the 'isin-toggle' class
+    document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('isin-toggle') || event.target.closest('.isin-toggle')) {
+            var toggleElement = event.target.classList.contains('isin-toggle') ? event.target : event.target.closest('.isin-toggle');
+
+            // Get the target container using the data-target attribute
+            var targetId = toggleElement.getAttribute('data-target');
+            var tableContainer = document.getElementById(targetId);
+            var arrow = toggleElement.querySelector('[name="isinArrow"]');
+
+            if (tableContainer && arrow) {
+                if (tableContainer.style.display === 'none' || tableContainer.style.display === '') {
+                    tableContainer.style.display = 'block'; // Show the div
+                    arrow.innerHTML = '&#9660;'; // Downward arrow
+                } else {
+                    tableContainer.style.display = 'none'; // Hide the div
+                    arrow.innerHTML = '&#9654;'; // Right arrow
+                }
+            }
+        }
+    });
+
+   
+
+
+</script>
+</body>
+</html>
+

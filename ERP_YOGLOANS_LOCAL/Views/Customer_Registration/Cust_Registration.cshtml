@@ -1,0 +1,1258 @@
+﻿@using System.Data
+
+@model ERP_YOGLOANS_LOCAL.Models.Customer_Registration_model
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var categoryList = ViewData["CategoryList"] as DataTable;
+    var categories = categoryList.AsEnumerable().Select(row => new
+    {
+        category_id = row["category_id"],
+        category_name = row["category_name"]
+    });
+
+
+    var EduList = ViewData["EducationList"] as DataTable;
+    var edu = EduList.AsEnumerable().Select(row => new
+    {
+        edu_id = row["Sub_id"],
+        edu_name = row["General_name"]
+    });
+
+    var occuList = ViewData["OccupationList"] as DataTable;
+    var occu = occuList.AsEnumerable().Select(row => new
+    {
+        occu_id = row["Sub_id"],
+        occu_name = row["General_name"]
+    });
+
+
+    var guardianList = ViewData["guardianList"] as DataTable;
+    var guardians = guardianList.AsEnumerable().Select(row => new
+    {
+        guardian_val = row["guardian_val"],
+        guardian_name = row["guardian"]
+    });
+
+    var genderList = ViewData["genderList"] as DataTable;
+    var genders = genderList.AsEnumerable().Select(row => new
+    {
+        gender_val = row["gender_val"],
+        gender = row["gender"]
+    });
+
+    var m_statusList = ViewData["m_statusList"] as DataTable;
+    var statuses = m_statusList.AsEnumerable().Select(row => new
+    {
+        mstatus_val = row["mstatus_val"],
+        m_status = row["m_status"]
+    });
+
+}
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .hidden {
+            display: none;
+        }
+
+
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+        }
+
+        /* Modal Content (image) */
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+        }
+
+
+        /* Caption of Modal Image */
+        #caption {
+            margin: auto;
+            display: block;
+            width: 60%;
+            /*max-width: 700px;*/
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            /*height: 150px;*/
+            height: 100%;
+        }
+
+        /* The Close Button */
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: #bbb;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+
+        /* The Close Button on Photo */
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #fff;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+
+            .close:hover {
+                color: #ccc;
+            }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+</head>
+
+<body>
+
+    @*<form autocomplete="off" id="registration_form" action="@Url.Action("RegisterTempCustomer", "Customer_Registration")" ,method="post">*@
+    <form action="@Url.Action("RegisterTempCustomer", "Customer_Registration")" method="post" id="register_form" enctype="multipart/form-data" @*onsubmit="return validateForm()"*@ autocomplete="off">
+
+
+        @*////////////////////////////// ----commented for adding single div app_main_inner ----- march 11/////////////////////////////////////////////////////////////////////////////////////////*@
+
+        @*<div class="main-panel">
+            <div class="content" >
+                <div class="page-inner">
+
+                    <div class="col-md-12">
+
+                    </div>
+                    <div class="card" style="background-color: #fafafa;width:auto">
+                        <br />*@
+        @*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+        <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+            <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+                <div class="card-title">
+                    <br />
+                    <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Customer Registration</h6>
+                </div>
+            </div>
+
+            <div class="card-body" style="width:100%;">
+
+
+
+                <!-- Your form content here -->
+                @*@if (Model != null && Model.Count>0)
+                    {
+                        foreach (var customer in Model)
+                        {*@
+
+                @*<style>
+                        #form-container .row {
+                            margin-top: 10px; /*
+                            margin-bottom: 10px; /*
+                        }
+                    </style>*@
+
+                <div id="form-container">
+
+                    @*first row starts here....*@
+
+                    <div class="row">
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Cust.Temp.ID</span>
+                                </div>
+
+
+                                <input type="text" class="form-control" placeholder="" id="customer_id" name="Customer_id" aria-label="" aria-describedby="basic-addon1" autocomplete="off" Style="text-transform: uppercase" onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g, '')" onPaste="javascript: return false;"
+                                       @*@if (Model != null) { <text> value="@Model.customer_id" </text> }readonly>*@
+                                       value="@Session["TempCID"]" @if (Session["TempCID"] != null) { <text> readonly</text> } } oncut="return false" oncopy="return false" onselectstart="return false" onmousedown="return false;" />
+                                @*oncut="return false" oncopy="return false" >*@
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Customer Name</span>
+                                </div>
+
+
+                                @*<input type="text" class="form-control" id="Customer_name" name="Customer_name" placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                                   value="@Session["CustomerName"]" @if (Session["CustomerName"] != null) { <text> readonly </text> }>
+
+                                        </div>
+                                    </div>*@
+
+
+                                <textarea class="form-control" id="Customer_name" name="Customer_name" placeholder="" aria-label="" aria-describedby="basic-addon1" style="width: 140px; height: 38px; resize: none; overflow-y: auto;"
+                                          onselectstart="return false" onmousedown="return false;"
+                                          @if (Session["CustomerName"] != null) { <text> readonly </text> }>@Session["CustomerName"]</textarea>
+                            </div>
+                        </div>
+
+
+
+
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Mobile No.</span>
+                                </div>
+
+                                <input type="text" class="form-control" id="mob_no" name="mob_no" placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                       onselectstart="return false" onmousedown="return false;"
+                                       value="@Session["MobileNo"]" @if (Session["MobileNo"] != null) { <text> readonly </text> }>
+
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+
+
+
+                    @*second row starts here....*@
+                    <div class="row">
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" id="category_id" class="input-group-text">Category<span style="color:red">*</span></span>
+                                    </div>
+
+
+                                    <select name="category_id" id="category_id" class="form-control" required>
+                                        <option value="">----- Select -----</option>
+
+                                        @foreach (var category in categories)
+                                        {
+                                            <option value="@category.category_id" @(Model != null && Model.category_id != null && category.category_id.ToString() == Model.category_id.ToString() ? "selected" : "")> @category.category_name</option>
+
+                                        }
+                                    </select>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Date of Birth<span style="color:red">*</span></span>
+                                </div>
+
+                                <input type="date" name="dob" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" id="dob" required oninput="validateDOB(this.value)"
+                                       @if (Model != null && Model.dob.HasValue) { <text> value="@Model.dob.Value.ToString("yyyy-MM-dd")" </text> } />
+
+                                <span id="dob-error" style="color: red; font-size:small;"></span>
+
+                                <script>
+                                    function validateDOB(enteredDate) {
+                                        var errorSpan = document.getElementById('dob-error');
+                                        errorSpan.textContent = '';  // Clear previous error message
+
+                                        if (enteredDate.trim() === '') {
+                                            errorSpan.textContent = 'Please enter your Date of Birth.';
+                                            document.getElementById('dob').setCustomValidity('Please enter your Date of Birth.');
+                                            return false;
+                                        }
+
+                                        // Extract the year part from the entered date
+                                        var enteredYear = enteredDate.split('-')[0];
+
+                                        // Check if the entered year has exactly 4 digits
+                                        if (enteredYear.length !== 4) {
+                                            errorSpan.textContent = 'Please enter a valid 4-digit year.';
+                                            document.getElementById('dob').setCustomValidity('Please enter a valid 4-digit year.');
+                                            return false;
+                                        }
+
+                                        var currentDate = new Date();
+                                        var selectedDate = new Date(enteredDate);
+
+                                        // Calculate age
+                                        var age = currentDate.getFullYear() - selectedDate.getFullYear();
+
+                                        // Check if the age is between 18 and 90
+                                        if (age < 18 || age > 90) {
+                                            errorSpan.textContent = 'Age must be between 18 and 90 years.';
+                                            document.getElementById('dob').setCustomValidity('Age must be between 18 and 90 years.');
+                                            return false;
+                                        }
+
+                                        // Set dynamic min value based on current year - 91
+                                        var minYear = currentDate.getFullYear() - 91;
+                                        document.getElementById('dob').setAttribute('min', minYear + '-01-01');
+
+                                        document.getElementById('dob').setCustomValidity('');  // Reset custom validity
+                                    }
+                                </script>
+                            </div>
+                        </div>
+
+
+
+
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Gender<span style="color:red">*</span></span>
+                                </div>
+                                <select class="form-control" name="gender" id="gender" required>
+                                    <option value="">----- Select -----</option>
+                                    <!-- Loop through genders and generate options -->
+                                    @foreach (var gender in genders)
+                                    {
+                                        <option value="@gender.gender_val" @(Model != null && Model.gender != null && gender.gender_val.ToString() == Model.gender.ToString() ? "selected" : "")>@gender.gender</option>
+
+                                    }
+
+
+                                </select>
+
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+
+
+                    @*Third row starts here....*@
+
+                    <div class="row" style="margin-top:-15px; margin-bottom:2px;">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Father's Name</span>
+                                </div>
+
+                                <input type="text" class="form-control" id="father_name" name="father_name" placeholder="" aria-label="" aria-describedby="basic-addon1" maxlength="50"
+                                       oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()"
+                                       @if (Model != null) { <text> value="@Model.father_name" </text> }>
+
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Mother's Name</span>
+                                </div>
+
+                                <input type="text" class="form-control" id="mother_name" name="mother_name" placeholder="" aria-label="" aria-describedby="basic-addon1" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" maxlength="50"
+                                       @if (Model != null) { <text> value="@Model.mother_name" </text> }>
+
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Residence type</span>
+                                </div>
+                                &nbsp; &nbsp; &nbsp;
+
+                                @*<div id="div_gur" style="vertical-align:central;padding-top:10px">*@
+                                <div>
+                                    <label @*class="form-radio-label2"*@>
+
+                                        <input class="form-radio-input" type="radio" name="residence_type" id="residence_type_own" value="O" @(Model != null && Model.residence_type == "O" ? "checked" : "")>
+
+                                        <span class="form-radio-sign" style="font-size:14px;">Own </span>
+                                    </label> &nbsp;
+                                    <label @*class="form-radio-label2 ml-3"*@>
+                                        <input class="form-radio-input" type="radio" name="residence_type" id="residence_type_rent" value="R" @(Model != null && Model.residence_type == "R" ? "checked" : "")>
+
+
+                                        <span class="form-radio-sign" style="font-size: 14px;">Rent</span>
+                                    </label>
+                                </div>
+
+
+
+
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+
+                    @*fourth row starts here....*@
+                    <div class="row">
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Marital Status<span style="color:red">*</span></span>
+                                </div>
+
+                                @*@Html.DropDownListFor(model => model.marital_status, new SelectList(statuses, "mstatus_val", "m_status"), "--- Select ---", new { @class = "form-control" })*@
+
+                                <select class="form-control" name="marital_status" id="marital_status" required onchange="toggleSpouseNameField()">
+                                    @*<option value="">----- Select -----</option>*@
+                                    <!-- Loop through statuses and generate options -->
+                                    @foreach (var status in statuses)
+                                    {
+                                        <option value="@status.mstatus_val" @(Model != null && Model.marital_status != null && status.mstatus_val.ToString() == Model.marital_status.ToString() ? "selected" : "")>@status.m_status</option>
+                                    }
+                                </select>
+
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Spouse Name</span>
+                                </div>
+
+
+                                <input type="text" class="form-control" id="spouse_name" name="spouse_name" placeholder="" @*required*@ aria-label="" aria-describedby="basic-addon1" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" maxlength="50"
+                                       @if (Model != null) { <text> value="@Model.spouse_name" </text> }>
+
+                            </div>
+                        </div>
+
+
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" class="input-group-text">Email</span>
+                                    </div>
+
+                                    @{
+                                        var onInputCode = "setCustomValidity('');";
+                                        var onInvalidCode = "setCustomValidity('Please enter a valid email address');";
+                                        var emailValue = (Model != null ? Model.email : null)?.ToString();
+                                    }
+
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                           oninput="@onInputCode"
+                                           oninvalid="@onInvalidCode"
+                                           value="@emailValue">
+
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    @*fifth row starts here....*@
+
+                    <div class="row" style="margin-top:-15px; margin-bottom:2px;">
+
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Annual Income</span>
+                                </div>
+
+                                <input type="text" id="annualincome" name="annualincome" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                       oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" maxlength="8"
+                                       @if (Model != null) { <text>
+                                       @*value="@Model.annualincome.ToString("N0")" </text> }>*@
+                                       @*value="@Model.annualincome.toFixed(0)" </text> }>*@
+                                       @*value="@String.Format("{0:F2}", @Model.annualincome)" </text> }>*@
+                                       value="@Model.annualincome" </text> }>
+                                @*value="@Model.annualincome.toFixed(2)"*@
+
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Residence Ph.No</span>
+                                </div>
+
+                                <input type="text" class="form-control" id="residence_no" name="residence_no" placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                       minlength="10" maxlength="10" pattern="\d{10}" oninput="this.value = this.value.replace(/\D/g, '');"
+                                       oninvalid="this.setCustomValidity('Please enter a valid 10-digit mobile number')"
+                                       @if (Model != null) { <text> value="@Model.residence_no" </text> }>
+                            </div>
+                        </div>
+
+                        <script>
+                            // Add event listener to reset custom validity on input
+                            document.getElementById('residence_no').addEventListener('input', function () {
+                                this.setCustomValidity('');
+                            });
+                        </script>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Office Ph.No</span>
+                                </div>
+
+                                <input type="text" class="form-control" id="office_no" name="office_no" placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                       minlength="10" maxlength="10" pattern="\d{10}"
+                                       oninput="this.setCustomValidity(''); this.value = this.value.replace(/\D/g, '');"
+                                       oninvalid="setCustomValidity('Please enter a valid 10-digit phone number')"
+                                       @if (Model != null) { <text> value="@Model.office_no" </text> }>
+
+
+
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    @*sixth row starts here....*@
+
+                    <div class="row">
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Dist.From Branch<span style="color:red">*</span></span>
+                                </div>
+                                &nbsp;
+                                @*<div id="div_gur" style="vertical-align:central;padding-top:10px">*@
+
+                                <div>
+
+                                    <label @*class="form-radio-label1"*@>
+                                        <input class="form-radio-input" type="radio" name="dist_from_branch" id="dist_from_branch_1" value="1" @(Model != null && Model.dist_from_branch == 1 ? "checked" : "") required>
+
+
+                                        <span class="form-radio-sign" style="font-size:12px">Blw 5KM</span>
+                                    </label>
+                                    <label @*class="form-radio-label1"*@>
+
+                                        <input class="form-radio-input" type="radio" name="dist_from_branch" id="dist_from_branch_2" value="2" @(Model != null && Model.dist_from_branch == 2 ? "checked" : "")>
+
+                                        <span class="form-radio-sign" style="font-size: 12px"> Abv 5KM</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Education<span style="color:red">*</span></span>
+                                </div>
+
+                                @*@Html.DropDownListFor(model => model.marital_status, new SelectList(statuses, "mstatus_val", "m_status"), "--- Select ---", new { @class = "form-control" })*@
+
+                                <select name="education" id="education" class="form-control" required>
+                                    <option value="">----- Select -----</option>
+
+                                    @foreach (var education in edu)
+                                    {
+                                        <option value="@education.edu_id" @(Model != null && Model.education != null && education.edu_id.ToString() == Model.education.ToString() ? "selected" : "")> @education.edu_name</option>
+
+                                    }
+                                </select>
+
+
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text"> Occupation<span style="color:red">*</span></span>
+                                </div>
+
+                                <select name="occupation" id="occupation" class="form-control" required>
+                                    <option value="">----- Select -----</option>
+
+                                    @foreach (var occupation in occu)
+                                    {
+                                        <option value="@occupation.occu_id" @(Model != null && Model.occupation != null && occupation.occu_id.ToString() == Model.occupation.ToString() ? "selected" : "")> @occupation.occu_name</option>
+
+                                    }
+                                </select>
+
+
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+                    @*seventh row starts here....*@
+                    <br />
+                    <div class="row" style="margin-top:-15px; margin-bottom:2px;">
+                        <div class="col-md-6 col-lg-4">
+                            <p style="color: darkblue; font-weight: 500;font-size :medium;">Communication Address</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">House Name/No<span style="color:red">*</span></span>
+                                </div>
+                                <input type="text" class="form-control" id="house_name" name="house_name" placeholder="" aria-label="" aria-describedby="basic-addon1" required
+                                       oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ]/g, '').toUpperCase()"
+                                       @if (Model != null) { <text> value="@Model.house_name" </text> }>
+
+                                @*<textarea class="form-control" id="house_name" name="house_name" placeholder="" aria-label="" aria-describedby="basic-addon1" required style="width: 140px; height: 38px; resize: none; overflow-y: auto;"
+                                      oninput="this.value = this.value.toUpperCase()">
+                                     @if (Model != null) { @Model.house_name }
+                                    </textarea>*@
+
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Land Mark<span style="color:red">*</span></span>
+                                </div>
+
+                                <input type="text" class="form-control" id="landmark" name="landmark" placeholder="" aria-label="" aria-describedby="basic-addon1" required
+                                       oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ]/g, '').toUpperCase()"
+                                       @if (Model != null) { <text> value="@Model.landmark" </text> }>
+
+                                @*<textarea class="form-control" id="landmark" name="landmark" placeholder="" aria-label="" aria-describedby="basic-addon1" required
+                                             oninput="this.value = this.value.toUpperCase()"
+                                             style="width: 140px; height: 38px; resize: none; overflow-y: auto;">
+                                                @if (Model != null) { @Model.landmark }
+                                    </textarea>*@
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">City/Place<span style="color:red">*</span></span>
+                                </div>
+
+                                <input type="text" class="form-control" id="City" name="City" placeholder="" aria-label="" aria-describedby="basic-addon1" required
+                                       @*oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" maxlength="50"*@
+                                       oninput="this.value = this.value.replace(/[^a-zA-Z0-9\s]/g, '').toUpperCase()" maxlength="50"
+                                       @if (Model != null) { <text> value="@Model.City" </text> }>
+                            </div>
+                        </div>
+                    </div>
+                    @*Eighth row starts here....*@
+
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Pincode<span style="color:red">*</span></span>
+                                </div>
+                                @*<input type="text" class="form-control" id="txt_cust_pincode" placeholder="" aria-label="" aria-describedby="basic-addon1" onkeyup="if(/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')" maxlength="6">*@
+                                <input type="text" class="form-control" id="txt_cust_pincode" placeholder="" aria-label="" aria-describedby="basic-addon1" oninput="if(/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')" maxlength="6" required
+                                       @if (Model != null) { <text> value="@Model.Pincode" </text> }>
+                            </div>
+                        </div>
+
+                        @*@Html.TextBoxFor(model => model.Pincode, new { @class = "form-control", onchange = "getDetails()" })*@
+
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Post Office<span style="color:red">*</span></span>
+                                </div>
+
+                                <select id="PostOffice" class="form-control" name="PostOffice" required>
+                                    <!-- This option will be dynamically populated using the fillDropdown function -->
+                                </select>
+
+
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">District</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" id="district_name"
+                                       @if (Model != null) { <text> value="@Model.District" </text> } readonly>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    @*Ninenth row starts here....*@
+
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">State</span>
+                                </div>
+                                @*<input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">*@
+                                <input type="text" id="state_name" name="state_name" class="form-control"
+                                       @if (Model != null) { <text> value="@Model.State" </text> } readonly>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Year of Stay<span style="color:red">*</span></span>
+                                </div>
+
+
+
+                                <input type="text" class="form-control" id="yearofstay" name="yearofstay" placeholder="" aria-label="" required aria-describedby="basic-addon1" onkeyup="if(/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')" maxlength="2"
+                                       @if (Model != null) { <text> value="@Model.yearofstay" </text> }>
+
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+
+
+
+                    @*checkbox is here*@
+
+                    <div class="row">
+                        <div class="form-check">
+                            <label class="form-check-label">
+                                <span class="form-check-sign" style="color: darkblue; font-weight: 500; font-size:medium;"> Is permanent address is same as communication address @*click here....*@</span>
+                                <!--<input--> @*class="form-check-input"*@ <!--style="margin:2px; width:17px;height:15px;" type="checkbox" value="" name="c1" id="hideCheckbox" onchange="toggleDataVisibility()">-->
+                                @*<input type="hidden" id="h_Id" name="h_Id" value="" />*@
+
+                                <input @*class="form-check-input"*@ style="margin:2px; width:17px;height:15px;" type="checkbox" value="" name="c1" id="hideCheckbox" @(Model != null && Model.p_house_name == "" ? "checked" : "")>
+
+
+                                &nbsp; &nbsp;&nbsp;&nbsp;
+                            </label>
+                        </div>
+                    </div>
+                    &nbsp; &nbsp; &nbsp; &nbsp;
+
+
+                    <div id="P_add_div">
+                        @Html.Partial("_Permanent_address_partial_view")
+                    </div>
+
+
+
+
+                    @*submit button *@
+
+                    <div class="row">
+
+                        <div class="col-md-6 col-lg-4">
+                        </div>
+                        &nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+
+
+
+                                <button class="button_style" style="background-color:#007FFF;height:40px;width:100px;border-radius:8px;color:white;border-color:white;" type="submit" id="btn_save">NEXT</button>
+
+
+
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+
+
+                    <div class="col-md-6 col-lg-4">
+                    </div>
+
+                </div>
+            </div>
+
+
+        </div>
+        @*</div>
+
+
+            </div>
+            </div>*@
+
+    </form>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+@*///////////////////////////   registration form submit click for check image size   //////////////////////////////////*@
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add event listener for form submission
+            document.getElementById('register_form').addEventListener('submit', function (event) {
+                if (!validateForm()) {
+                    event.preventDefault(); // Prevent form submission if validation fails
+                }
+            });
+        });
+
+        // Function to validate the form
+        function validateForm() {
+            let isValid = true;
+
+            // File size validation
+            const image = document.getElementById('image').files[0]; // First file input
+
+            // Check if the first file exceeds 3 MB
+            if (image && image.size > 1 * 1024 * 1024) {
+                alert("The first file size exceeds 1 MB limit.");
+                isValid = false; // Prevent form submission
+            }
+
+         
+
+            // Additional validation checks can be added here
+
+            return isValid;
+        }
+    </script>
+
+
+
+
+
+
+    @*---------------------------Customer having no 1st,2nd and father's name--------------*@
+
+    @*<script>
+        document.getElementById("btn_save").addEventListener("click", function (event) {
+
+            // Prevent the default form submission behavior
+            event.preventDefault();
+
+            // Check if customer name has multiple parts
+            var customerName = document.getElementById("Customer_name").value.trim();
+            var names = customerName.split(" ");
+
+
+            // Check if the customer has a father's name
+            var fatherName = document.getElementById("father_name").value.trim();
+
+
+            // If customer has one part in the name and no father's name provided yet
+            if (names.length === 1 && names[0] !== "" && fatherName === "") {
+
+                alert("Second and third name is missing. Please provide father's name.");
+            } else {
+                // Set the form action dynamically using the URL generated by @Url.Action()
+                document.getElementById("register_form").action = '@Url.Action("kyc_approval", "Customer_KYC")';
+                // Submit the form
+                submitForm();
+            }
+        });
+
+        function submitForm() {
+            var form = document.getElementById("register_form");
+            // Submit the form
+            form.submit();
+        }
+        </script>*@
+
+
+    @*//////////////////////////////// check customer name contains second name or not //////////////////////////////////////////*@
+
+    <script>
+        // Function to check if Customer Name has multiple parts and the second part has at least one letter
+        function checkCustomerName() {
+            // alert("customer name check entered");
+            var customerName = document.getElementById("Customer_name").value.trim();
+            var names = customerName.split(" ");
+            var fatherNameInput = document.getElementById("father_name");
+
+            // If Customer Name has multiple parts and the second part has at least one letter
+            if (names.length > 1 && names[1].match(/[a-zA-Z]/)) {
+                // alert("two names are there");
+                fatherNameInput.removeAttribute("required");
+            } else {
+                //alert("only one is there ");
+                fatherNameInput.setAttribute("required", "required");
+            }
+        }
+
+        // Check Customer Name when the page loads
+        window.addEventListener("load", function () {
+            checkCustomerName(); // Check initially when the page loads
+        });
+    </script>
+
+
+
+
+
+
+
+
+
+    @*///////////////////////////////////////----------checkbox toggle -----------/////////////////////////////////////////////////////////*@
+
+    <script>
+
+
+        function toggleVisibility() {
+            var dataSection = $("#P_add_div");
+        var hideCheckbox = $("#hideCheckbox");
+
+
+
+        // Toggle the 'required' attribute on input elements
+        var inputElements = dataSection.find('input[required], select[required]');
+
+        // console.log("Checkbox checked:", hideCheckbox.prop("checked"));
+
+        inputElements.each(function () {
+                var $this = $(this);
+
+        // Store original value if not already stored
+        if (!hideCheckbox.prop("checked") && !$this.data('original-value')) {
+            $this.data('original-value', $this.val());
+                }
+
+        // Restore original value if checkbox is unchecked
+        if (!hideCheckbox.prop("checked") && $this.data('original-value')) {
+            $this.val($this.data('original-value'));
+                }
+
+        // Set required attribute based on checkbox state
+        $this.prop("required", !hideCheckbox.prop("checked"));
+
+                // console.log("Element:", $this.attr("name"), "Required:", $this.prop("required"));
+            });
+
+        // Show or hide the data section based on checkbox state
+        if (hideCheckbox.prop("checked")) {
+            dataSection.hide();
+
+        $('#p_house_name').val('');
+        $('#p_landmark').val('');
+        $('#p_City').val('');
+        $('#txt_cust_pincode_permanent').val('');
+        /* $("#p_PostOffice").val('');*/
+        $("#p_PostOffice").empty();
+        $('#p_District').val('');
+        $('#p_State').val('');
+
+
+
+
+            } else {
+            dataSection.show();
+
+            }
+        }
+
+        $(document).ready(function () {
+            toggleVisibility();
+
+        $('#hideCheckbox').change(function () {
+                // alert("start");
+                var dataSection = $("#P_add_div");
+        var hideCheckbox = $("#hideCheckbox");
+        // var iconDiv = document.getElementById('btn_per_attach');
+        // iconDiv.style.display = 'none';
+
+        // Toggle the 'required' attribute on input elements
+        var inputElements1 = dataSection.find('input, select');
+        console.log("Checkbox checked:", hideCheckbox.prop("checked"));
+        inputElements1.each(function () {
+                    var $this = $(this);
+        if (!hideCheckbox.prop("checked")) {
+            $this.prop("required", true);
+                    } else {
+            $this.prop("required", false);
+                    }
+        console.log("Element:", $this.attr("name"), "Required:", $this.prop("required"));
+                });
+        toggleVisibility();
+            });
+
+        });
+
+    </script>
+
+
+    @*--- pincode, post office, district & state filling script ---*@
+
+
+
+    @*feb 1 comment*@
+
+
+    <script>
+            $(document).ready(function () {
+
+                $("#txt_cust_pincode").on("focusout", function () {
+
+                    var pincode = $(this).val();
+                //    alert(pincode);
+                $.ajax({
+                    url: '@Url.Action("PincodeChanged", "Customer_Registration")',
+                    type: 'POST',
+                    data: { pincode: pincode },
+                    dataType: 'json',
+                    success: function (result) {
+
+                        if ($.isEmptyObject(result)) {
+                            // Handle empty result object
+                            //alert(result);
+                            $('#txt_cust_pincode').val('');
+                            clearDropdowns();
+                            return;
+                        }
+
+                        else {
+                            clearDropdowns();
+
+
+                            // Add new options for Post Office dropdown based on the result
+                            $.each(result.PostOffices, function (index, item) {
+                                $("#PostOffice").append($('<option>', {
+                                    value: item.Value,
+                                    text: item.Text
+                                }));
+                            });
+
+                            // Set the value for the District text input
+                            $("#district_name").val(result.Districts[0].Text); // Assuming you want the first district as an example
+                            $("#state_name").val(result.States[0].Text);
+
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+
+                       alert('Error.');
+                    }
+                });
+                    });
+
+                function clearDropdowns() {
+
+                    $("#PostOffice").empty();
+                    $("#district_name").val('');
+                    $("#state_name").val('');
+                }
+
+             });
+
+
+
+    </script>
+
+
+    @*--- when the continue clicks the dropdown must be selected as the value in the table , and the remaining options are there ---*@
+
+
+    <script>
+    $(document).ready(function () {
+        // Function to fill the Post Office dropdown based on pincode
+        function fillDropdown(pincode, selectedValue) {
+            $.ajax({
+                url: '@Url.Action("PincodeChanged", "Customer_Registration")',
+                type: 'POST',
+                data: { pincode: pincode },
+                dataType: 'json',
+                success: function (result) {
+                    // Clear existing options for Post Office dropdown
+                    $("#PostOffice").empty();
+
+                    // Add new options for Post Office dropdown based on the result
+                    $.each(result.PostOffices, function (index, item) {
+                        var option = $('<option>', {
+                            value: item.Value,
+                            text: item.Text
+                        });
+
+                        // Set selected based on the condition
+                        if (item.Value === selectedValue || (selectedValue === null && item.Value === $('#hiddenPostOffice').val())) {
+                            option.prop('selected', true);
+                        }
+
+                        $("#PostOffice").append(option);
+                    });
+
+                    // Set the value for the District and State text inputs
+                    $("#district_name").val(result.Districts[0]?.Text || ''); // Assuming you want the first district as an example
+                    $("#state_name").val(result.States[0]?.Text || '');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("Error:", jqXHR.responseText);
+                    console.error("Status:", textStatus);
+                    console.error("Error Thrown:", errorThrown);
+                //    alert('Error occurred while fetching data. See console for details.');
+                }
+            });
+        }
+
+        // Function to populate form values on page load
+        function populateFormValues(model) {
+            // Use the model.Pincode and model.PostOffice instead of the hardcoded values
+            var pincodeFromTable = model ? model.Pincode : null;
+            var selectedValueFromTable = model ? model.PostOffice : null;
+
+            // Populate the dropdown based on the provided values
+            fillDropdown(pincodeFromTable, selectedValueFromTable);
+
+            // Additional logic to populate other form fields with values from the table
+            // ...
+        }
+
+        // Trigger the populateFormValues function on page load
+        // Pass the model as an argument if it's available in the view
+        populateFormValues(@Html.Raw(Json.Encode(Model)));
+
+        // Check if the model.PostOffice is null and trigger the focusout event
+        if (@Model?.PostOffice == null) {
+            $("#txt_cust_pincode").trigger("focusout");
+        }
+
+        // Attach the focusout event separately
+        $("#txt_cust_pincode").on("focusout", function () {
+            var pincode = $(this).val();
+            // You can adjust this part based on your actual requirements
+            // Call the fillDropdown function or perform any other logic as needed
+            // fillDropdown(pincode, selectedValue);
+        });
+    });
+    </script>
+
+    @*///////////////////// script for when add marital status and spouse name ////////////////////////////*@
+
+    @*<script>
+            function toggleSpouseNameField() {
+
+                //alert("status selected");
+                var maritalStatus = document.getElementById("marital_status").value;
+                var spouseNameInput = document.getElementById("spouse_name");
+
+                if (maritalStatus === "Married" || maritalStatus === "Widow/Widower") {
+                    //alert("spouse selected");
+                    spouseNameInput.disabled = false;
+                //    spouseNameInput.required = true; // Make spouse name required
+                } else {
+                    spouseNameInput.disabled = true;
+                    //spouseNameInput.required = false; // Make spouse name not required
+                    spouseNameInput.value = ""; // Clear the value if disabled
+                }
+            }
+        </script>*@
+
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // alert("Document is ready");
+            toggleSpouseNameField(); // Call the function to toggle spouse name field initially
+
+        // Bind change event to marital status dropdown
+        $("#marital_status").change(function () {
+            toggleSpouseNameField(); // Call the function whenever marital status changes
+            });
+        });
+
+        function toggleSpouseNameField() {
+            var maritalStatus = $("#marital_status").val();
+        var spouseNameInput = $("#spouse_name");
+        //alert(maritalStatus);
+
+        if (maritalStatus === "Married" || maritalStatus === "Widow/Widower") {
+            spouseNameInput.prop("disabled", false);
+        spouseNameInput.prop("readonly", false); // Make spouse name input not readonly
+            } else {
+            spouseNameInput.prop("disabled", true);
+        spouseNameInput.prop("readonly", true); // Make spouse name input readonly
+        spouseNameInput.val(""); // Clear the value if disabled
+            }
+        }
+    </script>
+
+
+
+
+
+
+
+</body>
+</html>
+
+

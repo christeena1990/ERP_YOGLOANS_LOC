@@ -1,0 +1,3586 @@
+﻿
+@model ERP_YOGLOANS_LOCAL.Models.History_model
+@{
+    Layout = null;
+
+  
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    @Styles.Render("~/Content/css")
+    <style>
+        #customerPhoto:hover,
+        #photoPopup:hover {
+            cursor: zoom-in;
+        }
+        .photo-popup {
+            display: none;
+            position: fixed; 
+            top: 10px; 
+            left: 10px; 
+            z-index: 100;
+            background-color: #fff;
+            padding: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+
+
+            .photo-popup img {
+                width: 200px; 
+                height: 200px; 
+                object-fit: cover;
+            }
+
+        table {
+            border-collapse: collapse; 
+            width: 100%;
+            border: 1px solid #ccc;
+        }
+      
+        /* Add vertical line (right border) between columns */
+        th {
+            border-right: 1px solid #ccc;
+            text-align: center;
+        }
+        td {
+            border-right: 1px solid #ccc; /* Light gray line */
+        }
+
+            /* Remove the right border for the last column */
+            th:last-child, td:last-child {
+                border-right: none;
+            }
+        .text-right {
+            text-align: right;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            gap: 1px;
+            padding: 1px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            flex-wrap: wrap;
+            /*  background-color: #f7b924;*/
+            /* background-color: #ADD8E6;*/
+
+            background-color: #D3D3D3;
+        }
+
+        .section {
+            flex: 1;
+            min-width: 300px; /* Adjust this value as needed for responsive design */
+            box-sizing: border-box;
+            padding: 20px;
+            font-size: small;
+            /* border: 1px solid #ccc;*/
+        }
+
+        .photo {
+            flex: 1;
+            min-width: 100px; /* Adjust this value as needed for responsive design */
+            box-sizing: border-box;
+            padding: 20px;
+            /* border: 1px solid #ccc;*/
+            text-align: center;
+        }
+
+            .photo img {
+                max-width: 50%;
+                height: auto;
+                border-radius: 50%;
+            }
+
+
+        .search-box {
+            position: relative;
+            width: 300px;
+        }
+
+            .search-box input {
+                width: 100%;
+                padding: 8px 35px 8px 25px; /* Adjust padding for reduced height */
+                border: 2px solid #ddd;
+                border-radius: 20px; /* Adjust border radius for a more compact look */
+                font-size: 14px; /* Reduce font size for a smaller input box */
+                outline: none;
+                transition: all 0.3s ease;
+                box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+            }
+
+                .search-box input:focus {
+                    border-color: #007bff;
+                    box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+                }
+
+            .search-box i {
+                position: absolute;
+                right: 10px; /* Icon position on the right */
+                top: 50%;
+                transform: translateY(-50%);
+                color: #aaa;
+                font-size: 18px; /* Reduce font size of the icon */
+                transition: color 0.3s ease; /* Smooth transition for color change */
+            }
+
+                .search-box i:hover {
+                    color: #007bff; /* Change icon color on hover */
+                    cursor: pointer; /* Change cursor to pointer on hover */
+                }
+
+       
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            padding-top: 50px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        /* Modal Content for Image */
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 80%; /* Max width for images */
+            max-height: 80vh; /* Max height for images */
+        }
+
+        /* Modal Caption for PDF */
+        #caption {
+            margin: auto;
+            display: block;
+            width: 90%;
+            height: 90vh; /* Height for PDF */
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+        }
+
+        /* Close Button */
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: #bbb;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+        /* Ensure PDF occupies a larger area */
+        .modal-content object {
+            width: 100%;
+            height: 90vh; /* Set height to occupy most of the viewport */
+        }
+
+
+
+        .table-heading {
+            font-size: 15px; /* Adjust the size as needed */
+            font-weight: 500;
+            color: darkred;
+        }
+
+        /* table 1*/
+        #tablesContainerWrapper {
+            max-height: 250px; /* Set the maximum height for the container */
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Hide horizontal scrolling */
+            margin-bottom: 10px;
+            border-color: darkred;
+        }
+
+        #tablesContainer {
+            width: 100%; /* Full width of the container */
+            border-collapse: collapse; /* Collapse table borders */
+            font-size: 12px; /* Font size for table data */
+            font-weight: 500; /* Font weight for table data */
+        }
+
+            #tablesContainer th, #tablesContainer td {
+                padding: 8px; /* Cell padding */
+                border: 1px solid #ddd; /* Cell borders */
+                text-align: left; /* Align text to the left */
+            }
+
+            #tablesContainer th {
+                font-size: 10px; /* Smaller font size for table headings */
+            }
+
+            #tablesContainer thead {
+                position: sticky; /* Make the header sticky */
+                top: 0; /* Stick to the top of the container */
+                background-color: #f9f9f9; /* Background color for the header */
+            }
+        /*     table 2*/
+
+        #tablesContainerWrapper_2 {
+            max-height: 250px; /* Set the maximum height for the container */
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Hide horizontal scrolling */
+            margin-bottom: 10px;
+            border-color: darkred;
+        }
+
+        #tablesContainer_2 {
+            width: 100%; /* Full width of the container */
+            border-collapse: collapse; /* Collapse table borders */
+            font-size: 12px; /* Font size for table data */
+            font-weight: 500; /* Font weight for table data */
+        }
+
+            #tablesContainer_2 th, #tablesContainer_2 td {
+                padding: 8px; /* Cell padding */
+                border: 1px solid #ddd; /* Cell borders */
+                text-align: left; /* Align text to the left */
+            }
+
+            #tablesContainer_2 th {
+                font-size: 10px; /* Smaller font size for table headings */
+            }
+
+            #tablesContainer_2 thead {
+                position: sticky; /* Make the header sticky */
+                top: 0; /* Stick to the top of the container */
+                background-color: #f9f9f9; /* Background color for the header */
+            }
+        /*    table 3*/
+        #tablesContainerWrapper_3 {
+            max-height: 250px; /* Set the maximum height for the container */
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Hide horizontal scrolling */
+            margin-bottom: 10px;
+            border-color: darkred;
+        }
+
+        #tablesContainer_3 {
+            width: 100%; /* Full width of the container */
+            border-collapse: collapse; /* Collapse table borders */
+            font-size: 12px; /* Font size for table data */
+            font-weight: 500; /* Font weight for table data */
+        }
+
+            #tablesContainer_3 th, #tablesContainer_3 td {
+                padding: 8px; /* Cell padding */
+                border: 1px solid #ddd; /* Cell borders */
+                text-align: left; /* Align text to the left */
+            }
+
+            #tablesContainer_3 th {
+                font-size: 10px; /* Smaller font size for table headings */
+            }
+
+            #tablesContainer_3 thead {
+                position: sticky; /* Make the header sticky */
+                top: 0; /* Stick to the top of the container */
+                background-color: #f9f9f9; /* Background color for the header */
+            }
+        /*    table 4*/
+        #tablesContainerWrapper_4 {
+            max-height: 250px; /* Set the maximum height for the container */
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Hide horizontal scrolling */
+            margin-bottom: 10px;
+            border-color: darkred;
+        }
+
+        #tablesContainer_4 {
+            width: 100%; /* Full width of the container */
+            border-collapse: collapse; /* Collapse table borders */
+            font-size: 12px; /* Font size for table data */
+            font-weight: 500; /* Font weight for table data */
+        }
+
+            #tablesContainer_4 th, #tablesContainer_4 td {
+                padding: 8px; /* Cell padding */
+                border: 1px solid #ddd; /* Cell borders */
+                text-align: left; /* Align text to the left */
+            }
+
+            #tablesContainer_4 th {
+                font-size: 10px; /* Smaller font size for table headings */
+            }
+
+            #tablesContainer_4 thead {
+                position: sticky; /* Make the header sticky */
+                top: 0; /* Stick to the top of the container */
+                background-color: #f9f9f9; /* Background color for the header */
+            }
+        /*    table 5*/
+        #tablesContainerWrapper_5 {
+            max-height: 250px; /* Set the maximum height for the container */
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Hide horizontal scrolling */
+            margin-bottom: 10px;
+            border-color: darkred;
+        }
+
+        #tablesContainer_5 {
+            width: 100%; /* Full width of the container */
+            border-collapse: collapse; /* Collapse table borders */
+            font-size: 12px; /* Font size for table data */
+            font-weight: 500; /* Font weight for table data */
+        }
+
+            #tablesContainer_5 th, #tablesContainer_5 td {
+                padding: 8px; /* Cell padding */
+                border: 1px solid #ddd; /* Cell borders */
+                text-align: left; /* Align text to the left */
+            }
+
+            #tablesContainer_5 th {
+                font-size: 10px; /* Smaller font size for table headings */
+            }
+
+            #tablesContainer_5 thead {
+                position: sticky; /* Make the header sticky */
+                top: 0; /* Stick to the top of the container */
+                background-color: #f9f9f9; /* Background color for the header */
+            }
+
+        /*    table 6*/
+        #tablesContainerWrapper_6 {
+            max-height: 250px; /* Set the maximum height for the container */
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Hide horizontal scrolling */
+            margin-bottom: 10px;
+            border-color: darkred;
+        }
+
+        #tablesContainer_6 {
+            width: 100%; /* Full width of the container */
+            border-collapse: collapse; /* Collapse table borders */
+            font-size: 12px; /* Font size for table data */
+            font-weight: 500; /* Font weight for table data */
+        }
+
+            #tablesContainer_6 th, #tablesContainer_6 td {
+                padding: 8px; /* Cell padding */
+                border: 1px solid #ddd; /* Cell borders */
+                text-align: left; /* Align text to the left */
+            }
+
+            #tablesContainer_6 th {
+                font-size: 10px; /* Smaller font size for table headings */
+            }
+
+            #tablesContainer_6 thead {
+                position: sticky; /* Make the header sticky */
+                top: 0; /* Stick to the top of the container */
+                background-color: #f9f9f9; /* Background color for the header */
+            }
+
+        /*    table 7*/
+        #tablesContainerWrapper_7 {
+            max-height: 250px; /* Set the maximum height for the container */
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Hide horizontal scrolling */
+            margin-bottom: 10px;
+            border-color: darkred;
+        }
+
+        #tablesContainer_7 {
+            width: 100%; /* Full width of the container */
+            border-collapse: collapse; /* Collapse table borders */
+            font-size: 12px; /* Font size for table data */
+            font-weight: 500; /* Font weight for table data */
+        }
+
+            #tablesContainer_7 th, #tablesContainer_7 td {
+                padding: 8px; /* Cell padding */
+                border: 1px solid #ddd; /* Cell borders */
+                text-align: left; /* Align text to the left */
+            }
+
+            #tablesContainer_7 th {
+                font-size: 10px; /* Smaller font size for table headings */
+            }
+
+            #tablesContainer_7 thead {
+                position: sticky; /* Make the header sticky */
+                top: 0; /* Stick to the top of the container */
+                background-color: #f9f9f9; /* Background color for the header */
+            }
+        /*    table 8*/
+        #tablesContainerWrapper_8 {
+            max-height: 250px; /* Set the maximum height for the container */
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Hide horizontal scrolling */
+            margin-bottom: 10px;
+            border-color: darkred;
+        }
+
+        #tablesContainer_8 {
+            width: 100%; /* Full width of the container */
+            border-collapse: collapse; /* Collapse table borders */
+            font-size: 12px; /* Font size for table data */
+            font-weight: 500; /* Font weight for table data */
+        }
+
+            #tablesContainer_8 th, #tablesContainer_8 td {
+                padding: 8px; /* Cell padding */
+                border: 1px solid #ddd; /* Cell borders */
+                text-align: left; /* Align text to the left */
+            }
+
+            #tablesContainer_8 th {
+                font-size: 10px; /* Smaller font size for table headings */
+            }
+
+            #tablesContainer_8 thead {
+                position: sticky; /* Make the header sticky */
+                top: 0; /* Stick to the top of the container */
+                background-color: #f9f9f9; /* Background color for the header */
+            }
+        /*    table 9*/
+        #tablesContainerWrapper_9 {
+            max-height: 250px; /* Set the maximum height for the container */
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Hide horizontal scrolling */
+            margin-bottom: 10px;
+            border-color: darkred;
+        }
+
+        #tablesContainer_9 {
+            width: 100%; /* Full width of the container */
+            border-collapse: collapse; /* Collapse table borders */
+            font-size: 12px; /* Font size for table data */
+            font-weight: 500; /* Font weight for table data */
+        }
+
+            #tablesContainer_9 th, #tablesContainer_9 td {
+                padding: 8px; /* Cell padding */
+                border: 1px solid #ddd; /* Cell borders */
+                text-align: left; /* Align text to the left */
+            }
+
+            #tablesContainer_9 th {
+                font-size: 10px; /* Smaller font size for table headings */
+            }
+
+            #tablesContainer_9 thead {
+                position: sticky; /* Make the header sticky */
+                top: 0; /* Stick to the top of the container */
+                background-color: #f9f9f9; /* Background color for the header */
+            }
+        /*    table 10*/
+        #tablesContainerWrapper_9 {
+            max-height: 250px; /* Set the maximum height for the container */
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Hide horizontal scrolling */
+            margin-bottom: 10px;
+            border-color: darkred;
+        }
+
+        #tablesContainer_9 {
+            width: 100%; /* Full width of the container */
+            border-collapse: collapse; /* Collapse table borders */
+            font-size: 12px; /* Font size for table data */
+            font-weight: 500; /* Font weight for table data */
+        }
+
+            #tablesContainer_9 th, #tablesContainer_9 td {
+                padding: 8px; /* Cell padding */
+                border: 1px solid #ddd; /* Cell borders */
+                text-align: left; /* Align text to the left */
+            }
+
+            #tablesContainer_9 th {
+                font-size: 10px; /* Smaller font size for table headings */
+            }
+
+            #tablesContainer_9 thead {
+                position: sticky; /* Make the header sticky */
+                top: 0; /* Stick to the top of the container */
+                background-color: #f9f9f9; /* Background color for the header */
+            }
+    </style>
+    <script>
+
+        $(document).ready(function () {
+            //alert("ready function");
+    var sessionCustomerID = '@Session["customer_id_his"]';
+   // alert(sessionCustomerID);
+    if (sessionCustomerID) {
+        $('#customer_id').val(sessionCustomerID);
+        searchCustomer();
+    }
+});
+
+
+   function searchCustomer() {
+      // alert("search_enter");
+       var customerID = $('#customer_id').val();
+       if (!customerID) {
+           alert("Customer ID is required");
+           return;
+       }
+   $.ajax({
+        url: '@Url.Action("select_cus_id", "Customer_History")',
+        type: 'POST', // Changed to POST
+        data: { customerID: customerID },
+        success: function (response) {
+            if (response.success) {
+                select_cus_name();
+                $("#customerAddress").hide();
+                $("#address_label").hide();
+                $("#fraud_main_div").hide();
+                //  $("#customerPhoto").hide();
+                //$("#customerPhoto").empty();
+                com_address();
+                per_address();
+                cust_photo();
+                GOLD_LIMIT();
+                fraud();
+                kyc_grid();
+                Bank_grid();
+                $("#cus_dtl_div").show();
+
+                history_tables();
+                gold_inventory_grid();
+                CUSTOMER_KYC_AUDIT_grid();
+                AUCTION_HISTORY_grid();
+
+                GOLD_LOAN_CLOSED_AUDIT_grid();
+                EXCESS_DETAILS_grid();
+                SURPLUS_grid();
+            } else {
+                alert("Failed");
+            }
+        },
+        error: function(xhr, status, error) {
+            //console.error('Error: ' + error);
+            alert("An error occurred: " + error); // Added alert for errors
+        }
+    });
+       // You can add more logic here to handle the customer search
+   }
+
+   // Add event listener to detect Enter key press
+
+
+
+        function select_cus_name() {
+    //alert("name");
+
+    $.ajax({
+        url: '@Url.Action("select_cus_name", "Customer_History")',
+        type: 'GET',
+        success: function (response) {
+           // alert("successss");
+            //alert(response.name);
+         //   alert(response.customeridshow);
+
+            if (response.success) {
+                //  alert(response.data);
+                var formattedText = response.name + '  (Customer Id : ' + response.customeridshow + ')';
+                var statustext = 'Status: ' + response.status + ' '
+                $('#name_div').text(formattedText);
+                $('#status_div').text(statustext);
+            }
+            else
+            {
+
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching address: ", error);
+        }
+    });
+}
+
+
+
+function com_address() {
+  //  alert("commu");
+
+    $.ajax({
+        url: '@Url.Action("select_commu_address", "Customer_History")',
+        type: 'GET',
+        success: function(response) {
+            console.log("AJAX request successful");
+            console.log("Response:", response);
+
+            if (response.success) {
+
+
+                $("#customerAddress").show();
+                $("#address_label").show();
+                $('#commu_div').text(response.address);
+            } else {
+                $("#customerAddress").show();
+                $("#address_label").show();
+                $('#commu_div').text('Address not found.');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching address: ", error);
+        }
+    });
+}
+
+
+function per_address() {
+   // alert("per");
+
+    $.ajax({
+        url: '@Url.Action("select_per_address", "Customer_History")',
+        type: 'GET',
+        success: function(response) {
+            //console.log("AJAX request successful");
+            //console.log("Response:", response);
+
+            if (response.success) {
+
+
+                $('#per_div').text(response.address);
+            } else {
+
+                $('#per_div').text('Address not found.');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching address: ", error);
+        }
+    });
+        }
+
+@*function cust_photo() {
+   // alert("per");
+$.ajax({
+    url: '@Url.Action("GetCustomerPhoto", "Customer_History")',
+    type: 'GET',
+    dataType: 'json',
+    success: function(response) {
+       // console.log("Response:", response); // Log the response for debugging
+
+        if (response.success === false) {
+            // Alert if the response indicates failure
+           // alert(response.message || "No photo available.");
+
+            // Clear the src attribute and hide the photo container
+            $('#customerPhoto').attr('src', '');
+            $("#customerPhoto").empty();
+            $("#customerPhoto").hide();
+        } else {
+            // If there is a photo, set the src attribute to the base64 encoded image data
+            $('#customerPhoto').attr('src', 'data:image/png;base64,' + response.photo);
+            $("#customerPhoto").show(); // Ensure the photo container is visible
+        }
+    },
+    error: function(xhr, status, error) {
+        console.error("Error fetching customer photo:", error);
+    }
+});
+
+
+
+}*@
+
+function cust_photo() {
+    $.ajax({
+        url: '@Url.Action("GetCustomerPhoto", "Customer_History")',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response.success === false) {
+                $('#customerPhoto').attr('src', '');
+                $("#customerPhoto").empty().hide();
+            } else {
+                $('#customerPhoto').attr('src', 'data:image/png;base64,' + response.photo).show();
+                $('#popupImage').attr('src', 'data:image/png;base64,' + response.photo); // Set popup image
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching customer photo:", error);
+        }
+    });
+
+    // Show popup on mouse over
+    $('#customerPhoto').hover(
+        function() {
+            $('#photoPopup').css({
+                display: 'block',
+                top: $(this).offset().top + $(this).height() + 5, // Position popup below image
+                left: $(this).offset().left
+            });
+        },
+        function() {
+            $('#photoPopup').hide(); // Hide popup on mouse out
+        }
+    );
+}
+
+
+
+function GOLD_LIMIT() {
+   // alert("gl_LIMIT");
+
+    $.ajax({
+        url: '@Url.Action("Gold_limit", "Customer_History")',
+        type: 'GET',
+        success: function(response) {
+
+            if (response.success) {
+                $('#gold_rate').text(response.gold_rate);
+            } else {
+
+                $('#gold_rate').text('');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching address: ", error);
+        }
+    });
+}
+
+
+function fraud() {
+   // alert("gl_LIMIT");
+
+    $.ajax({
+        url: '@Url.Action("fraud_Dtl", "Customer_History")',
+        type: 'GET',
+        success: function(response) {
+
+            if (response.success) {
+
+                $('#fraud_div').text(response.branch_name);
+                $('#fraud_div').text(response.fraud_desc);
+                $("#fraud_main_div").show();
+            } else {
+
+                $("#fraud_main_div").hide();
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching address: ", error);
+        }
+    });
+        }
+
+
+
+  function kyc_grid() {
+    $.ajax({
+        url: '@Url.Action("kyc_grid", "Customer_History")',
+        type: 'GET',
+        success: function (response) {
+
+            if (response.success) {
+                var data = response.data;
+                var tableBody = $('#kycTable tbody');
+                tableBody.empty(); // Clear any existing rows
+
+                data.forEach(function(row) {
+                    var tr = $('<tr></tr>');
+                    var td1 = $('<td></td>').text(row.Column1);
+                    var td2 = $('<td></td>').text(row.Column2);
+                    var td3 = $('<td></td>').text(row.Column3); // New column for kyc_id
+                    $("#kyc_grid_div").show();
+                    // Create the Attachments column with an icon
+                    var td4 = $('<td></td>');
+                    var icon = $('<i></i>')
+                        .addClass('fa fa-paperclip')
+                        .css({ 'font-size': '17px', 'color': 'maroon', 'cursor': 'pointer' }) // Make the icon look clickable
+                        .attr('data-kyc-id', row.Column3); // Store the kyc_id in a data attribute
+
+                    // Attach a click event handler to the icon
+                    icon.on('click', function() {
+                        var kycId = $(this).data('kyc-id');
+                      //  alert('Icon clicked for KYC ID: ' + kycId);
+                        callKycGridAttachment(kycId);
+
+                        // Example: Open a modal, download a file, etc.
+                        // openDocumentModal(kycId); // Example function call
+                    });
+
+                    td4.append(icon);
+
+                    // Append all cells to the row
+                    tr.append(td1);
+                    tr.append(td2);
+                   // tr.append(td3); // Append the new kyc_id column
+                    tr.append(td4);
+
+                    // Append the row to the table body
+                    tableBody.append(tr);
+                });
+            } else {
+                console.error("Failed to load KYC grid data");
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching data: ", error);
+        }
+    });
+}
+
+
+function Bank_grid() {
+    $.ajax({
+        url: '@Url.Action("Bankdtl_grid", "Customer_History")',
+        type: 'GET',
+        success: function (response) {
+            if (response.success) {
+                var data = response.data;
+                var tableBody = $('#BankTable tbody');
+                tableBody.empty(); // Clear any existing rows
+
+                data.forEach(function(row) {
+                    var tr = $('<tr></tr>');
+                    var td1 = $('<td></td>').text(row.Column1); // Acc No
+                    var td2 = $('<td></td>').text(row.Column2); // IFSC
+                    var td3 = $('<td></td>').text(row.Column3); // Bank
+                    var td4 = $('<td></td>').text(row.Column4); // Branch
+
+                    // Create the attachment icon
+                    var td5 = $('<td></td>');
+                    var attachmentIcon = $('<i style="font-size:17px;color:maroon;"></i>').addClass('fa fa-paperclip').css('cursor', 'pointer');
+                    attachmentIcon.click(function() {
+                        // Handle the attachment click event
+                        viewAttachment(); // Pass any relevant data
+                    });
+                    td5.append(attachmentIcon);
+
+                    // Append all columns to the row
+                    tr.append(td1);
+                    tr.append(td2);
+                    tr.append(td3);
+                    tr.append(td4);
+                    tr.append(td5); // Append the attachment icon
+
+                    // Append the row to the table body
+                    tableBody.append(tr);
+                });
+
+                // Show the div containing the table
+                $("#Bank_grid_div").show();
+            } else {
+                console.error("Failed to load bank details data");
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching data: ", error);
+        }
+    });
+        }
+
+
+        function gold_inventory_grid() {
+          //  alert("gold_inventory_grid");
+    $.ajax({
+        url: '@Url.Action("gold_inventory_grid", "Customer_History")',
+        type: 'GET',
+        success: function (response) {
+            if (response.success) {
+                var data = response.data;
+               // alert(data);
+                var tableBody = $('#GlInventryTable tbody');
+                // alert(tableBody);
+                if (!tableBody.length) {
+                    alert("Table or tbody not found");
+                    return;
+                }
+                tableBody.empty(); // Clear any existing rows
+
+                data.forEach(function(row) {
+                    var tr = $('<tr></tr>');
+                    var td1 = $('<td></td>').text(row.Column1);
+                    var td2 = $('<td></td>').text(row.Column2);
+                    var td3 = $('<td></td>').text(row.Column3);
+                    var td4 = $('<td></td>').text(row.Column4);
+                    var td5 = $('<td></td>').text(row.Column5);
+                    var td6 = $('<td></td>').text(row.Column6);
+                    var td7 = $('<td></td>').text(row.Column7);
+                    var td8 = $('<td></td>').text(row.Column8);
+                    var td9 = $('<td></td>').text(row.Column9);
+                    var td10 = $('<td></td>').text(row.Column10);
+                    // Create the attachment icon
+
+
+                    // Append all columns to the row
+                    tr.append(td1);
+                    tr.append(td2);
+                    tr.append(td3);
+                    tr.append(td4);
+                    tr.append(td5);
+                    tr.append(td6);
+                    tr.append(td7);
+                    tr.append(td8);
+                    tr.append(td9);
+                    tr.append(td10);
+
+                    // Append the row to the table body
+                    tableBody.append(tr);
+                });
+               // alert()
+                // Show the div containing the table
+                $("#GlInventry_div").show();
+            } else {
+                console.error("Failed to load bank details data");
+            }
+        },
+        error: function(xhr, status, error) {
+            $("#GlInventry_div").hide();
+        }
+    });
+        }
+
+
+        function CUSTOMER_KYC_AUDIT_grid() {
+      //  alert("gold_inventory_grid");
+$.ajax({
+    url: '@Url.Action("CUSTOMER_KYC_AUDIT_grid", "Customer_History")',
+    type: 'GET',
+    success: function (response) {
+        if (response.success) {
+            var data = response.data;
+            var tableBody = $('#kycauditTable tbody');
+            tableBody.empty(); // Clear any existing rows
+
+            data.forEach(function(row) {
+                var tr = $('<tr></tr>');
+                var td1 = $('<td></td>').text(row.Column1);
+                var td2 = $('<td></td>').text(row.Column2);
+                var td3 = $('<td></td>').text(row.Column3);
+                var td4 = $('<td></td>').text(row.Column4);
+                var td5 = $('<td></td>').text(row.Column5);
+                var td6 = $('<td></td>').text(row.Column6);
+                var td7 = $('<td></td>').text(row.Column7);
+                var td8 = $('<td></td>').text(row.Column8);
+
+                // Append all columns to the row
+                tr.append(td1);
+                tr.append(td2);
+                tr.append(td3);
+                tr.append(td4);
+                tr.append(td5);
+                tr.append(td6);
+                tr.append(td7);
+                tr.append(td8);
+
+                tableBody.append(tr);
+            });
+
+            // Show the div containing the table
+            $("#kycaudit_div").show();
+        } else {
+            console.error("Failed to load bank details data");
+        }
+    },
+    error: function(xhr, status, error) {
+        $("#kycaudit_div").hide();
+    }
+});
+    }
+
+
+
+        function GOLD_LOAN_CLOSED_AUDIT_grid() {
+          //  alert("gold_inventory_grid");
+    $.ajax({
+        url: '@Url.Action("GOLD_LOAN_CLOSED_AUDIT_grid", "Customer_History")',
+        type: 'GET',
+        success: function (response) {
+            if (response.success) {
+               // alert("success");
+                var data = response.data;
+                var tableBody = $('#GOLD_LOAN_CLOSED_AUDITTable tbody');
+                tableBody.empty(); // Clear any existing rows
+
+                data.forEach(function(row) {
+                    var tr = $('<tr></tr>');
+                    var td1 = $('<td></td>').text(row.Column1);
+                    var td2 = $('<td></td>').text(row.Column2);
+                    var td3 = $('<td></td>').text(row.Column3);
+                    var td4 = $('<td></td>').text(row.Column4);
+                    var td5 = $('<td></td>').text(row.Column5);
+                    var td6 = $('<td></td>').text(row.Column6);
+                    var td7 = $('<td></td>').text(row.Column7);
+                    var td8 = $('<td></td>').text(row.Column8);
+                    var td9 = $('<td></td>').text(row.Column9);
+                    var td10 = $('<td></td>').text(row.Column10);
+                    // Create the attachment icon
+
+
+                    // Append all columns to the row
+                    tr.append(td1);
+                    tr.append(td2);
+                    tr.append(td3);
+                    tr.append(td4);
+                    tr.append(td5);
+                    tr.append(td6);
+                    tr.append(td7);
+                    tr.append(td8);
+                    tr.append(td9);
+                    tr.append(td10);
+
+                    // Append the row to the table body
+                    tableBody.append(tr);
+                });
+
+                // Show the div containing the table
+                $("#GOLD_LOAN_CLOSED_AUDIT_div").show();
+            }
+            else
+            {
+                alert("false");
+            }
+        },
+        error: function(xhr, status, error) {
+            $("#GOLD_LOAN_CLOSED_AUDIT_div").hide();
+        }
+    });
+}
+
+        function AUCTION_HISTORY_grid() {
+          //  alert("AUCTION_HISTORY_grid");
+    $.ajax({
+        url: '@Url.Action("AUCTION_HISTORY_grid", "Customer_History")',
+        type: 'GET',
+        success: function (response) {
+            if (response.success) {
+              //  alert("success");
+                var data = response.data;
+                var tableBody = $('#auctionhisTable tbody');
+                tableBody.empty(); // Clear any existing rows
+
+                data.forEach(function(row) {
+                    var tr = $('<tr></tr>');
+                    var td1 = $('<td></td>').text(row.Column1);
+                    var td2 = $('<td></td>').text(row.Column2);
+                    var td3 = $('<td></td>').text(row.Column3);
+                    var td4 = $('<td></td>').text(row.Column4);
+                    var td5 = $('<td></td>').text(row.Column5);
+                    var td6 = $('<td></td>').text(row.Column6);
+                    var td7 = $('<td></td>').text(row.Column7).addClass('text-right');
+                    var td8 = $('<td></td>').text(row.Column8).addClass('text-right');
+
+                    // Create the attachment icon
+
+
+                    // Append all columns to the row
+                    tr.append(td1);
+                    tr.append(td2);
+                    tr.append(td3);
+                    tr.append(td4);
+                    tr.append(td5);
+                    tr.append(td6);
+                    tr.append(td7);
+                    tr.append(td8);
+               ;
+
+                    // Append the row to the table body
+                    tableBody.append(tr);
+                });
+               // alert("append");
+                // Show the div containing the table
+                $("#auctionhis_div").show();
+            }
+            else
+            {
+                alert("false");
+            }
+        },
+        error: function(xhr, status, error) {
+            $("#auctionhis_div").hide();
+        }
+    });
+}
+
+        function SURPLUS_grid() {
+            $.ajax({
+                url: '/Customer_History/SURPLUS_grid', // Adjust this to your actual controller/action
+                type: 'GET',
+                success: function (response) {
+                    if (response.success) {
+                        // Show the divs containing the tables
+                        $('#SURPLUS_div_table1').show();
+                        $('#SURPLUS_div_table2').show();
+                        if (response.table1 === null || response.table1.length === 0) {
+                          //  alert("Table 1 is empty");
+                            $('#SURPLUS_div_table1').hide();
+                        }
+                        if (response.table2 === null || response.table2.length === 0) {
+                           // alert("Table 2 is empty");
+                            $('#SURPLUS_div_table2').hide();
+                        }
+
+                        // Clear existing data
+                        $('#table1Body').empty();
+                        $('#table2Body').empty();
+
+
+                        // Populate the first table
+                        $.each(response.table1, function (index, item) {
+                            var row = `<tr>
+                                <td>${item.Column1}</td>
+                                <td>${item.Column2}</td>
+                                <td>${item.Column3}</td>
+                                <td class="text-right">${item.Column4}</td>
+                                <td class="text-right">${item.Column5}</td>
+                                <td class="text-right">${item.Column6}</td>
+                                <td class="text-right">${item.Column7}</td>
+                                <td class="text-right">${item.Column8}</td>
+                                <td class="text-right">${item.Column9}</td>
+                               </tr>`;
+                            $('#table1Body').append(row);
+                        });
+
+                        // Populate the second table
+                        $.each(response.table2, function (index, item) {
+                            var row = `<tr>
+                                <td>${item.Column1}</td>
+                                <td>${item.Column2}</td>
+                                <td>${item.Column3}</td>
+                                 <td class="text-right">${item.Column4}</td>
+                                 <td class="text-right">${item.Column5}</td>
+                                 <td class="text-right">${item.Column6}</td>
+                                 <td class="text-right">${item.Column7}</td>
+                                 <td class="text-right">${item.Column8}</td>
+                                 <td class="text-right">${item.Column9}</td>
+                                <!-- Add more columns if necessary -->
+                               </tr>`;
+                            $('#table2Body').append(row);
+                        });
+                    } else {
+                        alert('No data available');
+                    }
+                },
+                error: function (response) {
+                    alert("two table null");
+                    alert(response);
+
+                }
+            });
+        }
+
+        function EXCESS_DETAILS_grid() {
+          //  alert("gold_inventory_grid");
+    $.ajax({
+        url: '@Url.Action("EXCESS_DETAILS_grid", "Customer_History")',
+        type: 'GET',
+        success: function (response) {
+            if (response.success) {
+                //alert("success");
+                var data = response.data;
+                var tableBody = $('#ExcessTable tbody');
+                tableBody.empty(); // Clear any existing rows
+              //  alert("to table");
+                data.forEach(function(row) {
+                    var tr = $('<tr></tr>');
+                    var td1 = $('<td></td>').text(row.Column1).addClass('text-right');
+                    var td2 = $('<td></td>').text(row.Column2).addClass('text-right');
+                    var td3 = $('<td></td>').text(row.Column3).addClass('text-right');
+                    var td4 = $('<td></td>').text(row.Column4).addClass('text-right');
+                    var td5 = $('<td></td>').text(row.Column5).addClass('text-right');
+                    var td6 = $('<td></td>').text(row.Column6).addClass('text-right');
+                    var td7 = $('<td></td>').text(row.Column7).addClass('text-right');
+                    var td8 = $('<td></td>').text(row.Column8).addClass('text-right');
+                    var td9 = $('<td></td>').text(row.Column9).addClass('text-right');
+                    var td10 = $('<td></td>').text(row.Column10).addClass('text-right');
+                    var td11 = $('<td></td>').text(row.Column11).addClass('text-right');
+                    var td12 = $('<td></td>').text(row.Column12).addClass('text-right');
+                    var td13 = $('<td></td>').text(row.Column13).addClass('text-right');
+                    var td14 = $('<td></td>').text(row.Column14).addClass('text-right');
+                    var td15 = $('<td></td>').text(row.Column15).addClass('text-right');
+                    var td16 = $('<td></td>').text(row.Column16);
+                    // Create the attachment icon
+
+
+                    // Append all columns to the row
+                    tr.append(td1);
+                    tr.append(td2);
+                    tr.append(td3);
+                    tr.append(td4);
+                    tr.append(td5);
+                    tr.append(td6);
+                    tr.append(td7);
+                    tr.append(td8);
+                    tr.append(td9);
+                    tr.append(td10);
+                    tr.append(td11);
+                    tr.append(td12);
+                    tr.append(td13);
+                    tr.append(td14);
+                    tr.append(td15);
+                    tr.append(td16);
+                    // Append the row to the table body
+                    tableBody.append(tr);
+                });
+               // alert("to tbale append");
+                // Show the div containing the table
+                $("#Excess_div").show();
+            } else {
+                console.error("Failed to load bank details data");
+            }
+        },
+        error: function(xhr, status, error) {
+            $("#Excess_div").hide();
+        }
+    });
+}
+
+        function viewAttachment() {
+            $.ajax({
+                url: '/Customer_History/bankdtl_grid_attachment', // Update with your actual controller name
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                       // alert("success");
+                        // Assuming the response data contains the image URL
+                        var ImageUrl = response.data;
+                      //  alert(ImageUrl)
+                        if (ImageUrl.toLowerCase().startsWith("data:application/pdf;")) {
+                            // alert("pdf");
+                            displayPhoto(ImageUrl, 'pdf');
+                        }
+                        else if (ImageUrl.toLowerCase().startsWith("data:image")) {
+                           // alert("img");
+                            displayPhoto(ImageUrl, 'image');
+                        }
+                    } else {
+                        alert('Document is unrecognized formate');
+                    }
+                },
+                error: function () {
+                    alert('Document not available!');
+                }
+            });
+        }
+
+
+
+        function callKycGridAttachment(kycId) {
+    $.ajax({
+        url: '@Url.Action("kyc_grid_attachment", "Customer_History")',
+        type: 'GET',
+        data: { kyc_id: kycId },
+        success: function(response) {
+            if (response.success) {
+                //alert("success");
+                var ImageUrl = response.data;
+
+               // alert(ImageUrl);
+
+                //if (ImageUrl.endsWith('.pdf')) {
+                //    displayPhoto(ImageUrl, 'pdf');
+                //} else {
+                //    displayPhoto(ImageUrl, 'image');
+                //}
+
+
+                if (ImageUrl.toLowerCase().startsWith("data:application/pdf;")) {
+                   // alert("pdf");
+                    displayPhoto(ImageUrl, 'pdf');
+                }
+                else if (ImageUrl.toLowerCase().startsWith("data:image")) {
+                    //alert("img");
+                    displayPhoto(ImageUrl, 'image');
+                }
+
+
+                $('#documentModal').modal('show');
+            } else {
+               // console.error("Failed to load document data");
+                alert(" Document not available");
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching data: ", error);
+            alert("No Documents available!");
+        }
+    });
+}
+
+
+
+        function displayPhoto(fileUrl, fileType) {
+            var modal = document.getElementById("photoModal");
+            var modalImg = document.getElementById("kyc_Photo");
+            var caption = document.getElementById("caption");
+
+            // Display the modal
+            modal.style.display = "block";
+
+            // Clear previous content to avoid conflicts
+            modalImg.style.display = "none"; // Hide image element by default
+            caption.innerHTML = "";
+
+            if (fileType === "image") {
+                modalImg.src = fileUrl;
+                modalImg.style.display = "block"; // Show image element
+                modalImg.style.maxWidth = "60%";
+                modalImg.style.maxHeight = "90vh";
+                caption.innerHTML = '<span id="closeImage">Close Image</span>';
+
+                var closeSpan = document.getElementById("closeImage");
+                closeSpan.addEventListener("click", function () {
+                    closeModal();
+                });
+
+            } else if (fileType === "pdf") {
+                caption.innerHTML = '<object data="' + fileUrl + '" type="application/pdf" width="100%" height="100%">' +
+                    '<p>PDF viewer required. Download it <a href="' + fileUrl + '">here</a>.</p></object>';
+                caption.style.width = "90%";
+                caption.style.height = "90vh"; // Occupy most of the viewport height
+            }
+
+            var span = document.getElementsByClassName("close")[0];
+            span.onclick = function () {
+                closeModal();
+            };
+        }
+
+
+
+        // Close modal when clicking outside of it
+        window.onclick = function (event) {
+            var modal = document.getElementById("photoModal");
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        function closeModal() {
+            var modal = document.getElementById("photoModal");
+            modal.style.display = "none";
+        }
+
+
+
+        function history_tables() {
+            //alert("history tables");
+
+            $.ajax({
+                url: '/Customer_History/history_tables',
+                type: 'GET',
+                success: function (response) {
+                   // alert("success");
+                    if (response.success) {
+                        var data = response.data;
+                        // alert(data.module_1);
+                        $("#table_1").hide();
+                        $("#table_2").hide();
+                        $("#table_3").hide();
+                        $("#table_4").hide();
+                        $("#table_5").hide();
+                        $("#table_6").hide();
+                        $("#table_7").hide();
+                        $("#table_8").hide();
+                        $("#table_9").hide();
+                        $("#table_10").hide();
+
+                        $("#tablesContainerWrapper").hide();
+                        $("#tablesContainerWrapper_1").hide();
+                        $("#tablesContainerWrapper_2").hide();
+                        $("#tablesContainerWrapper_3").hide();
+                        $("#tablesContainerWrapper_4").hide();
+                        $("#tablesContainerWrapper_5").hide();
+                        $("#tablesContainerWrapper_6").hide();
+                        $("#tablesContainerWrapper_7").hide();
+                        $("#tablesContainerWrapper_8").hide();
+                        $("#tablesContainerWrapper_9").hide();
+                        $("#tablesContainerWrapper_10").hide();
+                        // table 1
+                        $('#hiddenField_1').val(data.module_1);
+                        $('#button_1').attr('data-value', data.module_1);
+                        if (data.total_1 !== 0) {
+                            $("#table_1").show();
+                        }
+                        if (data.total_1 !== null) {
+
+                            $('#total_1').text(data.total_1);
+                        } else {
+                            $('#total_1').text('No data available');
+                        }
+
+                        if (data.settled_1 !== null) {
+                            $('#settled_1').text(data.settled_1);
+                        } else {
+                            $('#settled_1').text('No data available');
+                        }
+
+                        if (data.live_1 !== null) {
+                            $('#live_1').text(data.live_1);
+                        } else {
+                            $('#live_1').text('No data available');
+                        }
+
+
+                        //table 2
+
+                       // alert(data.module_2);
+
+                        $('#hiddenField_2').val(data.module_2);
+                        $('#button_2').attr('data-value', data.module_2);
+                        if (data.total_2 !== 0) {
+                            $("#table_2").show();
+                        }
+                        if (data.total_2 !== null) {
+
+                            $('#total_2').text(data.total_2);
+                        } else {
+                            $('#total_2').text('No data available');
+                        }
+
+                        if (data.settled_2 !== null) {
+                            $('#settled_2').text(data.settled_2);
+                        } else {
+                            $('#settled_2').text('No data available');
+                        }
+
+                        if (data.live_2 !== null) {
+                            $('#live_2').text(data.live_2);
+                        } else {
+                            $('#live_2').text('No data available');
+                        }
+                        //table 3
+                       // alert(data.module_3);
+
+                        $('#hiddenField_3').val(data.module_3);
+                        $('#button_3').attr('data-value', data.module_3);
+                        if (data.total_3 !== 0) {
+                            $("#table_3").show();
+                        }
+                        if (data.total_3 !== null) {
+                            $('#total_3').text(data.total_3);
+                        } else {
+                            $('#total_3').text('No data available');
+                        }
+
+                        if (data.settled_3 !== null) {
+                            $('#settled_3').text(data.settled_3);
+                        } else {
+                            $('#settled_3').text('No data available');
+                        }
+
+                        if (data.live_3 !== null) {
+                            $('#live_3').text(data.live_3);
+                        } else {
+                            $('#live_3').text('No data available');
+                        }
+                        //table 4
+                       // alert(data.module_4);
+
+                        $('#hiddenField_4').val(data.module_4);
+                        $('#button_4').attr('data-value', data.module_4);
+                        if (data.total_4 !== 0) {
+                            $("#table_4").show();
+                        }
+                        if (data.total_4 !== null) {
+                            $('#total_4').text(data.total_4);
+                        } else {
+                            $('#total_4').text('No data available');
+                        }
+
+                        if (data.settled_4 !== null) {
+                            $('#settled_4').text(data.settled_4);
+                        } else {
+                            $('#settled_4').text('No data available');
+                        }
+
+                        if (data.live_4 !== null) {
+                            $('#live_4').text(data.live_4);
+                        } else {
+                            $('#live_4').text('No data available');
+                        }
+                        //table 5
+
+                        $('#hiddenField_5').val(data.module_5);
+                        $('#button_5').attr('data-value', data.module_5);
+                        if (data.total_5 !== 0) {
+                            $("#table_5").show();
+                        }
+                        if (data.total_5 !== null) {
+                            $('#total_5').text(data.total_5);
+                        } else {
+                            $('#total_5').text('No data available');
+                        }
+
+                        if (data.settled_5 !== null) {
+                            $('#settled_5').text(data.settled_5);
+                        } else {
+                            $('#settled_5').text('No data available');
+                        }
+
+                        if (data.live_5 !== null) {
+                            $('#live_5').text(data.live_5);
+                        } else {
+                            $('#live_5').text('No data available');
+                        }
+                        //table 6
+                        $('#hiddenField_6').val(data.module_6);
+                        $('#button_6').attr('data-value', data.module_6);
+                        if (data.total_6 !== 0) {
+                            $("#table_6").show();
+                        }
+                        if (data.total_6 !== null) {
+                            $('#total_6').text(data.total_6);
+                        } else {
+                            $('#total_6').text('No data available');
+                        }
+
+                        if (data.settled_6 !== null) {
+                            $('#settled_6').text(data.settled_6);
+                        } else {
+                            $('#settled_6').text('No data available');
+                        }
+
+                        if (data.live_6 !== null) {
+                            $('#live_6').text(data.live_6);
+                        } else {
+                            $('#live_6').text('No data available');
+                        }
+                        //table 7
+                        $('#hiddenField_7').val(data.module_7);
+                        $('#button_7').attr('data-value', data.module_7);
+                        if (data.total_7 !== 0) {
+                            $("#table_7").show();
+                        }
+                        if (data.total_7 !== null) {
+                            $('#total_7').text(data.total_7);
+                        } else {
+                            $('#total_7').text('No data available');
+                        }
+
+                        if (data.settled_7 !== null) {
+                            $('#settled_7').text(data.settled_7);
+                        } else {
+                            $('#settled_7').text('No data available');
+                        }
+
+                        if (data.live_7 !== null) {
+                            $('#live_7').text(data.live_7);
+                        } else {
+                            $('#live_7').text('No data available');
+                        }
+                        //table 8
+                        $('#hiddenField_8').val(data.module_8);
+                        $('#button_8').attr('data-value', data.module_8);
+                        if (data.total_8 !== 0) {
+                            $("#table_8").show();
+                        }
+                        if (data.total_8 !== null) {
+                            $('#total_8').text(data.total_8);
+                        } else {
+                            $('#total_8').text('No data available');
+                        }
+
+                        if (data.settled_8 !== null) {
+                            $('#settled_8').text(data.settled_8);
+                        } else {
+                            $('#settled_8').text('No data available');
+                        }
+
+                        if (data.live_8 !== null) {
+                            $('#live_8').text(data.live_8);
+                        } else {
+                            $('#live_8').text('No data available');
+                        }
+                        //table 9
+                        $('#hiddenField_9').val(data.module_9);
+                        $('#button_9').attr('data-value', data.module_9);
+                        if (data.total_9 !== 0) {
+                            $("#table_9").show();
+                        }
+                        if (data.total_9 !== null) {
+                            $('#total_9').text(data.total_9);
+                        } else {
+                            $('#total_9').text('No data available');
+                        }
+
+                        if (data.settled_9 !== null) {
+                            $('#settled_9').text(data.settled_9);
+                        } else {
+                            $('#settled_9').text('No data available');
+                        }
+
+                        if (data.live_9 !== null) {
+                            $('#live_9').text(data.live_9);
+                        } else {
+                            $('#live_9').text('No data available');
+                        }
+                        //table 10
+                        $('#hiddenField_10').val(data.module_10);
+                        $('#button_10').attr('data-value', data.module_10);
+                        if (data.total_10 !== 0) {
+                            $("#table_10").show();
+                        }
+                        if (data.total_10 !== null) {
+                            $('#total_10').text(data.total_10);
+                        } else {
+                            $('#total_10').text('No data available');
+                        }
+
+                        if (data.settled_10 !== null) {
+                            $('#settled_10').text(data.settled_10);
+                        } else {
+                            $('#settled_10').text('No data available');
+                        }
+
+                        if (data.live_10 !== null) {
+                            $('#live_10').text(data.live_10);
+                        } else {
+                            $('#live_10').text('No data available');
+                        }
+
+                    } else {
+                        console.error('Failed to retrieve data.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("Error occurred");
+                    console.error('Error:', error);
+                }
+            });
+        }
+
+ 
+
+        //$(document).ready(function () {
+        //    $('#button_1').on('click', function () {
+        //        var buttonValue = $(this).data('value');
+
+        //        $.ajax({
+        //            url: '/Customer_History/history_tables_select',
+        //            type: 'GET',
+        //            data: { buttonValue: buttonValue },
+        //            success: function (response) {
+        //                if (response.success) {
+        //                    $('#tablesContainerWrapper').show();
+        //                    var $tablesContainer = $('#tablesContainer');
+
+        //                    if ($tablesContainer.length === 0) {
+        //                        console.error('#tablesContainer not found');
+        //                        return;
+        //                    }
+
+        //                    $tablesContainer.empty();
+
+        //                    // Define custom headings and their desired order
+        //                    var tableOrder = [
+        //                        { name: 'Table1', heading: 'Live' },
+        //                        { name: 'Table', heading: 'Settled' },
+        //                        { name: 'Table2', heading: 'Due' }
+        //                    ];
+
+        //                    // Create a sorted array of table data based on the desired order
+        //                    var sortedTables = tableOrder.map(function (item) {
+        //                        return {
+        //                            tableName: item.name,
+        //                            heading: item.heading,
+        //                            data: response.tables[item.name]
+        //                        };
+        //                    }).filter(function (item) {
+        //                        return item.data && item.data.Rows && item.data.Rows.length > 0; // Only include tables that have data
+        //                    });
+
+        //                    // Generate and append HTML for each table
+        //                    $.each(sortedTables, function (_, table) {
+        //                        if (table.data && table.data.Rows.length > 0) {
+        //                            var tableHtml = '<div><h3 class="table-heading">' + table.heading + '</h3><table border="1" style="width:100%; font-size:12px; font-weight:500;"><thead><tr>';
+
+        //                            // Add table headers
+        //                            $.each(table.data.Rows[0], function (key) {
+        //                                tableHtml += '<th>' + key + '</th>';
+        //                            });
+        //                            tableHtml += '</tr></thead><tbody>';
+
+        //                            // Add all table rows
+        //                            $.each(table.data.Rows, function (_, row) {
+        //                                tableHtml += '<tr>';
+        //                                $.each(row, function (_, value) {
+        //                                    tableHtml += '<td>' + value + '</td>';
+        //                                });
+        //                                tableHtml += '</tr>';
+        //                            });
+        //                            tableHtml += '</tbody></table></div>';
+
+        //                            // Append the table to the container
+        //                            $tablesContainer.append(tableHtml);
+        //                        }
+        //                    });
+        //                } else {
+        //                    alert("Failed to retrieve data. " + response.message);
+        //                }
+        //            },
+        //            error: function (xhr, status, error) {
+        //                console.error('Error:', error);
+        //                console.error('Status:', status);
+        //                console.error('Response Text:', xhr.responseText);
+        //                alert("An error occurred. Check the console for details.");
+        //            }
+        //        });
+        //    });
+        //});
+
+        $(document).ready(function () {
+            $('#button_1').on('click', function () {
+                var buttonValue = $(this).data('value');
+
+                $.ajax({
+                    url: '/Customer_History/history_tables_select',
+                    type: 'GET',
+                    data: { buttonValue: buttonValue },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#tablesContainerWrapper').show();
+                            $('html, body').animate({
+                                scrollTop: $("#tablesContainerWrapper").offset().top
+                            }, 1000);
+                            var $tablesContainer = $('#tablesContainer');
+
+                            if ($tablesContainer.length === 0) {
+                                console.error('#tablesContainer not found');
+                                return;
+                            }
+
+                            $tablesContainer.empty();
+
+                            // Define custom headings and their desired order
+                            var tableOrder = [
+                                { name: 'Table1', heading: 'Live' },
+                                { name: 'Table', heading: 'Settled' },
+                                { name: 'Table2', heading: 'Due' }
+                            ];
+
+                            // Create a sorted array of table data based on the desired order
+                            var sortedTables = tableOrder.map(function (item) {
+                                return {
+                                    tableName: item.name,
+                                    heading: item.heading,
+                                    data: response.tables[item.name]
+                                };
+                            }).filter(function (item) {
+                                return item.data && item.data.Rows && item.data.Rows.length > 0; // Only include tables that have data
+                            });
+
+                            // Generate and append HTML for each table
+                            $.each(sortedTables, function (_, table) {
+                                if (table.data && table.data.Rows.length > 0) {
+                                    var tableHtml = '<div><h3 class="table-heading">' + table.heading + '</h3><table border="1" style="width:100%; font-size:12px; font-weight:500;"><thead><tr>';
+
+                                    // Add table headers
+                                    $.each(table.data.Rows[0], function (key) {
+                                        tableHtml += '<th>' + key + '</th>';
+                                    });
+                                    tableHtml += '</tr></thead><tbody>';
+
+                                    // Add all table rows
+                                    $.each(table.data.Rows, function (_, row) {
+                                        tableHtml += '<tr>';
+
+                                        // Track column index manually
+                                        var colIndex = 0;
+
+                                        // Iterate through each cell in the row
+                                        $.each(row, function (_, value) {
+                                            // Check if it's the second column (colIndex === 1)
+                                            if (colIndex === 1) {  // Right-align the second column
+                                                tableHtml += '<td style="text-align: right;">' + value + '</td>';
+                                            } else {
+                                                tableHtml += '<td>' + value + '</td>';
+                                            }
+                                            colIndex++; // Increment the column index
+                                        });
+                                        tableHtml += '</tr>';
+                                    });
+                                    tableHtml += '</tbody></table></div>';
+
+                                    // Append the table to the container
+                                    $tablesContainer.append(tableHtml);
+                                }
+                            });
+                        } else {
+                            alert("Failed to retrieve data. " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        console.error('Status:', status);
+                        console.error('Response Text:', xhr.responseText);
+                        alert("An error occurred. Check the console for details.");
+                    }
+                });
+            });
+        });
+
+
+
+
+        $(document).ready(function () {
+            $('#button_2').on('click', function () {
+                var buttonValue = $(this).data('value');
+
+                $.ajax({
+                    url: '/Customer_History/history_tables_select',
+                    type: 'GET',
+                    data: { buttonValue: buttonValue },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#tablesContainerWrapper_2').show();
+                            $('html, body').animate({
+                                scrollTop: $("#tablesContainerWrapper_2").offset().top
+                            }, 1000);
+                            var $tablesContainer = $('#tablesContainer_2');
+
+                            if ($tablesContainer.length === 0) {
+                                console.error('#tablesContainer not found');
+                                return;
+                            }
+
+                            $tablesContainer.empty();
+
+                            // Define custom headings and their desired order
+                            var tableOrder = [
+                                { name: 'Table1', heading: 'Live' },
+                                { name: 'Table', heading: 'Settled' },
+                                { name: 'Table2', heading: 'Due' }
+                            ];
+
+                            // Create a sorted array of table data based on the desired order
+                            var sortedTables = tableOrder.map(function (item) {
+                                return {
+                                    tableName: item.name,
+                                    heading: item.heading,
+                                    data: response.tables[item.name]
+                                };
+                            }).filter(function (item) {
+                                return item.data && item.data.Rows && item.data.Rows.length > 0; // Only include tables that have data
+                            });
+
+                            // Generate and append HTML for each table
+                            $.each(sortedTables, function (_, table) {
+                                if (table.data && table.data.Rows.length > 0) {
+                                    var tableHtml = '<div><h3 class="table-heading">' + table.heading + '</h3><table border="1" style="width:100%; font-size:12px; font-weight:500;"><thead><tr>';
+
+                                    // Add table headers
+                                    $.each(table.data.Rows[0], function (key) {
+                                        tableHtml += '<th>' + key + '</th>';
+                                    });
+                                    tableHtml += '</tr></thead><tbody>';
+
+                                    // Add all table rows
+                                    $.each(table.data.Rows, function (_, row) {
+                                        tableHtml += '<tr>';
+                                        $.each(row, function (_, value) {
+                                            tableHtml += '<td>' + value + '</td>';
+                                        });
+                                        tableHtml += '</tr>';
+                                    });
+                                    tableHtml += '</tbody></table></div>';
+
+                                    // Append the table to the container
+                                    $tablesContainer.append(tableHtml);
+                                }
+                            });
+                        } else {
+                            alert("Failed to retrieve data. " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        console.error('Status:', status);
+                        console.error('Response Text:', xhr.responseText);
+                        alert("An error occurred. Check the console for details.");
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $('#button_3').on('click', function () {
+                var buttonValue = $(this).data('value');
+
+                $.ajax({
+                    url: '/Customer_History/history_tables_select',
+                    type: 'GET',
+                    data: { buttonValue: buttonValue },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#tablesContainerWrapper_3').show();
+                            $('html, body').animate({
+                                scrollTop: $("#tablesContainerWrapper_3").offset().top
+                            }, 1000);
+                            var $tablesContainer = $('#tablesContainer_3');
+
+                            if ($tablesContainer.length === 0) {
+                                console.error('#tablesContainer not found');
+                                return;
+                            }
+
+                            $tablesContainer.empty();
+
+                            // Define custom headings and their desired order
+                            var tableOrder = [
+                                { name: 'Table1', heading: 'Live' },
+                                { name: 'Table', heading: 'Settled' },
+                                { name: 'Table2', heading: 'Due' }
+                            ];
+
+                            // Create a sorted array of table data based on the desired order
+                            var sortedTables = tableOrder.map(function (item) {
+                                return {
+                                    tableName: item.name,
+                                    heading: item.heading,
+                                    data: response.tables[item.name]
+                                };
+                            }).filter(function (item) {
+                                return item.data && item.data.Rows && item.data.Rows.length > 0; // Only include tables that have data
+                            });
+
+                            // Generate and append HTML for each table
+                            $.each(sortedTables, function (_, table) {
+                                if (table.data && table.data.Rows.length > 0) {
+                                    var tableHtml = '<div><h3 class="table-heading">' + table.heading + '</h3><table border="1" style="width:100%; font-size:12px; font-weight:500;"><thead><tr>';
+
+                                    // Add table headers
+                                    $.each(table.data.Rows[0], function (key) {
+                                        tableHtml += '<th>' + key + '</th>';
+                                    });
+                                    tableHtml += '</tr></thead><tbody>';
+
+                                    // Add all table rows
+                                    $.each(table.data.Rows, function (_, row) {
+                                        tableHtml += '<tr>';
+                                        $.each(row, function (_, value) {
+                                            tableHtml += '<td>' + value + '</td>';
+                                        });
+                                        tableHtml += '</tr>';
+                                    });
+                                    tableHtml += '</tbody></table></div>';
+
+                                    // Append the table to the container
+                                    $tablesContainer.append(tableHtml);
+                                }
+                            });
+                        } else {
+                            alert("Failed to retrieve data. " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        console.error('Status:', status);
+                        console.error('Response Text:', xhr.responseText);
+                        alert("An error occurred. Check the console for details.");
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $('#button_4').on('click', function () {
+                var buttonValue = $(this).data('value');
+
+                $.ajax({
+                    url: '/Customer_History/history_tables_select',
+                    type: 'GET',
+                    data: { buttonValue: buttonValue },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#tablesContainerWrapper_4').show();
+                            $('html, body').animate({
+                                scrollTop: $("#tablesContainerWrapper_4").offset().top
+                            }, 1000);
+                            var $tablesContainer = $('#tablesContainer_4');
+
+                            if ($tablesContainer.length === 0) {
+                                console.error('#tablesContainer not found');
+                                return;
+                            }
+
+                            $tablesContainer.empty();
+
+                            // Define custom headings and their desired order
+                            var tableOrder = [
+                                { name: 'Table1', heading: 'Live' },
+                                { name: 'Table', heading: 'Settled' },
+                                { name: 'Table2', heading: 'Due' }
+                            ];
+
+                            // Create a sorted array of table data based on the desired order
+                            var sortedTables = tableOrder.map(function (item) {
+                                return {
+                                    tableName: item.name,
+                                    heading: item.heading,
+                                    data: response.tables[item.name]
+                                };
+                            }).filter(function (item) {
+                                return item.data && item.data.Rows && item.data.Rows.length > 0; // Only include tables that have data
+                            });
+
+                            // Generate and append HTML for each table
+                            $.each(sortedTables, function (_, table) {
+                                if (table.data && table.data.Rows.length > 0) {
+                                    var tableHtml = '<div><h3 class="table-heading">' + table.heading + '</h3><table border="1" style="width:100%; font-size:12px; font-weight:500;"><thead><tr>';
+
+                                    // Add table headers
+                                    $.each(table.data.Rows[0], function (key) {
+                                        tableHtml += '<th>' + key + '</th>';
+                                    });
+                                    tableHtml += '</tr></thead><tbody>';
+
+                                    // Add all table rows
+                                    $.each(table.data.Rows, function (_, row) {
+                                        tableHtml += '<tr>';
+                                        $.each(row, function (_, value) {
+                                            tableHtml += '<td>' + value + '</td>';
+                                        });
+                                        tableHtml += '</tr>';
+                                    });
+                                    tableHtml += '</tbody></table></div>';
+
+                                    // Append the table to the container
+                                    $tablesContainer.append(tableHtml);
+                                }
+                            });
+                        } else {
+                            alert("Failed to retrieve data. " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        console.error('Status:', status);
+                        console.error('Response Text:', xhr.responseText);
+                        alert("An error occurred. Check the console for details.");
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $('#button_5').on('click', function () {
+                var buttonValue = $(this).data('value');
+
+                $.ajax({
+                    url: '/Customer_History/history_tables_select',
+                    type: 'GET',
+                    data: { buttonValue: buttonValue },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#tablesContainerWrapper_5').show();
+                            $('html, body').animate({
+                                scrollTop: $("#tablesContainerWrapper_5").offset().top
+                            }, 1000);
+                            var $tablesContainer = $('#tablesContainer_5');
+
+                            if ($tablesContainer.length === 0) {
+                                console.error('#tablesContainer not found');
+                                return;
+                            }
+
+                            $tablesContainer.empty();
+
+                            // Define custom headings and their desired order
+                            var tableOrder = [
+                                { name: 'Table1', heading: 'Live' },
+                                { name: 'Table', heading: 'Settled' },
+                                { name: 'Table2', heading: 'Due' }
+                            ];
+
+                            // Create a sorted array of table data based on the desired order
+                            var sortedTables = tableOrder.map(function (item) {
+                                return {
+                                    tableName: item.name,
+                                    heading: item.heading,
+                                    data: response.tables[item.name]
+                                };
+                            }).filter(function (item) {
+                                return item.data && item.data.Rows && item.data.Rows.length > 0; // Only include tables that have data
+                            });
+
+                            // Generate and append HTML for each table
+                            $.each(sortedTables, function (_, table) {
+                                if (table.data && table.data.Rows.length > 0) {
+                                    var tableHtml = '<div><h3 class="table-heading">' + table.heading + '</h3><table border="1" style="width:100%; font-size:12px; font-weight:500;"><thead><tr>';
+
+                                    // Add table headers
+                                    $.each(table.data.Rows[0], function (key) {
+                                        tableHtml += '<th>' + key + '</th>';
+                                    });
+                                    tableHtml += '</tr></thead><tbody>';
+
+                                    // Add all table rows
+                                    $.each(table.data.Rows, function (_, row) {
+                                        tableHtml += '<tr>';
+                                        $.each(row, function (_, value) {
+                                            tableHtml += '<td>' + value + '</td>';
+                                        });
+                                        tableHtml += '</tr>';
+                                    });
+                                    tableHtml += '</tbody></table></div>';
+
+                                    // Append the table to the container
+                                    $tablesContainer.append(tableHtml);
+                                }
+                            });
+                        } else {
+                            alert("Failed to retrieve data. " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        console.error('Status:', status);
+                        console.error('Response Text:', xhr.responseText);
+                        alert("An error occurred. Check the console for details.");
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $('#button_6').on('click', function () {
+                var buttonValue = $(this).data('value');
+
+                $.ajax({
+                    url: '/Customer_History/history_tables_select',
+                    type: 'GET',
+                    data: { buttonValue: buttonValue },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#tablesContainerWrapper_6').show();
+                            $('html, body').animate({
+                                scrollTop: $("#tablesContainerWrapper_6").offset().top
+                            }, 1000);
+                            var $tablesContainer = $('#tablesContainer_6');
+
+                            if ($tablesContainer.length === 0) {
+                                console.error('#tablesContainer not found');
+                                return;
+                            }
+
+                            $tablesContainer.empty();
+
+                            // Define custom headings and their desired order
+                            var tableOrder = [
+                                { name: 'Table1', heading: 'Live' },
+                                { name: 'Table', heading: 'Settled' },
+                                { name: 'Table2', heading: 'Due' }
+                            ];
+
+                            // Create a sorted array of table data based on the desired order
+                            var sortedTables = tableOrder.map(function (item) {
+                                return {
+                                    tableName: item.name,
+                                    heading: item.heading,
+                                    data: response.tables[item.name]
+                                };
+                            }).filter(function (item) {
+                                return item.data && item.data.Rows && item.data.Rows.length > 0; // Only include tables that have data
+                            });
+
+                            // Generate and append HTML for each table
+                            $.each(sortedTables, function (_, table) {
+                                if (table.data && table.data.Rows.length > 0) {
+                                    var tableHtml = '<div><h3 class="table-heading">' + table.heading + '</h3><table border="1" style="width:100%; font-size:12px; font-weight:500;"><thead><tr>';
+
+                                    // Add table headers
+                                    $.each(table.data.Rows[0], function (key) {
+                                        tableHtml += '<th>' + key + '</th>';
+                                    });
+                                    tableHtml += '</tr></thead><tbody>';
+
+                                    // Add all table rows
+                                    $.each(table.data.Rows, function (_, row) {
+                                        tableHtml += '<tr>';
+                                        $.each(row, function (_, value) {
+                                            tableHtml += '<td>' + value + '</td>';
+                                        });
+                                        tableHtml += '</tr>';
+                                    });
+                                    tableHtml += '</tbody></table></div>';
+
+                                    // Append the table to the container
+                                    $tablesContainer.append(tableHtml);
+                                }
+                            });
+                        } else {
+                            alert("Failed to retrieve data. " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        console.error('Status:', status);
+                        console.error('Response Text:', xhr.responseText);
+                        alert("An error occurred. Check the console for details.");
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $('#button_7').on('click', function () {
+                var buttonValue = $(this).data('value');
+
+                $.ajax({
+                    url: '/Customer_History/history_tables_select',
+                    type: 'GET',
+                    data: { buttonValue: buttonValue },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#tablesContainerWrapper_7').show();
+                            $('html, body').animate({
+                                scrollTop: $("#tablesContainerWrapper_7").offset().top
+                            }, 1000);
+                            var $tablesContainer = $('#tablesContainer_7');
+
+                            if ($tablesContainer.length === 0) {
+                                console.error('#tablesContainer not found');
+                                return;
+                            }
+
+                            $tablesContainer.empty();
+
+                            // Define custom headings and their desired order
+                            var tableOrder = [
+                                { name: 'Table1', heading: 'Live' },
+                                { name: 'Table', heading: 'Settled' },
+                                { name: 'Table2', heading: 'Due' }
+                            ];
+
+                            // Create a sorted array of table data based on the desired order
+                            var sortedTables = tableOrder.map(function (item) {
+                                return {
+                                    tableName: item.name,
+                                    heading: item.heading,
+                                    data: response.tables[item.name]
+                                };
+                            }).filter(function (item) {
+                                return item.data && item.data.Rows && item.data.Rows.length > 0; // Only include tables that have data
+                            });
+
+                            // Generate and append HTML for each table
+                            $.each(sortedTables, function (_, table) {
+                                if (table.data && table.data.Rows.length > 0) {
+                                    var tableHtml = '<div><h3 class="table-heading">' + table.heading + '</h3><table border="1" style="width:100%; font-size:12px; font-weight:500;"><thead><tr>';
+
+                                    // Add table headers
+                                    $.each(table.data.Rows[0], function (key) {
+                                        tableHtml += '<th>' + key + '</th>';
+                                    });
+                                    tableHtml += '</tr></thead><tbody>';
+
+                                    // Add all table rows
+                                    $.each(table.data.Rows, function (_, row) {
+                                        tableHtml += '<tr>';
+                                        $.each(row, function (_, value) {
+                                            tableHtml += '<td>' + value + '</td>';
+                                        });
+                                        tableHtml += '</tr>';
+                                    });
+                                    tableHtml += '</tbody></table></div>';
+
+                                    // Append the table to the container
+                                    $tablesContainer.append(tableHtml);
+                                }
+                            });
+                        } else {
+                            alert("Failed to retrieve data. " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        console.error('Status:', status);
+                        console.error('Response Text:', xhr.responseText);
+                        alert("An error occurred. Check the console for details.");
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $('#button_8').on('click', function () {
+                var buttonValue = $(this).data('value');
+
+                $.ajax({
+                    url: '/Customer_History/history_tables_select',
+                    type: 'GET',
+                    data: { buttonValue: buttonValue },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#tablesContainerWrapper_8').show();
+                            $('html, body').animate({
+                                scrollTop: $("#tablesContainerWrapper_8").offset().top
+                            }, 1000);
+                            var $tablesContainer = $('#tablesContainer_8');
+
+                            if ($tablesContainer.length === 0) {
+                                console.error('#tablesContainer not found');
+                                return;
+                            }
+
+                            $tablesContainer.empty();
+
+                            // Define custom headings and their desired order
+                            var tableOrder = [
+                                { name: 'Table1', heading: 'Live' },
+                                { name: 'Table', heading: 'Settled' },
+                                { name: 'Table2', heading: 'Due' }
+                            ];
+
+                            // Create a sorted array of table data based on the desired order
+                            var sortedTables = tableOrder.map(function (item) {
+                                return {
+                                    tableName: item.name,
+                                    heading: item.heading,
+                                    data: response.tables[item.name]
+                                };
+                            }).filter(function (item) {
+                                return item.data && item.data.Rows && item.data.Rows.length > 0; // Only include tables that have data
+                            });
+
+                            // Generate and append HTML for each table
+                            $.each(sortedTables, function (_, table) {
+                                if (table.data && table.data.Rows.length > 0) {
+                                    var tableHtml = '<div><h3 class="table-heading">' + table.heading + '</h3><table border="1" style="width:100%; font-size:12px; font-weight:500;"><thead><tr>';
+
+                                    // Add table headers
+                                    $.each(table.data.Rows[0], function (key) {
+                                        tableHtml += '<th>' + key + '</th>';
+                                    });
+                                    tableHtml += '</tr></thead><tbody>';
+
+                                    // Add all table rows
+                                    $.each(table.data.Rows, function (_, row) {
+                                        tableHtml += '<tr>';
+                                        $.each(row, function (_, value) {
+                                            tableHtml += '<td>' + value + '</td>';
+                                        });
+                                        tableHtml += '</tr>';
+                                    });
+                                    tableHtml += '</tbody></table></div>';
+
+                                    // Append the table to the container
+                                    $tablesContainer.append(tableHtml);
+                                }
+                            });
+                        } else {
+                            alert("Failed to retrieve data. " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        console.error('Status:', status);
+                        console.error('Response Text:', xhr.responseText);
+                        alert("An error occurred. Check the console for details.");
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $('#button_9').on('click', function () {
+                var buttonValue = $(this).data('value');
+
+                $.ajax({
+                    url: '/Customer_History/history_tables_select',
+                    type: 'GET',
+                    data: { buttonValue: buttonValue },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#tablesContainerWrapper_9').show();
+                            $('html, body').animate({
+                                scrollTop: $("#tablesContainerWrapper_9").offset().top
+                            }, 1000);
+                            var $tablesContainer = $('#tablesContainer_9');
+
+                            if ($tablesContainer.length === 0) {
+                                console.error('#tablesContainer not found');
+                                return;
+                            }
+
+                            $tablesContainer.empty();
+
+                            // Define custom headings and their desired order
+                            var tableOrder = [
+                                { name: 'Table1', heading: 'Live' },
+                                { name: 'Table', heading: 'Settled' },
+                                { name: 'Table2', heading: 'Due' }
+                            ];
+
+                            // Create a sorted array of table data based on the desired order
+                            var sortedTables = tableOrder.map(function (item) {
+                                return {
+                                    tableName: item.name,
+                                    heading: item.heading,
+                                    data: response.tables[item.name]
+                                };
+                            }).filter(function (item) {
+                                return item.data && item.data.Rows && item.data.Rows.length > 0; // Only include tables that have data
+                            });
+
+                            // Generate and append HTML for each table
+                            $.each(sortedTables, function (_, table) {
+                                if (table.data && table.data.Rows.length > 0) {
+                                    var tableHtml = '<div><h3 class="table-heading">' + table.heading + '</h3><table border="1" style="width:100%; font-size:12px; font-weight:500;"><thead><tr>';
+
+                                    // Add table headers
+                                    $.each(table.data.Rows[0], function (key) {
+                                        tableHtml += '<th>' + key + '</th>';
+                                    });
+                                    tableHtml += '</tr></thead><tbody>';
+
+                                    // Add all table rows
+                                    $.each(table.data.Rows, function (_, row) {
+                                        tableHtml += '<tr>';
+                                        $.each(row, function (_, value) {
+                                            tableHtml += '<td>' + value + '</td>';
+                                        });
+                                        tableHtml += '</tr>';
+                                    });
+                                    tableHtml += '</tbody></table></div>';
+
+                                    // Append the table to the container
+                                    $tablesContainer.append(tableHtml);
+                                }
+                            });
+                        } else {
+                            alert("Failed to retrieve data. " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        console.error('Status:', status);
+                        console.error('Response Text:', xhr.responseText);
+                        alert("An error occurred. Check the console for details.");
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $('#button_10').on('click', function () {
+                var buttonValue = $(this).data('value');
+
+                $.ajax({
+                    url: '/Customer_History/history_tables_select',
+                    type: 'GET',
+                    data: { buttonValue: buttonValue },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#tablesContainerWrapper_10').show();
+                            $('html, body').animate({
+                                scrollTop: $("#tablesContainerWrapper_10").offset().top
+                            }, 1000);
+                            var $tablesContainer = $('#tablesContainer_10');
+
+                            if ($tablesContainer.length === 0) {
+                                console.error('#tablesContainer not found');
+                                return;
+                            }
+
+                            $tablesContainer.empty();
+
+                            // Define custom headings and their desired order
+                            var tableOrder = [
+                                { name: 'Table1', heading: 'Live' },
+                                { name: 'Table', heading: 'Settled' },
+                                { name: 'Table2', heading: 'Due' }
+                            ];
+
+                            // Create a sorted array of table data based on the desired order
+                            var sortedTables = tableOrder.map(function (item) {
+                                return {
+                                    tableName: item.name,
+                                    heading: item.heading,
+                                    data: response.tables[item.name]
+                                };
+                            }).filter(function (item) {
+                                return item.data && item.data.Rows && item.data.Rows.length > 0; // Only include tables that have data
+                            });
+
+                            // Generate and append HTML for each table
+                            $.each(sortedTables, function (_, table) {
+                                if (table.data && table.data.Rows.length > 0) {
+                                    var tableHtml = '<div><h3 class="table-heading">' + table.heading + '</h3><table border="1" style="width:100%; font-size:12px; font-weight:500;"><thead><tr>';
+
+                                    // Add table headers
+                                    $.each(table.data.Rows[0], function (key) {
+                                        tableHtml += '<th>' + key + '</th>';
+                                    });
+                                    tableHtml += '</tr></thead><tbody>';
+
+                                    // Add all table rows
+                                    $.each(table.data.Rows, function (_, row) {
+                                        tableHtml += '<tr>';
+                                        $.each(row, function (_, value) {
+                                            tableHtml += '<td>' + value + '</td>';
+                                        });
+                                        tableHtml += '</tr>';
+                                    });
+                                    tableHtml += '</tbody></table></div>';
+
+                                    // Append the table to the container
+                                    $tablesContainer.append(tableHtml);
+                                }
+                            });
+                        } else {
+                            alert("Failed to retrieve data. " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        console.error('Status:', status);
+                        console.error('Response Text:', xhr.responseText);
+                        alert("An error occurred. Check the console for details.");
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div id="photoModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="kyc_Photo">
+        <div id="caption"></div>
+    </div>
+  
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+        <br />
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">CUSTOMER HISTORY</h6>
+            </div>
+        </div>
+        <div class="card-body">
+
+
+            @*<div class="row">
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">*@
+
+            <div style="height:3px;" class="search-box">
+                <input id="customer_id" type="text" placeholder="Customer ID" onchange="searchCustomer()" style="visibility:hidden;">
+                @*<i id="search_icon" class="fas fa-search"></i>*@
+            </div>
+
+
+            @*</div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+
+                        </div>
+                    </div>
+
+                </div>*@
+            <div class="mb-3 card" id="cus_dtl_div" style="display:none;padding-top:0px;">
+                <div class="card-header-tab card-header">
+                    <div class="card-header-title font-size-lg text-capitalize font-weight-normal">
+                        <i class="header-icon lnr-charts icon-gradient bg-happy-green"> </i>
+                        <h6 style="color: black; font-weight: bold;font-size:12px;"> Maximum GOLD Limit </h6>&nbsp;&nbsp;
+
+                        <div style="color: maroon; font-size: 14px; font-weight: bold;" id="gold_rate">
+
+                        </div>
+                    </div>
+
+                    <div class="btn-actions-pane-right text-capitalize" style="display:none;" id="fraud_main_div">
+                        <i style="color:red;font-size:35px;" class="fa fa-fw" aria-hidden="true" title="Copy to use exclamation-triangle"></i>
+
+                        <div id="fraud_div" style="color:red;">
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="no-gutters row">
+                    <div class="col-sm-12 col-md-4 col-xl-4">
+                        <div class="card no-shadow rm-border bg-transparent widget-chart text-left">
+                            <div class="widget-chart-content">
+                                <div class="widget-subheading" style="color:maroon;font-weight:900;text-align:left;opacity:100;" id="name_div"></div>
+                                <div style="font-size:small;font-style:normal;" id="status_div" class="widget-numbers text-primary"><span></span></div>
+
+
+                                <div class="widget-description text-focus">
+                                    <img id="customerPhoto" src="" alt="Customer Photo" style="height: 80px; align-content: center; width: 80px;" />
+                                    <div id="photoPopup" class="photo-popup">
+                                        <img id="popupImage" src="" alt="Customer Photo" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-md-4 col-xl-4">
+                        <div class="card no-shadow rm-border bg-transparent widget-chart text-left">
+                            <div class="widget-chart-content">
+                                <div class="widget-subheading">Communication Address</div>
+                                <div class="widget-numbers"></div>
+                                <div class="widget-description opacity-8 text-focus">
+                                    <p style="font-size: small; color: black; font-weight: bold; text-transform: uppercase; font-weight: bold;" id="commu_div"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divider m-0 d-md-none d-sm-block"></div>
+                    </div>
+                    <div class="col-sm-6 col-md-4 col-xl-4">
+                        <div class="card no-shadow rm-border bg-transparent widget-chart text-left">
+                            <div class="widget-chart-content">
+                                <div class="widget-subheading">Permanent Address</div>
+                                <div class="widget-numbers"></div>
+                                <div class="widget-description opacity-8 text-focus">
+                                    <p style="font-size: small; color: black;text-transform: uppercase; font-weight: bold;" id="per_div"></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="divider m-0 d-md-none d-sm-block"></div>
+                    </div>
+                </div>
+
+              
+
+            </div>
+
+            <!-- Modal -->
+
+
+
+            <div class="card-body" style=" width: 100%; display: flex;padding-top:0px;">
+
+                <div class="card-body" style="width: 50%; display: none;" id="kyc_grid_div">
+                    <h5 class="card-title" style="color:maroon">KYC Details</h5>
+                    <table class="mb-0 table table-hover" id="kycTable" style="font-size:small;">
+                        <thead>
+                            <tr>
+                                <th>KYC Name</th>
+                                <th>ID No</th>
+                                <th></th>
+
+                                <!-- Add as many columns as needed -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <div class="card-body" style="width: 50%; display: none;" id="Bank_grid_div">
+                    <h5 class="card-title" style="color:maroon">Bank Details</h5>
+                    <table class="mb-0 table table-hover" id="BankTable" style="font-size:small;">
+                        <thead>
+                            <tr>
+                                <th>Acc No</th>
+                                <th>IFSC</th>
+                                <th>Bank</th>
+                                <th>Branch</th>
+                                <th></th>
+
+                                <!-- Add as many columns as needed -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <div class="card-body" style="width: 100%; display: none;padding-top:0px;" id="GlInventry_div">
+                <h5 class="card-title" style="color:maroon">GOLD INVENTORY AUDIT</h5>
+                <div style="max-height: 150px; overflow-y: auto;">
+                    <table class="mb-0 table table-hover" id="GlInventryTable" style="font-size:small;">
+                        <thead>
+                            <tr style="position: sticky; top: 0; background-color: white; z-index: 1;">
+                                <th>BRANCH_NAME</th>
+                                <th>AUDIT ID</th>
+                                <th>AUDIT DATE</th>
+                                <th>LOAN NO</th>
+                                <th>REMARKS</th>
+                                <th>CATEGORY</th>
+                                <th>STATUS</th>
+                                <th>CLOSE REMARKS</th>
+                                <th>RM REMARKS</th>
+                                <th>RM REJECT REASON</th>
+                                <!-- Add as many columns as needed -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-body" style="width: 100%; display: none;" id="kycaudit_div">
+                <h5 class="card-title" style="color:maroon">CUSTOMER KYC AUDIT</h5>
+                <div style="max-height: 150px; overflow-y: auto;">
+                    <table class="mb-0 table table-hover" id="kycauditTable" style="font-size:small;">
+                        <thead>
+                            <tr style="position: sticky; top: 0; background-color: white; z-index: 1;">
+                                <th>AUDIT ID</th>
+                                <th>AUDIT DATE</th>
+                                <th>REMARK</th>
+                                <th>CATEGORY</th>
+                                <th>STATUS</th>
+                                <th>CLOSE REMARKS</th>
+                                <th>RM REMARKS</th>
+                                <th>RM REJECT REASON</th>
+                                <!-- Add as many columns as needed -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-body" style="width: 100%; display: none;" id="GOLD_LOAN_CLOSED_AUDIT_div">
+                <h5 class="card-title" style="color: maroon;">GOLD LOAN CLOSED AUDIT</h5>
+
+                <!-- Scrollable table with fixed header -->
+                <div style="max-height: 150px; overflow-y: auto;">
+                    <table class="mb-0 table table-hover" id="GOLD_LOAN_CLOSED_AUDITTable" style="font-size:small; width: 100%;">
+                        <thead>
+                            <tr style="position: sticky; top: 0; background-color: white; z-index: 1;">
+                                <th>BRANCH_NAME</th>
+                                <th>AUDIT ID</th>
+                                <th>AUDIT DATE</th>
+                                <th>LOAN NO</th>
+                                <th>REMARKS</th>
+                                <th>CATEGORY</th>
+                                <th>STATUS</th>
+                                <th>CLOSE REMARKS</th>
+                                <th>RM REMARKS</th>
+                                <th>RM REJECT REASON</th>
+                                <!-- Add as many columns as needed -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <!-- Your row data here -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-body" style="width: 100%; display: none;" id="auctionhis_div">
+                <h5 class="card-title" style="color: maroon;">AUCTION HISTORY</h5>
+
+                <!-- Scrollable table with fixed header -->
+                <div style="max-height: 150px; overflow-y: auto;">
+                    <table class="mb-0 table table-hover" id="auctionhisTable" style="font-size:small; width: 100%;">
+                        <thead>
+                            <tr style="position: sticky; top: 0; background-color: white; z-index: 1;">
+
+                                <th>AUDIT ID</th>
+                                <th>BRANCH_NAME</th>
+                                <th>TEST DELIVERY CENTER</th>
+                                <th>LOAN NO</th>
+                                <th>AUCTION DATE</th>
+                                <th>CLOSED DATE</th>
+                                <th>SETTLEMENT AMOUNT</th>
+                                <th>SALE VALUE</th>
+                                <!-- Add as many columns as needed -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <!-- Your row data here -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-body" style="width: 100%; display: none;" id="SURPLUS_div_table1">
+                <h5 class="card-title" style="color:maroon">SURPLUS DETAILS</h5>
+                <div style="max-height: 150px; overflow-y: auto;">
+                    <table class="mb-0 table table-hover" id="SURPLUSTable1" style="font-size:small;">
+                        <thead>
+                            <tr style="position: sticky; top: 0; background-color: white; z-index: 1;">
+                                <th>AUCTION ID</th>
+                                <th>AUCTION DATE</th>
+                                <th>LOAN NO</th>
+                                <th>SURPLUS</th>
+                                <th>TO LOSS</th>
+                                <th>TO LOAN</th>
+                                <th>TO CHEQUE</th>
+                                <th>OTHERS</th>
+                                <th>BALANCE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table1Body">
+                            <!-- Data for Table 1 will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Second SURPLUS Div -->
+            <div class="card-body" style="width: 100%; display: none; margin-top: 20px;" id="SURPLUS_div_table2">
+                <h5 class="card-title" style="color:maroon">LOSS  DETAILS</h5>
+                <div style="max-height: 150px; overflow-y: auto;">
+                    <table class="mb-0 table table-hover" id="SURPLUSTable2" style="font-size:small;">
+                        <thead>
+                            <tr style="position: sticky; top: 0; background-color: white; z-index: 1;">
+                                <th>AUCTION ID</th>
+                                <th>AUCTION DATE</th>
+                                <th>LOAN NO</th>
+                                <th>LOSS</th>
+                                <th>SURPLUS</th>
+                                <th>LOAN</th>
+                                <th>SETTLE</th>
+                                <th>OTHERS</th>
+                                <th>BALANCE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table2Body">
+                            <!-- Data for Table 2 will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+
+            <div class="card-body" style="width: 100%; display: none;" id="Excess_div">
+                <h5 class="card-title" style="color:maroon">Excess details</h5>
+                <div style="max-height: 150px; overflow-y: auto;">
+                    <table class="mb-0 table table-hover" id="ExcessTable" style="font-size:small;">
+                        <thead>
+                            <tr style="position: sticky; top: 0; background-color: white; z-index: 1;">
+                                <th>LOAN NO</th>
+                                <th>ERP GWT</th>
+                                <th>AUDIT GWT</th>
+                                <th>GWT DIFF</th>
+                                <th>ERP SWT</th>
+                                <th>AUDIT SWT</th>
+                                <th>SWT DIFF</th>
+                                <th>ERP NWT</th>
+                                <th>NWT DIFF</th>
+                                <th>ERP PRT</th>
+                                <th>AUDIT PRT</th>
+                                <th>PRT DIFF</th>
+                                <th>LOAN AMOUNT</th>
+                                <th>AUDIT AMT</th>
+                                <th>EXCESS</th>
+                                <th>OBSERVATION</th>
+                                <!-- Add as many columns as needed -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+
+            <div class="main-card mb-3 card" id="table_1" style="display:none;">
+
+                <div class="no-gutters row">
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <h6 style="color:red;font-weight:500;font-size:x-large;">GL</h6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="total_1" class="widget-numbers text-success">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Total</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="settled_1" class="widget-numbers text-warning">
+
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Settled</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="live_1" class="widget-numbers text-danger">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Live</div>
+                                    <div class="widget-subheading"></div>
+
+                                </div>
+                                &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+
+                                <input type="hidden" id="hiddenField_1" value="" />
+                                <button id="button_1" class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-success"
+                                        data-value="">
+                                    View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="tablesContainerWrapper" style="display:none;">
+                <table id="tablesContainer" class="table table-hover table-striped table-bordered">
+                    <!-- Table content will be dynamically inserted here -->
+                </table>
+            </div>
+            <div class="main-card mb-3 card" id="table_2" style="display:none;">
+                @*<h6>Vehicle Loan</h6>*@
+                <div class="no-gutters row">
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <h6 style="color:red;font-weight:500;font-size:x-large;">VL</h6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="total_2" class="widget-numbers text-success">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Total</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="settled_2" class="widget-numbers text-warning">
+
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Settled</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="live_2" class="widget-numbers text-danger">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Live</div>
+                                    <div class="widget-subheading"></div>
+
+                                </div>
+                                &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+                                <input type="hidden" id="hiddenField_2" value="" />
+                                <button id="button_2" class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-success"
+                                        data-value="">
+                                    View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="tablesContainerWrapper_2" style="display:none;">
+                <table id="tablesContainer_2" class="table table-hover table-striped table-bordered">
+                    <!-- Table content will be dynamically inserted here -->
+                </table>
+            </div>
+            <div class="main-card mb-3 card" id="table_3" style="display:none;">
+                @*<h6>Business Loan</h6>*@
+                <div class="no-gutters row">
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <h6 style="color:red;font-weight:500;font-size:x-large;">BL</h6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="total_3" class="widget-numbers text-success">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Total</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="settled_3" class="widget-numbers text-warning">
+
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Settled</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="live_3" class="widget-numbers text-danger">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Live</div>
+                                    <div class="widget-subheading"></div>
+
+                                </div>
+                                &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+                                <input type="hidden" id="hiddenField_3" value="" />
+                                <button id="button_3" class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-success"
+                                        data-value="">
+                                    View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="tablesContainerWrapper_3" style="display:none;">
+                <table id="tablesContainer_3" class="table table-hover table-striped table-bordered">
+                    <!-- Table content will be dynamically inserted here -->
+                </table>
+            </div>
+            <div class="main-card mb-3 card" id="table_4" style="display:none;">
+                @*<h6>Term Loan</h6>*@
+                <div class="no-gutters row">
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <h6 style="color:red;font-weight:500;font-size:x-large;">TL</h6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="total_4" class="widget-numbers text-success">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Total</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="settled_4" class="widget-numbers text-warning">
+
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Settled</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="live_4" class="widget-numbers text-danger">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Live</div>
+                                    <div class="widget-subheading"></div>
+
+                                </div>
+                                &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+                                <input type="hidden" id="hiddenField_4" value="" />
+                                <button id="button_4" class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-success"
+                                        data-value="">
+                                    View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="tablesContainerWrapper_4" style="display:none;">
+                <table id="tablesContainer_4" class="table table-hover table-striped table-bordered">
+                    <!-- Table content will be dynamically inserted here -->
+                </table>
+            </div>
+            <div class="main-card mb-3 card" id="table_5" style="display:none;">
+                @*<h6>Micro Loan</h6>*@
+                <div class="no-gutters row">
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <h6 style="color:red;font-weight:500;font-size:x-large;">MF</h6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="total_5" class="widget-numbers text-success">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Total</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="settled_5" class="widget-numbers text-warning">
+
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Settled</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="live_5" class="widget-numbers text-danger">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Live</div>
+                                    <div class="widget-subheading"></div>
+
+                                </div>
+                                &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+                                <input type="hidden" id="hiddenField_5" value="" />
+                                <button id="button_5" class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-success"
+                                        data-value="">
+                                    View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="tablesContainerWrapper_5" style="display:none;">
+                <table id="tablesContainer_5" class="table table-hover table-striped table-bordered">
+                    <!-- Table content will be dynamically inserted here -->
+                </table>
+            </div>
+            <div class="main-card mb-3 card" id="table_6" style="display:none;">
+                @*<h6>NCD </h6>*@
+                <div class="no-gutters row">
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <h6 style="color:red;font-weight:500;font-size:x-large;">NCD</h6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="total_6" class="widget-numbers text-success">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Total</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="settled_6" class="widget-numbers text-warning">
+
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Settled</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="live_6" class="widget-numbers text-danger">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Live</div>
+                                    <div class="widget-subheading"></div>
+
+                                </div>
+                                &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+                                <input type="hidden" id="hiddenField_6" value="" />
+                                <button id="button_6" class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-success"
+                                        data-value="">
+                                    View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="tablesContainerWrapper_6" style="display:none;">
+                <table id="tablesContainer_6" class="table table-hover table-striped table-bordered">
+                    <!-- Table content will be dynamically inserted here -->
+                </table>
+            </div>
+            <div class="main-card mb-3 card" id="table_7" style="display:none;">
+                @*<h6>SD</h6>*@
+                <div class="no-gutters row">
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <h6 style="color:red;font-weight:500;font-size:x-large;">SD</h6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="total_7" class="widget-numbers text-success">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Total</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="settled_7" class="widget-numbers text-warning">
+
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Settled</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="live_7" class="widget-numbers text-danger">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Live</div>
+                                    <div class="widget-subheading"></div>
+
+                                </div>
+                                &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+                                <input type="hidden" id="hiddenField_7" value="" />
+                                <button id="button_7" class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-success"
+                                        data-value="">
+                                    View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="tablesContainerWrapper_7" style="display:none;">
+                <table id="tablesContainer_7" class="table table-hover table-striped table-bordered">
+                    <!-- Table content will be dynamically inserted here -->
+                </table>
+            </div>
+            <div class="main-card mb-3 card" id="table_8" style="display:none;">
+                @*<h6>Gold OD</h6>*@
+                <div class="no-gutters row">
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <h6 style="color:red;font-weight:500;font-size:x-large;">GL OD</h6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="total_8" class="widget-numbers text-success">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Total</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="settled_8" class="widget-numbers text-warning">
+
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Settled</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="live_8" class="widget-numbers text-danger">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Live</div>
+                                    <div class="widget-subheading"></div>
+
+                                </div>
+                                &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+                                <input type="hidden" id="hiddenField_8" value="" />
+                                <button id="button_8" class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-success"
+                                        data-value="">
+                                    View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="tablesContainerWrapper_8" style="display:none;">
+                <table id="tablesContainer_8" class="table table-hover table-striped table-bordered">
+                    <!-- Table content will be dynamically inserted here -->
+                </table>
+            </div>
+            <div class="main-card mb-3 card" id="table_9" style="display:none;">
+                @*<h6>CD Loan</h6>*@
+                <div class="no-gutters row">
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <h6 style="color:red;font-weight:500;font-size:x-large;">CD</h6>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="total_9" class="widget-numbers text-success">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Total</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="settled_9" class="widget-numbers text-warning">
+
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Settled</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="live_9" class="widget-numbers text-danger">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Live</div>
+                                    <div class="widget-subheading"></div>
+
+                                </div>
+                                &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+                                <input type="hidden" id="hiddenField_9" value="" />
+                                <button id="button_9" class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-success"
+                                        data-value="">
+                                    View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="tablesContainerWrapper_9" style="display:none;">
+                <table id="tablesContainer_9" class="table table-hover table-striped table-bordered">
+                    <!-- Table content will be dynamically inserted here -->
+                </table>
+            </div>
+            <div class="main-card mb-3 card" id="table_10" style="display:none;">
+                @*<h6>Svadan Loan</h6>*@
+                <div class="no-gutters row">
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <h6 style="color:red;font-weight:500;font-size:x-large;">SVADHAN</h6>&nbsp;&nbsp;&nbsp;&nbsp;
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="total_10" class="widget-numbers text-success">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Total</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="settled_10" class="widget-numbers text-warning">
+
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Settled</div>
+                                    <div class="widget-subheading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="widget-content">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-right ml-0 mr-3">
+                                    <div id="live_10" class="widget-numbers text-danger">
+
+
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading">Live</div>
+                                    <div class="widget-subheading"></div>
+
+                                </div>
+                                &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+                                <input type="hidden" id="hiddenField_10" value="" />
+                                <button id="button_10" class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-success"
+                                        data-value="">
+                                    View
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="tablesContainerWrapper_10" style="display:none;">
+                <table id="tablesContainer_10" class="table table-hover table-striped table-bordered">
+                    <!-- Table content will be dynamically inserted here -->
+                </table>
+            </div>
+
+
+
+
+        </div>
+</body>
+</html>
+

@@ -1,0 +1,1290 @@
+﻿
+
+
+
+@if (ViewBag.CustomerBankDetails != null && ViewBag.CustomerBankDetails.Rows.Count > 0)
+{
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="~/Content/input_styles.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+        <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> <!-- Ensure Font Awesome is included -->
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.0.0/pdf.min.js"></script>
+
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+        <style>
+
+
+
+            input:focus, textarea:focus {
+                outline: 2px solid #6497b1; /* Remove any outline if there is one */
+                border: #6497b1; /* Set a noticeable border color */
+            }
+
+
+
+            #cus_detailsDataGrid {
+                overflow-y: auto;
+                font-size: 14px;
+                width: 100%;
+                font-weight: 500;
+                border-collapse: collapse;
+            }
+
+            #added_row_table {
+                overflow-y: auto;
+                font-size: 14px;
+                width: 100%;
+                font-weight: 500;
+                border-collapse: collapse;
+            }
+
+            #selectedRowTable {
+                overflow-y: auto;
+                font-size: 14px;
+                width: 100%;
+                font-weight: 500;
+                border-collapse: collapse;
+            }
+
+            #cus_detailsDataGrid th, #cus_detailsDataGrid td {
+                border: 1px solid #ccc;
+                padding: 18px;
+                text-align: center;
+            }
+
+            #added_row_table th, #added_row_table td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: center;
+            }
+            /* Styling for table header */
+            #added_row_table th {
+                background-color: #4D759A;
+                color: white;
+            }
+
+            #cus_detailsDataGrid th {
+                background-color: #4D759A;
+                color: white;
+            }
+
+            #selectedRowTable th, #selectedRowTable td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: center;
+            }
+
+            /* Styling for table header */
+            #selectedRowTable th {
+                background-color: #4D759A;
+                color: white;
+            }
+
+            /* Style for the selected row table */
+            #selectedRowTable {
+                margin-top: 20px;
+                border: 1px solid #ccc;
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+                #selectedRowTable th, #selectedRowTable td {
+                    border: 1px solid #ccc;
+                    padding: 8px;
+                    text-align: center;
+                }
+        </style>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const checkboxes = document.querySelectorAll('.select-checkbox');
+                const selectedRowTable = document.getElementById('selectedRowTable');
+                const selectedRowContainer = document.getElementById('selectedRowContainer');
+
+                checkboxes.forEach(function (checkbox) {
+                    checkbox.addEventListener('change', function () {
+                        if (this.checked) {
+                            // Uncheck other checkboxes
+                            checkboxes.forEach(function (otherCheckbox) {
+                                if (otherCheckbox !== checkbox) {
+                                    otherCheckbox.checked = false;
+                                }
+                            });
+
+                            // Get the row associated with this checkbox
+                            const row = this.closest('tr');
+                            const rowData = Array.from(row.querySelectorAll('td')).map(td => td.innerText);
+
+                            // Example: Assuming you want to get the values of specific columns, say index 2 and 4
+                            const customerid = rowData[5]; // Get value from 3rd column (index 2)
+                            const InterestType = rowData[6]; // Get value from 5th column (index 4)
+                         //    alert(customerid);
+                          //  alert(InterestType);
+
+                            // Debugging output
+
+                            // Do something with the selected column values
+                            // For instance, populate them in some input fields or variables
+
+                            // Clear the selected row table content
+                            selectedRowTable.querySelector('thead tr').innerHTML = '';
+                            selectedRowTable.querySelector('tbody tr').innerHTML = '';
+
+                            // Get the headers from the original table
+                            const originalTableHeaders = document.querySelectorAll('#cus_detailsDataGrid th');
+                            originalTableHeaders.forEach((th, index) => {
+                                if (index > 0) { // Skip the "Select" column header
+                                    const newTh = document.createElement('th');
+                                    newTh.textContent = th.textContent;
+                                    selectedRowTable.querySelector('thead tr').appendChild(newTh);
+                                }
+                            });
+
+                            // Populate the selected row table
+                            rowData.forEach((data, index) => {
+                                if (index > 0) { // Skip the "Select" column data
+                                    const newTd = document.createElement('td');
+                                    newTd.textContent = data;
+                                    selectedRowTable.querySelector('tbody tr').appendChild(newTd);
+                                }
+                            });
+
+                            // Show the selected row container and other elements
+                            selectedRowContainer.style.display = 'block';
+                            $("#cus_detailsDataGrid").hide();
+                            $("#textbox_div1").show();
+                            $("#textbox_div2").show();
+                            $("#heading1").show();
+                            $("#heading2").show();
+                            $("#added_row_table_heading").show();
+                            $("#textbox_div3").show();
+                            $("#button_div").show();
+                            $("#AddBtn_div").show();
+
+                            if (InterestType == "Cumulative") {
+                                //   alert("cu");
+                                const checkbox = document.getElementById("hideCheckbox");
+                                checkbox.checked = true;
+                                checkbox.disabled = true;
+                                $("#textbox_div2").hide();
+                                $("#textbox_div3").hide();
+                                $("#heading2").hide();
+                            }
+
+                            $.ajax({
+                                url: '/NCD_Transfere_Bankadd/BankAdd_textBox_fill',  // Update the URL to your actual endpoint
+                                type: 'POST',
+                                data: { customerid: customerid },  // Send the customerid as a parameter
+                                success: function (response) {
+                                    var columns = response.columns;  // Get columns from the response
+                                    var data = response.data;  // Get data from the response
+
+                                    // Get table elements
+                                    var tableHead = $('#added_row_table thead tr');
+                                    var tableBody = $('#added_row_table tbody');
+
+                                    // Clear existing table head and body content
+                                    tableHead.empty();
+                                    tableBody.empty();
+
+                                    // Check if data exists
+                                    if (data.length > 0) {
+                                        // Generate table headers, skipping the 9th, 10th, and 11th columns
+                                        tableHead.append('<th>Select</th>'); // Add checkbox column header
+                                        $.each(columns, function (index, columnName) {
+                                            if (index !== 8 && index !== 9 && index !== 10) { // Skip 9th, 10th, and 11th columns
+                                                tableHead.append('<th>' + columnName + '</th>');
+                                            }
+                                        });
+
+                                        // Add new column header for the button
+                                        tableHead.append('<th>Action</th>'); // Add header for the new column
+
+                                        // Generate table rows
+                                        $.each(data, function (index, rowData) {
+                                            // Add the row with data attributes
+                                            var rowHtml = '<tr data-rowid="' + rowData[columns[0]] + '"';  // Assuming the first column is the ID
+
+                                            // Add additional data-* attributes for each relevant column value
+                                            $.each(rowData, function (key, value) {
+                                                var columnIndex = columns.indexOf(key);
+                                                if (columnIndex !== 8 && columnIndex !== 9 && columnIndex !== 10) {
+                                                    rowHtml += ' data-col' + columnIndex + '="' + value + '"';  // Store values as data attributes
+                                                }
+                                            });
+
+                                            rowHtml += '>';  // Close the opening <tr> tag
+
+                                            // Add checkbox and other columns
+                                            rowHtml += '<td><input type="checkbox" class="row-checkbox" data-hidden1="' + rowData[columns[8]] + '"/></td>'; // Store 9th column value in the checkbox
+
+                                            $.each(rowData, function (key, value) {
+                                                var columnIndex = columns.indexOf(key);
+                                                if (columnIndex !== 8 && columnIndex !== 9 && columnIndex !== 10) {
+                                                    rowHtml += '<td>' + value + '</td>';  // Add the visible cells
+                                                }
+                                            });
+
+                                            // Add button with hidden values
+                                            rowHtml += '<td><button class="mb-2 mr-2 btn-icon btn-pill btn btn-warning action-button" data-hidden1="' + rowData[columns[9]] + '" data-hidden2="' + rowData[columns[10]] + '"><i class="lnr-picture btn-icon-wrapper"></i></button></td>';
+
+                                            rowHtml += '</tr>';
+
+                                            tableBody.append(rowHtml);  // Append the row to the table body
+                                        });
+
+                                        // Make the table visible
+                                        $('#added_row_table_div').show();
+                                        $('.row-checkbox').on('click', function () {
+                                            var hiddenValue = $(this).data('hidden1'); // Get the value from data-hidden1
+                                            //alert('Value: ' + hiddenValue); // Alert the value
+                                            handleCheckboxSelection(hiddenValue);
+                                        });
+
+                                        //handleCheckboxSelection();
+                                    } else {
+                                        // Handle the case when no data is returned
+                                        tableBody.append('<tr><td colspan="' + (columns.length - 3 + 2) + '">No data found.</td></tr>'); // Update colspan for checkbox column
+                                        $('#added_row_table_div').show();  // Still show the table even if it's empty
+                                    }
+
+                                    // Add event listener for checkboxes
+
+
+                                    // Add event listener for action buttons
+                                    $('.action-button').on('click', function () {
+                                        // Get the hidden values from the clicked button's data attributes
+                                        var dep_id = $(this).data('hidden1'); // Get value from 10th column
+                                        var module_id = $(this).data('hidden2'); // Get value from 11th column
+                                        callAjax(dep_id, module_id);
+                                    });
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('AJAX Error:', error);
+                                }
+                            });
+
+
+
+
+                        } else {
+
+                            selectedRowTable.querySelector('thead tr').innerHTML = '';
+                            selectedRowTable.querySelector('tbody tr').innerHTML = '';
+                            selectedRowContainer.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+
+            function handleCheckboxSelection(hiddenValue) {
+                //alert("function value" + hiddenValue);
+                $('.row-checkbox').on('change', function () {
+                    if ($(this).is(':checked')) {
+                        // "Check-in" logic (checkbox checked)
+                        $('.row-checkbox').not(this).prop('checked', false); // Uncheck all other checkboxes
+                        //alert("checked");
+                        // Retrieve data from the selected row (parent <tr>)
+                        var selectedRow = $(this).closest('tr');
+
+                        // Extract data-* attributes from the selected row
+                        var rowId = selectedRow.data('rowid');  // Assuming the row ID is stored in 'data-rowid'
+                        var col1 = selectedRow.data('col1');    // Data from the first column (col1)
+                        var payee_name = selectedRow.data('col2');
+                        var ifsc = selectedRow.data('col3');
+                        var Bank_name = selectedRow.data('col4');
+                        var branch_name = selectedRow.data('col5');
+                        var account_no = selectedRow.data('col6');
+                        var type = selectedRow.data('col7');
+                        //alert("type" + type);
+                        //alert(payee_name + '\n' + ifsc + '\n' + Bank_name + '\n' + branch_name + '\n' + account_no);
+
+                        $('#txtCustomerName_1').val(payee_name);
+                        $('#txt_ifsc_1').val(ifsc);
+                        $('#bankName_txtbox_1').val(Bank_name);
+                        $('#branchName_txtbox_1').val(branch_name);
+                        $('#accno_textbox_1').val(account_no);
+                        $('#hidden_bank_id1').val(hiddenValue);
+
+                    } else {
+                        // "Check-out" logic (checkbox unchecked)
+                        // alert("Unchecked row");
+                        $('#txtCustomerName_1').val('');
+                        $('#txt_ifsc_1').val('');
+                        $('#bankName_txtbox_1').val('');
+                        $('#branchName_txtbox_1').val('');
+                        $('#accno_textbox_1').val('');
+                    }
+                });
+            }
+
+
+
+
+            function callAjax(dep_id, module_id) {
+                $.ajax({
+                    url: '/NCD_Transfere_Bankadd/attachmet_select_popup',
+                    type: 'POST',
+                    data: {
+                        dep_id: dep_id,         // Send the dep_id as a parameter
+                        module_id: module_id    // Send the module_id as a parameter
+                    },
+                    success: function (response) {
+                        if (response.sucess === false) {
+                            // If the server indicates failure, alert the failure message
+                            alert(response.message);
+                        } else {
+                            // If successful, alert the success message and data (e.g., image URL)
+                            // alert('Success! Image URL: ' + response.data);
+                            var getImageValue = response.data;
+                            // alert(getImageValue);
+
+                            if (getImageValue != null) {
+                                if (getImageValue.startsWith("data:image")) {
+                                    //  alert("image");
+                                    displayPhoto(getImageValue, 'image');
+                                } else if (getImageValue.startsWith("data:application/pdf")) {
+                                    //   alert("pdf");
+                                    displayPhoto(getImageValue, 'pdf');
+                                } else {
+                                    alert("Unknown file type");
+                                }
+                            } else {
+                                alert("No image URL received");
+                            }
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error:', error);
+                        // You can also alert the user of an AJAX failure
+                        alert('AJAX call failed: ' + error);
+                    }
+                });
+            }
+
+
+            function triggerFileUpload() {
+
+                document.getElementById('Authorization_txtattach').click();
+            }
+            function Bankattach1() {
+
+                document.getElementById('Bankattach1').click();
+            }
+            function Bankattach2() {
+
+                document.getElementById('Bankattach2').click();
+            }
+
+
+            document.addEventListener('DOMContentLoaded', function () {
+                const checkbox = document.getElementById('hideCheckbox');
+
+                // Check-in function (called when checkbox is checked)
+                function checkIn() {
+                    //  alert("Checked in");
+                    $("#textbox_div2").hide();
+                    $("#textbox_div3").hide();
+
+                }
+
+                // Check-out function (called when checkbox is unchecked)
+                function checkOut() {
+                    // alert("Checked out");
+                    $("#textbox_div2").show();
+                    $("#textbox_div3").show();
+
+                    $('#txtCustomerName_2').val('');
+                    $('#txt_ifsc_2').val('');
+                    $('#bankName_txtbox_2').val('');
+                    $('#branchName_txtbox_2').val('');
+                    $('#accno_textbox_2').val('');
+                    $('#Bankattach1').val('');
+                    $('#Bankattach2').val('');
+                    $('#Authorization_txtattach').val('');
+                }
+
+                // Add event listener for change event
+                checkbox.addEventListener('change', function () {
+                    //alert("change");
+                    if (this.checked) {
+                        checkIn();
+                    } else {
+                        checkOut();
+                    }
+                });
+            });
+        </script>
+
+
+        <script>
+
+
+            function displayPhoto(dataUrl, type) {
+                // alert("display");
+                var modal = document.getElementById('mediaModal');
+                var content = document.getElementById('pdfViewer'); // Use pdfViewer as content
+
+                if (type === 'pdf') {
+                    // Convert base64 to Blob
+                    var base64Data = dataUrl.split(',')[1];
+                    var binaryString = atob(base64Data);
+                    var len = binaryString.length;
+                    var bytes = new Uint8Array(len);
+                    for (var i = 0; i < len; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    var blob = new Blob([bytes], { type: 'application/pdf' });
+                    var blobUrl = URL.createObjectURL(blob);
+
+                    // Embed PDF in an iframe
+                    content.innerHTML = `
+                    <iframe id="pdfFrame" src="${blobUrl}" style="width:100%; height:400px; border:none; border: 7px solid #ddd;" frameborder="0"></iframe>`;
+
+                    //        content.innerHTML = `
+                    ////          <div style="padding-top:25px; padding-left:120px;">
+                    ////            <iframe src="${blobUrl}" style="width:100%; height:600px; border:none;" frameborder="0"></iframe>
+                    ////          </div>`;
+
+                    // Hide zoom controls for PDFs
+                    document.getElementById('zoomControls').style.display = 'none';
+
+                } else if (type === 'image') {
+                    content.innerHTML = `
+                  <div id="imageWrapper" style="width:700px; height:400px; overflow:auto; background-color:white; border: 7px solid #ddd;">
+                      <img id="modalImage" src="${dataUrl}" style="width:600px; padding-left:120px; padding-top:35px; transform: scale(1);" />
+                  </div>`;
+
+                    // Show zoom controls for images
+                    document.getElementById('zoomControls').style.display = 'block';
+
+                    // Add zoom functionality for image
+                    let scale = 1;
+                    const zoomStep = 0.1;
+                    const modalImage = document.getElementById('modalImage');
+
+                    document.getElementById('zoomIn').addEventListener('click', () => {
+                        scale += zoomStep;
+                        modalImage.style.transform = `scale(${scale})`;
+                    });
+
+                    document.getElementById('zoomOut').addEventListener('click', () => {
+                        if (scale > zoomStep) {
+                            scale -= zoomStep;
+                            modalImage.style.transform = `scale(${scale})`;
+                        }
+                    });
+                    let rotationAngle = 0;
+
+                        document.getElementById('rotateImage').addEventListener('click', function () {
+                           // alert("rotate");
+                    rotationAngle += 90; // Rotate by 90 degrees each time the button is clicked
+                    document.getElementById('modalImage').style.transform = 'rotate(' + rotationAngle + 'deg)';
+                    });
+                }
+
+                modal.style.display = 'block';
+            }
+
+
+
+            document.addEventListener('DOMContentLoaded', function () {
+                var mediaModalContent = document.getElementById('mediaModalContent');
+
+                // Check if the element exists
+                if (mediaModalContent) {
+                    // Apply dragging functionality to the media modal content
+                    mediaModalContent.addEventListener('mousedown', function (event) {
+                       // alert("alert");  // This should trigger now
+                        makeDraggable(document.getElementById('mediaModal'));
+                    });
+                } else {
+                    console.error('Element #mediaModalContent not found');
+                }
+            });
+
+            function makeDraggable(element) {
+                var isDragging = false;
+                var offsetX, offsetY;
+
+                element.onmousedown = function (event) {
+                    isDragging = true;
+                    offsetX = event.clientX - element.getBoundingClientRect().left;
+                    offsetY = event.clientY - element.getBoundingClientRect().top;
+
+                    // Disable text selection while dragging
+                    document.body.style.userSelect = 'none';
+
+                    document.onmousemove = function (event) {
+                        if (isDragging) {
+                            var modal = document.getElementById('mediaModal');
+                            modal.style.left = (event.clientX - offsetX) + 'px';
+                            modal.style.top = (event.clientY - offsetY) + 'px';
+                        }
+                    };
+
+                    document.onmouseup = function () {
+                        isDragging = false;
+                        document.onmousemove = null;
+                        // Re-enable text selection after dragging
+                        document.body.style.userSelect = 'auto';
+                    };
+                };
+            }
+
+
+
+        // Apply dragging functionality to the header
+        document.getElementById('pdfViewer').addEventListener('mousedown', function (event) {
+        makeDraggable(document.getElementById('mediaModal'));
+        });
+
+
+        window.onclick = function (event) {
+        //  alert("mediaModal click");
+        var modal = document.getElementById("mediaModal");
+        if (event.target == modal) {
+        closeModal();
+        }
+        }
+
+        function closeModal() {
+        // alert("close");
+        var modal = document.getElementById("mediaModal");
+        modal.style.display = "none";
+        }
+
+
+
+
+        function handleifscChange1() {
+        var ifsc_code = document.getElementById("txt_ifsc_1").value;
+
+        // Perform an AJAX request to the controller
+        $.ajax({
+        url: '@Url.Action("GetBankDetails", "NCD_Transfere_Bankadd")', // Update with your controller name
+        type: 'POST',
+        data: { ifsc_code: ifsc_code },
+        success: function (response) {
+        //alert("success");
+
+        // Iterate over the response, assuming it's an array
+        if (response.length > 0) {
+        var bankDetails = response[0]; // Assuming you want the first result
+
+        $('#bankName_txtbox_1').val(bankDetails.BankName);
+        $('#branchName_txtbox_1').val(bankDetails.BranchName);
+        $('#hidden_bank_id1').val(bankDetails.Bank_id);
+
+        } else {
+        alert("No bank details found.");
+        $('#txt_ifsc_1').val('');
+
+        }
+        },
+        error: function(err) {
+        console.error("Error fetching bank details:", err);
+        }
+        });
+        }
+
+        function handleifscChange2() {
+        var ifsc_code = document.getElementById("txt_ifsc_2").value;
+
+        // Perform an AJAX request to the controller
+        $.ajax({
+        url: '@Url.Action("GetBankDetails", "NCD_Transfere_Bankadd")', // Update with your controller name
+        type: 'POST',
+        data: { ifsc_code: ifsc_code },
+        success: function (response) {
+
+        if (response.length > 0) {
+        var bankDetails = response[0]; // Assuming you want the first result
+
+        $('#bankName_txtbox_2').val(bankDetails.BankName);
+        $('#branchName_txtbox_2').val(bankDetails.BranchName);
+        $('#hidden_bank_id2').val(bankDetails.Bank_id);
+
+        } else {
+        alert("No bank details found.");
+        $('#txt_ifsc_2').val('');
+
+        }
+        },
+        error: function(err) {
+        console.error("Error fetching bank details:", err);
+        }
+        });
+        }
+
+        function validateIFSC(input) {
+        // Remove any character that is not a letter or digit
+        input.value = input.value.replace(/[^A-Za-z0-9]/g, '');
+        // Convert the input to uppercase
+        input.value = input.value.toUpperCase();
+        }
+
+
+        function allowOnlyNumbers(input) {
+        // Remove any non-digit characters
+        input.value = input.value.replace(/\D/g, '');
+        }
+
+
+        function submitForm() {
+         //alert("Button clicked!");
+        var checkbox = document.getElementById('hideCheckbox');
+
+        // Check if the checkbox is checked
+        if (checkbox.checked) {
+        // alert("Checkbox is checked. Value is 1");
+        const isValid = validateFormFields_submit_1();
+
+        if (!isValid) return;
+
+        // Gather all the input values
+        var bank_id = document.getElementById('hidden_bank_id1').value;
+        var customerName = document.getElementById('txtCustomerName_1').value;
+        var ifscCode = document.getElementById('txt_ifsc_1').value;
+        var bankName = document.getElementById('bankName_txtbox_1').value;
+        var branchName = document.getElementById('branchName_txtbox_1').value;
+        var accountNo = document.getElementById('accno_textbox_1').value;
+        var fileInput = document.getElementById('Bankattach1').files[0] || null;
+
+        var selectedRowTable = document.getElementById('selectedRowTable');
+        if (selectedRowTable.rows.length > 1) {
+        var firstCellValue = selectedRowTable.rows[1].cells[0].innerText;
+        } else {
+        console.error("Table does not have enough rows.");
+        return;
+        }
+
+        var formData = new FormData();
+        formData.append('customerName', customerName);
+        formData.append('ifsc_code', ifscCode);
+        formData.append('bankName', bankName);
+        formData.append('branchName', branchName);
+        formData.append('accountNo', accountNo);
+        if (fileInput) formData.append('file', fileInput);
+        formData.append('bank_id', bank_id);
+        formData.append('firstCellValue', firstCellValue);
+
+        // AJAX call
+        $.ajax({
+            url: '/NCD_Transfere_Bankadd/submit_form_1',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+            success: function (response) {
+
+                if (response.success) {
+                    // alert(response.message);
+
+                    Swal.fire({
+                        title: response.message,
+                        icon: "success"
+                    }).then(() => {
+                        window.location.reload();
+                    });
+
+                } else {
+                    Swal.fire({
+                        title: "",
+                        text: response.message,
+                        icon: "error",
+                        confirmButtonText: "OK"
+
+                    });
+                }
+        },
+        error: function (err) {
+        console.error("Error fetching bank details:", err);
+        alert("An error occurred while submitting the form. Please try again.");
+        }
+        });
+        } else {
+        // alert("Checkbox is not checked. Value is 0");
+
+        const isValid = validateFormFields_submit_2();
+        if (!isValid) return;
+
+       // alert("Validation passed submit2");
+
+        // Gather all input values for submit_form_2
+        var bank_id1 = document.getElementById('hidden_bank_id1').value;
+        var bank_id2 = document.getElementById('hidden_bank_id2').value;
+        var customerName1 = document.getElementById('txtCustomerName_1').value;
+        var customerName2 = document.getElementById('txtCustomerName_2').value;
+        var ifscCode1 = document.getElementById('txt_ifsc_1').value;
+        var ifscCode2 = document.getElementById('txt_ifsc_2').value;
+        var bankName = document.getElementById('bankName_txtbox_1').value;
+        var branchName = document.getElementById('branchName_txtbox_1').value;
+        var accountNo1 = document.getElementById('accno_textbox_1').value;
+        var accountNo2 = document.getElementById('accno_textbox_2').value;
+        var fileInput1 = document.getElementById('Bankattach1').files[0] || null;
+        var fileInput2 = document.getElementById('Bankattach2').files[0] || null;
+        var Authorization_txtattach = document.getElementById('Authorization_txtattach').files[0] || null;
+
+        var selectedRowTable = document.getElementById('selectedRowTable');
+        var applicationid = selectedRowTable.rows[1].cells[0].innerText;
+
+        var formData1 = new FormData();
+        formData1.append('customerName1', customerName1);
+        formData1.append('customerName2', customerName2);
+        formData1.append('ifscCode1', ifscCode1);
+        formData1.append('ifscCode2', ifscCode2);
+        formData1.append('bankName', bankName);
+        formData1.append('branchName', branchName);
+        formData1.append('accountNo1', accountNo1);
+        formData1.append('accountNo2', accountNo2);
+        if (fileInput1) formData1.append('fileInput1', fileInput1);
+        if (fileInput2) formData1.append('fileInput2', fileInput2);
+        if (Authorization_txtattach) formData1.append('Authorization_txtattach', Authorization_txtattach);
+        formData1.append('bank_id1', bank_id1);
+        formData1.append('bank_id2', bank_id2);
+        formData1.append('applicationid', applicationid);
+        // alert(formData1);
+        $.ajax({
+        url: '@Url.Action("submit_form_2", "NCD_Transfere_Bankadd")', // Ensure the controller name is correct
+        type: 'POST',
+        data: formData1, // Replace 'yourFormId' with your actual form ID
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            if (response.success) {
+               // alert(response.message);
+
+                Swal.fire({
+                    title: response.message,
+                    icon: "success"
+                }).then(() => {
+                    window.location.reload();
+                });
+
+            } else {
+                Swal.fire({
+                    title: "",
+                    text: response.message,
+                    icon: "error",
+                    confirmButtonText: "OK"
+
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+        console.log("AJAX call failed: " + status + ", error: " + error);
+        }
+        });
+
+        }
+        }
+
+
+
+
+
+            function validateFormFields_submit_1() {
+                // Get all the input fields by their names
+                const customerName = document.getElementsByName('txtCustomerName_1')[0];
+                const ifscCode = document.getElementsByName('txt_ifsc_1')[0];
+                const bankName = document.getElementsByName('bankName_txtbox_1')[0];
+                const branchName = document.getElementsByName('branchName_txtbox_1')[0];
+                const accountNo = document.getElementsByName('accno_textbox_1')[0];
+                const fileInput = document.getElementsByName('Bankattach1')[0];
+
+                // Check for null or empty values
+                if (!customerName.value) {
+                    alert('Please enter Payee Name');
+                    customerName.focus();
+                    return false;
+                }
+                else if (!ifscCode.value) {
+                    alert('Please enter Bank IFSC Code');
+                    ifscCode.focus();
+                    return false;
+                }
+                else if (!bankName.value) {
+                    alert('Bank Name cannot be empty');
+                    bankName.focus();
+                    return false;
+                }
+                else if (!branchName.value) {
+                    alert('Bank Branch cannot be empty');
+                    branchName.focus();
+                    return false;
+                }
+                else if (!accountNo.value) {
+                    alert('Please enter Bank Account No');
+                    accountNo.focus();
+                    return false;
+                }
+                else if (!fileInput.files.length) {
+                    alert('Please upload a Attachment for Settlement Bank');
+                    fileInput.focus();
+                    return false;
+                }
+                else if (fileInput && fileInput.size > 1 * 1024 * 1024) {
+
+                    alert("Attachment for Settlement Bank file size exceeds 1 MB limit.");
+                    return false;
+                }
+                else {
+                    return true;
+                }
+            }
+
+
+
+
+
+            function validateFormFields_submit_2() {
+                // Get all the input fields by their IDs
+                const customerName1 = document.getElementById('txtCustomerName_1');
+                const customerName2 = document.getElementById('txtCustomerName_2');
+                const ifscCode1 = document.getElementById('txt_ifsc_1');
+                const ifscCode2 = document.getElementById('txt_ifsc_2');
+                const bankName1 = document.getElementById('bankName_txtbox_1');
+                const bankName2 = document.getElementById('bankName_txtbox_2');
+                const branchName1 = document.getElementById('branchName_txtbox_1');
+                const branchName2 = document.getElementById('branchName_txtbox_2');
+                const accountNo1 = document.getElementById('accno_textbox_1');
+                const accountNo2 = document.getElementById('accno_textbox_2');
+                const fileInput1 = document.getElementById('Bankattach1');
+                const fileInput2 = document.getElementById('Bankattach2');
+                const Authorization_txtattach = document.getElementById('Authorization_txtattach');
+
+                customerName1.style.border = "";
+                customerName2.style.border = "";
+                ifscCode1.style.border = "";
+                ifscCode2.style.border = "";
+                bankName1.style.border = "";
+                bankName2.style.border = "";
+                branchName1.style.border = "";
+                branchName2.style.border = "";
+                accountNo1.style.border = "";
+                accountNo2.style.border = "";
+                accountNo2.style.border = "";
+                accountNo2.style.border = "";
+
+                // Check for null or empty values
+                if (!customerName1.value) {
+                    alert('Please enter Settlement Payee Name');
+                    customerName1.focus();  // Focus on the customer name input
+
+                    customerName1.style.border = "2px solid #6497b1";
+                    return false;
+                }
+                else if (!customerName2.value) {
+                    alert('Please enter Interest Payee Name');
+                    customerName2.focus();
+                    customerName2.style.border = "2px solid #6497b1";
+                    return false;
+                }
+                else if (!ifscCode1.value) {
+                    alert('Please enter Settlement Bank IFSC Code');
+                    ifscCode1.focus();  // Focus on the IFSC code input
+                    ifscCode1.style.border = "2px solid #6497b1";
+                    return false;
+                }
+                else if (!ifscCode2.value) {
+                    alert('Please enter Interest Bank IFSC Code');
+                    ifscCode2.focus();  // Focus on the IFSC code input
+                    ifscCode2.style.border = "2px solid #6497b1";
+                    return false;
+                }
+                else if (!bankName1.value) {
+                    alert('Settlement Bank Name cannot be empty');
+                    bankName1.focus();  // Focus on the bank name input
+                    bankName1.style.border = "2px solid #6497b1";
+                    return false;
+                }
+                else if (!bankName2.value) {
+                    alert('Interest Bank Name cannot be empty');
+                    bankName2.focus();  // Focus on the bank name input
+                    bankName2.style.border = "2px solid #6497b1";
+                    return false;
+                }
+                else if (!branchName1.value) {
+                    alert('Settlement Bank Branch cannot be empty');
+                    branchName1.focus();  // Focus on the branch name input
+                    branchName1.style.border = "2px solid #6497b1";
+                    return false;
+                }
+                else if (!branchName2.value) {
+                    alert('Interest Bank Branch cannot be empty');
+                    branchName2.focus();  // Focus on the branch name input
+                    branchName2.style.border = "2px solid #6497b1";
+                    return false;
+                }
+                else if (!accountNo1.value) {
+                    alert('Please enter Settlement Bank Account No');
+                    accountNo1.focus();  // Focus on the account number input
+                    accountNo1.style.border = "2px solid #6497b1";
+                    return false;
+                }
+                else if (!accountNo2.value) {
+                    alert('Please enter Interest Bank Account No');
+                    accountNo2.focus();  // Focus on the account number input
+                    accountNo2.style.border = "2px solid #6497b1";
+                    return false;
+                }
+                else if (!fileInput1.files.length) { // Check if no file is selected
+                    alert('Please upload a Attachment for Settlement Bank');
+                    fileInput1.focus();  // Focus on the file input
+                    return false;
+                }
+                else if (!fileInput2.files.length) { // Check if no file is selected
+
+                    alert('Please upload an Attachment for Interest Bank');
+                    fileInput2.focus();  // Focus on the file input
+                    return false;
+                }
+                else if (!Authorization_txtattach.files.length) { // Check if no file is selected
+                    alert('Please upload an Authorization Letter');
+                    Authorization_txtattach.focus();  // Focus on the file input
+                    return false;
+                }
+                else if (fileInput1 && fileInput1.size > 1 * 1024 * 1024) {
+
+                    alert("Attachment for Settlement Bank file size exceeds 1 MB limit.");
+                    return false;
+                }
+                else if (fileInput2 && fileInput2.size > 1 * 1024 * 1024) { // Check if the first file exceeds 3 MB
+                    alert("Attachment for Interest Bank file size exceeds 1 MB limit.");
+                    return false;
+                }
+                else if (Authorization_txtattach && Authorization_txtattach.size > 1 * 1024 * 1024) { // Check if the first file exceeds 3 MB
+                    alert("Authorization Letter file size exceeds 1 MB limit.");
+                    return false;
+                }
+                else {
+                  //  alert("validation 2 cleared");
+                    return true;
+                }
+            }
+
+
+
+
+
+        </script>
+
+
+
+    </head>
+    <body>
+        <div id="mediaModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; padding-top: 50px; background-color: rgba(0,0,0,0); z-index: 1000;">
+            <div id="mediaModalContent" style="position: relative; cursor: move; margin: auto; padding: 40px; width: 60%; height: 90%; ">
+                <div id="pdfViewer" style="width: 100%; cursor: move; height: calc(100% - 40px);"></div>
+
+                @*Zoom Controls*@
+                <div id="zoomControls" style="text-align:center;">
+
+                    <button id="zoomIn" style="margin-right: 10px; background:transparent; border:none; font-size:24px; cursor:pointer;">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+
+                    <!-- Zoom Out button with icon -->
+                    <button id="zoomOut" style="background:transparent; border:none; font-size:24px; cursor:pointer;">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                    <!-- Rotate button with icon -->
+                    <button id="rotateImage" style="background:transparent; border:none; font-size:24px; cursor:pointer;">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+
+
+                <button onclick="closeModal()" style="position:absolute; top:10px; right:10px; background:transparent; border:none; font-size:24px; cursor:pointer;">
+                    <i class="fas fa-times"></i>
+                </button>
+                @*</div>*@
+            </div>
+        </div>
+
+
+
+
+        <div class="app-main__inner" style="margin-top: -30px;padding:0px;width:100%;">
+            <div style="height: 40px; display: flex; align-items: center; justify-content: center;">
+                <div class="card-title">
+                    <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Transferee Bank Details</h6>
+                </div>
+            </div>
+            <div class="card-body" >
+                <div style="width:100%">
+                    <!-- Original Data Grid Table -->
+                    <div style="overflow-x:auto; max-height: 500px;width:100%">
+                        <table id="cus_detailsDataGrid" class="table table-hover table-striped table-bordered" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Select</th> <!-- Selection column header -->
+                                    @if (ViewBag.CustomerBankDetails != null && ViewBag.CustomerBankDetails.Columns.Count > 0)
+                                    {
+                                        foreach (System.Data.DataColumn column in ViewBag.CustomerBankDetails.Columns)
+                                        {
+                                            <th>@column.ColumnName</th>
+                                        }
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.CustomerBankDetails != null && ViewBag.CustomerBankDetails.Rows.Count > 0)
+                                {
+                                    foreach (System.Data.DataRow row in ViewBag.CustomerBankDetails.Rows)
+                                    {
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" name="selectedRow" class="select-checkbox" value="@row[0]" /> <!-- Checkbox for selecting the row -->
+                                            </td>
+                                            @foreach (var item in row.ItemArray)
+                                            {
+                                                <td>@item</td>
+                                            }
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6">No data available</td> <!-- Updated colspan to account for the selection column -->
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+          
+                <div style="overflow-x:auto; max-height: 400px;" id="selectedRowContainer">
+
+                    <table id="selectedRowTable" class="table table-hover table-striped table-bordered">
+                        <thead>
+                            <tr>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row" style="display:none;" id="added_row_table_heading">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <span class="form-check-sign" style="color: maroon; font-weight: 500; font-size:medium;"> Customer Bank Details  @*click here....*@</span>
+
+                            &nbsp; &nbsp;&nbsp;&nbsp;
+                        </label>
+                    </div>
+                </div>
+                <div style="overflow-x:auto; max-height: 200px;" id="added_row_table_div">
+                    <table id="added_row_table" class="table table-hover table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <!-- Headers will be dynamically added here -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <!-- Rows will be dynamically added here -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+                <div class="row" style="display:none;" id="heading1">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <span class="form-check-sign" style="color: maroon; font-weight: 500; font-size:medium;"> Customers Bank Details for Settlement @*click here....*@</span>
+
+                            &nbsp; &nbsp;&nbsp;&nbsp;
+                        </label>
+                    </div>
+                </div>
+                <br />
+                <div class="row" id="textbox_div1" style="display:none;">
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="txtCustomerName_1" name="txtCustomerName_1" required
+                                   oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" />
+                            <label for="pincode">Payee Name</label>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="txt_ifsc_1" name="txt_ifsc_1" required onchange="handleifscChange1()" oninput="validateIFSC(this)" />
+                            <label for="pincode">Bank IFSC Code</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="bankName_txtbox_1" name="bankName_txtbox_1" required readonly />
+                            <label for="pincode">Bank Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="branchName_txtbox_1" name="branchName_txtbox_1" required readonly />
+                            <label for="pincode">Bank Branch</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="accno_textbox_1" name="accno_textbox_1" required />
+                            <label for="pincode">Bank Account No</label>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container" style="position: relative;">
+                            <!-- Hidden file input without the readonly attribute -->
+                            <input type="file" id="Bankattach1" name="Bankattach1" style="display: none;" />
+
+                            <!-- Icon for triggering file upload -->
+                            @*<i class="fas fa-file-upload" style="font-size: 24px; cursor: pointer;color:maroon;" onclick="Bankattach1()"></i>*@
+                            <button class="mb-2 mr-2 btn-icon btn-shadow btn-outline-2x btn btn-outline-info" onclick="Bankattach1()"><i class="lnr-paperclip btn-icon-wrapper"> </i>Attachment</button>
+                        </div>
+                    </div>
+
+
+                    <input type="hidden" id="hidden_bank_id1" />
+                </div>
+                <div class="row" style="display:none;" id="heading2">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <span class="form-check-sign" style="color: maroon; font-weight: 500; font-size:medium;">Interest Bank same as above @*click here....*@</span>
+
+                            @*<input style="margin:2px; width:17px;height:15px;" type="checkbox" value="" name="c1" id="hideCheckbox">*@
+                            <input style="margin:2px; width:17px;height:15px;" type="checkbox" value="0" name="c1" id="hideCheckbox">
+
+
+                            &nbsp; &nbsp;&nbsp;&nbsp;
+                        </label>
+                    </div>
+                </div>
+                <br />
+
+                <div class="row" id="textbox_div2" style="display:none;">
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="txtCustomerName_2" name="txtCustomerName_2" required
+                                   oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" />
+                            <label for="pincode">Payee Name</label>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="txt_ifsc_2" name="txt_ifsc_2" required onchange="handleifscChange2()" oninput="validateIFSC(this)" />
+                            <label for="pincode">Bank IFSC Code</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="bankName_txtbox_2" name="bankName_txtbox_2" required readonly />
+                            <label for="pincode">Bank Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="branchName_txtbox_2" name="branchName_txtbox_2" required readonly />
+                            <label for="pincode">Bank Branch</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="accno_textbox_2" name="accno_textbox_2" required />
+                            <label for="pincode">Bank Account No</label>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container" style="position: relative;">
+                            <!-- Hidden file input without the readonly attribute -->
+                            <input type="file" id="Bankattach2" name="Bankattach2" style="display: none;" />
+
+                            <!-- Icon for triggering file upload -->
+                            @*<i class="fas fa-file-upload" style="font-size: 24px; cursor: pointer;color:maroon;" onclick="Bankattach2()"></i>*@
+                            <button class="mb-2 mr-2 btn-icon btn-shadow btn-outline-2x btn btn-outline-info" onclick="Bankattach2()"><i class="lnr-paperclip btn-icon-wrapper"> </i>Attachment</button>
+
+                        </div>
+                    </div>
+
+                    <input type="hidden" id="hidden_bank_id2" />
+                </div>
+                <br />
+                <div class="row" id="textbox_div3" style="display:none;padding-left:0px;">
+                    <!--<p style="font-size:14px;color:darkblue;">Authorization Letter</p>
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container" style="position: relative;">-->
+                    <!-- Hidden file input without the readonly attribute -->
+                    <!--<input type="file" id="txtattach" name="txtattach" style="display: none;" />-->
+                    <!-- Icon for triggering file upload -->
+                    <!--<i class="fas fa-file-upload" style="font-size: 24px; cursor: pointer;color:maroon;" onclick="triggerFileUpload()"></i>
+                        </div>
+                    </div>-->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-container" style="position: relative;">
+                            <!-- Hidden file input without the readonly attribute -->
+                            <input type="file" id="Authorization_txtattach" name="Authorization_txtattach" style="display: none;" />
+
+                            <!-- Icon for triggering file upload -->
+                            @*<i class="fas fa-file-upload" style="font-size: 24px; cursor: pointer;color:maroon;" onclick="Bankattach2()"></i>*@
+                            <button class="mb-2 mr-2 btn-icon btn-shadow btn-outline-2x btn btn-outline-info" onclick="triggerFileUpload()"><i class="lnr-paperclip btn-icon-wrapper"> </i>Authorization Letter</button>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" style="display:none;" id="button_div">
+                    <div class="row">
+                        <div class="col-lg-4">
+
+                        </div>
+
+
+                        <div class="col-lg-4">
+
+                        </div>
+                        <div class="col-lg-4">
+                            <button style="height:40px;" class="mb-2 mr-2 btn-hover-shine btn btn-shadow btn-success" onclick="submitForm()">Submit</button>
+
+                            <button style="height:40px;" class="mb-2 mr-2 btn-hover-shine btn btn-shadow btn-secondary" onclick="location.reload();">Cancel</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </body>
+</html>
+}
+else
+{
+<p>No data available</p> <!-- Message if CustomerBankDetails is null or empty -->
+}
+
+

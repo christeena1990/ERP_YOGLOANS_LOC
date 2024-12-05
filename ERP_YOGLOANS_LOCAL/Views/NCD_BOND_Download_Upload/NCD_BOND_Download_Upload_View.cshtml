@@ -1,0 +1,823 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>canvasser registration</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <style>
+
+        .app-main__inner {
+            margin-top: -30px;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        .card-title h6 {
+            font-weight: bold;
+            font-size: 25px;
+            margin: 0;
+            color: maroon;
+        }
+
+
+
+        .radio-label {
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 14px;
+            color: black;
+        }
+
+
+            .radio-label.selected {
+                color: red;
+            }
+
+
+        .search-container {
+            margin-top: 8px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%; 
+        }
+
+          
+            .search-container label {
+                font-weight: bold;
+                margin-right: 10px;
+                font-size: 14px;
+            }
+
+           
+            .search-container input[type="radio"] {
+                margin-right: 8px;
+                transform: scale(0.9); 
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                border: 2px solid #007bff;
+                border-radius: 50%;
+                width: 18px;
+                height: 18px;
+                outline: none;
+            }
+
+                .search-container input[type="radio"]:checked {
+                    background-color: #007bff;
+                }
+
+          
+            .search-container input[type="text"] {
+                padding: 10px; 
+                margin-right: 8px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                font-size: 14px;
+                width: 300px; 
+            }
+
+           
+            .search-container button {
+                padding: 8px 12px; 
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+                font-size: 14px;
+                margin-left: 10px; 
+            }
+
+                .search-container button:hover {
+                    background-color: #0056b3;
+                }
+
+      
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+       
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            max-height: 200px; 
+            overflow-y: auto; 
+            overflow-x: hidden; 
+            width: 100%; 
+        }
+
+            
+            .dropdown-content div {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+                cursor: pointer;
+            }
+
+                .dropdown-content div:hover {
+                    background-color: #f1f1f1;
+                }
+
+        
+        #cus_detailsTable {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        #cus_detailsDataGrid, #cus_bankdetailsDataGrid, #cus_bankdetailsDataGrid_Modify {
+            overflow-y: auto;
+            font-size: 14px;
+            width: 100%;
+            font-weight: 500;
+            border-collapse: collapse; /* Ensures table borders are collapsed */
+        }
+
+            #cus_detailsDataGrid th,
+            #cus_detailsDataGrid td, #cus_bankdetailsDataGrid th,
+            #cus_bankdetailsDataGrid td, #cus_bankdetailsDataGrid_Modify th,
+            #cus_bankdetailsDataGrid_Modify td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: center; /* Adjust alignment as needed */
+            }
+
+            /* Styling for table header */
+            #cus_detailsDataGrid th, #cus_bankdetailsDataGrid th, #cus_bankdetailsDataGrid_Modify th {
+                background-color: #4D759A; /* Light blue background color for headers */
+                color: white; /* Dark text color for headers */
+            }
+
+
+        /* Adjusted styles for input fields */
+        .input-group {
+            width: 100%; /* Ensures inputs take full width of parent container */
+        }
+
+        .input-group-text {
+            width: 140px; /* Adjusted width for the label spans */
+            text-align: left; /* Left-align text in labels */
+        }
+
+        .form-control {
+            width: calc(100% - 150px); /* Adjusted width for input fields */
+        }
+
+        .ui-menu-item-custom {
+            font-size: 8px; /* Adjust this value as needed */
+            padding: 10px;
+        }
+
+        /* Ensure the autocomplete dropdown has scrolling */
+        .ui-autocomplete {
+            max-height: 200px; /* Height before scrolling starts */
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Hide horizontal scrolling */
+            /* Optional: add padding and border to make it more visible */
+            padding: 0;
+            border: 1px solid #ccc;
+        }
+
+        /* Additional styles for better appearance */
+        .ui-menu-item-custom {
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+
+            .ui-menu-item-custom:hover {
+                background-color: #f1f1f1;
+            }
+
+
+        .modify-bank-details-container {
+            border: 1px solid #ccc; /* Border style */
+            padding: 10px; /* Padding inside the container */
+            border-radius: 5px; /* Rounded corners */
+            display: inline-block; /* Display as inline block */
+            min-width: fit-content; /* Adjust width based on content */
+            margin: 0 auto; /* Center the container horizontally */
+        }
+
+        .modify-bank-details {
+            color: blue; /* Text color */
+            font-size: 16px; /* Font size */
+        }
+
+        /* ----------------------------------------------------------------------*/
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .popup {
+            display: none;
+            position: absolute;
+            width: 600px; /* Fixed width */
+            height: 500px; /* Fixed height */
+            background-color: white;
+            border: 1px solid #888;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+            cursor: move;
+            overflow: hidden; /* Ensure content doesn't overflow */
+        }
+
+
+        .popup-content {
+            width: 100%;
+            height: 100%;
+            /* overflow: auto;*/ /* Enable scrolling */
+        }
+
+            .popup-content img {
+                max-width: 100%;
+                max-height: 100%;
+                display: block;
+                margin: auto;
+            }
+
+            .popup-content object {
+                width: 100%;
+                height: 100%;
+            }
+
+        .popup-header {
+            background-color: #f1f1f1;
+            padding: 10px;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .popup-title {
+            margin: 0;
+        }
+
+        .close {
+            color: #000;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+            .close:hover {
+                color: red;
+            }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 999;
+        }
+    </style>
+    @*Table grid style*@
+
+    <style>
+        #gvdata {
+            overflow-y: auto;
+            font-size: 12px;
+            width: 100%;
+            font-weight: 500;
+            border-collapse: collapse;
+        }
+
+            #gvdata th, #gvdata td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: center;
+            }
+
+            /* Styling for table header */
+            #gvdata th {
+                background-color: #4D759A;
+                color: white;
+            }
+
+            /* Align CustomerName to left */
+            #gvdata td.align-left {
+                text-align: left;
+            }
+
+            /* Align DueAmount to right */
+            #gvdata td.align-right {
+                text-align: right;
+            }
+
+            /* Style for checkboxes in the header and rows */
+            #gvdata td input[type="checkbox"], #gvdata th input[type="checkbox"] {
+                margin: 0;
+                padding: 0;
+            }
+
+            #gvdata th,
+            #gvdata td {
+                text-align: left;
+                vertical-align: middle; /* Optional: Ensures consistent vertical alignment */
+            }
+
+                #gvdata th:nth-child(9),
+                #gvdata th:nth-child(10),
+                #gvdata td:nth-child(9),
+                #gvdata td:nth-child(10) {
+                    display: none;
+                }
+    </style>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+   
+
+    <script>
+
+        $(document).ready(function () {
+            loadGridData();
+
+            // Load grid data through an AJAX call
+            function loadGridData() {
+                $.ajax({
+                    url: '/NCD_BOND_Download_Upload/GetGridData',
+                    type: 'POST',
+                    success: function (response) {
+                        if (response.success) {
+                            populateGrid(response.data);
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error fetching data: " + error);
+                    }
+                });
+            }
+
+            // Populate the grid with data
+            function populateGrid(data) {
+                var tableBody = $("#gvdata tbody");
+                tableBody.empty();
+
+                $.each(data, function (index, item) {
+                    var row = `<tr>
+                <td><input type="checkbox" class="row-checkbox" /></td>
+                <td>${item.TransferID}</td>
+                <td>${item.Issue}</td>
+                <td>${item.Certificate}</td>
+                <td>${item.TransferType}</td>
+                <td>${item.Transferee}</td>
+                <td>${item.TransfereeID}</td>
+                <td>${item.UploadStatus}</td>
+                <td>${item.DebID}</td> <!-- Hidden Column Data -->
+                <td>${item.Transfer_Type}</td> <!-- Hidden Column Data -->
+            </tr>`;
+                    tableBody.append(row);
+                });
+
+                // Reattach event handler for checkboxes after data is populated
+                $(".row-checkbox").off("change").on("change", function () {
+                    $(".row-checkbox").not(this).prop("checked", false); // Deselect other checkboxes
+
+                    if ($(this).prop("checked")) {
+                        var row = $(this).closest("tr");
+
+                        // Populate form fields with the selected row's data
+
+                        $("#transfer_id").val(row.find("td:eq(1)").text().trim());
+                        $("#issue").val(row.find("td:eq(2)").text().trim());
+                        $("#certificate").val(row.find("td:eq(3)").text().trim());
+                        $("#transfer_type").val(row.find("td:eq(4)").text().trim());
+                        $("#transferee").val(row.find("td:eq(5)").text().trim());
+                        $("#transferee_id").val(row.find("td:eq(6)").text().trim());
+                        $("#upload_status").val(row.find("td:eq(7)").text().trim());
+
+                        
+                        $("#h_debid").val(row.find("td:eq(8)").text().trim());
+                        $("#h_tratype").val(row.find("td:eq(9)").text().trim());
+                        $("#h_transferid").val(row.find("td:eq(1)").text().trim());
+
+                        var debId = row.find("td:eq(8)").text().trim();  // 'Deb ID'
+                        var transferType = row.find("td:eq(9)").text().trim();
+
+
+                        var moduleId = '@Session["module_id"]';
+
+                        if (moduleId == "16")
+                        {
+                            if (transferType == '1') {
+
+                                $("#Trans_btnContainer").show();
+                                $("#ind_btnContainer").hide();
+                                $("#UploadDoc_btnContainer").hide();
+
+
+                            } else if (transferType == '2') {
+
+                                $("#Trans_btnContainer").hide();
+                                $("#ind_btnContainer").show();
+                                $("#UploadDoc_btnContainer").hide();
+                            }
+
+                        }
+
+                        if (moduleId == "15") {
+
+
+                                $("#Trans_btnContainer").hide();
+                                $("#ind_btnContainer").hide();
+                                $("#UploadDoc_btnContainer").show();
+
+
+                        }
+
+                        $("#detailContainer").show();
+
+                    } else {
+
+                        $("#detailContainer").hide();
+                    }
+                });
+            }
+
+
+            $("#ind_download").click(function () {
+                const url = $(this).data("action"); // Retrieve the URL from data-action
+                if (url) {
+                    window.open(url, '_blank'); // Open the URL in a new tab
+                } else {
+                    alert("No action URL specified.");
+                }
+            });
+
+
+            $("#tra_download").click(function () {
+                const url = $(this).data("action"); // Retrieve the URL from data-action
+                if (url) {
+                    window.open(url, '_blank'); // Open the URL in a new tab
+                } else {
+                    alert("No action URL specified.");
+                }
+            });
+
+
+
+        });
+
+        function uploadIndemnity() {
+
+
+            var transtype = document.getElementById("h_tratype").value;
+
+
+            uploadFile("Indemnity", transtype, "ind_fileupload");
+        }
+
+        function uploadTransfer() {
+            var transtype = document.getElementById("h_tratype").value;
+            uploadFile("Transfer", transtype, "tra_fileupload");
+        }
+
+        function uploadDocument() {
+            var transtype = document.getElementById("h_tratype").value;
+            uploadFile("Document", transtype, "doc_fileupload");
+        }
+
+        function uploadFile(docType, docId, fileInputId) {
+
+            var fileInput = document.getElementById(fileInputId);
+            var file = fileInput.files[0];
+
+            if (!file) {
+                alert("Please select a file before uploading.");
+                return;
+            }
+            var transfer_id = document.getElementById("h_transferid").value;
+            var formData = new FormData();
+            formData.append("file", file);
+            formData.append("docType", docType);
+            formData.append("docId", docId);
+            formData.append("transferId", transfer_id); // Replace with actual transfer ID or dynamically fetch if needed
+
+            $.ajax({
+                url: '/NCD_BOND_Download_Upload/HandleFileUpload', // Replace with your actual controller/method URL
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (response.success) {
+
+
+                        Swal.fire({
+                            title: "",
+                            text: response.message,
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    }
+                    else {
+                        Swal.fire({
+                            title: "",
+                            text: response.message,
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error during upload:", error);
+                    alert("An error occurred during the upload.");
+                }
+            });
+        }
+
+
+
+    </script>
+
+
+
+
+</head>
+<body>
+    <div class="app-main__inner">
+
+        <div style="height: 100px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">DOWNLOAD AND UPLOAD FORM</h6>
+            </div>
+        </div>
+
+
+
+        <div class="card-body" id="div_content">
+
+            <div id="div_content_data">
+
+                <!-- Data Table -->
+                <div id="dataContainer" style="overflow-x: auto; height: 200px;">
+                    <table id="gvdata" class="table table-hover table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>@*Select*@</th>
+                                <th>Transfer ID</th>
+                                <th>Issue</th>
+                                <th>Certificate</th>
+                                <th>Transfer Type</th>
+                                <th>Transferee</th>
+                                <th>Transferee ID</th>
+                                <th>Upload Status</th>
+                                <th>Deb ID</th> <!-- Hidden Column -->
+                                <th>Type</th>   <!-- Hidden Column -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dynamic data will populate here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="detailContainer" style="display:none;">
+
+                    <br />
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="text" id="transfer_id" name="transfer_id" class="form-control" readonly />
+                                <label for="transfer_id">Transfer ID</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="text" id="issue" name="issue" class="form-control" readonly />
+                                <label for="issue">Issue No</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="text" id="certificate" name="certificate" class="form-control" readonly />
+                                <label for="certificate">Certificate No</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="text" id="transfer_type" name="transfer_type" class="form-control" readonly />
+                                <label for="transfer_type">Transfer Type</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="text" id="transferee" name="transferee" class="form-control" readonly />
+                                <label for="transferee">Transferee</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="text" id="transferee_id" name="transferee_id" class="form-control" readonly />
+                                <label for="transferee_id">Transferee ID</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="text" id="upload_status" name="upload_status" class="form-control" readonly />
+                                <label for="upload_status">Upload Status</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="hidden" id="h_debid" name="h_debid" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="hidden" id="h_tratype" name="h_tratype" />
+                                <input type="hidden" id="h_transferid" name="h_tratype" />
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div id="ind_btnContainer">
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div>
+
+
+                                    <input type="text" id="indemnity" style="width:200px" name="indemnity" class="form-control" value="Indemnity form :" readonly />
+
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="input-container">
+                                    <button type="button" id="ind_download"
+                                            class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary"
+                                            style="width: 125px;"
+                                            data-action="/NCD_indemnity/NCD_Indemnity_View">
+                                        Download
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="input-container">
+                                    <input type="file" id="ind_fileupload" name="ind_fileupload" style="font-size: 15px;" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="input-container">
+                                    <button type="button" id="ind_upload" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary"
+                                            style="width: 125px; " onclick="uploadIndemnity()">
+                                        Upload
+                                    </button>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+                    <div id="Trans_btnContainer">
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div>
+
+
+                                    <input type="text" id="transfer" style="width:200px" name="transfer" class="form-control" value="Transfer form :" readonly />
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="input-container">
+
+                                    <button type="button" id="tra_download"
+                                            class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary"
+                                            style="width: 125px;"
+                                          
+                                            data-action="/Transfer_form/Transfer_form_View">
+                                        Download
+                                    </button>
+
+
+                                 
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="input-container">
+                                    <input type="file" id="tra_fileupload" name="tra_fileupload" style="font-size: 15px;" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="input-container">
+                                    <button type="button" id="tra_upload" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary"
+                                            style="width: 125px;" onclick="uploadTransfer()">
+                                        Upload
+                                    </button>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div id="UploadDoc_btnContainer">
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div>
+
+
+                                    <input type="text" id="uploaddoc" style="width:200px" name="uploaddoc" class="form-control" value="Upload Doc :" readonly />
+
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="input-container">
+                                   
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="input-container">
+                                    <input type="file" id="doc_fileupload" name="doc_fileupload" style="font-size: 15px;" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <div class="input-container">
+                                    <button type="button" id="tra_upload" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary"
+                                            style="width: 125px;" onclick="uploadDocument()">
+                                        Upload
+                                    </button>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</body>
+
+</html>

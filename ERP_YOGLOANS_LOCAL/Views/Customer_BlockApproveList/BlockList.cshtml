@@ -1,0 +1,964 @@
+﻿@model ERP_YOGLOANS_LOCAL.Models.CustomerBlockMergeViewModel
+
+<style>
+    .view-image-button {
+        background-color: maroon; /* Button color */
+        color: white;
+        border: none;
+        padding: 5px 10px; /* Adjust padding to change button size */
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px; /* Adjust font size as needed */
+        transition: background-color 0.3s ease;
+    }
+
+        .view-image-button:hover {
+            background-color: #0056b3; /* Darker shade for hover effect */
+        }
+
+
+
+
+
+    .active-loans-container {
+        margin-left: 20px; /* Adjust this value to move the details to the left */
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #333; /* Adjust color as needed */
+        margin-bottom: 1rem;
+    }
+
+    .vertical-timeline-element {
+        margin-left: 0; /* Remove left margin if any */
+    }
+
+    .vertical-timeline-element-content {
+        margin-left: 20px; /* Adjust this value to move the details to the left */
+    }
+</style>
+
+
+<body>
+    <div class="app-main__inner" style="margin-top: -30px; padding: 10px;">
+
+        <div style="height: 25px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">CUSTOMER BLOCK/MERGE APPROVAL</h6>
+            </div>
+        </div>
+
+        <ul class="body-tabs body-tabs-layout tabs-animated body-tabs-animated nav">
+            <li class="nav-item" onclick="handleBlockClick(9)">
+                <a role="tab" class="nav-link active" id="tab-0" data-toggle="tab" href="#tab-content-0">
+                    <span>Block</span>
+                </a>
+            </li>
+            <li class="nav-item" onclick="handleMergeClick(0)">
+                <a role="tab" class="nav-link" id="tab-1" data-toggle="tab" href="#tab-content-1">
+                    <span>Merge</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane tabs-animation fade show active" id="tab-content-0" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-12 col-lg-4">
+                        <div class="main-card mb-3 card">
+                            <div class="search-container">
+                                <div class="region-dropdown">
+                                    <select id="ddl_region" name="ddl_region" class="form-control">
+                                        <!-- Options will be dynamically loaded -->
+                                    </select>
+                                </div>
+                            </div>
+
+                            <ul class="todo-list-wrapper list-group list-group-flush" id="blockList">
+                                <!-- Customer details will be inserted here -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8 col-md-12">
+                        <div class="main-card mb-3 card">
+                            <div class="card-body">
+                                <div id="smartwizard">
+                                    <ul class="forms-wizard">
+                                        <li>
+                                            <a href="#step-1" style="font-size:medium; color:maroon;">
+                                                <em></em><span>Customer Details</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    <br />
+                                    <div class="form-wizard-content">
+                                        <div id="step-1">
+                                            <div class="tabs-animation" id="ExistingDetails">
+                                                <div class="mb-3 card" id="ExtgCust" @*style="display:none"*@>
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            <!-- Customer Details will be inserted here -->
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="text-center d-block p-3 card-footer">
+                                                        <button class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-primary" onclick="openExistingCustomerHistory(1)">
+                                                            <span class="mr-2 opacity-7">
+                                                                <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+                                                            </span>
+                                                            <span class="mr-1">Existing Customer History</span>
+                                                        </button>
+                                                    </div>
+
+
+                                                    @*<div class="text-center d-block p-3 card-footer">
+                                                         <button class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-primary" onclick="openInNewTab('@Url.Action("cus_history", "Customer_History")')">
+                                                             <span class="mr-2 opacity-7">
+                                                                 <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+                                                             </span>
+                                                             <span class="mr-1">Existing Customer History</span>
+                                                         </button>
+                                                        </div>*@
+                                                </div>
+
+                                                <!-- Div for Active Loans Details -->
+                                                <div class="main-card mb-2 card" id="div_activeloan" @*style="display:none"*@>
+                                                    <div class="card-body">
+                                                        <div class="active-loans-container">
+                                                            <h5 class="card-title">Active Loans</h5>
+                                                            <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
+                                                                <!-- Loan details will be inserted here -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <br />
+                                                <div class="mb-3 card" id="newCustomerDetails">
+                                                    <div class="card-body">
+                                                        <div class="row">
+                                                            @*Customer Details will be inserted here*@
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="text-center d-block p-3 card-footer">
+                                                        <button class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-primary" onclick="openExistingCustomerHistory(2)">
+                                                            <span class="mr-2 opacity-7">
+                                                                <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+                                                            </span>
+                                                            <span class="mr-1">New Customer History</span>
+                                                        </button>
+                                                    </div>
+
+
+
+                                                    @*<div class="text-center d-block p-3 card-footer" id="aaa">
+                                                            <button class="mb-2 mr-2 btn-pill btn-transition btn btn-outline-primary" onclick="openInNewTab('@Url.Action("cus_history", "Customer_History")')">
+                                                                <span class="mr-2 opacity-7">
+                                                                    <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+                                                                </span>
+                                                                <span class="mr-1">New Customer History</span>
+                                                            </button>
+                                                        </div>*@
+
+                                                </div>
+                                                <div id="mediaModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; padding-top: 50px; background-color: rgba(0,0,0,0); z-index: 1000;">
+                                                    <div id="mediaModalContent" style="position: relative; cursor: move; margin: auto; padding: 40px; width: 60%; height: 90%; ">
+                                                        <div id="pdfViewer" style="width: 100%; cursor: move; height: calc(100% - 40px);"></div>
+
+                                                        @*Zoom Controls*@
+                                                        <div id="zoomControls" style="text-align:center;">
+
+                                                            <button id="zoomIn" style="margin-right: 10px; background:transparent; border:none; font-size:24px; cursor:pointer;">
+                                                                <i class="fas fa-search-plus"></i>
+                                                            </button>
+
+                                                            <!-- Zoom Out button with icon -->
+                                                            <button id="zoomOut" style="background:transparent; border:none; font-size:24px; cursor:pointer;">
+                                                                <i class="fas fa-search-minus"></i>
+                                                            </button>
+                                                            <!-- Rotate button with icon -->
+                                                            <button id="rotateImage" style="background:transparent; border:none; font-size:24px; cursor:pointer;">
+                                                                <i class="fas fa-sync-alt"></i>
+                                                            </button>
+                                                        </div>
+
+
+                                                        <button onclick="closeModal()" style="position:absolute; top:10px; right:10px; background:transparent; border:none; font-size:24px; cursor:pointer;">
+                                                            <i class="fas fa-times"></i>
+                                                        </button>
+                                                        @*</div>*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="divider"></div>
+                                            <div id="blockbtn">
+
+                                                <button onclick="showReject('Reject')" style="background-color:red;height:40px;width:100px;border-radius:8px;color:white;border-color:white;">Reject</button>
+                                                <button onclick="showBlock('Block')" style="background-color: green; height: 40px; width: 100px; border-radius: 8px; color: white; border-color: white;">Approve</button>
+
+
+                                                @*<button type="button" id="block" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Block</button>*@
+                                            </div>
+
+                                            @*<div class="divider"></div>*@
+                                            <div id="merge" style="display:none;">
+                                                @*<button type="button" id="reject" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary" style="color:red">Reject</button>&nbsp;&nbsp;&nbsp;
+                                                    <button type="button" id="block" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Merge</button>*@
+
+                                                <button onclick="showReject('Reject')" style="background-color:red;height:40px;width:100px;border-radius:8px;color:white;border-color:white;">Reject</button>
+                                                <button id="approveButton" onclick="showApprove('Approve')" style="background-color: green; height: 40px; width: 100px; border-radius: 8px; color: white; border-color: white;">Approve</button>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Include SweetAlert2 CSS and JS -->
+            <link rel="stylesheet" href="~/Content/cust_apprvlmsgbox1.css">
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+            @*<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>*@
+
+            <script src="~/Scripts/jquery-3.6.4.min.js"></script>
+
+            <script>
+
+                function showBlock(action) {
+                    // Retrieve values from localStorage
+                    let customerID = localStorage.getItem('firstCustID');
+                    //let secondCustomerID = localStorage.getItem('secondCustID');
+
+                    let type = localStorage.getItem('type');
+
+                    // Get the selected customer's serial number (slno) from the radio buttons
+                    let sl_no = $('input[name="customerSelection"]:checked').val(); // Get the checked radio button value
+
+
+
+                    // Check if customerID, secondCustomerID, and sl_no are retrieved successfully
+                    if (!customerID || !sl_no || !type) {
+                        Swal.fire("Error", "Missing required information (customer ID, second customer ID, or serial number).", "error");
+                        return;
+                    }
+
+                    // Convert values to integers if necessary
+                    customerID = parseInt(customerID, 10);
+                    //secondCustomerID = parseInt(secondCustomerID, 10);
+                    sl_no = parseInt(sl_no, 10);
+                    type = parseInt(type, 10);
+
+                    Swal.fire({
+                        title: "Are you sure you want to block?",
+                        text: "You will be blocking this customer.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes, Block it!",
+                        cancelButtonText: "Cancel",
+                        preConfirm: () => {
+                            // Prepare data for AJAX request
+                            const data = {
+                                customerID: customerID,
+                                // secondCustomerID: secondCustomerID,
+                                sl_no: sl_no,
+                                type: type
+                            };
+
+                            console.log("Sending data to server:", data); // Debugging line
+
+                            // Send AJAX request
+                            return $.ajax({
+                                url: '/Customer_BlockApproveList/BlockCustomer',
+                                type: 'POST',
+                                contentType: 'application/json; charset=utf-8',
+                                data: JSON.stringify(data),
+                                dataType: 'json',
+                                success: function (response) {
+                                    console.log("Server response:", response); // Debugging line
+                                    if (response.success) {
+                                        Swal.fire("Blocked Successfully!", response.message, "success").then(() => {
+                                            window.location.href = '/Customer_BlockApproveList/BlockList';
+                                        });
+                                    } else {
+                                        Swal.fire("Error", response.message, "error");
+                                    }
+                                },
+                                error: function (xhr, textStatus, errorThrown) {
+                                    console.error("AJAX error:", textStatus, errorThrown); // Debugging line
+                                    Swal.fire("Error", "Failed to submit approval. Please try again.", "error");
+                                }
+                            });
+                        }
+                    });
+                }
+
+                function showReject(action) {
+                    // Retrieve values from localStorage
+                    let customerID = localStorage.getItem('firstCustID');
+                    // Get the selected customer's serial number (slno) from the radio buttons
+                    let sl_no = $('input[name="customerSelection"]:checked').val(); // Get the checked radio button value
+
+                    // Check if customerID and sl_no are retrieved successfully
+                    if (!customerID || !sl_no) {
+                        Swal.fire("Error", "Missing customer ID or serial number.", "error");
+                        return;
+                    }
+
+                    Swal.fire({
+                        title: "Reason for " + action + ":",
+                        input: "text",
+                        inputPlaceholder: "Enter the reason here...",
+                        showCancelButton: true,  // Allow the user to cancel
+                        confirmButtonText: "OK",
+                        cancelButtonText: "Cancel",
+                        preConfirm: (rejectReason) => {
+                            // Validate rejection reason
+                            if (!rejectReason || rejectReason.trim() === "") {
+                                Swal.showValidationMessage("Please enter a valid reason.");
+                                return false; // Prevent closing the dialog
+                            }
+
+                            // Prepare data for AJAX request
+                            const data = {
+                                customerID: customerID,
+                                sl_no: sl_no,
+                                rejectReason: rejectReason
+                            };
+
+                            console.log("Sending data to server:", data); // Debugging line
+
+                            // Send AJAX request
+                            return $.ajax({
+                                url: '/Customer_BlockApproveList/RejectCustomer',
+                                type: 'POST',
+                                data: data,
+                                dataType: 'json',
+                                success: function (response) {
+                                    console.log("Server response:", response); // Debugging line
+                                    if (response.success) {
+                                        Swal.fire("Rejected Successfully!", response.message, "success").then(() => {
+                                            window.location.href = '/Customer_BlockApproveList/BlockList';
+                                        });
+                                    } else {
+                                        Swal.fire("Error", response.message, "error");
+                                    }
+                                },
+                                error: function (xhr, textStatus, errorThrown) {
+                                    console.error("AJAX error:", textStatus, errorThrown); // Debugging line
+                                    Swal.fire("Error", "Failed to submit reason. Please try again.", "error");
+                                }
+                            });
+                        }
+                    });
+                }
+
+                function showApprove(action) {
+                    // Retrieve values from localStorage
+                    let customerID = localStorage.getItem('firstCustID');
+                    let secondCustomerID = localStorage.getItem('secondCustID');
+                    let type = localStorage.getItem('type');
+
+                    // Get the selected customer's serial number (slno) from the radio buttons
+                    let sl_no = $('input[name="customerSelection"]:checked').val(); // Get the checked radio button value
+
+                    // Check if customerID, secondCustomerID, sl_no, and type are retrieved successfully
+                    if (!customerID || !secondCustomerID || !sl_no || !type) {
+                        Swal.fire("Error", "Missing required information (customer ID, second customer ID, or serial number).", "error");
+                        return;
+                    }
+
+                    // Convert values to integers if necessary
+                    customerID = parseInt(customerID, 10);
+                    secondCustomerID = parseInt(secondCustomerID, 10);
+                    sl_no = parseInt(sl_no, 10); // Use the retrieved sl_no here
+                    type = parseInt(type, 10);
+
+                    // Disable the approve button while processing
+                    $('#approveButton').prop('disabled', true);
+
+
+                    Swal.fire({
+                        title: "Are you sure you want to approve?",
+                        text: "You will be approving this customer.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonText: "Yes, approve it!",
+                        cancelButtonText: "Cancel",
+                        preConfirm: () => {
+                            // Prepare data for AJAX request
+                            const data = {
+                                customerID: customerID,
+                                secondCustomerID: secondCustomerID,
+                                sl_no: sl_no,
+                                type: type
+                            };
+
+                            console.log("Sending data to server:", data); // Debugging line
+
+                            // Send AJAX request
+                            return $.ajax({
+                                url: '/Customer_BlockApproveList/ApproveCustomer',
+                                type: 'POST',
+                                contentType: 'application/json; charset=utf-8',
+                                data: JSON.stringify(data),
+                                dataType: 'json',
+                                success: function (response) {
+                                    console.log("Server response:", response); // Debugging line
+                                    if (response.success) {
+                                        Swal.fire("Approved Successfully!", response.message, "success").then(() => {
+                                            window.location.href = '/Customer_BlockApproveList/BlockList';
+                                        });
+                                    } else {
+                                        Swal.fire("Error", response.message, "error");
+                                    }
+                                },
+                                error: function (xhr, textStatus, errorThrown) {
+                                    console.error("AJAX error:", textStatus, errorThrown); // Debugging line
+                                    Swal.fire("Error", "Failed to submit approval. Please try again.", "error");
+                                }
+                            });
+                        }
+                    });
+                }
+
+
+            </script>
+
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            <script>
+                //$(document).ready(function () {
+                //    $("#newCustomerDetails").css("display", "none");
+                //    $("#div_activeloan").css("display", "none");
+                //    $("#ExtgCust").css("display", "none");
+                //});
+
+
+                   var currentType = 9; // Default to Block
+
+                    $(document).ready(function () {
+                        // Initial load for Block tab
+                        getdropdown(currentType);
+                        fetchCustomerBlockList(-1, currentType); // Fetch customer block list for default type
+
+                        // Event listener for dropdown change
+                        $('#ddl_region').change(function () {
+                            var selectedRegion = $(this).val();
+                            fetchCustomerBlockList(selectedRegion, currentType); // Use the current type
+                        });
+
+                        // Event listener for tab clicks
+                        $('a[data-toggle="tab"]').on('click', function () {
+                            var tabId = $(this).attr('href');
+                            if (tabId === '#tab-content-0') {
+                                currentType = 9; // Block
+                            } else if (tabId === '#tab-content-1') {
+                                currentType = 0; // Merge
+                            }
+                            getdropdown(currentType); // Update dropdown based on the new type
+                            fetchCustomerBlockList(-1, currentType); // Fetch customer block list for the new type
+                        });
+                    });
+
+                function getdropdown(type_id) {
+                    localStorage.setItem('type', type_id);
+                        $.ajax({
+                            url: "@Url.Action("FillDropdown", "Customer_BlockApproveList")",
+                            type: "GET",
+                            data: { type: type_id },
+                            dataType: 'json',
+                            success: function (response) {
+                                var $dropdown = $('#ddl_region');
+                                $dropdown.empty(); // Clear existing options
+
+                                $.each(response, function (index, item) {
+                                    $dropdown.append($('<option/>', {
+                                        value: item.region_id,
+                                        text: item.region_name
+                                    }));
+                                });
+
+                                // Trigger change event to update block list if needed
+                                $('#ddl_region').change();
+                            },
+                            error: function (xhr, status, error) {
+                                alert("Error: " + error);
+                            }
+                        });
+                    }
+
+
+
+                    function fetchCustomerBlockList(region_id, type) {
+                        $.ajax({
+                            url: "@Url.Action("GetCustomerBlockList", "Customer_BlockApproveList")",
+                            type: "GET",
+                            data: { region_id: region_id, type: type },
+                            dataType: 'json',
+                            success: function (data) {
+                                var blockList = $('#blockList');
+                                blockList.empty(); // Clear existing items
+                                $("#newCustomerDetails").css("display", "block");
+                                $("#div_activeloan").css("display", "block");
+                                $("#ExtgCust").css("display", "block");
+
+                                if (data.length > 0) {
+                                    data.forEach(function (item) {
+
+
+                                        localStorage.setItem('slno', item.SlNo);
+                                        var listItemHtml = `
+                                            <li class="list-group-item">
+                                                <div class="todo-indicator bg-warning"></div>
+                                                <div class="widget-content p-0">
+                                                    <div class="widget-content-wrapper">
+                                                        <div class="widget-content-left mr-2">
+                                                            <div class="custom-control custom-radio">
+                                                                <input type="radio" id="radio-${item.SlNo}" name="customerSelection" value="${item.SlNo}" class="custom-control-input">
+                                                                <label class="custom-control-label" for="radio-${item.SlNo}">&nbsp;</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="widget-content-left" style="font-size:small">
+                                                            <div class="widget-heading">
+                                                                ${item.Name}
+                                                                <div class="badge badge-danger ml-2">${item.Type}</div>
+                                                            </div>
+                                                            <div class="widget-subheading"><i>${item.CustomerID}</i></div>
+                                                           <div class="widget-subheading" style="display:none;">${item.SlNo}</div> <!-- Hidden SlNo -->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        `;
+                                        blockList.append(listItemHtml);
+                                    });
+                                } else {
+                                    blockList.append('<li class="list-group-item">No customers found.</li>');
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("Error fetching customer block list:", error);
+                            }
+                        });
+                    }
+
+                    function convertDate(dateString) {
+                        var options = { year: 'numeric', month: 'short', day: 'numeric' };
+                        return new Date(dateString).toLocaleDateString(undefined, options);
+                    }
+
+                    // Event listener for radio button click
+                    $('#blockList').on('change', 'input[name="customerSelection"]', function () {
+                        var Slno = $(this).val();
+                        fetchCustomerDetails(Slno);
+                    });
+
+                    function handleBlockClick(type) {
+                        currentType = type; // Set type to Block
+                        getdropdown(currentType); // Update dropdown
+                        fetchCustomerBlockList(-1, currentType); // Fetch customer block list
+                       // $('#ExtgCust').empty();
+                        //$('#div_activeloan').empty();
+                        // $('#NewCust').empty();
+                        $('#blockbtn').show();
+                        $('#merge').hide();
+
+                        $('#ExistingDetails').find('.row').empty();
+                        $('#newCustomerDetails').find('.row').empty();
+                        var divActiveLoan = $('#div_activeloan');
+                        divActiveLoan.empty();
+                        localStorage.setItem('firstCustID', "");
+                        localStorage.setItem('secondCustID', "");
+                        localStorage.setItem('slno', "");
+
+
+
+
+
+                    }
+
+                function handleMergeClick(type) {
+
+                    $('#ExistingDetails').find('.row').empty();
+                    $('#newCustomerDetails').find('.row').empty();
+                    var divActiveLoan = $('#div_activeloan');
+                    divActiveLoan.empty();
+                    localStorage.setItem('firstCustID', "");
+                    localStorage.setItem('secondCustID', "");
+                    localStorage.setItem('slno', "");
+
+                    currentType = type; // Set type to Merge
+                    getdropdown(currentType); // Update dropdown
+                    fetchCustomerBlockList(-1, currentType); // Fetch customer block list
+
+                    $('#blockbtn').hide();
+                    $('#merge').show();
+
+
+
+
+
+                    }
+
+
+                function fetchCustomerDetails(Slno) {
+                   // alert(Slno);
+                        $.ajax({
+                            url: "@Url.Action("GetCustomerDetails","Customer_BlockApproveList")",
+                            type: "GET",
+                            data: { SlNo: Slno },
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.Success) {
+                                    displayCustomerDetails(data.ExistingCustomer);
+                                    if (data.NewCustomer) {
+                                        displayNewCustomerDetails(data.NewCustomer);
+                                    } else {
+                                        $('#newCustomerDetails').hide(); // Hide the new customer section if no new customer details
+                                    }
+                                    fetchLoanDetails(data.ExistingCustomer.CustomerID); // Fetch loan details using the customerID
+                                } else {
+                                    $('#ExistingDetails').html('<div class="list-group-item text-danger">' + data.Message + '</div>');
+                                    //$('#newCustomerDetails').hide(); // Hide the new customer section if there’s an error or no new customer details
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("AJAX Error: ", status, error);
+                                $('#ExistingDetails').html('<div class="list-group-item text-danger">Error fetching customer details</div>');
+                                $('#newCustomerDetails').hide(); // Hide the new customer section if there’s an error
+                            }
+                        });
+                    }
+
+
+
+
+
+                    function displayCustomerDetails(customer) {
+
+                        localStorage.setItem('firstCustID',  customer.CustomerID);
+                        var customerHtml = `
+                            <div class="vertical-timeline-item vertical-timeline-element">
+                                <div>
+                                    <span class="vertical-timeline-element-icon bounce-in">
+                                        <i class="badge badge-dot badge-dot-xl badge-primary"></i>
+                                    </span>
+                                    <div class="vertical-timeline-element-content bounce-in">
+                                        <p>
+                                            Customer ID: &nbsp;<span style="font-weight:bold;color:#3f6ad8">${customer.CustomerID}</span>  &nbsp;&nbsp;&nbsp;
+                                            Customer Name: &nbsp;<span style="font-weight:bold;color:orange">${customer.Name}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            Mobile No: &nbsp;<span style="font-weight:bold;color:#16aaff">${customer.MobileNo}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>
+                                            Branch Name: &nbsp;<span style="font-weight:bold;color:violet">${customer.BranchName}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            Comment : &nbsp;<span style="font-weight:bold;color:green">${customer.Comment}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+                        $('#ExistingDetails').find('.row').empty().append(customerHtml);
+                    }
+
+                    /*      --------------------------------------------------------------------------*/
+                function displayNewCustomerDetails(newCustomer) {
+                    localStorage.setItem('secondCustID', newCustomer.NewCustomerID);
+
+                    // Check if the image exists
+                    let imageButtonHtml = '';
+                    if (newCustomer.Image) {
+                        imageButtonHtml = `
+                            View Customer Request: &nbsp;
+                            <button onclick="displayPhoto('${newCustomer.Image}', '${newCustomer.ImageType}')" class="view-image-button">
+                                View ${newCustomer.ImageType === 'pdf' ? 'PDF' : 'Image'}
+                            </button>
+                        `;
+                    }
+
+                    var customerHtml = `
+                        <div class="vertical-timeline-item vertical-timeline-element">
+                            <div>
+                                <span class="vertical-timeline-element-icon bounce-in">
+                                    <i class="badge badge-dot badge-dot-xl badge-primary"></i>
+                                </span>
+                                <div class="vertical-timeline-element-content bounce-in">
+                                    <p>
+                                        New Customer ID: &nbsp;<span style="font-weight:bold;color:#3f6ad8">${newCustomer.NewCustomerID}</span> &nbsp;&nbsp;&nbsp;
+                                        New Customer Name: &nbsp;<span style="font-weight:bold;color:orange">${newCustomer.NewCustomerName}</span> &nbsp;&nbsp;&nbsp;&nbsp;<br />
+                                        Mobile No: &nbsp;<span style="font-weight:bold;color:#16aaff">${newCustomer.NewCustomerMobile}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        Branch Name: &nbsp;<span style="font-weight:bold;color:violet">${newCustomer.NewCustomerBranchName}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <br /><br />
+                                        ${imageButtonHtml} <!-- Conditional button rendering -->
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    $('#newCustomerDetails').find('.row').empty().append(customerHtml);
+                }
+
+                    function openExistingCustomerHistory(orderNumber) {
+                        var CustomerID = 0;
+                        if (orderNumber == 1) {
+                            CustomerID = localStorage.getItem('firstCustID');
+
+                        }
+                        else {
+                            CustomerID = localStorage.getItem('secondCustID');
+                        }
+                        alert(CustomerID);
+                        if (CustomerID) {
+
+                            $.ajax({
+                                url: "@Url.Action("SetSessionValue", "Customer_BlockApproveList")",
+                                type: "GET",
+                                data: { customerID: CustomerID },
+                                dataType: 'json',
+                                success: function (response) {
+                                    if (response.Message == 1) {
+                                        var url = '@Url.Action("cus_history", "Customer_History")';
+                                        openInNewTab(url);
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    alert("Error: " + error);
+                                }
+                            });
+
+                        } else {
+                            alert('No existing customer ID found.');
+                        }
+                    }
+
+                    function openNewCustomerHistory() {
+                        if (newCustomerId) {
+                            var url = '@Url.Action("cus_history", "Customer_History")' + '?customerId=' + newCustomerId;
+                            openInNewTab(url);
+                        } else {
+                            alert('No new customer ID found.');
+                        }
+                    }
+
+                    function openInNewTab(url) {
+                        window.open(url, '_blank');
+                    }
+
+
+
+
+
+                function fetchLoanDetails(customerID) {
+                        $.ajax({
+                            url: "@Url.Action("GetLoanDetails", "Customer_BlockApproveList")",
+                            type: "GET",
+                            data: { customerID: customerID },
+                            dataType: 'json',
+                            success: function (data) {
+                                console.log("AJAX Success: ", data); // Log the response data
+
+                                if (data.Success) {
+                                    displayLoanDetails(data.LoanDetails); // Pass the LoanDetails array to the function
+                                } else {
+                                    $('#div_activeloan').html('<div class="list-group-item text-danger">' + data.Message + '</div>');
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                console.error("AJAX Error: ", status, error);
+                                $('#div_activeloan').html('<div class="list-group-item text-danger">Error fetching loan details</div>');
+                            }
+                        });
+                    }
+
+
+                    function displayLoanDetails(loanDetails) {
+                        var divActiveLoan = $('#div_activeloan');
+                        divActiveLoan.empty(); // Clear existing content
+
+                        if (loanDetails && loanDetails.length > 0) {
+                            loanDetails.forEach(function (loan) {
+                                var loanHtml = `
+                <div class="vertical-timeline-item vertical-timeline-element">
+                    <div>
+                        <span class="vertical-timeline-element-icon bounce-in">
+                            <i class="badge badge-dot badge-dot-xl badge-primary"></i>
+                        </span>
+                        <div class="vertical-timeline-element-content bounce-in">
+                            <h4 class="timeline-title text-success">${loan.Module}</h4>
+                            <p>
+                                Account No: &nbsp;<span style="font-weight:bold;color:#3f6ad8">${loan.AccountNo}</span>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                Start Date: &nbsp;<span style="font-weight:bold;color:orange">${convertDate(loan.StartDate)}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                Maturity Date: &nbsp;<span style="font-weight:bold;color:#444054">${convertDate(loan.MaturityDate)}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br/>
+                                Amount: &nbsp;<span style="font-weight:bold;color:#16aaff">${loan.Amount}/-</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `;
+                                divActiveLoan.append(loanHtml);
+                            });
+                        } else {
+                            var noLoanHtml = `
+            <div class="vertical-timeline-item vertical-timeline-element">
+                <div>
+                    <span class="vertical-timeline-element-icon bounce-in">
+                        <i class="badge badge-dot badge-dot-xl badge-primary"></i>
+                    </span>
+                    <div class="vertical-timeline-element-content bounce-in">
+                        <h4 class="timeline-title text-danger">No Active Loans...</h4>
+                    </div>
+                </div>
+            </div>
+        `;
+                            divActiveLoan.append(noLoanHtml);
+                        }
+                    }
+
+
+
+            </script>
+
+</body>
+
+
+<script>
+    function displayPhoto(Image, ImageType) {
+        //alert(Image);
+        var modal = document.getElementById('mediaModal');
+        var content = document.getElementById('pdfViewer'); // Use pdfViewer as content
+
+        if (ImageType === 'pdf') {
+
+            // Convert base64 to Blob
+            var base64Data = dataUrl.split(',')[1];
+            var binaryString = atob(base64Data);
+            var len = binaryString.length;
+            var bytes = new Uint8Array(len);
+            for (var i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            var blob = new Blob([bytes], { Type: 'application/pdf' });
+            var blobUrl = URL.createObjectURL(blob);
+
+            // Embed PDF in an iframe
+            content.innerHTML = `
+           <iframe id="pdfFrame" src="${blobUrl}" style="width:100%; height:400px; border:none; border: 7px solid #ddd;" frameborder="0"></iframe>`;
+
+            //        content.innerHTML = `
+            ////          <div style="padding-top:25px; padding-left:120px;">
+            ////            <iframe src="${blobUrl}" style="width:100%; height:600px; border:none;" frameborder="0"></iframe>
+            ////          </div>`;
+
+            // Hide zoom controls for PDFs
+            document.getElementById('zoomControls').style.display = 'none';
+
+        } else if (ImageType === 'image') {
+            // alert(1);
+            content.innerHTML = `
+            <div id="imageWrapper" style="width:700px; height:350px; overflow:auto; background-color:white; border: 7px solid #ddd;">
+                <img id="modalImage" src="${Image}" style="width:600px; padding-left:120px; padding-top:35px; transform: scale(1);" />
+            </div>`;
+
+            // Show zoom controls for images
+            document.getElementById('zoomControls').style.display = 'block';
+
+            // Add zoom functionality for image
+            let scale = 1;
+            const zoomStep = 0.1;
+            const modalImage = document.getElementById('modalImage');
+
+            document.getElementById('zoomIn').addEventListener('click', () => {
+                scale += zoomStep;
+                modalImage.style.transform = `scale(${scale})`;
+            });
+
+            document.getElementById('zoomOut').addEventListener('click', () => {
+                if (scale > zoomStep) {
+                    scale -= zoomStep;
+                    modalImage.style.transform = `scale(${scale})`;
+                }
+            });
+        }
+
+        modal.style.display = 'block';
+    }
+
+
+    function makeDraggable(element) {
+        var isDragging = false;
+        var offsetX, offsetY;
+
+        element.onmousedown = function (event) {
+            isDragging = true;
+            offsetX = event.clientX - element.getBoundingClientRect().left;
+            offsetY = event.clientY - element.getBoundingClientRect().top;
+
+            document.onmousemove = function (event) {
+                if (isDragging) {
+                    var modal = document.getElementById('mediaModal');
+                    modal.style.left = (event.clientX - offsetX) + 'px';
+                    modal.style.top = (event.clientY - offsetY) + 'px';
+                }
+            };
+
+            document.onmouseup = function () {
+                isDragging = false;
+                document.onmousemove = null;
+            };
+        };
+    }
+
+    // Apply dragging functionality to the header
+    document.getElementById('mediaModalContent').addEventListener('mousedown', function (event) {
+        makeDraggable(document.getElementById('mediaModal'));
+    });
+
+
+
+    // Apply dragging functionality to the header
+    document.getElementById('pdfViewer').addEventListener('mousedown', function (event) {
+        makeDraggable(document.getElementById('mediaModal'));
+    });
+
+
+    window.onclick = function (event) {
+        //  alert("mediaModal click");
+        var modal = document.getElementById("mediaModal");
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    function closeModal() {
+        // alert("close");
+        var modal = document.getElementById("mediaModal");
+        modal.style.display = "none";
+    }
+
+    let rotationAngle = 0;
+
+    document.getElementById('rotateImage').addEventListener('click', function () {
+        rotationAngle += 90; // Rotate by 90 degrees each time the button is clicked
+        document.getElementById('modalImage').style.transform = 'rotate(' + rotationAngle + 'deg)';
+    });
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+

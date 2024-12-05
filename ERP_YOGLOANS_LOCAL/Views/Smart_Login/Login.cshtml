@@ -1,0 +1,405 @@
+﻿
+
+@{
+    ViewBag.Title = "Login";
+    Layout = null;
+}
+
+<style>
+    .input_logo {  
+
+        margin-bottom: 1em;
+        /*padding: 2px 12px;*/
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+
+    }
+
+    #password-container {
+        position: relative;
+    }
+
+        #password-container input {
+            width: 100%;
+            padding-right: 30px;
+        }
+
+        #password-container .toggle-password {
+            display: none; /* Initially hide the eye icon */
+            position: absolute;
+            right: 10px;
+            top: 53%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+
+    /* Hide Edge's built-in password reveal icon */
+    input[type="password"]::-ms-reveal,
+    input[type="password"]::-ms-clear {
+        display: none;
+    }
+
+</style>
+
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    @*<title>Triple Forms Responsive Widget Template :: w3layouts</title>*@
+    <!-- Meta tag Keywords -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta name="keywords" content="Triple Forms Responsive Widget,Login form widgets, Sign up Web forms , Login signup Responsive web form,Flat Pricing table,Flat Drop downs,Registration Forms,News letter Forms,Elements" />
+    <script>
+        addEventListener("load", function () {
+            setTimeout(hideURLbar, 0);
+        }, false);
+
+        function hideURLbar() {
+            window.scrollTo(0, 1);
+        }
+    </script>
+    <!-- Meta tag Keywords -->
+    <!-- css files -->
+    <link rel="stylesheet" href="~/Smart_Login/css/style.css" type="text/css" media="all" />
+    <!-- Style-CSS -->
+    <link href="~/Smart_Login/css/font-awesome.min.css" rel="stylesheet">
+    <link href="~/Smart_Login/css/login_page_styles.css" rel="stylesheet">
+
+    @*<link href="//fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext"
+        rel="stylesheet">*@
+
+    <script type="text/javascript">
+        function preventBack() {
+            window.history.forward();
+        }
+
+        setTimeout("preventBack()", 0);
+
+        window.onunload = function () {
+            null;
+        };
+    </script>
+
+</head>
+
+<body>
+    <div class="main-bg">
+        <!-- title -->
+        <h1></h1>
+        <!-- //title -->
+        <div class="sub-main-w3">
+            <div class="image-style">
+            </div>
+
+            <!-- vertical tabs -->
+            <div class="vertical-tab">
+                <div id="section1" class="section-w3ls">
+                    <input type="radio" name="sections" id="option1" checked>
+                    <label for="option1" class="icon-left-w3pvt"><span class="fa fa-user-circle" aria-hidden="true"></span>Login</label>
+                    <article>
+                        @*<form action="/Home/Index" method="post" autocomplete="off">*@
+
+                        <form id="loginForm" action="@Url.Action("Login", "Smart_Login")" method="post" autocomplete="off">
+
+                            <!-- Your form fields go here -->
+
+                            <h3 class="legend" style="color:maroon; font-weight:600">
+                                <div class="input_logo">
+                                    &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;  Login Here   &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
+                                    <img src="~/Smart_Login/images/yogloans_icon.jpg" style="height:50px; width:200px; margin-left:auto ; margin-right: 0;" />
+                                </div>
+                            </h3>
+
+                            @*<input type="hidden" name="HiddenEmployeeCode" id="HiddenEmployeeCode" />*@
+
+                            <div class="input">
+                                <span class="fa fa-user-o" aria-hidden="true"></span>
+                                <input type="text" placeholder="Employee code" name="EmployeeCode" id="EmployeeCode" @*onkeydown="getclear();"*@ required
+                                       pattern="\d+" oninput="this.value = this.value.replace(/\D/g, '');" />
+                            </div>
+                            @*<div id="alertMessage" style="display: none;"></div>*@
+                            <div class="input" id="password-container">
+                                <span class="fa fa-key" aria-hidden="true"></span>
+                                <input type="password" placeholder="Password" name="EmployPassword" id="EmployPassword" required />
+                                <span class="toggle-password" onclick="togglePassword()">👁️</span>
+                            </div>
+
+                            <button type="submit" id="loginButton" value="submit" class="btn submit">Login</button>
+                            <div style="height:41px"> </div>
+
+                        </form>
+                    </article>
+
+                </div>
+
+                <div id="section2" class="section-w3ls">
+                    <input type="radio" name="sections" id="option2">
+                    <label for="option2" class="icon-left-w3pvt"><span class="fa fa-pencil-square" aria-hidden="true"></span>Attendance</label>
+                    <article id="attendanceArticle">
+                        <!-- This is where the content of the Attendance view will be loaded -->
+                    </article>
+                </div>
+
+
+                <div id="section3" class="section-w3ls">
+                    <input type="radio" name="sections" id="option3">
+                    <label for="option3" class="icon-left-w3pvt"><span class="fa fa-lock" aria-hidden="true"></span>Forgot Password?</label>
+                    <article id="forgotPasswordArticle">
+                        <!-- This is where the content of the Forgot Password view will be loaded -->
+                    </article>
+                </div>
+
+
+            </div>
+            <!-- //vertical tabs -->
+            <div class="clear"></div>
+
+            <link rel="stylesheet" href="/Smart_Login/css/font-awesome.min.css">
+            <link rel="stylesheet" href="/Smart_Login/css/style.css">
+        </div>
+    </div>
+
+
+    @*/////////////////////////////////////////-----------login scripts is here------------/////////////////////////////////////////////////*@
+
+
+    <script src="~/Scripts/jquery-3.6.4.min.js"></script>
+
+ 
+    <script>
+
+       $(document).ready(function () {
+
+         $('#EmployeeCode').blur(function () {
+
+           /*  alert("onblur entered");*/
+             var employeeCode = $(this).val();
+
+             if (employeeCode.trim() !== '') {
+
+                /* alert("onblur ");*/
+         $.ajax({
+
+     url: '@Url.Action("CheckCode", "Smart_Login")',
+     type: 'POST',
+     data: { employeeCode: employeeCode },
+     success: function (response) {
+         if (response.success) {
+
+             document.getElementById('EmployPassword').focus();
+
+             } else {
+             alert(response.Message);
+             window.location.reload();
+
+             }
+     },
+     error: function (xhr, status, error) {
+     // Handle error response
+     console.log('Error:', error);
+     }
+     });
+     }
+     });
+       });
+
+
+    </script>
+
+
+    <script>
+
+       /* for adding the eye icon to the both browsers on june 17 */
+
+        function togglePassword() {
+            const passwordInput = document.getElementById('EmployPassword');
+            const passwordType = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', passwordType);
+        }
+
+        $('#EmployPassword').on('input', function () {
+            const password = $(this).val().trim();
+            const toggleIcon = $('.toggle-password');
+            if (password !== '') {
+                toggleIcon.show(); // Show the eye icon
+            } else {
+                toggleIcon.hide(); // Hide the eye icon
+            }
+        });
+        /*/////////////////////////////////////////////////////////////////////*/
+
+
+   $(document).ready(function () {
+    $('#EmployeeCode').focus();
+
+    // Handle keydown event for employee code textbox
+    $('#EmployeeCode').keydown(function (e) {
+        // Check if the Enter key (key code 13) is pressed
+        if (e.keyCode == 13) {
+            e.preventDefault(); // Prevent the default form submission
+            $('#EmployPassword').focus(); // Focus on the password textbox
+        }
+    });
+
+    // Handle keydown event for password textbox
+    $('#EmployPassword').keydown(function (e) {
+        // Check if the Enter key (key code 13) is pressed
+        if (e.keyCode == 13) {
+            e.preventDefault(); // Prevent the default form submission
+            $('#loginForm').submit(); // Submit the form
+        }
+    });
+
+    // Handle form submission
+    $('#loginForm').submit(function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        var employeeCode = $('#EmployeeCode').val().trim();
+        var employPassword = $('#EmployPassword').val().trim();
+
+        if (employeeCode === '' || employPassword === '') {
+            alert('Please fill in all required fields.');
+            return false;
+        }
+
+        var formData = $(this).serialize();
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Login", "Smart_Login")', // Assuming this URL is correct
+            data: formData,
+            success: function (response) {
+                if (response.success === true) {
+                    if (response.message === "Home") {
+
+                        var date = new Date().getDate();
+                        if (date >= 19 && date < 27) {
+
+                                     $.ajax({
+                                        type: 'GET',
+                                        url: '@Url.Action("CheckHRLeaveRequestData", "HR_Leave_Request")',
+                                        success: function (leaveResponse) {
+                                            if (leaveResponse.hasData) {
+                                                var newWindow = window.open('@Url.Action("HRLeaveRequest", "HR_Leave_Request")', '_blank', 'width=900,height=300');
+                                                if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                                                    alert('Please allow pop-ups for this site to open the HR leave request page.');
+                                                }
+                                            } else {
+                                                //alert('No leave data available.');
+                                            }
+                                        },
+                                        error: function () {
+                                            alert('An error occurred while checking leave data.');
+                                        }
+                                    });
+                                }
+
+
+
+                            @*var newWindow = window.open('@Url.Action("HRLeaveRequest", "HR_Leave_Request")','_blank', 'width=900,height=300');
+                            if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+                                alert('Please allow pop-ups for this site to open the HR leave request page.');
+                            }
+                        }*@
+                        window.location.href = '@Url.Action("Index", "Home")';
+                    } else if (response.message === "Resetpassword") {
+                        window.location.href = '@Url.Action("Resetpassword", "Reset_Password")';
+                    } else if (response.message === "Cashier_assign") {
+                        window.location.href = '@Url.Action("Cashier_Assign", "HR_Cashier_Assign")';
+                    } else if (response.message === "Cashier Not Assigned") {
+                        alert("Cashier is not assigned.");
+                        setTimeout(function () {
+                            window.location.reload();
+                        }, 600);
+                    } else if (response.message === "Cashier_approve") {
+                        window.location.href = '@Url.Action("Cashier_Approve", "HR_Cashier_Approve")';
+                    } else {
+                        alert(response.message);
+                        $('#EmployPassword').val('').focus();
+                    }
+                } else {
+                    alert(response.message);
+                    $('#EmployPassword').val('').focus();
+                }
+            },
+            error: function () {
+                alert('An error occurred while processing your request.');
+            }
+        });
+    });
+});
+
+    </script>
+
+
+    @*//////////////////////////////////////////////// script for clear the text boxes when onload /////////////////////////////////////////////////////////////////////////////*@
+
+    <script>
+        $(document).ready(function () {
+            // Clear the employee code and password fields when the page loads
+            $('#option1').on('click', function () {
+                $('#EmployeeCode').val('');
+                $('#EmployPassword').val('');
+                window.location.reload();
+
+            });
+            // Rest of your existing scripts go here...
+        });
+    </script>
+
+    @*//////////////////////////////////// radio button click for loading mark_attendance page //////////////////////////////////////////*@
+
+
+    <script>
+
+    $(document).ready(function () {
+    // When the radio button is clicked
+    $('#option2').on('click', function () {
+    // Perform an AJAX request to load the Attendance view
+    $.ajax({
+    url: '@Url.Action("Mark_Attendance", "Attendance")', // Assuming "Attendance" is your controller name
+    type: 'GET',
+    success: function (result) {
+    // Replace the content of the article with the loaded view
+    $('#attendanceArticle').html(result);
+    },
+    error: function () {
+    alert('Error loading the Attendance view.');
+    }
+    });
+    });
+    });
+
+
+    @*///////////////////////////////////// radio button click for loading forgot_pswd page //////////////////////////////////////////*@
+
+
+
+    $(document).ready(function () {
+    $('#option3').on('click', function () {
+    $.ajax({
+    url: '@Url.Action("forgot_password", "Forgot_password")',
+    type: 'GET',
+    success: function (result) {
+    $('#forgotPasswordArticle').html(result);
+    },
+    error: function () {
+    alert('Error loading the Forgot Password view.');
+    }
+    });
+    });
+    });
+    </script>
+
+
+
+</body>
+
+</html>
+
+
+

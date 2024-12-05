@@ -1,0 +1,1042 @@
+﻿
+@{
+    ViewBag.Title = "Bond_Application_Create";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+
+   
+    <style>
+        #div_dtls table {
+            font-size: 11px; /* Reduce font size */
+            width: 95%; /* Reduce table width */
+            margin: auto; /* Center the table */
+            border-collapse: collapse; /* Remove extra space between borders */
+        }
+
+            #div_dtls table th, #div_dtls table td {
+                padding: 3px; /* Reduce padding */
+                text-align: center; /* Center-align text */
+            }
+
+            #div_dtls table th {
+                background-color: #4D759A; /* Keep header color */
+                color: white;
+            }
+
+        #div_dtls table {
+            border: 1px solid #ddd; /* Add border to the table */
+        }
+
+            #div_dtls table tr:hover {
+                background-color: #f2f2f2; /* Highlight row on hover */
+            }
+    </style>
+
+
+
+</head>
+<body>
+
+    <br />
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon"> Application Creation </h6>
+            </div>
+        </div>
+        <br />
+        <div class="form-row">
+
+            <div class="col-md-3">
+                <div class="input-container">
+                    <input type="text" id="customer_id" name="scheme-name" readonly class="form-control" style="color:red" />
+                    <label for="input-text">Customer ID </label>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="input-container">
+                    <input type="text" id="Customer_name" name="scheme-name" readonly class="form-control" style="color:red" />
+                    <label for="input-text">Customer Name </label>
+                </div>
+            </div>
+
+
+            <div class="col-md-3">
+                <div class="input-container">
+                    <input type="text" id="pan_number" name="loan-number" readonly class="form-control" style="color:red" />
+                    <label for="input-text">PAN Number </label>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="input-container">
+                    <input type="text" id="dob_age" name="loan-number" readonly class="form-control" style="color:red" />
+                    <label for="input-text">DOB & Age </label>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row" id="div_grid" style="width: 100%; overflow-y: auto;">
+
+            <table id="tbl_schemes" class="table table-hover table-striped table-bordered" style="overflow-y: auto; font-size:12px;width:95%;font-weight:bold">
+
+
+                <thead style="display: none;">
+                    <tr>
+                        <th style="background-color: #4D759A; color: white;">View</th>
+                        <th style="background-color: #4D759A; color: white;">Issue No</th>
+                        <th style="background-color: #4D759A; color: white;">Duration</th>
+                        <th style="background-color: #4D759A; color: white;">Interest Type</th>
+                        <th style="background-color: #4D759A; color: white;">Monthly Rate</th>
+                        <th style="background-color: #4D759A; color: white;">Cumulative Rate</th>
+                        <th style="background-color: #4D759A; color: white;">Fund</th>
+                        <th style="background-color: #4D759A; color: white;">Balance Fund</th>
+                        <th style="background-color: #4D759A; color: white;">Number of Subordinate Debt</th>
+                        <th style="background-color: #4D759A; color: white;">Balance Subordinate Debt</th>
+                        <th style="background-color: #4D759A; color: white;">Minimum Amount</th>
+                        <th style="background-color: #4D759A; color: white;">Scheme Start</th>
+                        <th style="background-color: #4D759A; color: white;">Scheme End</th>
+                        <th style="background-color: #4D759A; color: white;">Time Left</th>
+                        <th style="background-color: #4D759A; color: white;">Face Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+
+
+            </table>
+        </div>
+        <div id="div_dtls" style="display: none; margin-top: 20px;">
+
+            <div id="detales_belowTBL">
+
+
+            </div><br />
+            <div id="div_money_dtls">
+                <div class="form-row">
+
+                    <div class="col-md-2">
+                        <div class="input-container">
+                            <input type="text" id="txt_issueNo" name="txt_issueNo" readonly class="form-control" />
+                            <label for="input-text">Issue Number </label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-container">
+                            <label for="senior_citizen" style="top: -3px; font-size: 12px; font-weight: bold;"> Interest Type</label>
+                            <div class="radio-container" id="div_intType" style="background-color: #f0f0f0;">
+                                <div class="radio-option">
+                                    <input type="radio" id="intType_M" name="intType" value="F" required />
+                                    <label for="intType_M">Monthly</label>
+                                </div>
+                                &nbsp; &nbsp; &nbsp;
+                                <div class="radio-option">
+                                    <input type="radio" id="intType_C" name="intType" value="C" required />
+                                    <label for="intType_C">Cumulative</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="input-container">
+                            <input type="text" id="txt_amount" name="txt_amount" class="form-control" style="background-color:white"
+                                   autocomplete="off" oninput="this.value=this.value.replace(/[^0-9]/g,'')" onblur="InterestCalculation()" />
+                            <label for="input-text">Amount<span style="color:red"> *</span> </label>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-2">
+                        <div class="input-container">
+                            <input type="text" id="txt_noDebenture" name="txt_noDebenture" readonly class="form-control" />
+                            <label for="input-text">Number OF bond </label>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-2">
+                        <div class="input-container">
+                            <input type="text" id="txt_intTotal" name="txt_intTotal" readonly class="form-control" />
+                            <label for="input-text">Total Interest</label>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="form-row">
+
+                    <div class="col-md-2">
+                        <div class="input-container">
+                            <input type="text" id="txt_maturityAmt" name="txt_maturityAmt" readonly class="form-control" />
+                            <label for="input-text">Maturity amount </label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="input-container">
+                            <input type="text" id="txt_maturityDt" name="txt_maturityDt" readonly class="form-control" />
+                            <label for="input-text">Maturity Date </label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="input-container">
+                            <input type="text" id="txt_seniorCitizenInt" name="txt_seniorCitizenInt" readonly class="form-control" />
+                            <label for="input-text">Senior citizen interest</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        <div class="input-container">
+                            <label for="senior_citizen" style="top: -3px; font-size: 12px; font-weight: bold;"> Canvasser Type</label>
+                            <div class="radio-container">
+                                <div class="radio-option">
+                                    <input type="radio" id="canva_employee" name="canvaType" value="1" required />
+                                    <label for="canva_employee">Employee</label>
+                                </div>
+                                &nbsp; &nbsp;
+                                <div class="radio-option">
+                                    <input type="radio" id="canva_canva" name="canvaType" value="2" required />
+                                    <label for="canva_canva">Canvasser</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="input-container">
+                            <input type="text" id="txt_canvasserCode" name="txt_canvasserCode" class="form-control" style="background-color:white"
+                                   autocomplete="off" oninput="this.value=this.value.replace(/[^0-9]/g,'')" onblur="getCanvasser()" />
+                            <label for="input-text">Canvasser code <span style="color:red"> *</span></label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="input-container">
+                            <input type="text" id="txt_canvasserName" name="txt_canvasserName" readonly class="form-control" />
+                            <label for="input-text">Canvasser Name</label>
+                        </div>
+                    </div>
+                    @*<div class="col-md-2">
+                        <div class="input-container">
+                            <input type="text" id="txt_canvasserRole" name="txt_canvasserRole" readonly class="form-control" />
+                            <label for="input-text">Canvasser Role</label>
+                        </div>
+                    </div>*@
+
+
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <label for="senior_citizen" style="top: -3px; font-size: 12px; font-weight: bold;"> Renew</label>
+                            <div class="radio-container">
+                                <div class="radio-option">
+                                    <input type="radio" id="Renew_yes" name="Renew" value="Y" required />
+                                    <label for="Renew_yes">Yes</label>
+                                </div>
+                                &nbsp; &nbsp; &nbsp;
+                                <div class="radio-option">
+                                    <input type="radio" id="Renew_no" name="Renew" value="N" required />
+                                    <label for="Renew_no">No</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="input-container">
+                            <input type="text" id="txt_reniewAmt" name="txt_reniewAmt" class="form-control"
+                                   autocomplete="off" oninput="this.value=this.value.replace(/[^0-9]/g,'')" readonly />
+                            <label for="input-text">Renewal Amount </label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="input-container">
+
+                            <select name="_15gh" id="_15gh" class="form-control" required>
+                            </select>
+                            <label for="loan-type">15 Status<span style="color:red"> *</span></label>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <label for="senior_citizen" style="top: -3px; font-size: 12px; font-weight: bold;"> Account Type</label>
+                            <div class="radio-container">
+                                <div class="radio-option" style="font-size: 8px;">
+                                    <input type="radio" id="AccountType_Individual" name="AccountType" value="I" required />
+                                    <label for="AccountType_Individual">Individual</label>
+                                </div>
+
+                                <div class="radio-option" style="font-size: 8px;">
+                                    <input type="radio" id="AccountType_joint" name="AccountType" value="J" required />
+                                    <label for="AccountType_joint">joint</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script>
+                        // Add event listeners to the radio buttons
+                        document.getElementById('AccountType_Individual').addEventListener('change', function () {
+                            // Hide the "Number of Applicant" field when "Individual" is selected
+                            document.getElementById('div_no_appli').style.display = 'none';
+                            document.getElementById('txt_No_of_applicant').value = '';
+                        });
+
+                        document.getElementById('AccountType_joint').addEventListener('change', function () {
+                            // Show the "Number of Applicant" field and set its value to "2" when "Joint" is selected
+                            document.getElementById('div_no_appli').style.display = 'block';
+                            document.getElementById('txt_No_of_applicant').value = '2';
+                        });
+                    </script>
+                    <div class="col-md-2" id="div_no_appli" style="display:none;">
+                        <div class="input-container">
+                            <input type="text" id="txt_No_of_applicant" name="txt_No_of_applicant" class="form-control" style="background-color:white" />
+                            <label for="input-text">Number of Applicant</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2" id="div_repayMode" style="display:none;">
+                        <div class="input-container">
+
+                            <select name="ddl_repayment" id="ddl_repayment" class="form-control" required>
+                            </select>
+                            <label for="loan-type">Repayment mode</label>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-row">
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <label for="senior_citizen" style="top: -3px; font-size: 12px; font-weight: bold;"> Lien marking</label>
+                            <div class="radio-container">
+                                <div class="radio-option">
+                                    <input type="radio" id="Lien_yes" name="Lien" value="Y" required />
+                                    <label for="Lien_yes">Yes</label>
+                                </div>
+                                &nbsp; &nbsp; &nbsp;
+                                <div class="radio-option">
+                                    <input type="radio" id="Lien_no" name="Lien" value="N" required />
+                                    <label for="Lien_no">No</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2" id="div_lien_holder" style="display:none;">
+                        <div class="input-container">
+                            <input type="text" id="txt_lien_holder" name="txt_lien_holder" class="form-control" style="background-color:white;" />
+                            <label for="input-text">lien holder</label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            @*<div id="div_DP">
+                <div class="form-row">
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+
+                            <select name="_DP" id="_DP" class="form-control" required>
+                            </select>
+                            <label for="loan-type">Existing DP</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="text" id="txt_DP_ID" name="txt_DP_ID" class="form-control" style="background-color:white" />
+                            <label for="input-text">DP ID<span style="color:red"> *</span></label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="text" id="txt_DP_name" name="txt_DP_name" class="form-control" style="background-color:white" />
+                            <label for="input-text">DP Name<span style="color:red"> *</span></label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>*@
+
+            <div id="div_nominee">
+                <div class="form-row">
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="text" id="txt_Nominee_Name" name="txt_Nominee_Name" class="form-control" style="background-color:white" />
+                            <label for="input-text">Nominee Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="text" id="txt_Relation" name="txt_Relation" class="form-control" style="background-color:white" />
+                            <label for="input-text">Relation</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <textarea id="txt_Address" name="txt_Address" class="form-control" style="background-color:white"></textarea>
+                            <label for="input-text">Address</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="div_button">
+                <div class="form-row justify-content-center d-flex">
+                    <div class="col-md-6 col-lg-3 d-flex justify-content-center">
+                        <button class="mb-2 mr-2 btn-hover-shine btn btn-shadow btn-success" id="btn_search">SUBMIT</button>
+                    </div>
+                    <div class="col-md-6 col-lg-3 d-flex justify-content-center">
+                        <button class="mb-2 mr-2 btn-hover-shine btn btn-shadow btn-secondary" id="btn_reset">CANCEL</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <link rel="stylesheet" href="~/Content/cust_apprvlmsgbox1.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+         $(document).ready(function () {
+             fillgrid();
+             fillCustomerDetails();
+         });
+
+        function fillDropdownlist() {
+            var cust_age = localStorage.getItem('age');
+
+            $.ajax({
+                url: "@Url.Action("FillDropdowns", "Bond_Application_Create")",
+                type: 'GET',
+                data: { cust_age: cust_age },
+                success: function (response) {
+                    if (response.success) {
+                        // Fill 15G/15H Dropdown
+                        var $15gDropdown = $('#_15gh');
+                        $.each(response.data.FifteenGOptions, function (index, option) {
+                            $15gDropdown.append($('<option>', {
+                                value: option.Id,
+                                text: option.Name
+                            }));
+                        });
+
+                        // Fill Repayment Dropdown
+                        var $repaymentDropdown = $('#ddl_repayment');
+                        $.each(response.data.RepaymentOptions, function (index, option) {
+                            $repaymentDropdown.append($('<option>', {
+                                value: option.Id,
+                                text: option.Name
+                            }));
+                        });
+
+
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('Error retrieving dropdown data.');
+                }
+            });
+
+        }
+
+        function fillCustomerDetails() {
+             $.ajax({
+              url: "@Url.Action("Fill_customerDetails", "Bond_Application_Create")",
+              type:'GET',
+
+              success: function (response) {
+                  if (response.success) {
+                      let customer = response.data;
+
+                      $('#customer_id').val(customer.customer_id);
+                      $('#Customer_name').val(customer.customer_name);
+                      $('#pan_number').val(customer.id_no);
+                      $('#dob_age').val(customer.dob + " (" + customer.age + ")");
+                      localStorage.setItem('age', customer.age);
+                  }
+
+                 },
+                 error: function (error) {
+                     alert("Error fetching data.");
+
+                 }
+             });
+        }
+
+        function fillgrid() {
+            $.ajax({
+             url: "@Url.Action("BOND_fillGrid", "Bond_Application_Create")",
+             type:'GET',
+
+             success: function (response) {
+
+                 // Clear the existing table body
+                 $('#tbl_schemes tbody').empty();
+
+                 // Show the table header
+                 $('#tbl_schemes thead').css('display','table-header-group');
+
+                 // Check if there is any data in the response
+                 if (response && response.length > 0) {
+                     // Loop through the response and populate the table
+                     $.each(response, function (index, scheme) {
+
+                         var row ='<tr>'+
+                            '<td>'+
+                             '<a href="#" class="view-scheme" data-issue-no="' + scheme.issue_no + '" data-int-type="' + scheme.interest_type +'" data-face-value="'+ scheme.face_value +'" data-min-amount="'+ scheme.min_amount +'" data-balance-fund="'+ scheme.deb_amount +'">'+
+                            '<span>&#128065;</span></a>'+ // View action button
+                            '</td>'+
+                            '<td>'+ scheme.issue_no +'</td>'+
+                            '<td>'+ scheme.duration +'</td>'+
+                            '<td>'+ scheme.interest_type +'</td>'+
+                            '<td>'+ scheme.interest_rate +'</td>'+
+                            '<td>' + scheme.rate_cum +'</td>'+
+                             '<td>' + scheme.total_bond_amount +'</td>'+
+                             '<td>' + scheme.total_bond +'</td>'+
+                             '<td>' + scheme.bond_amount +'</td>'+
+                             '<td>' + scheme.no_ofbond +'</td>'+
+                             '<td>' + scheme.min_amount +'</td>'+
+                             '<td>' + scheme.reg_startdate +'</td>'+
+                             '<td>' + scheme.reg_enddate +'</td>'+
+                             '<td>' + scheme.time_left +'</td>'+
+                            '<td>'+ scheme.face_value +'</td>'+
+                            '</tr>';
+
+                         // Append row to table body
+                         $('#tbl_schemes tbody').append(row);
+                     });
+
+                        // Attach the click event to the dynamically generated links
+                        $('.view-scheme').click(function (e) {
+                            e.preventDefault(); // Prevent the default action
+                            var issueNo = $(this).data('issue-no');
+                            
+                            var faceValue = $(this).data('face-value');
+                            var min_amount = $(this).data('min-amount');
+                            var balance_fund = $(this).data('balance-fund');
+                            var int_type = $(this).data('int-type');
+                            var parsedFaceValue = parseFloat(faceValue);
+
+
+                            
+                            localStorage.setItem('minAmount', min_amount);
+                            localStorage.setItem('balanceFund', balance_fund);
+                            localStorage.setItem('faceValue', parsedFaceValue);
+                            localStorage.setItem('intType', int_type);
+
+                            viewschemeDetails(issueNo);
+                        });
+
+                 } else {
+                     // If no data found, display a message
+                     var noDataRow ='<tr><td colspan="8" class="text-center">No data found..</td></tr>';
+                     $('#tbl_schemes tbody').append(noDataRow);
+                 }
+
+                },
+                error: function (error) {
+                    alert("Error fetching data.");
+
+                }
+            });
+        }
+
+        //function viewschemeDetails(issueNo,intType) {
+        //    //alert(faceValue);
+        //    $('#txt_issueNo').val(issueNo);
+
+        //    $('#div_grid').css('display','none');
+        //    $('#div_dtls').css('display','block');
+        //    fillDropdownlist();
+        //}
+
+     
+
+
+        function checkRenewalAmount() {
+            //var min_amount = localStorage.getItem('minAmount');
+            var min_amount = $('#txt_amount').val();
+            min_amount = parseFloat(min_amount);
+            var renewAmount = parseFloat($('#txt_reniewAmt').val());
+            if (renewAmount > min_amount) {
+                alert("Renewal amount must not greater than minimum amount!.");                
+                document.getElementById('txt_reniewAmt').value = '';
+                return;
+            }
+        }
+
+        function InterestCalculation(){
+
+            var amount=$('#txt_amount').val();
+            var issue_no = $('#txt_issueNo').val();
+
+            var intType = $("input[name='intType']:checked").val();
+
+            var min_amount=localStorage.getItem('minAmount');
+            var balance_fund=localStorage.getItem('balanceFund');
+            var face_value=localStorage.getItem('faceValue');
+
+             amount = parseFloat(amount);
+             min_amount = parseFloat(min_amount);
+             balance_fund = parseFloat(balance_fund);
+             face_value = parseFloat(face_value);
+
+            var mod = amount % face_value;
+
+            if (amount && !isNaN(amount))
+            {
+                if (!$("input[name='intType']:checked").length > 0) {
+                    alert("Please select Interest Type!.");
+                    $('#txt_amount').val("");
+                    $("input[name='intType']").first().focus();
+                    event.preventDefault();
+                    return;
+                }
+                if (mod != 0) {
+                        alert(" This  Amount Not Allow");
+                        $('#txt_amount').focus();
+                        $('#txt_amount').val("");
+                        event.preventDefault(); // Prevent further action
+                        return ;
+                    }
+                else if (amount < min_amount) {
+                        alert("Minimum bond Amount :-" + min_amount);
+                        $('#txt_amount').val("");
+                        $('#txt_amount').focus();
+                        event.preventDefault(); // Prevent further action
+                        return ;
+                    }
+                else if (balance_fund < amount) {
+                        alert("Enter the amount higher than balance Fund. Fund:" + balance_fund);
+                        $('#txt_amount').val("");
+                        $('#txt_amount').focus();
+                         event.preventDefault(); // Prevent further action
+                        return;
+                    }
+                else{
+                    //alert(issue_no);
+                    //alert(amount);
+
+                    var formData1 = new FormData();
+                    formData1.append('amount', amount);
+                    formData1.append('issue_no', issue_no);
+                    formData1.append('int_type', intType);
+
+
+                     $.ajax({
+                          url: "@Url.Action("InterestCalculation", "Bond_Application_Create")",
+                          type:'POST',
+                          data: formData1,
+                          contentType: false,
+                          processData: false,
+                          success: function (response) {
+                              if (response.success) {
+                                 let interestData = response.data;
+                                  $('#txt_noDebenture').val(interestData.nodb);
+                                  $('#txt_intTotal').val(interestData.total_int);
+                                  $('#txt_maturityAmt').val(interestData.tot_amt);
+                                  $('#txt_maturityDt').val(interestData.startdate);
+                                  $('#txt_seniorCitizenInt').val(interestData.senrate);
+
+                              } else {
+                                  alert("Error Occured!");
+                              }
+                          },
+                          error: function (error) {
+                              alert("error");
+                          }
+                     });
+
+                }
+
+
+            }
+
+        }
+
+        function getCanvasser(){
+            var Code = $('#txt_canvasserCode').val();
+            var canvasser_type = $("input[name='canvaType']:checked").val();
+
+            if(Code != ""){
+
+                $.ajax({
+                        url: "@Url.Action("GetCanvasserDtls", "Bond_Application_Create")",
+                        type:'POST',
+                        data: { canvasserCode: Code, canvasserType: canvasser_type },
+                        success: function (response) {
+
+                           if (response.success) {
+                                let canvasserData = response.data;
+                                $('#txt_canvasserName').val(canvasserData.canvasser);
+                                //$('#txt_canvasserRole').val(canvasserData.category_name);
+
+                            } else {
+                               alert(response.message);
+                               $('#txt_canvasserName').val("");
+                            }
+                        },
+                        error: function (error) {
+                            alert("error");
+                            console.error('Error sending data:', error);
+                        }
+                    });
+
+            }
+
+        }
+
+        $(document).ready(function () {
+            // Event listener for when a radio button is clicked
+            $('input[name="Renew"]').on('change', function () {
+                if ($('#Renew_no').is(':checked')) {
+                    // If "No" is selected, make the textbox read-only
+                    $('#txt_reniewAmt').val("");
+                    $('#txt_reniewAmt').prop('readonly', true).css('background-color','#F9F9F9');
+                } else if ($('#Renew_yes').is(':checked')) {
+                    // If "Yes" is selected, make the textbox editable
+                    $('#txt_reniewAmt').prop('readonly', false).css('background-color','#ffffff');
+                }
+            });
+
+            // Attach input event listener for the renewal amount field
+            $('#txt_reniewAmt').on('input', function () {
+                if (!$(this).prop('readonly')) {
+                    checkRenewalAmount();
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            // Attach a change event to the radio buttons for AccountType
+            $('input[name="canvaType"]').change(function () {
+                // Check which radio button is selected
+                $('#txt_canvasserCode').val("");
+                $('#txt_canvasserName').val("");
+            });
+        });
+
+        $(document).ready(function () {
+            // Attach a change event to the radio buttons for AccountType
+            $('input[name="AccountType"]').change(function () {
+                // Check which radio button is selected
+                if ($('#AccountType_joint').is(':checked')) {
+                    // Show the divs when'Joint'is selected
+                    $('#div_no_appli').css('display','block');
+                    $('#div_repayMode').css('display','block');
+                } else {
+                    // Hide the divs when'Individual'is selected
+                    $('#div_no_appli').css('display','none');
+                    $('#div_repayMode').css('display','none');
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            // Attach a change event to the radio buttons for AccountType
+            $('input[name="Lien"]').change(function () {
+                // Check which radio button is selected
+                if ($('#Lien_yes').is(':checked')) {
+                    // Show the divs when'Joint'is selected
+                    $('#div_lien_holder').css('display','block');
+
+                } else {
+                    // Hide the divs when'Individual'is selected
+                    $('#div_lien_holder').css('display','none');
+
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $('#_DP').change(function () {
+
+                var selectedValue = $(this).val();
+                // Check if the selected text is valid (not the default option)
+                if (selectedValue !== "0") {
+
+                    var selectedText = $("#_DP option:selected").text();
+                    var parts = selectedText.split('/');
+
+                    // Check if we have two parts after the split
+                    if (parts.length === 2) {
+                        // Assign the split values to textboxes
+                        $('#txt_DP_ID').val(parts[0]);  // Assign the first part
+                        $('#txt_DP_name').val(parts[1]); // Assign the second part
+                    } else {
+                        console.log("The selected text does not contain a'/'character.");
+                    }
+                } else {
+                    $('#txt_DP_ID').val("");  // Assign the first part
+                    $('#txt_DP_name').val(""); // Assign the second part
+                }
+            });
+        });
+
+        $(document).ready(function () {
+
+            $('#btn_search').click(function (event) {
+
+                // Prevent default action
+                event.preventDefault();
+
+                // Validate the form and store the result
+                if (!validateForm()) {
+                    return; // Exit if validation fails
+                }
+
+                var issue_no = $('#txt_issueNo').val();
+                var amount = $('#txt_amount').val();
+                var matamt = $('#txt_maturityAmt').val();
+                var totint = $('#txt_intTotal').val();
+                var matdate = $('#txt_maturityDt').val();
+                var nod = $('#txt_noDebenture').val();
+                var canvas_code = $('#txt_canvasserCode').val();
+                var renewal_amt = $('#txt_reniewAmt').val();
+                var nofapplicant = $('#txt_No_of_applicant').val();
+
+                var ac_type = $("input[name='AccountType']:checked").val();
+                /*var tax_payee = $("input[name='TaxPayee']:checked").val();*/
+                var lienholder = $('#txt_lien_holder').val();
+                var lien = $("input[name='Lien']:checked").val();
+                var rpay = $('#ddl_repayment').val();
+                var _15_status = "";
+                var _15_type = "";
+                var _15val = $('#_15gh').val();
+                if (_15val == "1") {
+                    _15_status = "Y";
+                    _15_type = "G";
+                }
+                else if (_15val == "2") {
+                    _15_status = "N";
+                    _15_type = "G";
+                }
+                else if (_15val == "3") {
+                    _15_status = "Y";
+                    _15_type = "H";
+                }
+                else {
+                    _15_status = "N";
+                    _15_type = "H";
+                }
+                var dp_id = $('#txt_DP_ID').val();
+                var dp_name = $('#txt_DP_name').val();
+                var pancard = $('#pan_number').val();
+                var nominee = $('#txt_Nominee_Name').val();
+                var nominee_add = $('#txt_Address').val();
+                var relation = $('#txt_Relation').val();
+                var canvas_type = $("input[name='canvaType']:checked").val();
+
+                var formData = new FormData();
+                formData.append('issue_no', issue_no);
+                formData.append('amount', amount);
+                formData.append('matamt', matamt);
+                formData.append('totint', totint);
+                formData.append('matdate', matdate);
+                formData.append('nod', nod);
+                formData.append('canvas_code', canvas_code);
+                formData.append('renewal_amt', renewal_amt);
+                formData.append('nofapplicant', nofapplicant);
+                formData.append('ac_type', ac_type);
+                /*formData.append('tax_payee', tax_payee);*/
+                formData.append('lienholder', lienholder);
+                formData.append('lien', lien);
+                formData.append('rpay', rpay);
+                formData.append('_15_status', _15_status);
+                formData.append('_15_type', _15_type);
+                formData.append('dp_id', dp_id);
+                formData.append('dp_name', dp_name);
+                formData.append('pancard', pancard);
+                formData.append('nominee', nominee);
+                formData.append('nominee_add', nominee_add);
+                formData.append('relation', relation);
+                formData.append('canvas_type', canvas_type);
+
+               $.ajax({
+                    url: "@Url.Action("SubmitApplication", "Bond_Application_Create")",
+                    type:'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+
+                        if (response.success) {
+                            //alert(response.message);
+
+                            Swal.fire({
+                                        title: response.message,
+                                        icon: "success"
+                                    }).then(() => {
+                                        window.location.href = '/Bond_Amound_Collection/Bond_Amound_Collection_View';
+                                    });
+
+                        } else {
+                            alert("Error Occured!");
+                        }
+
+                    },
+                    error: function (error) {
+                        alert("error");
+                        console.error('Error sending data:', error);
+                    }
+                });
+            });
+
+        });
+
+        function validateForm() { // validation on SUBMIT button click
+            var amount = $('#txt_amount').val();
+            var canvasserCode = $('#txt_canvasserCode').val();
+           
+            var nomineeName = $('#txt_Nominee_Name').val();
+            var relation = $('#txt_Relation').val();
+            var address = $('#txt_Address').val();
+            
+
+            if (amount == "") {
+                alert("Please enter the amount!..");
+                $('#txt_amount').focus();
+                return;
+            }
+            else if (canvasserCode == "") {
+                alert("Please enter canvasser Code!..");
+                $('#txt_canvasserCode').focus();
+                return;
+            }
+            else if (!$("input[name='Renew']:checked").length > 0) {
+                alert("Please select Yes/No for Renew!.");
+                $("input[name='Renew']").first().focus();
+                return;
+            }
+            else if (!$("input[name='AccountType']:checked").length > 0) {
+                alert("Please select Account Type!.");
+                $("input[name='AccountType']").first().focus();
+                return;
+            }
+            else if (!$("input[name='Lien']:checked").length > 0) {
+                alert("Please select Lien Marking!.");
+                $("input[name='Lien']").first().focus();
+                return;
+            }            
+            else if (nomineeName == "" ) {
+                alert("Please Enter Nominee Name!.");
+                $('#txt_Nominee_Name').focus();
+                return;
+            }
+            else if (relation == "") {
+                alert("Please Enter Relation!.");
+                $('#txt_Relation').focus();
+                return;
+            }
+            else if (address == "") {
+                alert("Please Enter Address!.");
+                $('#txt_Address').focus();
+                return;
+            }
+            else {
+                return true;
+            }
+
+        }
+        function viewschemeDetails(issueNo, intType) {
+            // Fetch the selected row and table headers
+            const selectedRow = $(`.view-scheme[data-issue-no='${issueNo}']`).closest('tr');
+            const headers = $('#tbl_schemes thead th').map(function () {
+                return $(this).text();
+            }).get();
+
+            // Create a table structure to display in `div_dtls`
+            let detailTable = '<table class="table table-bordered">';
+
+            // Add headers (excluding the first column "View")
+            detailTable += '<thead><tr>';
+            headers.slice(1).forEach(header => {  // Skip the first header ("View")
+                detailTable += `<th style="background-color: #4D759A; color: white;">${header}</th>`;
+            });
+            detailTable += '</tr></thead>';
+
+            // Add selected row data (excluding the first column "View")
+            detailTable += '<tbody><tr>';
+            selectedRow.find('td').each(function (index) {
+                if (index !== 0) {  // Skip the first column (View)
+                    detailTable += `<td>${$(this).text()}</td>`;
+                }
+            });
+            detailTable += '</tr></tbody>';
+
+            detailTable += '</table>';
+
+            // Populate the `div_dtls` div with the detail table
+            $('#detales_belowTBL').html(detailTable);
+
+            // Get values from the selected row and populate them into the input fields
+            $('#txt_issueNo').val(selectedRow.find('td').eq(1).text());  // Issue Number
+            $('#txt_noDebenture').val(selectedRow.find('td').eq(8).text());  // Number Of Debentures
+            $('#txt_intType').val(selectedRow.find('td').eq(3).text());  // Interest Type
+            $('#txt_intTotal').val(selectedRow.find('td').eq(5).text());  // Total Interest (customize if needed)
+            $('#txt_maturityAmt').val(selectedRow.find('td').eq(6).text());  // Maturity Amount
+            $('#txt_maturityDt').val(selectedRow.find('td').eq(10).text());  // Maturity Date
+            $('#txt_seniorCitizenInt').val(selectedRow.find('td').eq(4).text());  // Senior Citizen Interest
+            $('#txt_noDebenture').val(selectedRow.find('td').eq(8).text()); // Number of debentures
+
+            // Switch visibility to show details section
+            $('#div_grid').css('display', 'none');
+
+            $('#div_dtls').css('display', 'block');
+            $('#div_money_dtls').css('display', 'block');
+            fillDropdownlist();
+            fillIntType();
+        }
+
+        function fillIntType() {
+            var int_type = localStorage.getItem('intType');
+            //alert(int_type);
+            const intTypeM = document.getElementById('intType_M');
+            const intTypeC = document.getElementById('intType_C');
+            var int_type = localStorage.getItem('intType');
+            if (int_type === 'Monthly') {
+                intTypeM.checked = true;
+                intTypeM.disabled = true; // Make readonly
+                intTypeC.disabled = true; // Make readonly
+
+                divIntType.style.backgroundColor = '#f0f0f0';
+            } else if (int_type === 'Cumulative') {
+                intTypeC.checked = true;
+                intTypeM.disabled = true; // Make readonly
+                intTypeC.disabled = true; // Make readonly
+
+                divIntType.style.backgroundColor = '#f0f0f0';
+            }  else {
+                // Default: Ensure everything is editable and unselected
+                intTypeM.checked = false;
+                intTypeC.checked = false;
+                intTypeM.disabled = false;
+                intTypeC.disabled = false;
+
+                divIntType.style.backgroundColor = '';
+            }
+        }
+
+    </script>
+</body>
+</html>
+

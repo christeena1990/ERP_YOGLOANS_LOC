@@ -1,0 +1,69 @@
+﻿@model ERP_YOGLOANS_LOCAL.Models.Customer_Approval_Model
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* Centering images */
+        img {
+            display: block;
+            margin: 0 auto;
+            max-width: 80%; /* Adjust as needed */
+            max-height: 80vh; /* Adjust as needed */
+        }
+
+        /* Styling for PDFs */
+        .pdf-object {
+            width: 100%;
+            height: 80vh; /* Adjust the height as needed */
+        }
+    </style>
+
+    <script>
+      // Check if the page was loaded directly (not via navigation within the site)
+      if (document.referrer === '') {
+          // If there is no referrer, redirect to the login page
+          window.location.href = '/Smart_Login/Login'; // Change to your login page URL
+      }
+    </script>
+
+
+
+
+
+
+</head>
+<body>
+
+    <!-- Display each document and its name -->
+    @if (Model != null && Model.Data != null && Model.Data.Any())
+    {
+        <!-- Display each document and its name -->
+        foreach (var document in Model.Data)
+        {
+            <h2>@document["Doc_name"]</h2>
+            if (document.ContainsKey("pdf"))
+            {
+                <!-- Display PDF -->
+                <object class="pdf-object" data="@document["pdf"]" type="application/pdf"></object>
+            }
+            else if (document.ContainsKey("image"))
+            {
+                <!-- Display image -->
+                <img src="@document["image"]" alt="@document["Doc_name"]">
+            }
+        }
+    }
+    else
+    {
+        <!-- Display message if no documents are available -->
+        <div class="no-documents">
+            <h2>No documents available.</h2>
+        </div>
+    }
+</body>
+</html>

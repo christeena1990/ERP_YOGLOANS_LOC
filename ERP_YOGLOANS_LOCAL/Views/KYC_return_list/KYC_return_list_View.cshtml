@@ -1,0 +1,109 @@
+﻿
+
+
+@if (ViewBag.CustomerBankDetails != null && ViewBag.CustomerBankDetails.Rows.Count > 0)
+{
+    @model System.Data.DataTable
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            #cus_detailsDataGrid {
+                overflow-y: auto;
+                font-size: 14px;
+                width: 90%;
+                font-weight: 500;
+                border-collapse: collapse;
+            }
+
+                #cus_detailsDataGrid th, #cus_detailsDataGrid td {
+                    border: 1px solid #ccc;
+                    padding: 8px;
+                    text-align: center;
+                }
+
+                #cus_detailsDataGrid th {
+                    background-color: #4D759A;
+                    color: white;
+                }
+        </style>
+        <script>
+            $(document).ready(function () {
+                $(".continue-link").on("click", function (e) {
+                    e.preventDefault();
+                    var row = $(this).closest('tr');
+                    var id = parseInt(row.find('td:eq(1)').text());
+                    $.ajax({
+                        url: '@Url.Action("search_view", "CustomerCreate")',
+                        type: 'POST',
+                        data: { id: id },
+                        success: function (result) {
+                            if (result.success === true) {
+                                window.location.href = '@Url.Action("customer_modification", "Customer_modification")';
+                            }
+                        },
+                        error: function (error) {
+                            console.log("Debug: Ajax error - ", error);
+                        }
+                    });
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <div class="app-main__inner" style="margin-top: -30px;padding:0px;width:100%;">
+            <div style="height: 40px; display: flex; align-items: center; justify-content: center;">
+                <div class="card-title">
+                    <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">KYC return list</h6>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Original Data Grid Table -->
+                <div style="overflow-x:auto; max-height: 400px;">
+                    <table id="cus_detailsDataGrid" class="table table-hover table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th></th> <!-- Selection column header -->
+                                @if (ViewBag.CustomerBankDetails != null && ViewBag.CustomerBankDetails.Columns.Count > 0)
+                                {
+                                    foreach (System.Data.DataColumn column in ViewBag.CustomerBankDetails.Columns)
+                                    {
+                                        <th>@column.ColumnName</th>
+                                    }
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.CustomerBankDetails != null && ViewBag.CustomerBankDetails.Rows.Count > 0)
+                            {
+                                foreach (System.Data.DataRow row in ViewBag.CustomerBankDetails.Rows)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="#" class="continue-link">View</a>
+                                        </td>
+                                        @foreach (var item in row.ItemArray)
+                                        {
+                                            <td>@item</td>
+                                        }
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="6">No data available</td> <!-- Updated colspan to account for the selection column -->
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+}
+else
+{
+<p>No data available</p> <!-- Message if CustomerBankDetails is null or empty -->
+}

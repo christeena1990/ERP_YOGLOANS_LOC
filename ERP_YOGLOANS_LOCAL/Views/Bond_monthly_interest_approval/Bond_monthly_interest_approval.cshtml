@@ -1,0 +1,579 @@
+﻿
+@{
+    ViewBag.Title = "Bond_monthly_interest_approval";
+}
+
+
+
+@using System.Data
+
+
+@{
+    var issue_list_type = ViewData["IssueList"] as DataTable;
+
+    if (issue_list_type == null)
+    {
+        // Handle the null case, e.g., return an empty list or show a message
+        <p>No Issues available.</p>
+        return;
+    }
+
+    var Issues = issue_list_type.AsEnumerable().Select(row => new
+    {
+        issue_val = row["issue_no"],
+        issue = row["txt"] // Adjust based on your DataTable columns
+    }).ToList();
+
+
+
+    var bank_list_type = ViewData["BankList"] as DataTable;
+
+    if (bank_list_type == null)
+    {
+        // Handle the null case, e.g., return an empty list or show a message
+        <p>No cetificates  available.</p>
+        return;
+    }
+
+
+
+    var Banks = bank_list_type.AsEnumerable().Select(row => new
+    {
+        bank_val = row["sub_accno"],
+        bank = row["sub_name"] // Adjust based on your DataTable columns
+    }).ToList();
+
+
+
+
+
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equifax Enquiry</title>
+
+
+    <style>
+
+
+
+        .fixed-width-card {
+            flex: 1 1 300px; /* Flex-grow: 1, Flex-shrink: 1, Flex-basis: 300px */
+            min-width: 250px; /* Ensure a minimum width */
+            word-wrap: break-word;
+            word-break: break-word;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+    </style>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+    <link rel="stylesheet" href="~/Content/table_styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+</head>
+<body>
+    <script>
+        $(document).ready(function () {
+
+
+            //// Hide table and sum div on input change
+            //$('#ncd_monthlyinterest_entry_form input, #issueType,#bankType').on('change', function () {
+
+            $(' #issueType,#bankType').on('change', function () {
+                //alert("input changed");
+                $('#table_div').hide();   // Hide the table div
+                $('#sum_div').hide();     // Hide the sum div
+
+                $('#totals_div').hide();
+                //$('#dropdowndiv').hide();
+                $('#submitbutton').hide();
+                $('#resetbutton').hide();
+                $('#rejectbutton').hide();
+
+            });
+
+
+
+
+        });
+
+/////////////////////////////////////////
+       
+        $(document).ready(function () {
+    // Log ready status for debugging
+   // alert("Document is ready");
+
+    // Event listeners for both dropdowns (bankType and issueType)
+    $('#bankType, #issueType').on('change', function () {
+       // alert("Dropdown value changed");
+
+        // Get selected values
+        var bankId = $('#bankType').val();
+        var issueNo = $('#issueType').val();
+        //alert(bankId);
+        //alert(issueNo);
+        if (bankId==0) {
+            alert("Please select a bank.");
+            return;
+        }
+
+        //if (!issueNo) {
+        //    alert("Please select an issue.");
+        //    return;
+        //}
+
+        // AJAX call to GetgridData method
+        $.ajax({
+            url: '@Url.Action("GetgridData", "Bond_monthly_interest_approval")',
+            type: 'POST',
+            data: { bankId: bankId, issueNo: issueNo },
+            success: function (response) {
+                if (response.success) {
+                    // Clear existing table rows
+                    $('#customerTableBody').empty();
+
+                    // Initialize totals
+                    let totalInterest = 0;
+                    let totalAmount = 0;
+                    let totalTds = 0;
+
+                    // Populate the table with the data
+                    if (response.data && response.data.length > 0) {
+                        $.each(response.data, function (index, item) {
+                            $('#customerTableBody').append(
+                                '<tr>' +
+                                '<td>' + (index + 1) + '</td>' +
+                                '<td>' + item.Issue_No + '</td>' +
+                                '<td>' + item.Interest + '</td>' +
+                                '<td>' + item.Short_Recovery + '</td>' +
+                                '<td>' + item.TotalTDS + '</td>' +
+                                '<td>' + item.PayAmount + '</td>' +
+                                '<td>' + item.NoofDebentures + '</td>' +
+                                '</tr>'
+                            );
+
+                            // Update totals
+                            totalAmount += parseFloat(item.PayAmount) || 0;
+                            totalTds += parseFloat(item.TotalTDS) || 0;
+                            totalInterest += parseFloat(item.Interest) || 0;
+                        });
+
+                        // Show the summary and table
+                        $('#sum_div, #table_div, #totals_div, #dropdowndiv, #submitbutton, #resetbutton, #rejectbutton').show();
+
+                        // Display totals
+                        $('#totalAmount').text(totalAmount);
+                        $('#totalTds').text(totalTds);
+                        $('#totalInterest').text(totalInterest);
+                    } else {
+                        alert('No data found for the selected criteria.');
+                        $('#sum_div, #table_div, #totals_div, #submitbutton, #resetbutton, #rejectbutton').hide();
+                    }
+
+                    // Handle the session value (countofdebentures)
+                    if (response.countofdebentures != null) {
+                        $('#totaldebentureCount').text(response.countofdebentures); // Update the element with session value
+                    } else {
+                        alert("No debenture count found.");
+                    }
+                } else {
+                    alert(response.message || "No data found.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+                alert("An error occurred while generating the report.");
+            }
+        });
+    });
+});
+
+    </script>
+
+
+
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+                <br />
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Monthly Interest Approval </h6>
+            </div>
+        </div>
+        <br />
+        <div class="card-body">
+
+            <div id="form-container">
+                <form method="post" id="bond_monthlyinterest_entry_form" enctype="multipart/form-data" autocomplete="off">
+
+                    <div class="row">
+
+                        @*<div class="row">*@
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+
+                                </div>
+
+                                <div class="input-container fixed-width-card">
+
+                                    <select name="bankType" id="bankType" class="form-control">
+
+                                        @foreach (var loan in Banks)
+                                        {
+                                            <option value="@loan.bank_val" @(Model != null && Model.LoanType != null && loan.bank_val.ToString() == Model.LoanType.ToString() ? "selected" : "")>@loan.bank</option>
+
+                                        }
+
+                                    </select>
+
+
+
+                                    <label for="loan-type">Bank Name</label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        @*</div>*@
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+
+                                </div>
+
+                                <div class="input-container fixed-width-card">
+
+                                    <select name="issueType" id="issueType" class="form-control">
+                                        <option value="">Select Issue Number</option>
+                                        @foreach (var loan in Issues)
+                                        {
+                                            <option value="@loan.issue_val" @(Model != null && Model.LoanType != null && loan.issue_val.ToString() == Model.LoanType.ToString() ? "selected" : "")>@loan.issue</option>
+
+                                        }
+
+                                    </select>
+
+
+
+                                    <label for="Issue-type">Issue Number</label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-container fixed-width-card">
+
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+
+
+
+
+
+                    @*///////////////////////////////// table /////////////////////////////////////////////////////////////////////////////////*@
+
+
+
+                    <div id="table_div" style="width: 100%; overflow-y: auto; max-height: 180px; display: none;">
+                        <table id="cus_detailsDataGrid" class="table table-hover table-striped table-bordered" style="width: 100%; font-size: 13px; font-weight: 500;">
+                            <thead>
+
+                                <tr>
+                                    <th>#</th>
+                                    <th>Issue No</th>
+                                    <th> Interest</th>
+                                    @*<th>  TDS</th>*@
+                                    <th> Short Recovery</th>
+                                    <th> Total TDS</th>
+                                    <th> Pay Amount</th>
+                                    @*<th>  Debenture Amount</th>*@
+                                    <th>  No.of Debentures</th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody id="customerTableBody"></tbody>
+                        </table>
+                    </div>
+
+
+
+
+
+                    @*///////////////////////////////// interest, tds , pay amount/////////////////////////////////////////////////////////////////////////////////*@
+
+
+
+
+
+                    <div id="sum_div" style="padding-bottom: 5px;  display:none; width: 93%;">
+                        <span style="color: darkslategrey; font-weight: 700; font-size: 14px; padding-bottom: 20px;"> TOTAL DETAILS </span>
+                        <br />
+
+                        <div class="tab-content">
+
+                            <div class="p-3">
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="notifications-box">
+                                            <div class="vertical-time-simple vertical-without-time vertical-timeline vertical-timeline--one-column">
+                                                <div class="vertical-timeline-item dot-danger vertical-timeline-element">
+                                                    <div>
+                                                        <span class="vertical-timeline-element-icon bounce-in"></span>
+                                                        <div class="vertical-timeline-element-content bounce-in">
+                                                            <h4 class="timeline-title" id="Interest" name="Interest">
+                                                                <b>Interest</b>&nbsp;:&nbsp;<b><span style="color:blue" id="totalInterest"></span></b>
+                                                            </h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="notifications-box">
+                                            <div class="vertical-time-simple vertical-without-time vertical-timeline vertical-timeline--one-column">
+                                                <div class="vertical-timeline-item dot-dark vertical-timeline-element">
+                                                    <div>
+                                                        <span class="vertical-timeline-element-icon bounce-in"></span>
+                                                        <div class="vertical-timeline-element-content bounce-in">
+                                                            <h4 class="timeline-title" id="Amount" name="Amount">
+                                                                <b>Amount</b>&nbsp;:&nbsp;<b><span style="color:blue" id="totalAmount"> </span></b>
+                                                            </h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="notifications-box">
+                                            <div class="vertical-time-simple vertical-without-time vertical-timeline vertical-timeline--one-column">
+                                                <div class="vertical-timeline-item dot-primary vertical-timeline-element">
+                                                    <div>
+                                                        <span class="vertical-timeline-element-icon bounce-in"></span>
+                                                        <div class="vertical-timeline-element-content bounce-in">
+                                                            <h4 class="timeline-title" id="TDS" name="TDS">
+                                                                <b>TDS</b>&nbsp;:&nbsp;<b><span style="color:blue" id="totalTds"> </span></b>
+                                                            </h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="notifications-box">
+                                            <div class="vertical-time-simple vertical-without-time vertical-timeline vertical-timeline--one-column">
+                                                <div class="vertical-timeline-item dot-success vertical-timeline-element">
+                                                    <div>
+                                                        <span class="vertical-timeline-element-icon bounce-in"></span>
+                                                        <div class="vertical-timeline-element-content bounce-in">
+                                                            <h4 class="timeline-title" id="totalCount" name="totaldebentureCount">
+                                                                <b>Count</b>&nbsp;:&nbsp;<b><span style="color:blue" id="totaldebentureCount"> </span></b>
+                                                            </h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+                    @*/////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+
+
+
+                    <div class="row d-block text-center" style="padding-bottom: 5px;display: none;">
+                        <button type="button" class="btn btn-success " id="submitbutton" name="submitbutton" style="height: 40px; display: none;" onclick="ApproveBtnClick()">&nbsp; APPROVE &nbsp;</button> <!-- Button height adjusted -->
+                        &nbsp;&nbsp; &nbsp;  &nbsp;
+                        <button type="button" id="rejectbutton" class="btn btn-gradient-danger" style="height: 40px; display: none;" onclick="RejectBtnClick()">&nbsp;&nbsp; REJECT &nbsp;&nbsp;</button>
+                        &nbsp;&nbsp; &nbsp;  &nbsp;
+                        <button type="button" id="resetbutton" class="btn btn-gradient-secondary" style="height: 40px; display: none;" onclick="reloadPage()">&nbsp;&nbsp; RESET &nbsp;&nbsp;</button>
+                    </div>
+
+
+
+
+                </form>
+
+            </div>
+
+
+
+        </div>
+    </div>
+
+
+    @*</form>*@
+
+
+
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+
+
+    @*//////////////////////////////  -----  submit click  ----    ///////////////////////////////////////////*@
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function ApproveBtnClick() {
+            // alert("ApproveBtnClick click");
+            $.ajax({
+                url: '/Bond_monthly_interest_approval/btn_approve_Click',  // Replace with your actual controller namebtn_approve_Click
+                type: 'GET',  // Or 'POST' if your method is POST
+
+                success: function (response) {
+                    // Process the response
+                    if (response.success) {
+                         //alert("success");
+                         //alert(response.data);
+                        Swal.fire({
+
+                            title: response.data,
+                            /* text: result.message,*/
+                            text: "",
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        }).then(() => {
+                            window.location.reload();
+
+                        });
+
+                    }
+                    else {
+
+                        Swal.fire({
+                            title: "",
+                            text: response.message,
+                            icon: "error",
+                            confirmButtonText: "OK"
+
+                        });
+                    }
+
+                    // You can add other actions like updating the DOM, etc.
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error: " + error);
+                }
+            });
+        }
+
+
+        function RejectBtnClick() {
+            // alert("reject click");
+            $.ajax({
+                url: '/Bond_monthly_interest_approval/btn_reject_Click',  // Replace with your actual controller name
+                type: 'GET',  // Or 'POST' if your method is POST
+                success: function (response) {
+                    // Process the response
+                    if (response.success) {
+                        // alert("success");
+                        // alert(response.data);
+                        Swal.fire({
+
+                            title: response.data,
+                            /* text: result.message,*/
+                            text: "",
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    }
+                    else {
+                        //alert("not success");
+                        Swal.fire({
+                            title: "",
+                            text: response.message,
+                            icon: "error",
+                            confirmButtonText: "OK"
+
+                        });
+
+                        //alert(result.message);
+                        //return;
+                    }
+
+                    // You can add other actions like updating the DOM, etc.
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error: " + error);
+                }
+            });
+        }
+
+
+        function reloadPage() {
+            // Reload the page
+            location.reload();
+        }
+
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

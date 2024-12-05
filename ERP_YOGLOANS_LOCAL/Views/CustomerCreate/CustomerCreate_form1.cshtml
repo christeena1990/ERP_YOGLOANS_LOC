@@ -1,0 +1,340 @@
+﻿@using System.Data
+
+@model IEnumerable<ERP_YOGLOANS_LOCAL.Models.CustomerCreate_model>
+
+@{
+
+    var addressList = ViewData["AddressproofList"] as DataTable;
+    var addressproof = addressList.AsEnumerable().Select(row => new
+    {
+        kyc_id = row["kyc_id"],
+        kyc_name = row["kyc_name"]
+    });
+
+    var idList = ViewData["idproofList"] as DataTable;
+    var idproof = idList.AsEnumerable().Select(row => new
+    {
+        kyc_id = row["kyc_id"],
+        kyc_name = row["kyc_name"]
+    });
+}
+
+
+
+
+
+
+<html>
+<head>
+    <style>
+        .button_style {
+            background-color: #007FFF;
+            height: 40px;
+            width: 100px;
+            border-radius: 8px;
+            color: white;
+            border-color: white;
+        }
+
+        .error-message {
+            color: red;
+            //height:8px;
+            font-size: 80%;
+            float: right;
+            //margin-right: 10px;
+            display: none; /* Add margin to separate from the input */
+        }
+    </style>
+</head>
+
+<body>
+    <form onsubmit="return validateForm()" action="@Url.Action("CreateTempCustomer", "CustomerCreate")" method="post" id="search_form">
+        @*<div class="main-panel">
+        <div class="content">
+            <div class="page-inner">
+
+                <div class="col-md-12">
+                    <div class="card" style="background-color:#fcfcfc">
+
+                       <br />*@
+
+        <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+            <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+                <div class="card-title">
+                    <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Search Customer</h6>
+                </div>
+            </div>
+            <div class="card-body">
+
+
+
+                <div class="row" style="width:140%;">
+                    <div class="col-md-6 col-lg-4">
+
+                        <span id="mobileNoError" class="error-message"></span>
+                        <div class="input-group mb-3">
+
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Mobile No.<span style="color:red">*</span></span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="mobile_no" name="mobile_no" aria-label="" aria-describedby="basic-addon1" autocomplete="off" maxlength="10" onkeyup="validateMobileNumber(this)" value="@Session["MobileNo"]" @if (Session["MobileNo"] != null) { <text> readonly</text> } }>
+                            <!-- Add a span to display error message -->
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-4">
+                        <span id="firstNameError" class="error-message"></span>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">First Name<span style="color:red">*</span></span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="f_name" name="f_name" aria-label="" aria-describedby="basic-addon1" autocomplete="off" Style="text-transform: uppercase" required onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g, '')" onPaste="javascript: return false;" value="@Session["f_name"]" @*@if (Session["f_name"] != null) { <text> readonly</text> } }*@>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                @*...Fifth row...*@
+                <div class="row" style="width:140%;">
+                    <div class="col-md-6 col-lg-4">
+                        <span id="secondNameError" class="error-message"></span>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Second Name@*<span style="color:red">*</span>*@</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="s_name" name="s_name" aria-label="" aria-describedby="basic-addon1" autocomplete="off" Style="text-transform: uppercase" onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g, '')" onPaste="javascript: return false;" value="@Session["s_name"]" @*@(Session["s_name"] != null ? "readonly" : "")*@>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Last Name</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="l_name" name="l_name" aria-label="" aria-describedby="basic-addon1"
+                             @*onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g, '')"*@ onkeyup="this.value=this.value.replace(/[^a-zA-Z\s]/g, '')"
+                             autocomplete="off" Style="text-transform: uppercase" onPaste="javascript: return false;">
+                        </div>
+
+                    </div>
+
+                </div>
+                @*...Sixth row...*@
+                <!--<div class="row" style="width:140%;">
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Address Proof</span>
+                            </div>
+
+                            <select class="form-control" name="ddl_address" id="ddl_address">
+
+                                @foreach (var address in addressproof)
+                                {
+                                    <option value="@address.kyc_id" @(address.kyc_id.ToString() == Session["ddl_add"]?.ToString() ? "selected" : "")>@address.kyc_name</option>
+                                }
+                            </select>
+
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Address Proof No</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="txt_add_proof_no" name="txt_add_proof_no" aria-label="" aria-describedby="basic-addon1" onchange="validateAddressProofNo();" value="@Session["Eid"]">
+                        </div>
+
+                    </div>
+
+                </div>-->
+                @*...Seventh row...*@
+                <!--<div class="row" style="width:140%;">
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+
+                                <span style="width:140px;" class="input-group-text">Id Proof</span>
+
+                            </div>-->
+
+                            <!--<select class="form-control" name="ddl_idproof" id="ddl_idproof">-->
+                            <!-- Loop through guardians and generate options -->
+                            <!--@foreach (var id in idproof)
+                            {
+                                <option value="@id.kyc_id">@id.kyc_name</option>
+                            }
+                        </select>-->
+
+                            <!--<select class="form-control" name="ddl_idproof" id="ddl_idproof">
+
+                                @foreach (var id in idproof)
+                                {
+                                    <option value="@id.kyc_id" @(id.kyc_id.ToString() == Session["ddl_id"]?.ToString() ? "selected" : "")>@id.kyc_name</option>
+                                }
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Id Proof No</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="txt_id_proof_no" name="txt_id_proof_no" aria-label="" aria-describedby="basic-addon1" onchange="validateIDProofNo();" Style="text-transform: uppercase" value="@Session["Id"]">
+                        </div>
+
+                    </div>
+
+                </div>-->
+
+                <div class="overlay" id="loadingOverlay">
+
+                </div>
+
+                <div class="card-action" id="button_div">
+
+                    <button id="createNewCustomerButton" style="width:165px;align-self:center;font-size:15px;" class="button_style" type="submit" value="submit" onclick="search_form()">Create New Customer</button>
+                </div>
+    </form>
+
+
+    @*</div>*@
+
+    @*<hr />*@
+
+
+
+    <div id="partialContainer">
+
+
+    </div>
+
+
+    @*</div>
+
+    </div>*@
+
+    @*</div>
+    </div>
+
+    </div>
+
+
+    </div>
+
+    </div>*@
+
+</body>
+</html>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+<script>
+
+     //document.getElementById("txt_add_proof_no").readOnly = true;
+     //document.getElementById("txt_id_proof_no").readOnly = true;
+
+
+    function validateAddressProofNo() {
+        var selectedValue = document.getElementById("ddl_address").value;
+        var addressProofNo = document.getElementById("txt_add_proof_no").value;
+        var regex;
+
+        if (!selectedValue || !addressProofNo) {
+            alert("Please select an Address Proof type and enter the corresponding number.");
+            return;
+        }
+
+        // Declare the regex variable outside the switch
+        switch (selectedValue) {
+            case "9": // Aadhar
+                regex = /^\d{12}$/;
+                if (!regex.test(addressProofNo)) {
+                    alert("Invalid Aadhar No! Please enter a valid 12-digit number.");
+                    clearAndFocus("txt_add_proof_no");
+                }
+                break;
+            case "2": // Passport
+                regex = /([a-zA-Z]{1})([0-9]{7})$/;
+                if (!regex.test(addressProofNo)) {
+                    alert("Invalid Passport No! Please enter a valid combination.");
+                    clearAndFocus("txt_add_proof_no");
+                }
+                break;
+            case "4": // Indian Voters ID
+                regex = /([a-zA-Z]{3})([0-9]{7})$/;
+                if (!regex.test(addressProofNo)) {
+                    alert("Invalid Voters ID No! Please enter a valid combination.");
+                    clearAndFocus("txt_add_proof_no");
+                }
+                break;
+            default:
+                // No validation for other items
+                return;
+        }
+    }
+
+    // Function to clear the input value and set focus
+    function clearAndFocus(elementId) {
+        document.getElementById(elementId).value = '';
+        document.getElementById(elementId).focus();
+    }
+
+    function validateIDProofNo() {
+        var selectedValue1 = document.getElementById("ddl_idproof").value;
+        var idProofNo = document.getElementById("txt_id_proof_no").value;
+        var regex;
+
+        if (!selectedValue1 || !idProofNo) {
+            alert("Please select an ID Proof type and enter the corresponding number.");
+            return;
+        }
+
+        switch (selectedValue1) {
+            // pan validation
+            case "1":
+
+
+                regex = /^[a-zA-Z]{3}P[a-zA-Z][0-9]{4}[a-zA-Z]$/;
+                break;
+            default:
+                return;
+        }
+
+        // Perform validation
+
+        var idProofNo = document.getElementById("txt_id_proof_no").value.trim().toUpperCase();
+
+
+        if (!regex.test(idProofNo)) {
+
+            alert("Invalid PAN No! Please enter a valid number.");
+            document.getElementById("txt_id_proof_no").value = '';
+            document.getElementById("txt_id_proof_no").focus();
+        }
+    }
+
+</script>
+

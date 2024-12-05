@@ -1,0 +1,287 @@
+﻿
+@{
+    ViewBag.Title = "NCD_int_block_release_Approve";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Interest Block/Release Approve</title>
+    <style>
+        #tbl_approve th {
+            position: sticky;
+            top: 0; /* Stick to the top */
+            z-index: 10; /* Ensure it stays above other elements */
+            background-color: #4D759A; /* Header background color */
+            color: white; /* Header text color */
+        }
+    </style>
+</head>
+<body>
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">INTEREST PAYMENT BLOCK/RELEASE APPROVE</h6>
+            </div>
+        </div>
+
+
+        @*--- Buttons ---*@
+        <div class="card-body" style="width:100%;">
+
+            @* ---------Buttons for Block/Release------------------- *@
+            <div role="group" class="mb-2 btn-group-lg btn-group btn-group-toggle">
+                <button type="button" class="btn btn-outline-primary" value="B">BLOCK</button>
+                <button type="button" class="btn btn-outline-primary" value="R">RELEASE</button>
+            </div>
+        </div>
+        <div class="row" id="div_grid" style="width: 100%; overflow-y: auto;height:300px;">
+
+            <table id="tbl_approve" class="table table-hover table-striped table-bordered" style="overflow-y: auto; font-size:12px;width:900px;font-weight:bold">
+                <thead style="display: none;">
+                    <tr>
+                        <th style="background-color: #4D759A; color: white;">Select</th>
+                        <th style="background-color: #4D759A; color: white;">Issue No</th>
+                        <th style="background-color: #4D759A; color: white;">Certificate No</th>
+                        <th style="background-color: #4D759A; color: white;">Customer</th>
+                        <th style="background-color: #4D759A; color: white;">Deposit Amount</th>
+                        <th style="background-color: #4D759A; color: white;">Maturity Date</th>
+                        <th style="background-color: #4D759A; color: white;">Bank Account Number</th>
+                        <th style="background-color: #4D759A; color: white;">Payee Name</th>
+                        <th style="background-color: #4D759A; color: white;">Debenture ID</th>
+                        <th style="background-color: #4D759A; color: white;" id="enter_by"></th>
+                        <th style="background-color: #4D759A; color: white;">IFSC</th>
+                        <th style="background-color: #4D759A; color: white;">Bank Name</th>
+                        <th style="background-color: #4D759A; color: white;" id="request_dt"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <br />
+        @*------------------ Div for View Details -----------------------*@
+        <div class="main-card mb-2 card" style="display:none;" id="div_details">
+            <div class="card-body">
+                <h5 class="card-title">DETAILS</h5>
+                <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
+                    <div class="vertical-timeline-item vertical-timeline-element">
+                        @* Details here *@
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        @*------------------ div for Buttons -----------------------*@
+        <div class="tabs-animation" id="div_btn" style="display:none;">
+            <div class="mb-3 card">
+                <div class="card-header-tab card-header">
+                    <div class="card-header-title font-size-md text-capitalize font-weight-bold">
+                        <i class="header-icon lnr-charts icon-gradient bg-happy-green"> </i>
+                        <button type="submit" class="mb-2 mr-2 btn btn-success active" id="btn_approve" style="width:150px;" onclick="request()">APPROVE</button>
+                    </div>
+                    <div class="btn-actions-pane-right text-capitalize">
+                        <button type="submit" class="mb-2 mr-2 btn btn-danger active" id="btn_reset" style="width:150px;">REJECT</button>
+                    </div>
+                    <div class="btn-actions-pane-right text-capitalize">
+                        <button type="submit" class="mb-2 mr-2 btn btn-secondary active" id="btn_reset" style="width:150px;">RESET</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+<script src="~/Scripts/preloader_script.js"></script>
+<script>
+        // Select all buttons in the group
+        const buttons = document.querySelectorAll('.btn-group button');
+
+        // Add click event listener to each button
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove 'active' class from all buttons
+                buttons.forEach(btn => btn.classList.remove('active'));
+
+                // Add 'active' class to the clicked button
+                button.classList.add('active');
+
+                // Store the value of the clicked button in localStorage
+                localStorage.setItem('activeButtonValue', button.value);
+                const savedValue = localStorage.getItem('activeButtonValue');
+                if (savedValue === 'B') {
+                    $('#enter_by').text('Enter By');
+                    $('#request_dt').text('Request Reason');
+                    fill_block_grid();
+                }
+                else {
+                    $('#enter_by').text('Requested By');
+                    $('#request_dt').text('Request Date');
+                    fill_release_grid();
+                }
+            });
+        });
+
+        // Restore the active button state from localStorage on page load
+        //document.addEventListener('DOMContentLoaded', () => {
+        //    const savedValue = localStorage.getItem('activeButtonValue');
+        //    if (savedValue) {
+        //        buttons.forEach(button => {
+        //            if (button.value === savedValue) {
+        //                button.classList.add('active');
+
+        //            }
+        //        });
+        //    }
+        //});
+
+
+        function fill_block_grid() {
+            $.ajax({
+             url: "@Url.Action("fill_blockGrid", "NCD_int_block_release_Approve")",
+             type:'GET',
+
+             success: function (response) {
+                 if (response) {
+                     var data = response;
+                     var tbody = $('#tbl_approve tbody');
+                     tbody.empty(); // Clear existing data
+
+
+                     // Show the table header
+                     $('#tbl_approve thead').css('display', 'table-header-group');
+
+                     data.forEach(function (row) {
+
+                         var newRow = '<tr>' +
+                             '<td>' +
+                             '<a href="#" class="view-customers" data-row=\'' + encodeURIComponent(JSON.stringify(row)) + '\'>' +
+                             '<span>&#128065;</span></a>' + // View action button
+                             '</td>' +
+                             '<td>' + (row.issue_no || '') + '</td>' +
+                             '<td>' + (row.certificate_no || '') + '</td>' +
+                             '<td>' + (row.Customer || '') + '</td>' +
+                             '<td>' + (row.amount || '') + '</td>' +
+                             '<td>' + (row.Maturity_Date || '') + '</td>' +
+                             '<td>' + (row.banki_ac || '') + '</td>' +
+                             '<td>' + (row.payee_name || '') + '</td>' +
+                             '<td>' + (row.bond_id || '') + '</td>' +
+                             '<td>' + (row.Enter_By || '') + '</td>' +
+                             '<td>' + (row.IFSC || '') + '</td>' +
+                             '<td>' + (row.Bank_Name || '') + '</td>' +
+                             '<td>' + (row.Request_Reason || '') + '</td>' +
+                             '</tr>';
+                         tbody.append(newRow);
+                     });
+
+                     $('.view-customers').click(function (e) {
+                         e.preventDefault(); // Prevent the default action
+                         $("#div_details").css("display", "block");                         
+                         $("#div_btn").css("display", "block");                         
+
+                         var divIssueDetails = $("#div_details .vertical-timeline-item");
+                         divIssueDetails.empty();
+
+                         var rowData = decodeURIComponent($(this).data('row'));
+                         if (rowData) {
+                             var data = JSON.parse(rowData);
+
+                             var IssueHtml = `
+                                <div class="vertical-timeline-item vertical-timeline-element">
+                                    <div>
+                                        <span class="vertical-timeline-element-icon bounce-in">
+                                            <i class="badge badge-dot badge-dot-xl badge-primary"> </i>
+                                        </span>
+                                        <div class="vertical-timeline-element-content bounce-in">
+                                            <h4 class="timeline-title text-success">Issue Details</h4>
+                                            <p>
+
+                                                Issue No: &nbsp;<span style="font-weight:bold;color:#3f6ad8">${data.issue_no}</span>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                Certificate No: &nbsp;<span style="font-weight:bold;color:orange">${data.certificate_no}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                                Deposit Amount	: &nbsp;<span style="font-weight:bold;color:#d92550">${data.amount}/-</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                               Customer Name	: &nbsp;<span style="font-weight:bold;color:#16aaff">${data.Customer}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                               
+
+                                            <br/>
+                                               
+                                               Maturity Date: &nbsp;<span style="font-weight:bold;color:#444054">${data.Maturity_Date}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                Bank Name	: &nbsp;<span style="font-weight:bold;color:orange">${data.Bank_Name}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                               IFSC	: &nbsp;<span style="font-weight:bold;color:#3f6ad8">${data.IFSC}</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                           </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                         }
+
+                        
+                         divIssueDetails.append(IssueHtml);
+                     });
+
+                 } else {
+                     alert(response.message);
+                 }
+                },
+                error: function (error) {
+                    alert("Error fetching data.");
+
+                }
+            });
+    }
+
+        function fill_release_grid() {
+            $.ajax({
+             url: "@Url.Action("fill_releaseGrid", "NCD_int_block_release_Approve")",
+             type:'GET',
+
+             success: function (response) {
+                 if (response) {
+                     var data = response;
+                     var tbody = $('#tbl_approve tbody');
+                     tbody.empty(); // Clear existing data
+
+
+                     // Show the table header
+                     $('#tbl_approve thead').css('display', 'table-header-group');
+
+                     data.forEach(function (row) {
+
+                         var newRow = '<tr>' +
+                             '<td>' +
+                             '<a href="#" class="view-customers">' +
+                             '<span>&#128065;</span></a>' + // View action button
+                             '</td>' +
+                             '<td>' + (row.issue_no || '') + '</td>' +
+                             '<td>' + (row.certificate_no || '') + '</td>' +
+                             '<td>' + (row.Customer || '') + '</td>' +
+                             '<td>' + (row.amount || '') + '</td>' +
+                             '<td>' + (row.Maturity_Date || '') + '</td>' +
+                             '<td>' + (row.banki_ac || '') + '</td>' +
+                             '<td>' + (row.payee_name || '') + '</td>' +
+                             '<td>' + (row.bond_id || '') + '</td>' +
+                             '<td>' + (row.Requested_By || '') + '</td>' +
+                             '<td>' + (row.IFSC || '') + '</td>' +
+                             '<td>' + (row.Bank_Name || '') + '</td>' +
+                             '<td>' + (row.Release_Request_Date || '') + '</td>' +
+                             '</tr>';
+                         tbody.append(newRow);
+                     });
+
+                 } else {
+                     alert(response.message);
+                 }
+                },
+                error: function (error) {
+                    alert("Error fetching data.");
+
+                }
+            });
+        }
+</script>
+</body>
+</html>
+
+

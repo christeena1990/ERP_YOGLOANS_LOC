@@ -1,0 +1,296 @@
+﻿
+@{
+    ViewBag.Title = "BL_DocEsign_First";
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+</head>
+<body>
+    <br />
+
+    @*------For LoadingOverlay-----*@
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+    <script src="~/Scripts/preloader_script.js"></script>
+    <div class="overlay" id="loadingOverlay">
+    </div>
+
+
+
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Document  E-sign</h6>
+            </div>
+        </div>
+        <br />
+
+        <div class="row" id="div_grid" style="width: 100%; overflow-y: auto;height:300px;">
+
+            <table id="tbl_customerList" class="table table-hover table-striped table-bordered" style="overflow-y: auto; font-size:12px;width:850px;font-weight:bold">
+
+
+                <thead style="display: none;">
+                    <tr>
+                        <th style="background-color: #4D759A; color: white;">View</th>
+                        <th style="background-color: #4D759A; color: white;">Application Id</th>
+                        <th style="background-color: #4D759A; color: white;">Customer Id</th>
+                        <th style="background-color: #4D759A; color: white;">Customer Name</th>
+                        <th style="background-color: #4D759A; color: white;">Requested Amount</th>
+                        <th style="background-color: #4D759A; color: white;">Application Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+
+
+            </table>
+        </div>
+        <br />
+        <div class="form-row">
+
+            <div class="col-md-4">
+                <div class="input-container">
+                    <input type="text" id="appli_id" name="appli_id" readonly class="form-control" style="color:red" />
+                    <label for="input-text">Application ID </label>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="input-container">
+                    <input type="text" id="customer_id" name="customer_id" readonly class="form-control" style="color:red" />
+                    <label for="input-text">Customer ID </label>
+                </div>
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="input-container">
+                    <input type="text" id="cust_name" name="cust_name" readonly class="form-control" style="color:red" />
+                    <label for="input-text">Customer Name </label>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="div_button">
+            <div class="form-row justify-content-center d-flex">
+                <div class="col-md-6 col-lg-3 d-flex justify-content-center">
+                    <button class="mb-2 mr-2 btn-hover-shine btn btn-shadow btn-success" id="btn_submit">SEND DOC</button>
+                </div>
+                <div class="col-md-6 col-lg-3 d-flex justify-content-center">
+                    <button class="mb-2 mr-2 btn-hover-shine btn btn-shadow btn-secondary" id="btn_reset">RESET</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="partialViewContainer"></div>
+
+    </div>
+
+    <link rel="stylesheet" href="~/Content/cust_apprvlmsgbox1.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+
+        $(document).ready(function () {
+            fillgrid();
+
+        }); _BL_DocEsign_First
+
+         function fillgrid() {
+             $.ajax({
+              url: "@Url.Action("fillGrid", "BL_KFS_kerala")",
+              type:'GET',
+
+              success: function (response) {
+
+                  // Clear the existing table body
+                  $('#tbl_customerList tbody').empty();
+
+                  // Show the table header
+                  $('#tbl_customerList thead').css('display','table-header-group');
+
+                  // Check if there is any data in the response
+                  if (response && response.length > 0) {
+                      // Loop through the response and populate the table
+                      $.each(response, function (index, customers) {
+
+                          var row ='<tr>'+
+                             '<td>'+
+                              '<a href="#" class="view-customers" data-application-id="' + customers.application_id + '" data-customer-id="' + customers.customer_id + '" data-customer-name="' + customers.customer_name +'"  >'+
+                             '<span>&#128065;</span></a>'+ // View action button
+                             '</td>'+
+                              '<td>' + customers.application_id +'</td>'+
+                              '<td>' + customers.customer_id +'</td>'+
+                              '<td>' + customers.customer_name +'</td>'+
+                              '<td>' + customers.requested_amt +'</td>'+
+                              '<td>' + customers.application_dt +'</td>'+
+                             '</tr>';
+
+                          // Append row to table body
+                          $('#tbl_customerList tbody').append(row);
+                      });
+
+                         // Attach the click event to the dynamically generated links
+                         $('.view-customers').click(function (e) {
+                             e.preventDefault(); // Prevent the default action
+                             var appli_id = $(this).data('application-id');
+                             var cust_id = $(this).data('customer-id');
+                             var cust_name = $(this).data('customer-name');
+                             $('#appli_id').val(appli_id);
+                             $('#customer_id').val(cust_id);
+                             $('#cust_name').val(cust_name);
+                         });
+
+                  } else {
+                      // If no data found, display a message
+                      var noDataRow ='<tr><td colspan="5" class="text-center">No data found..</td></tr>';
+                      $('#tbl_customerList tbody').append(noDataRow);
+                  }
+
+                 },
+                 error: function (error) {
+                     alert("Error fetching data.");
+
+                 }
+             });
+        }
+
+        function fetchData(applicationId) {
+
+
+            $.ajax({
+                url: '@Url.Action("Fillform", "BL_KFS_kerala")',
+                type: 'POST',
+                data: { applicationId: applicationId },
+                success: function (response) {
+                    $("#partialViewContainer").html(response);
+
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error occurred:", error);
+                    alert("An error occurred while fetching data: " + error + "\nStatus: " + status + "\nResponse Text: " + xhr.responseText);
+                }
+            });
+          }
+
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script>
+
+        $(document).ready(function () {
+        $('#btn_submit').click(function (event) {
+            event.preventDefault();
+            var applicationId = $('#appli_id').val();
+
+            if (applicationId) {
+
+                showLoadingIndicator();
+
+                $.ajax({
+                   url: "@Url.Action("Fillform", "BL_KFS_kerala")",
+                    type: 'POST',
+                    data: { applicationId: applicationId },
+                    success: function (response) {
+                        $("#partialViewContainer").html(response).css("display", "none");
+
+                        setTimeout(function () {
+                            var element = document.getElementById('pdf-content');
+                            console.log("Element for PDF:", element);
+                            if (element) {
+                                generateAndSendPDF(element);
+                            } else {
+                                alert('No PDF content found in partial view.');
+                            }
+                        }, 1000); // Ensuring enough delay to load content
+                    },
+                    error: function (error) {
+                        alert("Error fetching data for PDF.");
+                        console.error('Error fetching data:', error);
+                    }
+                });
+            } else {
+                alert("Please select an application first.");
+            }
+        });
+    });
+
+    function generateAndSendPDF(element) {
+       // alert("Element found: " + element); // Confirm element presence
+
+        var opt = {
+            margin: [0.3, 0.2, 1.5, 0.2], // Adjust as needed
+            filename: 'BL_eSignFirstStep.pdf',
+            image: { type: 'jpeg', quality: 0.75 }, // Reduced quality to lower file size
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Debugging step to log options and element
+        console.log("PDF Options:", opt);
+        console.log("HTML Element:", element);
+
+        html2pdf().from(element).set(opt).toPdf().output('blob').then(function (pdfBlob) {
+
+              hideLoadingIndicator();
+              alert("PDF generated"); // PDF generation successful
+
+              html2pdf().from(element).set(opt).save();
+
+           /* sendPDFToServer(pdfBlob);*/
+        }).catch(function(err) {
+            console.error("Error generating PDF: ", err);
+            alert("There was an error generating the PDF: " + err.message);
+        });
+    }
+
+    function sendPDFToServer(pdfBlob) {
+        alert("sendPDFToServer called!");
+        console.log("Sending PDF data to server:", pdfBlob);
+
+        var formData = new FormData();
+        formData.append('pdfFile', pdfBlob, 'Business_Loan_Document.pdf'); // Correctly append the Blob
+        formData.append('applicationId', $('#appli_id').val());
+
+        $.ajax({
+            url: '@Url.Action("SendDocToLeegality", "BL_KFS_kerala")',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function (response) {
+                alert(response.message);
+               // console.log(response);
+            },
+            error: function (xhr, status, error) {
+                alert("Error during the request.");
+                console.error('Error sending PDF:', xhr.responseText, status, error);
+            }
+        });
+    }
+      function dataURLtoBlob(dataURL) {
+      var byteString = atob(dataURL.split(',')[1]);
+      var arrayBuffer = new ArrayBuffer(byteString.length);
+      var uintArray = new Uint8Array(arrayBuffer);
+
+      for (var i = 0; i < byteString.length; i++) {
+          uintArray[i] = byteString.charCodeAt(i);
+      }
+
+      return new Blob([uintArray], { type: 'application/pdf' });
+     }
+    </script>
+
+
+</body>
+</html>
+
+

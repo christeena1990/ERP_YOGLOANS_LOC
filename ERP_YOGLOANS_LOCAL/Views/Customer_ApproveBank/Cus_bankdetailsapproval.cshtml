@@ -1,0 +1,1089 @@
+﻿
+
+@model System.Data.DataTable
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="~/Content/cust_apprvlmsgbox1.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <style>
+
+        .toggle-password {
+            cursor: pointer;
+        }
+
+
+        /* Your existing CSS styles */
+        .app-main__inner {
+            margin-top: -30px;
+            padding: 10px;
+            font-family: Arial, sans-serif; /* Example font family */
+        }
+
+        .card-title h6 {
+            font-weight: bold;
+            font-size: 25px;
+            margin: 0;
+            color: maroon;
+        }
+
+
+
+        /* New CSS styles for the cus_detailsTable box */
+        #cus_detailsTable {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        #cus_detailsDataGrid {
+            overflow-y: auto;
+            font-size: 14px;
+            width: 100%;
+            font-weight: 500;
+            border-collapse: collapse; /* Ensures table borders are collapsed */
+        }
+
+            #cus_detailsDataGrid th,
+            #cus_detailsDataGrid td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: center; /* Adjust alignment as needed */
+            }
+
+            /* Styling for table header */
+            #cus_detailsDataGrid th {
+                background-color: #4D759A; /* Light blue background color for headers */
+                color: white; /* Dark text color for headers */
+            }
+
+        /* Adjusted styles for input fields */
+        .input-group {
+            width: 100%; /* Ensures inputs take full width of parent container */
+        }
+
+        .input-group-text {
+            width: 140px; /* Adjusted width for the label spans */
+            text-align: left; /* Left-align text in labels */
+        }
+
+        .form-control {
+            width: calc(100% - 150px); /* Adjusted width for input fields */
+        }
+
+
+
+        /*.modal {
+                    display: none;
+                    position: fixed;
+                    z-index: 1;
+                    padding-top: 100px;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    overflow: auto;*/ /* Enable scrolling */
+        /*background-color: rgb(0,0,0);
+                    background-color: rgba(0,0,0,0.9);
+                }*/
+        /* Modal Content (image) */
+        /*.modal-content {
+                    margin: auto;
+                    display: block;
+                    width: 80%;
+                    max-width: 700px;
+                    max-height: 80vh;*/ /* Limiting height to 80% of viewport height */
+        /*overflow-y: auto;*/ /* Enable vertical scrolling */
+        /*}
+
+                .modal-body {
+                    overflow-y: auto;*/ /* Ensure the body can scroll */
+        /*}*/
+
+
+        /* Caption of Modal Image */
+        /*#caption {
+                    margin: auto;
+                    display: block;
+                    width: 60%;*/
+        /*max-width: 700px;*/
+        /*text-align: center;
+                    color: #ccc;
+                    padding: 10px 0;*/
+        /*height: 150px;*/
+        /*height: 100%;
+                }*/
+
+        /* The Close Button */
+        /*.close {
+                    position: absolute;
+                    top: 15px;
+                    right: 35px;
+                    color: #f1f1f1;
+                    font-size: 40px;
+                    font-weight: bold;
+                    transition: 0.3s;
+                }
+
+                    .close:hover,
+                    .close:focus {
+                        color: #bbb;
+                        text-decoration: none;
+                        cursor: pointer;
+                    }*/
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .popup {
+            display: none;
+            position: absolute;
+            width: 600px; /* Fixed width */
+            height: 500px; /* Fixed height */
+            background-color: white;
+            border: 1px solid #888;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+            cursor: move;
+            overflow: hidden; /* Ensure content doesn't overflow */
+        }
+
+        /*.popup-content img, .popup-content object {
+                    width: 100%;
+                    height: 100%;*/ /* Fill the popup container */
+        /*object-fit: cover;*/ /* Ensure the content covers the available space */
+        /*}*/
+        .popup-content {
+            width: 100%;
+            height: 100%;
+            /* overflow: auto;*/ /* Enable scrolling */
+        }
+
+            .popup-content img {
+                max-width: 100%;
+                max-height: 100%;
+                display: block;
+                margin: auto;
+            }
+
+            .popup-content object {
+                width: 100%;
+                height: 100%;
+            }
+
+        .popup-header {
+            background-color: #f1f1f1;
+            padding: 10px;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .popup-title {
+            margin: 0;
+        }
+
+        .close {
+            color: #000;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+            .close:hover {
+                color: red;
+            }
+
+
+        /* Optional: Make the background semi-transparent */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 999;
+        }
+
+        /*
+                .modal {
+                    display: none;
+                    position: fixed;
+                    z-index: 1;
+                    left: 0;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    overflow: auto;
+                    background-color: rgba(0,0,0,0.8);
+                }
+
+                .modal-content {
+                    background-color: #fefefe;
+                    margin: 15% auto;
+                    padding: 20px;
+                    border: 1px solid #888;
+                    width: 80%;
+                    max-width: 800px;
+                    position: relative;
+                }
+
+                .close {
+                    color: #aaa;
+                    float: right;
+                    font-size: 28px;
+                    font-weight: bold;
+                }
+
+                    .close:hover,
+                    .close:focus {
+                        color: black;
+                        text-decoration: none;
+                        cursor: pointer;
+                    }
+
+                #modal-body img,
+                #modal-body object {
+                    width: 100%;
+                    height: auto;
+                }
+        */
+
+
+
+        .custom-approve-button .swal2-confirm, .custom-approve-button .swal2-deny {
+            background-color: #3085d6;
+            color: #fff;
+            border: none !important; /* Remove the border */
+            box-shadow: none !important; /* Remove the box shadow */
+            outline: none; /* Remove the outline on click */
+            /* Add any other styles you need for both buttons */
+        }
+
+            .custom-approve-button .swal2-deny::after {
+                content: none; /* Remove the default ::after pseudo-element */
+            }
+
+
+
+        /*#cus_detailsDataGrid tbody {
+                    display: block;
+                    height: 150px;*/ /* Adjust height according to your row height */
+        /*overflow-y: scroll;
+                }
+
+                    #cus_detailsDataGrid thead, #cus_detailsDataGrid tbody tr {
+                        display: table;
+                        width: 100%;
+                        table-layout: fixed;
+                    }
+
+                #cus_detailsDataGrid {
+                    width: 100%;
+                }*/
+    </style>
+
+
+</head>
+<body>
+    @if (ViewBag.IsEmpty)
+    {
+        <br />
+        <br />
+        <p>No records.</p>
+    }
+    else
+    {
+<div class="app-main__inner">
+
+    <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+        <div class="card-title">
+            <h6>CUSTOMER BANK DETAILS APPROVAL</h6>
+        </div>
+    </div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+    <script type="text/javascript">
+
+        var globalCustomerId;
+        var globalRequestType;
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('viewDocumentsBtn').addEventListener('click', function () {
+                viewDocumentClick();
+            });
+        });
+
+            var data;
+function viewDocumentClick(customerId, requestType) {
+   // alert("to the doc view fun");
+
+    // Assuming globalCustomerId and globalRequestType are defined elsewhere
+     data = {
+        customerId: globalCustomerId,
+        requestType: globalRequestType
+    };
+
+    $.ajax({
+        url: '@Url.Action("ServeDocument", "Customer_ApproveBank")', // Replace with your correct URL using Url.Action
+        type: 'POST',
+        data: data,
+        success: function (response) {
+           // alert("Success!");
+
+            var getImageValue = response.imageUrl;
+           // alert(getImageValue);
+
+            if (getImageValue != null) {
+                if (getImageValue.startsWith("data:image")) {
+                    //alert("image");
+                    displayPhoto(getImageValue, 'image');
+                } else if (getImageValue.startsWith("data:application/pdf")) {
+                   // alert("pdf");
+                    displayPhoto(getImageValue, 'pdf');
+                } else {
+                    alert("Unknown file type");
+                }
+            } else {
+                alert("No image URL received");
+            }
+        },
+        error: function (xhr, status, error) {
+            // Handle error
+            console.error(error);
+            alert("No document");
+        }
+    });
+
+
+    function displayPhoto(dataUrl, type) {
+       // alert("display");
+        var modal = document.getElementById('mediaModal');
+        var content = document.getElementById('pdfViewer'); // Use pdfViewer as content
+
+        if (type === 'pdf') {
+            // Convert base64 to Blob
+            var base64Data = dataUrl.split(',')[1];
+            var binaryString = atob(base64Data);
+            var len = binaryString.length;
+            var bytes = new Uint8Array(len);
+            for (var i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            var blob = new Blob([bytes], { type: 'application/pdf' });
+            var blobUrl = URL.createObjectURL(blob);
+
+            // Embed PDF in an iframe
+            content.innerHTML = `
+                      <iframe id="pdfFrame" src="${blobUrl}" style="width:100%; height:400px; border:none; border: 7px solid #ddd;" frameborder="0"></iframe>`;
+
+            //        content.innerHTML = `
+            ////          <div style="padding-top:25px; padding-left:120px;">
+            ////            <iframe src="${blobUrl}" style="width:100%; height:600px; border:none;" frameborder="0"></iframe>
+            ////          </div>`;
+
+            // Hide zoom controls for PDFs
+            document.getElementById('zoomControls').style.display = 'none';
+
+        } else if (type === 'image') {
+            content.innerHTML = `
+                       <div id="imageWrapper" style="width:700px; height:400px; overflow:auto; background-color:white; border: 7px solid #ddd;">
+                           <img id="modalImage" src="${dataUrl}" style="width:600px; padding-left:120px; padding-top:35px; transform: scale(1);" />
+                       </div>`;
+
+            // Show zoom controls for images
+            document.getElementById('zoomControls').style.display = 'block';
+
+            // Add zoom functionality for image
+            let scale = 1;
+            const zoomStep = 0.1;
+            const modalImage = document.getElementById('modalImage');
+
+            document.getElementById('zoomIn').addEventListener('click', () => {
+                scale += zoomStep;
+                modalImage.style.transform = `scale(${scale})`;
+            });
+
+            document.getElementById('zoomOut').addEventListener('click', () => {
+                if (scale > zoomStep) {
+                    scale -= zoomStep;
+                    modalImage.style.transform = `scale(${scale})`;
+                }
+            });
+        }
+
+        modal.style.display = 'block';
+    }
+
+
+    function makeDraggable(element) {
+        var isDragging = false;
+        var offsetX, offsetY;
+
+        element.onmousedown = function (event) {
+            isDragging = true;
+            offsetX = event.clientX - element.getBoundingClientRect().left;
+            offsetY = event.clientY - element.getBoundingClientRect().top;
+
+            document.onmousemove = function (event) {
+                if (isDragging) {
+                    var modal = document.getElementById('mediaModal');
+                    modal.style.left = (event.clientX - offsetX) + 'px';
+                    modal.style.top = (event.clientY - offsetY) + 'px';
+                }
+            };
+
+            document.onmouseup = function () {
+                isDragging = false;
+                document.onmousemove = null;
+            };
+        };
+    }
+
+    // Apply dragging functionality to the header
+    document.getElementById('mediaModalContent').addEventListener('mousedown', function (event) {
+        makeDraggable(document.getElementById('mediaModal'));
+    });
+
+
+
+    // Apply dragging functionality to the header
+    document.getElementById('pdfViewer').addEventListener('mousedown', function (event) {
+        makeDraggable(document.getElementById('mediaModal'));
+    });
+
+
+    window.onclick = function (event) {
+        //  alert("mediaModal click");
+        var modal = document.getElementById("mediaModal");
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    function closeModal() {
+       //  alert("close");
+        var modal = document.getElementById("mediaModal");
+        modal.style.display = "none";
+    }
+
+    let rotationAngle = 0;
+
+    document.getElementById('rotateImage').addEventListener('click', function () {
+        rotationAngle += 90; // Rotate by 90 degrees each time the button is clicked
+        document.getElementById('modalImage').style.transform = 'rotate(' + rotationAngle + 'deg)';
+    });
+
+
+
+    //function displayPopup(fileUrl, fileType) {
+    //    var popup = document.getElementById("simplePopup");
+    //    var popupContent = document.getElementById("popupContent");
+
+    //    var overlay = document.getElementById("overlay");
+    //    overlay.style.display = "block";
+
+    //    popup.style.display = "block";
+    //    popupContent.innerHTML = "";
+
+    //    if (fileType === "image") {
+    //        var img = document.createElement("img");
+    //        img.src = fileUrl;
+    //        popupContent.appendChild(img);
+    //    } else if (fileType === "pdf") {
+    //        var object = document.createElement("object");
+    //        object.data = fileUrl;
+    //        object.type = "application/pdf";
+    //        object.width = "100%";
+    //        object.height = "100%";
+    //        popupContent.appendChild(object);
+    //    }
+
+    //    document.querySelector(".popup .close").addEventListener("click", function () {
+    //        closePopup();
+    //    });
+
+    //    overlay.addEventListener("click", function () {
+    //        closePopup();
+    //    });
+    //}
+
+
+    //function closePopup() {
+    //    var popup = document.getElementById("simplePopup");
+    //    var overlay = document.getElementById("overlay");
+    //    popup.style.display = "none";
+    //    overlay.style.display = "none";
+    //}
+
+    //// Make the popup draggable
+    //dragElement(document.getElementById("simplePopup"));
+
+    //function dragElement(elmnt) {
+    //    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    //    if (document.querySelector(".popup-header")) {
+    //        // if present, the header is where you move the DIV from:
+    //        document.querySelector(".popup-header").onmousedown = dragMouseDown;
+    //    } else {
+    //        // otherwise, move the DIV from anywhere inside the DIV:
+    //        elmnt.onmousedown = dragMouseDown;
+    //    }
+
+    //    function dragMouseDown(e) {
+    //        e = e || window.event;
+    //        e.preventDefault();
+    //        // get the mouse cursor position at startup:
+    //        pos3 = e.clientX;
+    //        pos4 = e.clientY;
+    //        document.onmouseup = closeDragElement;
+    //        // call a function whenever the cursor moves:
+    //        document.onmousemove = elementDrag;
+    //    }
+
+    //    function elementDrag(e) {
+    //        e = e || window.event;
+    //        e.preventDefault();
+    //        // calculate the new cursor position:
+    //        pos1 = pos3 - e.clientX;
+    //        pos2 = pos4 - e.clientY;
+    //        pos3 = e.clientX;
+    //        pos4 = e.clientY;
+    //        // set the element's new position:
+    //        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    //        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    //    }
+
+    //    function closeDragElement() {
+    //        // stop moving when mouse button is released:
+    //        document.onmouseup = null;
+    //        document.onmousemove = null;
+    //    }
+    //}
+}
+
+
+        function fillTextBoxes(customerId, payee, bank, ifscCode, bankAccNumber, requestType, rowElement) {
+        // Fill the text boxes
+        document.getElementById('customer_id').value = customerId;
+        document.getElementById('payee').value = payee;
+        document.getElementById('bank').value = bank;
+        document.getElementById('ifsc_code').value = ifscCode;
+        document.getElementById('bank_acc_number').value = bankAccNumber;
+
+        // Remove highlight from any previously selected row
+        var rows = document.querySelectorAll('#cus_detailsDataGrid tbody tr');
+        rows.forEach(function (row) {
+        row.style.backgroundColor = ''; // Reset background color
+        });
+
+        // Highlight the selected row
+        rowElement.style.backgroundColor = '#D6EFFF';
+
+        // Call the controller action
+        // viewDocumentClick(customerId, requestType);
+        globalCustomerId = customerId;
+        globalRequestType = requestType;
+            //Session["new_modify"]
+        }
+
+
+
+            function storeRequestType(requestType, customerId) {
+                document.getElementById('cus_detailsTable').style.display = 'block';
+                document.getElementById('hiddenRequestType').value = requestType;
+                document.getElementById('hiddenCustid').value = customerId;
+            }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                // Hide the 6th column header
+                document.querySelectorAll('#cus_detailsDataGrid th.hide-column').forEach(function (th) {
+                    th.style.display = 'none';
+                });
+
+                // Hide the 6th column cells
+                document.querySelectorAll('#cus_detailsDataGrid td.hide-column').forEach(function (td) {
+                    td.style.display = 'none';
+                });
+            });
+
+    </script>
+
+    <div style="overflow-x: auto; max-height: 200px;">
+        <table id="cus_detailsDataGrid" class="table table-hover table-striped table-bordered">
+            <thead>
+                <tr>
+                    <td style="background-color: #4D759A;"><span style="font-size: small;"></span></td>
+                    @foreach (System.Data.DataColumn col in Model.Columns)
+                    {
+                        <th style="background-color: #4D759A;font-size:smaller;" class="@(col.Ordinal == 5 ? "hide-column" : "")">@col.ColumnName</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (System.Data.DataRow row in Model.Rows)
+                {
+                    <tr>
+                        <td>
+                            <span class="toggle-password" style="font-size:large; font:300; color:red; cursor:pointer;"
+                                  onclick="storeRequestType('@row["Request Type"]','@row["Customer ID"]'); fillTextBoxes('@row["Customer ID"]', '@row["Payee"]', '@row["Bank"]', '@row["IFSC"]', '@row["Account Number"]', '@row["Request Type"]', this.parentElement.parentElement);">
+                                👁️
+                            </span>
+                        </td>
+                        @foreach (var item in row.ItemArray.Select((value, index) => new { value, index }))
+                        {
+                            <td style="font-size:smaller;" class="@(item.index == 5 ? "hide-column" : "")">@item.value</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+    <input type="hidden" id="hiddenRequestType" />
+    <input type="hidden" id="hiddenCustid" />
+
+    @*</div>*@
+    @*<div id="photoModal" class="modal">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <img class="modal-content " id="customerPhoto">
+            <div id="caption"></div>
+        </div>*@
+
+
+    <!-- HTML for Simple Pop-Up -->
+    <!--<div id="simplePopup" class="popup">
+        <div class="popup-header">
+            <span class="popup-title">Image/Document Preview</span>
+            <span class="close">&times;</span>
+        </div>
+        <div class="popup-content" id="popupContent" style="height:90%;">-->
+    <!-- Content (image or PDF) will be dynamically inserted here -->
+    <!--</div>
+    </div>-->
+
+    <div id="mediaModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; padding-top: 50px; background-color: rgba(0,0,0,0); z-index: 1000;">
+        <div id="mediaModalContent" style="position: relative; cursor: move; margin: auto; padding: 40px; width: 60%; height: 90%; ">
+            <div id="pdfViewer" style="width: 100%; cursor: move; height: calc(100% - 40px);"></div>
+
+            @*Zoom Controls*@
+            <div id="zoomControls" style="text-align:center;">
+
+                <button id="zoomIn" style="margin-right: 10px; background:transparent; border:none; font-size:24px; cursor:pointer;">
+                    <i class="fas fa-search-plus"></i>
+                </button>
+
+                <!-- Zoom Out button with icon -->
+                <button id="zoomOut" style="background:transparent; border:none; font-size:24px; cursor:pointer;">
+                    <i class="fas fa-search-minus"></i>
+                </button>
+                <!-- Rotate button with icon -->
+                <button id="rotateImage" style="background:transparent; border:none; font-size:24px; cursor:pointer;">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+
+
+            @*<button onclick="closeModal()" style="position:absolute; top:10px; right:10px; background:transparent; border:none; font-size:24px; cursor:pointer;">
+                <i class="fas fa-times"></i>
+            </button>*@
+            @*</div>*@
+        </div>
+    </div>
+
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+
+
+
+
+
+
+    <div id="cus_detailsTable" style="display:none;">
+
+
+
+        <!-- Customer details section -->
+        <div class="customer-details-section text-center">
+
+            <div class="row justify-content-center">
+                <div class="col-md-6 text-center">
+                    <p style="color: maroon; font-weight: 500; font-size: medium;">Requested Type: New</p>
+                </div>
+            </div>
+
+            <div class="row" style="width:140%;">
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span style="width:140px;" class="input-group-text">Customer ID</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="" id="customer_id" name="customer_id" aria-label="" aria-describedby="basic-addon1" autocomplete="off" maxlength="10" onkeyup="this.value=this.value.replace(/[^0-9]/g, '')" onkeydown="event.preventDefault();" />
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span style="width:140px;" class="input-group-text" id="basic-addon1">Payee Name</span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="" id="payee" name="payee" aria-label="" aria-describedby="basic-addon1" onkeydown="event.preventDefault();" />
+
+
+                    </div>
+
+                </div>
+
+
+
+
+            </div>
+            @*...Fifth row...*@
+            <div class="row" style="width:140%;">
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span style="width:140px;" class="input-group-text">Bank </span>
+                        </div>
+
+                        @*<select class="form-control" name="bank" id="bank">
+                            </select>*@
+                        <input type="text" class="form-control" placeholder="" id="bank" name="bank" aria-label="" aria-describedby="basic-addon1" onkeydown="event.preventDefault();" />
+
+                        <span id="idProofValidation" style="color: red;font-size:12px;"></span>
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span style="width:140px;" class="input-group-text">IFSC Code </span>
+                        </div>
+                        <input type="text" class="form-control" placeholder="" id="ifsc_code" name="ifsc_code" aria-label="" aria-describedby="basic-addon1" onkeydown="event.preventDefault();" />
+
+                    </div>
+
+                </div>
+
+            </div>
+            @*...Fifth row...*@
+            <div class="row" style="width:140%;">
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span style="width:140px;" class="input-group-text">Bank A/C No</span>
+                        </div>
+
+                        <input type="text" class="form-control" placeholder="" id="bank_acc_number" name="bank_acc_number" aria-label="" aria-describedby="basic-addon1" autocomplete="off" maxlength="10" onkeyup="this.value=this.value.replace(/[^0-9]/g, '')" onkeydown="event.preventDefault();" />
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="input-group mb-3">
+                        <p style="color: darkblue; font-weight: 500;  font-size: medium">
+
+                            @*<button type="button" id="viewDocumentsBtn" class="btn btn-primary">View Document</button>*@
+                            <!-- Button to trigger the modal (hidden) -->
+                            <button type="button" id="viewDocumentsBtn" class="btn btn-primary">View Document</button>
+
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="documentModal" tabindex="-1" role="dialog" aria-labelledby="documentModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="documentModalLabel">Document Viewer</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <iframe id="documentIframe" src="" frameborder="0" style="width: 100%; height: 80vh;"></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Center-aligned buttons -->
+        <div class="text-center">
+            @*<button onclick="showApprove('Approve')" style="background-color: green; height: 40px; width: 100px; border-radius: 8px; color: white; border-color: white; margin-right: 10px;">
+                    Recommend
+                </button>
+
+                <button onclick="showApprove('Approve')" style="background-color: green; height: 40px; width: 100px; border-radius: 8px; color: white; border-color: white; margin-right: 10px;">
+                    Approve
+                </button>*@
+
+            @{
+                int branchId = 0;
+                if (Session["branch_id"] != null && int.TryParse(Session["branch_id"].ToString(), out branchId) && branchId == 0)
+                {
+
+                    <button onclick="showApprove('Approve')" style="font-size:medium; background-color: green; height: 40px; width: 100px; border-radius: 8px; color: white; border-color: white; margin-right: 10px;">
+                        Approve
+                    </button>
+                }
+                else
+                {
+                    <button onclick="showRecommend('Recommend')" style="font-size: medium; background-color: green; height: 40px; width: 130px; border-radius: 8px; color: white; border-color: white; margin-right: 10px;">
+                        Recommend
+                    </button>
+                }
+            }
+
+
+
+            <button onclick="showReject('Reject')" style="font-size: medium; background-color: red; height: 40px; width: 100px; border-radius: 8px; color: white; border-color: white;">
+                Reject
+            </button>
+        </div>
+
+
+    </div>
+</div>
+
+
+    }
+
+
+</body>
+</html>
+
+
+<script>
+
+
+    function showRecommend(action) {
+        var requestType = document.getElementById('hiddenRequestType').value;
+        var custid = document.getElementById('hiddenCustid').value == '' ? '0' : document.getElementById('hiddenCustid').value;
+
+        if (custid === '0') {
+            alert("Please select any record");
+            return true;
+        }
+
+        //alert(requestType);
+
+        Swal.fire({
+            title: "Recommend to Head Office?",
+            showDenyButton: true,
+            confirmButtonText: "Yes",
+            denyButtonText: "No",
+            customClass: 'custom-approve-button',
+            preConfirm: () => {
+                return new Promise((resolve) => {
+                    $.ajax({
+                        url: '/Customer_ApproveBank/recommend_btn_click',
+                        type: 'POST',
+                        data: { requestType: requestType, custid: custid },
+                        success: function (data) {
+                            resolve(data); // Resolve the promise with the response data
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            Swal.fire(
+                                "Error",
+                                "Failed to submit reason. Please try again.",
+                                "error"
+                            );
+                            resolve({ success: false, message: "Failed to submit reason." }); // Resolve with an error message
+                        }
+                    });
+                });
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var data = result.value;
+                var message = data.message;
+                if (data.success) {
+                    Swal.fire({
+                        /* title: "Approved Successfully",*/
+                        /*   text: message,*/
+                        title: message,
+                        icon: "success"
+                    }).then(() => {
+                        window.location.href = '/Customer_ApproveBank/Cus_bankdetailsapproval';
+
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Error",
+                        text: message,
+                        icon: "error"
+                    }).then(() => {
+                        window.location.href = '/Customer_ApproveBank/Cus_bankdetailsapproval';
+                    });
+                }
+            }
+        });
+    }
+
+
+    function showApprove(action) {
+        var requestType = document.getElementById('hiddenRequestType').value;
+        var custid = document.getElementById('hiddenCustid').value == '' ? '0' : document.getElementById('hiddenCustid').value;
+
+        if (custid === '0') {
+            alert("Please select any record");
+            return true;
+        }
+
+        //alert(requestType);
+        //alert(custid);
+        Swal.fire({
+            title: "Approve?",
+            showDenyButton: true,
+            confirmButtonText: "Yes",
+            denyButtonText: "No",
+            customClass: 'custom-approve-button',
+            preConfirm: () => {
+                return new Promise((resolve) => {
+                    $.ajax({
+                        url: '/Customer_ApproveBank/approve_btn_click',
+                        type: 'POST',
+                        data: { requestType: requestType, custid: custid },
+                        success: function (data) {
+                            resolve(data); // Resolve the promise with the response data
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            Swal.fire(
+                                "Error",
+                                "Failed to submit reason. Please try again.",
+                                "error"
+                            );
+                            resolve({ success: false, message: "Failed to submit reason." }); // Resolve with an error message
+                        }
+                    });
+                });
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                var data = result.value;
+                var message = data.message;
+                if (data.success) {
+                    Swal.fire({
+                        /* title: "Approved Successfully",*/
+                        /*   text: message,*/
+                        title: message,
+                        icon: "success"
+                    }).then(() => {
+                        window.location.href = '/Customer_ApproveBank/Cus_bankdetailsapproval';
+
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Error",
+                        text: message,
+                        icon: "error"
+                    }).then(() => {
+                        window.location.href = '/Customer_ApproveBank/Cus_bankdetailsapproval';
+                    });
+                }
+            }
+        });
+    }
+
+</script>
+
+
+<script>
+
+
+    function showReject(action) {
+        var requestType = document.getElementById('hiddenRequestType').value;
+        var custid = document.getElementById('hiddenCustid').value == '' ? '0' : document.getElementById('hiddenCustid').value;
+
+        if (custid === '0') {
+            alert("Please select any record");
+            return true;
+        }
+        Swal.fire({
+            title: "Reason for " + action + ":",
+            input: "text",
+            showCancelButton: false,
+            confirmButtonText: "OK",
+            //cancelButtonText: "Cancel",
+            preConfirm: (rejectReason) => {
+                if (!rejectReason || rejectReason.trim() === "") {
+                    Swal.showValidationMessage("Please enter a valid reason.");
+                    return false; // prevent closing the dialog
+                } else {
+                    // Perform the RejectCustomer action when the user clicks "OK"
+                    $.ajax({
+                        url: '/Customer_ApproveBank/reject_btn_click',
+                        type: 'POST',
+                        data: { rejectReason: rejectReason, requestType: requestType, custid: custid },
+                        success: function (data) {
+                            // Handle success response from the server if needed
+                            Swal.fire(
+                                "Rejected Successfully..",
+                                "Reason for " + action + ": " + rejectReason,
+                                "success"
+                            ).then(() => {
+                                // Redirect to the approval list after showing the success message
+                                //window.location.href;
+                                window.location.href = '/Customer_ApproveBank/Cus_bankdetailsapproval';
+                            });
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            // Handle error response from the server if needed
+                            Swal.fire(
+                                "Error",
+                                "Failed to submit reason. Please try again.",
+                                "error"
+                            );
+                        }
+                    });
+                }
+            }
+        });
+    }
+</script>

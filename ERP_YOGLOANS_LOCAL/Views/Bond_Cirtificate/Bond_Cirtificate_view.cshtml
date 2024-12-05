@@ -1,0 +1,562 @@
+﻿
+@{
+    ViewBag.Title = "NCD_monthly_interest_approval";
+}
+
+@using System.Data
+
+
+@{
+    var issue_list_type = ViewData["IssueList"] as DataTable;
+
+    if (issue_list_type == null)
+    {
+        // Handle the null case, e.g., return an empty list or show a message
+        <p>No Issues available.</p>
+        return;
+    }
+
+    var Issues = issue_list_type.AsEnumerable().Select(row => new
+    {
+        issue_val = row["issue_no"],
+        issue = row["issue_text"] // Adjust based on your DataTable columns
+    }).ToList();
+
+
+
+    var bank_list_type = ViewData["BankList"] as DataTable;
+
+    if (bank_list_type == null)
+    {
+        // Handle the null case, e.g., return an empty list or show a message
+        <p>No cetificates  available.</p>
+        return;
+    }
+
+
+
+    var Banks = bank_list_type.AsEnumerable().Select(row => new
+    {
+        bank_val = row["branch_id"],
+        bank = row["branch_name"] // Adjust based on your DataTable columns
+    }).ToList();
+
+
+
+
+
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equifax Enquiry</title>
+
+
+    <style>
+
+
+
+        .fixed-width-card {
+            flex: 1 1 300px; /* Flex-grow: 1, Flex-shrink: 1, Flex-basis: 300px */
+            min-width: 250px; /* Ensure a minimum width */
+            word-wrap: break-word;
+            word-break: break-word;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+    </style>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+    <link rel="stylesheet" href="~/Content/table_styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+</head>
+<body>
+    <script>
+        //$(document).ready(function () {
+
+
+        //    //// Hide table and sum div on input change
+        //    //$('#ncd_monthlyinterest_entry_form input, #issueType,#bankType').on('change', function () {
+
+        //    $(' #issueType,#bankType').on('change', function () {
+        //        //alert("input changed");
+        //    /*    $('#table_div').hide();  */ // Hide the table div
+        //        //$('#sum_div').hide();     // Hide the sum div
+
+        //        //$('#totals_div').hide();
+        //        //$('#dropdowndiv').hide();
+        //        //$('#submitbutton').hide();
+        //        //$('#resetbutton').hide();
+        //        //$('#rejectbutton').hide();
+
+        //    });
+
+
+
+
+        //});
+
+
+        ///////////////////////////////////////////////////////
+
+        $(document).ready(function () {
+            document.getElementById("button_div").style.display = "none";
+
+    // Event listeners for both dropdowns (bankType and issueType)
+    $('#bankType, #issueType').on('change', function () {
+       // alert("Dropdown value changed");
+
+        // Get selected values
+        var bankId = $('#bankType').val();
+        var issueNo = $('#issueType').val();
+      //  alert(bankId);
+      //  alert(issueNo);
+        if (bankId==0) {
+            alert("Please select a bank.");
+            return;
+        }
+
+        //if (!issueNo) {
+        //    alert("Please select an issue.");
+        //    return;
+        //}
+
+        // AJAX call to GetgridData method
+        $.ajax({
+            url: '@Url.Action("GetgridData", "Bond_Cirtificate")',
+            type: 'POST',
+            data: { bankId: bankId, issueNo: issueNo },
+            success: function (response) {
+
+                if (response.success) {
+                    $('#table_div').show();
+                   // alert("success");
+                    $('#cus_detailsDataGrid thead').empty();
+                    $('#cus_detailsDataGrid tbody').empty();
+                  //  alert(1);
+
+                    if (response.data.length > 0) {
+                        // Generate table headings dynamically with an extra column for checkboxes
+                        var headerRow = '<tr>';
+                        headerRow += '<th>Select</th>'; // Add extra column header
+                        Object.keys(response.data[0]).forEach(function (key) {
+                            headerRow += `<th>${key}</th>`;
+                        });
+                        headerRow += '</tr>';
+                        $('#cus_detailsDataGrid thead').append(headerRow);
+
+                        // Generate table rows dynamically with a checkbox in the first column
+                        response.data.forEach(function (item) {
+                            var row = '<tr>';
+                            // Convert the row data to a JSON string to pass to the function
+                            var rowData = JSON.stringify(item).replace(/'/g, "\\'"); // Escape single quotes for JSON string
+                            row += `<td><input type="checkbox" class="row-checkbox" onclick='handleCheckbox(this, ${rowData}, this.parentNode.parentNode)'></td>`;
+                            Object.values(item).forEach(function (value) {
+                                row += `<td>${value}</td>`;
+                            });
+                            row += '</tr>';
+                            $('#cus_detailsDataGrid tbody').append(row);
+                        });
+                    } else {
+                        alert("No data available for the selected criteria.");
+                        document.getElementById("button_div").style.display = "none";
+                    }
+                } else {
+                    alert("Error: " + response.message);
+                }
+
+
+
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+                alert("An error occurred while generating the report.");
+            }
+        });
+    });
+});
+
+
+
+        function handleCheckbox(checkbox, rowData, row) {
+            document.getElementById("button_div").style.display = "block";
+            $('.row-checkbox').not(checkbox).prop('checked', false);
+
+            var bond_id = $(row).find('td').eq(13).text(); // Adjust the index based on your table structure
+
+            alert(bond_id);
+
+            //$('#button_div').show();
+
+            localStorage.setItem('bond_id', bond_id);
+        }
+
+        @*function printRowData(button) {
+            alert("print button click")
+    // Array to hold the checked data
+    var checkedData = [];
+
+    // Loop through each checkbox in the table
+    $('#cus_detailsDataGrid tbody .row-checkbox:checked').each(function() {
+        var row = $(this).closest('tr'); // Get the row of the checked checkbox
+        var rowData = {}; // Object to store row data
+
+        // Loop through each cell in the row
+        row.find('td').each(function(index) {
+            if (index === 0) return; // Skip the checkbox column
+            var key = $('#cus_detailsDataGrid thead th').eq(index).text(); // Get header text for key
+            rowData[key] = $(this).text(); // Get the cell data
+        });
+
+        checkedData.push(rowData); // Add the row data to the checkedData array
+    });
+
+    // Check if there is any checked data
+    if (checkedData.length === 0) {
+        alert("No rows selected.");
+        return; // Exit if no rows are checked
+    }
+            alert(checkedData);
+    $.ajax({
+        url: '/Bond_Cirtificate/StoreDataForBlankPage',  // Call an action to store the data
+        type: 'POST',
+        data: {
+            checkedData: checkedData // Send the array of checked data
+        },
+        success: function (response) {
+            alert("blank success");
+            if (response.success)
+            {
+                window.open('@Url.Action("BOND_Cirtificate_blankPrint_View", "BOND_Cirtificate_blankPrint")', '_blank');
+            }
+            else
+            {
+                alert("Error occurred during data submission");
+            }
+        },
+        error: function (error) {
+            alert("Error occurred during data submission");
+        }
+    });
+}*@
+
+        function printRowData(button) {
+    alert("print button click");
+
+            var storedBondId = localStorage.getItem('bond_id');
+    // Array to hold the checked data
+    var checkedData = [];
+
+    // Loop through each checkbox in the table
+    $('#cus_detailsDataGrid tbody .row-checkbox:checked').each(function() {
+        var row = $(this).closest('tr'); // Get the row of the checked checkbox
+        var rowData = {}; // Object to store row data
+
+        // Loop through each cell in the row
+        row.find('td').each(function(index) {
+            if (index === 0) return; // Skip the checkbox column
+            var key = $('#cus_detailsDataGrid thead th').eq(index).text(); // Get header text for key
+            rowData[key] = $(this).text(); // Get the cell data
+        });
+
+        checkedData.push(rowData); // Add the row data to the checkedData array
+    });
+
+    // Check if there is any checked data
+    if (checkedData.length === 0) {
+        alert("No rows selected.");
+        return; // Exit if no rows are checked
+    }
+
+    // Debugging: Log the checked data to console
+            var checkedData = localStorage.getItem('bond_id');
+
+    $.ajax({
+        url: '/Bond_Cirtificate/StoreDataForBlankPage',  // Call an action to store the data
+        type: 'POST',
+        data: {
+            checkedData: checkedData // Send the array of checked data
+        },
+        success: function (response) {
+            alert("blank success");
+            if (response.success) {
+                window.open('@Url.Action("BOND_Cirtificate_blankPrint_View", "BOND_Cirtificate_blankPrint")', '_blank');
+            } else {
+                alert("Error occurred during data submission");
+            }
+        },
+        error: function (error) {
+            alert("Error occurred during data submission");
+        }
+    });
+}
+
+
+
+
+    </script>
+
+
+
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+                <br />
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">BOND Certificate</h6>
+            </div>
+        </div>
+        <br />
+        <div class="card-body">
+
+            <div id="form-container">
+
+
+                <div class="row">
+
+                    @*<div class="row">*@
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+
+                            </div>
+
+                            <div class="input-container fixed-width-card">
+
+                                <select name="bankType" id="bankType" class="form-control">
+
+                                    @foreach (var loan in Banks)
+                                    {
+                                        <option value="@loan.bank_val" @(Model != null && Model.LoanType != null && loan.bank_val.ToString() == Model.LoanType.ToString() ? "selected" : "")>@loan.bank</option>
+
+                                    }
+
+                                </select>
+
+
+
+                                <label for="loan-type">Branch Name</label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    @*</div>*@
+
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+
+                            </div>
+
+                            <div class="input-container fixed-width-card">
+
+                                <select name="issueType" id="issueType" class="form-control">
+
+                                    @foreach (var loan in Issues)
+                                    {
+                                        <option value="@loan.issue_val" @(Model != null && Model.LoanType != null && loan.issue_val.ToString() == Model.LoanType.ToString() ? "selected" : "")>@loan.issue</option>
+
+                                    }
+
+                                </select>
+
+
+
+                                <label for="Issue-type">Issue Number </label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-container fixed-width-card">
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+
+
+
+
+
+                @*///////////////////////////////// table /////////////////////////////////////////////////////////////////////////////////*@
+
+
+
+                <div id="table_div" style="width: 90%; overflow-y: auto; max-height: 180px;">
+                    <table id="cus_detailsDataGrid" class="table table-hover table-striped table-bordered" style="width: 70%; font-size: 12px; font-weight: 500;">
+                        <thead>
+
+
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+
+                <br />
+
+
+
+
+                <div id="button_div">
+                    <button onclick="printRowData(this)" style="height: 40px;" id="print_btn" class="mb-2 mr-2 btn-icon btn-shadow btn-outline-2x btn btn-outline-warning"><i class="lnr-inbox btn-icon-wrapper"> </i>Print Cirtificate</button>
+                    &nbsp;&nbsp;
+                    @*<button type="button" id="resetbutton" class="btn btn-gradient-secondary" style="height: 40px; " onclick="reloadPage()">&nbsp;&nbsp; RESET &nbsp;&nbsp;</button>*@
+                    <button onclick="reloadPage()" style="height: 40px;" class="mb-2 mr-2 btn-icon btn-shadow btn-outline-2x btn btn-outline-secondary">Cancel</button>
+                </div>
+
+
+
+
+
+
+            </div>
+
+
+
+        </div>
+    </div>
+
+
+    @*</form>*@
+
+
+
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+
+
+    @*//////////////////////////////  -----  submit click  ----    ///////////////////////////////////////////*@
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function ApproveBtnClick() {
+            // alert("ApproveBtnClick click");
+            $.ajax({
+                url: '/NCD_monthly_interest_approval/btn_approve_Click',  // Replace with your actual controller namebtn_approve_Click
+                type: 'GET',  // Or 'POST' if your method is POST
+
+                success: function (response) {
+                    // Process the response
+                    if (response.success) {
+                        // alert("success");
+                        // alert(response.data);
+                        Swal.fire({
+
+                            title: response.data,
+                            /* text: result.message,*/
+                            text: "",
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        }).then(() => {
+                            window.location.reload();
+
+                        });
+
+                    }
+                    else {
+
+                        Swal.fire({
+                            title: "",
+                            text: response.message,
+                            icon: "error",
+                            confirmButtonText: "OK"
+
+                        });
+                    }
+
+                    // You can add other actions like updating the DOM, etc.
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error: " + error);
+                }
+            });
+        }
+
+
+        function RejectBtnClick() {
+            // alert("reject click");
+            $.ajax({
+                url: '/NCD_monthly_interest_approval/btn_reject_Click',  // Replace with your actual controller name
+                type: 'GET',  // Or 'POST' if your method is POST
+                success: function (response) {
+                    // Process the response
+                    if (response.success) {
+                        // alert("success");
+                        // alert(response.data);
+                        Swal.fire({
+
+                            title: response.data,
+                            /* text: result.message,*/
+                            text: "",
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    }
+                    else {
+                        //alert("not success");
+                        Swal.fire({
+                            title: "",
+                            text: response.message,
+                            icon: "error",
+                            confirmButtonText: "OK"
+
+                        });
+
+                        //alert(result.message);
+                        //return;
+                    }
+
+                    // You can add other actions like updating the DOM, etc.
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error: " + error);
+                }
+            });
+        }
+
+
+        function reloadPage() {
+            // Reload the page
+            location.reload();
+        }
+
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,876 @@
+﻿@using System.Data
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Add Bank Details</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <style>
+
+        .dropdown-container {
+            width: 200px;
+            position: relative;
+            text-align: center;
+        }
+
+
+        #styledDropdown {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            color: #333;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            background-image: none;
+            background-position: right 10px center;
+            background-repeat: no-repeat;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+            /* Add a custom arrow */
+            #styledDropdown::after {
+                content: "\25BC";
+                position: absolute;
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                pointer-events: none;
+            }
+
+            /* Change color on hover */
+            #styledDropdown:hover {
+                border-color: #007bff;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            }
+
+            /* Change style when focused */
+            #styledDropdown:focus {
+                outline: none;
+                border-color: #007bff;
+            }
+
+
+        #cus_detailsDataGrid tr:hover {
+            background-color: #b2c3d6;
+            /*  background-color:cadetblue;*/
+            opacity: 500;
+            cursor: pointer;
+            color: white;
+        }
+
+        .table {
+            font-size: 14px;
+        }
+
+        #cus_detailsDataGrid {
+            width: 100%;
+        }
+
+        .suggestionsclass {
+            font-size: 14px;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 300px;
+            background-color: white;
+            border: 1px solid white;
+            border-radius: 3px;
+            z-index: 1000;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+            .suggestionsclass li {
+                padding: 5px;
+            }
+
+                .suggestionsclass li:hover {
+                    background-color: darkgray;
+                    cursor: pointer;
+                    color: blue;
+                }
+    </style>
+
+    <style>
+        .scrollable-container {
+            max-height: 500px; /* Adjust the height as needed */
+            overflow-y: auto;
+        }
+
+        .input-container {
+            position: relative;
+            margin: 20px 0;
+            height: 40px; /* Adjust the height as needed */
+        }
+
+            .input-container input[type="text"] {
+                border: 1px solid darkblue; /* Change color to match your design #6200EA */
+                border-radius: 4px;
+                padding: 5px 10px; /* Adjust padding to reduce height */
+                font-size: 16px;
+                outline: none;
+                width: 100%;
+                box-sizing: border-box;
+                height: 100%; /* Ensure input height matches the container */
+            }
+
+            .input-container label {
+                position: absolute;
+                top: 50%;
+                left: 10px;
+                transform: translateY(-50%);
+                color: darkblue; /* Change color to match your design */
+                background-color: #fff;
+                padding: 0 5px;
+                transition: 0.3s ease;
+                pointer-events: none;
+            }
+
+            .input-container input[type="text"]:focus + label,
+            .input-container input[type="text"]:not(:placeholder-shown) + label {
+                top: -5px;
+                font-size: 12px;
+                color: darkblue; /* Change color to match your design */
+                font-weight: bold;
+            }
+    </style>
+
+    <script>
+
+
+        function initSearch(searchBoxId, suggestionsId, selectedCustomerIdId) {
+            const searchBox = document.getElementById(searchBoxId);
+            const suggestions = document.getElementById(suggestionsId);
+            const selectedCustomerId = document.getElementById(selectedCustomerIdId);
+
+            searchBox.addEventListener("input", function () {
+            const search_txt = searchBox.value;
+                if (search_txt.length >= 2)
+                {
+                    fetch(`@Url.Action("GetSearchSuggestions", "PL_Settlement_Request")?search_txt=${search_txt}`)
+                    .then(response => response.json())
+                    .then(data => {
+                            suggestions.innerHTML = "";
+                            data.forEach(item => {
+                                const li = document.createElement("li");
+                                li.textContent = item; // Display the concatenated string
+                                li.addEventListener("click", function () {
+                                    const selectedValue = item.split('-')[0]; // Extract the customer ID
+                                    selectedCustomerId.value = selectedValue;
+
+                                    // Store the selected value in localStorage or sessionStorage
+                                    localStorage.setItem('Loanno', selectedValue);  // or sessionStorage.setItem
+
+                                    searchBox.value = item; // Set the input value to the selected item
+                                    suggestions.innerHTML = "";
+                                });
+                                suggestions.appendChild(li);
+                            });
+                    });
+
+
+                }
+                else
+                {
+                    suggestions.innerHTML = "";
+                    selectedCustomerId.value = "";
+                }
+            });
+
+            document.addEventListener("click", function (event) {
+        if (!suggestions.contains(event.target) && event.target !== searchBox) {
+            suggestions.innerHTML = "";
+        }
+    });
+        }
+
+        function search() {
+
+            if ($("#selectedCustomerId").val() == "") {
+                alert("Please select from below.");
+                $("#searchBox").focus();
+                return;
+            }
+
+            // Get the input value
+            var Loanno = $("#selectedCustomerId").val();
+
+
+            $.ajax({
+                    url: '@Url.Action("Get_Settlement_details", "PL_Settlement_Request")',
+                    type: 'POST',
+                    data: { Loanno: Loanno },
+                    success: function (response) {
+
+                        if (response) {
+
+                            $('#div_content').show();
+
+                           /*loan Details*/
+                             $('#loan-no').val(response.LoanNo);
+                             $('#cust-id').val(response.CustomerID);
+                             $('#cust-name').val(response.CustomerName);
+                             $('#loan-amt').val(response.LoanAmt);
+                             $('#loan-dt').val(response.LoanDt);
+                             $('#maturity-dt').val(response.MaturityDt);
+                             $('#int-rate').val(response.IntRate);
+                             $('#last-int-dt').val(response.LastIntDt);
+                          /*  Lien Details*/
+                             $('#gl-no').val(response.GLNo);
+                             $('#inventory-id').val(response.InventoryID);
+                             $('#scheme-name').val(response.Scheme);
+                             $('#net-wt').val(response.NetWt);
+                             $('#gl-amt').val(response.GLAmt);
+                             $('#status').val(response.Status);
+                             /* settlement Details*/
+
+                             $('#outstanding').val(response.Outstanding);
+                             $('#settle-int-amt').val(response.Settle_Int);
+                             $('#suspense').val(response.Suspense);
+                             $('#fore-charge').val(response.Fore_chrg);
+                             $('#other-deduction').val(response.Other_chrg);
+                             $('#net-receivable').val(response.Net);
+                             $('#settle-amt').val(response.Net);
+
+
+
+                        }
+                        else
+                        {
+
+                            console.log('No data found for ApplicationID: ' + AppID);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                    console.error('AJAX Error: ' + status + error);
+                    }
+            });
+
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            initSearch("searchBox", "suggestions", "selectedCustomerId");
+            initSearch("secondSearchBox", "secondSuggestions", "secondSelectedCustomerId");
+
+
+            document.getElementById("searchBox").value = "";
+            document.getElementById("selectedCustomerId").value = "";
+            localStorage.setItem('activeButton', "");
+            localStorage.setItem('onceSearched', false.toString());
+
+            const buttons = document.querySelectorAll('.btn-group .btn');
+
+            function setActiveButton(button) {
+
+                buttons.forEach(btn => btn.classList.remove('active'));
+
+                button.classList.add('active');
+
+                localStorage.setItem('activeButton', button.value);
+                var activeValue1 = localStorage.getItem('activeButton');
+
+                if (activeValue1 == "B") {
+                    document.getElementById('lbl_message').textContent = "You are trying to BLOCK the following Customer.";
+                } else if (activeValue1 == "C") {
+                    document.getElementById('lbl_message').textContent = "You are trying to CLOSE the following Customer ID.";
+                }
+
+
+            }
+
+            // Attach event listener to each button
+            buttons.forEach(button => {
+                button.addEventListener('click', function () {
+                    let isActive = (localStorage.getItem('onceSearched') === 'true');
+
+                    if (isActive) {
+                        // Store the clicked button value before reloading
+                        localStorage.setItem('clickedButtonValue', button.value);
+                        location.reload(); // Reload the page
+                    } else {
+                        setActiveButton(button);
+                    }
+                });
+            });
+
+            // After page reload, apply the setActiveButton to the clicked button
+            const clickedButtonValue = localStorage.getItem('clickedButtonValue');
+            if (clickedButtonValue) {
+                buttons.forEach(button => {
+                    if (button.value === clickedButtonValue) {
+                        setActiveButton(button);
+                    }
+                });
+                localStorage.removeItem('clickedButtonValue'); // Clear after applying
+            }
+
+            // Load the active button from localStorage on page load
+            const activeButtonValue = localStorage.getItem('activeButton');
+            if (activeButtonValue) {
+                buttons.forEach(button => {
+                    if (button.value === activeButtonValue) {
+                        button.classList.add('active');
+                    }
+                });
+            }
+        });
+
+        function validateInput(input) {
+            // Replace non-digit characters
+            input.value = input.value.replace(/\D/g, '');
+        }
+
+        function calculateSettlementAmount() {
+
+            const discount = parseFloat(document.getElementById('discount-amt').value) || 0; // Default to 0 if NaN
+            const netReceivable = parseFloat(document.getElementById('net-receivable').value) || 0; // Default to 0 if NaN
+
+            const settlementAmount = netReceivable - discount;
+
+            document.getElementById('settle-amt').value = settlementAmount.toFixed(0); // Format to 2 decimal places
+        }
+
+        function submitForm(actionType) {
+
+          //if (actionType === "Reset") {
+          //    window.location.reload();
+          //   /* clearFormFields();*/
+          //    return;
+          //}
+
+            var LNo = $('#loan-no').val();
+            var Cid = $('#cust-id').val();
+            var C_name = $('#cust-name').val();
+            var Loan_amt = $('#loan-amt').val();
+            var Loan_dt = $('#loan-dt').val();
+            var Maturity_dt = $('#maturity-dt').val();
+            var int = $('#int-rate').val();
+            var last_int_dt = $('#last-int-dt').val();
+            var glno = $('#gl-no').val();
+            var inv_id = $('#inventory-id').val();
+            var sch = $('#scheme-name').val();
+            var netwt = $('#net-wt').val();
+            var gl_amt = $('#gl-amt').val();
+            var status = $('#status').val();
+            var outstand = $('#outstanding').val()||0;
+            var Settle_Int = $('#settle-int-amt').val()||0;
+            var susp = $('#suspense').val()||0;
+            var f_chg = $('#fore-charge').val()||0;
+            var o_chg = $('#other-deduction').val()||0;
+            var discount = $('#discount-amt').val()||0;
+            var net = $('#net-receivable').val()||0;
+            var settle_amt = $('#settle-amt').val()||0;
+            var paymode = $('#paymodeSelect').val();
+
+            //var formData = new FormData();
+            //formData.append('LNo', $('#loan-no').val());
+            //formData.append('outstand', $('#outstanding').val());
+            //formData.append('susp', $('#suspense').val());
+            //formData.append('settle_int', $('#settle-int-amt').val());
+
+            //formData.append('f_chg', $('#fore-charge').val());
+            //formData.append('o_chg', $('#other-deduction').val());
+            //formData.append('discount', $('#discount-amt').val());
+            //formData.append('settle_amt', $('#settle-amt').val());
+            //formData.append('paymode', $('#paymodeSelect').val());
+            //formData.append('actionType', $('#paymodeSelect').val());
+
+            // Validation checks
+            if (paymode == "0") {
+
+                //alert("Please Select PaymentMode.")
+
+                Swal.fire({
+                    title: "",
+                    text: "Please Select PaymentMode.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+
+
+                    didClose: () => {
+                        document.getElementById("paymodeSelect").focus();
+                    }
+                });
+                return;
+
+            }
+
+            if (settle_amt == "0" || settle_amt == "" || settle_amt == null) {
+                //alert("No Settlement Amount.")
+                Swal.fire({
+                    title: "",
+                    text: "No Settlement Amount.",
+                    icon: "warning",
+                    confirmButtonText: "OK",
+
+
+                });
+                return;
+                return;
+            }
+
+              // Perform the AJAX request for disbursement
+            $.ajax({ url: '@Url.Action("Settlement_Request")',
+                  type: 'POST',
+                  data: {
+                      LNo: LNo, outstand: outstand, susp: susp, Settle_Int: Settle_Int, f_chg: f_chg, o_chg: o_chg,
+                      discount: discount, settle_amt: settle_amt, paymode: paymode, actionType: actionType
+                  },
+
+                 /* data: formData,*/
+
+                  success: function (result) {
+                      if (result.success) {
+                          Swal.fire({
+                              title: "",
+                              text: result.message,
+                              icon: "success",
+                              confirmButtonText: "OK"
+                          }).then(() => {
+                              window.location.reload();
+                          });
+                      }
+                      else
+                      {
+
+
+                          Swal.fire({
+                              title: "",
+                              text: result.message,
+                              icon: "error",
+                              confirmButtonText: "OK"
+                          });
+                      }
+                  },
+                  error: function (xhr, status, error) {
+                      Swal.fire({
+                          title: "An error occurred",
+                          text: "Error: " + error,
+                          icon: "error",
+                          confirmButtonText: "OK"
+                      });
+                  }
+              });
+
+            //localStorage.setItem("bankAccNo", "0");
+        }
+
+        $(document).ready(function () {
+
+            $('#confirm-button').click(function (e) {
+                e.preventDefault();
+                submitForm('Confirm');
+            });
+
+            $('#reset-button').click(function (e) {
+                e.preventDefault();
+                submitForm('Reset');
+            });
+        });
+
+
+        //function clearFormFields() {
+
+
+        //    $('#searchBox').val('');
+        //    $('#loan-no').val('');
+        //    $('#cust-id').val('');
+        //    $('#cust-name').val('');
+        //    $('#loan-amt').val('');
+        //    $('#loan-dt').val('');
+        //    $('#maturity-dt').val('');
+        //    $('#int-rate').val('');
+        //    $('#last-int-dt').val('');
+        //    $('#gl-no').val('');
+        //    $('#inventory-id').val('');
+        //    $('#scheme-name').val('');
+        //    $('#net-wt').val('');
+        //    $('#gl-amt').val('');
+        //    $('#status').val('');
+        //    $('#outstanding').val('');
+        //    $('#settle-int-amt').val('');
+        //    $('#suspense').val('');
+        //    $('#fore-charge').val('');
+        //    $('#other-deduction').val('');
+        //    $('#discount-amt').val('');
+        //    $('#net-receivable').val('');
+        //    $('#settle-amt').val('');
+        //    $('#paymodeSelect').val("0");
+        //}
+
+
+    </script>
+
+</head>
+<body>
+
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+
+                <h6 style="font-weight: bold; font-size: 25px; margin:0;color:maroon">Personal Loan Settlement Request</h6>
+            </div>
+        </div>
+
+        @*<div class="card-body">
+
+                <div class="row">
+                    <div class="col-md-6 col-lg-10">
+                        <div class="input-group mb-3">
+
+
+
+                            <input id="searchBox" placeholder="Customer ID/Name/Phone" type="text" style="width:400px;font-size:15px" autocomplete="off">
+                            &nbsp;<div class="input-group-text" style="height:39px;" onclick="search()">
+                                <i class="fa fa-search"></i>
+
+                            </div>
+                            <ul id="suggestions" class="suggestionsclass" style="width:400px;font-size:15px"></ul>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-group mb-3">
+
+
+
+                            <input type="hidden" id="selectedCustomerId" placeholder="Loan No" class="form-control" style="width:150px;" readonly />
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>*@
+
+
+        <div class="card-body">
+
+            <div class="row">
+                <div class="col-md-6 col-lg-10">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+
+                        </div>
+                        <input id="searchBox" placeholder="Loan No/Name" type="text" class="form-control" autocomplete="off">
+                        <div class="input-group-text" style="height:39px;" onclick="search()">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <ul id="suggestions" class="suggestionsclass"></ul>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-2" style="display:none;">
+                    <div class="input-group mb-3">
+                        <input type="text" id="selectedCustomerId" placeholder="Loan No" class="form-control" style="width:120px;" readonly />
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+
+        @*<div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+            </div>*@
+        <div class="card-body" id="div_content" style="display:none">
+
+
+            <form action="@Url.Action("PL_Settlement_Request", "Settlement_Request")" method="post" id="register_form" enctype="multipart/form-data" @*onsubmit="return validateForm()"*@ autocomplete="off">
+
+
+                <p style="color: maroon; font-weight: 500; font-size: medium ">LOAN DETAILS</p>
+
+
+                @*--loan Details--*@
+
+                <div class="row">
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="text" id="loan-no" name="loan-no" readonly class="form-control" />
+                            <label for="input-text">Loan No </label>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="text" id="cust-id" name="cust-id" readonly class="form-control" />
+                            <label for="input-text">Customer ID </label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="text" id="cust-name" name="cust-name" readonly class="form-control" />
+                            <label for="input-text">Customer Name </label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="text" id="loan-amt" name="loan-amt" readonly class="form-control" />
+                            <label for="input-text">Loan Amount</label>
+                        </div>
+                    </div>
+
+                </div>
+
+            
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="loan-dt" name="loan-dt" readonly class="form-control" />
+                                <label for="input-text">Loan Date</label>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="maturity-dt" name="maturity-dt" readonly class="form-control" />
+                                <label for="input-text">Maturity Date</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="int-rate" name="int-rate" readonly class="form-control" />
+                                <label for="input-text">Interest Rate </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="last-int-dt" name="last-int-dt" readonly class="form-control" />
+                                <label for="input-text">Last Int Date</label>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <p style="color: maroon; font-weight: 500; font-size: medium ">LIEN DETAILS</p>
+
+
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="gl-no" name="gl-no" readonly class="form-control" />
+                                <label for="input-text">GL No</label>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="inventory-id" name="inventory-id" readonly class="form-control" />
+                                <label for="input-text">Inventory ID</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="scheme-name" name="scheme-name" readonly class="form-control" />
+                                <label for="input-text">Scheme </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="net-wt" name="net-wt" readonly class="form-control" />
+                                <label for="input-text">Net Weight</label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="gl-amt" name="gl-amt" readonly class="form-control" />
+                                <label for="input-text">GL Amount</label>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="status" name="status" readonly class="form-control" />
+                                <label for="input-text">Status</label>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+
+                    <p style="color: maroon; font-weight: 500; font-size: medium ">SETTLEMENT DETAILS</p>
+
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="outstanding" name="outstanding" readonly class="form-control" />
+                                <label for="input-text">Outstanding Amount</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="settle-int-amt" name="settle-int-amt" readonly class="form-control" />
+                                <label for="input-text">Interest</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="suspense" name="suspense" readonly class="form-control" />
+                                <label for="input-text">Suspense </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="fore-charge" name="fore-charge" readonly class="form-control" />
+                                <label for="input-text">Fore Closure Charge</label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="other-deduction" name="other-deduction" readonly class="form-control" />
+                                <label for="input-text">Other Deduction</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="net-receivable" name="net-receivable" readonly class="form-control" />
+                                <label for="input-text">Net Receivable</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="discount-amt" name="discount-amt" class="form-control" onkeyup="validateInput(this); calculateSettlementAmount();" maxlength="5" value="0" required />
+                                <label for="input-text">Discount </label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="text" id="settle-amt" name="settle-amt" readonly class="form-control" />
+                                <label for="input-text">Settlement Amount</label>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+
+
+                                <select id="paymodeSelect" name="paymodeSelect" class="form-control" required>
+                                    @if (ViewBag.PaymodeList != null)
+                                    {
+                                        foreach (SelectListItem item in ViewBag.PaymodeList)
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <option value="0">-- No  Details Available --</option>
+                                    }
+                                </select>
+
+
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+
+                    @*...button -row...*@
+
+                    <div class="divider"></div>
+
+                    <div class="row" style="width:100%;">
+                        <div class="col-md-6 col-lg-4">
+
+                            <div class="input-group mb-3">
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+
+                            <div class="input-group mb-3">
+
+
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <button type="submit" id="confirm-button" name="actionType" value="Confirm" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary" OnClientClick="this.disabled = true; this.value = 'please wait ..';" UseSubmitBehavior="false">Confirm</button>
+                                &nbsp;&nbsp;&nbsp;
+                                <button type="button" id="reset-button" name="actionType" value="Reset" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Reset</button>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="divider"></div>
+            </form>
+
+        </div>
+    </div>
+
+</body>
+</html>

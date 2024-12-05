@@ -1,0 +1,119 @@
+﻿<div style="width: 100%; overflow-y: auto;">
+    @if (ViewBag.Col_Data != null && ViewBag.Col_Data.Count > 0 || ViewBag.Col_Data1 != null && ViewBag.Col_Data1.Count > 0)
+    {
+        if (ViewBag.Col_Data != null && ViewBag.Col_Data.Count > 0)
+        {
+        <p style="color: darkblue; font-size: large;font-weight: 500;">Search result from live customer List</p>
+        <table id="dataGrid" class="table table-hover table-striped table-bordered" style="overflow-y: auto; font-size:14px;width:100%;font-weight:500;">
+            <thead style="color:black; font-size:15px;font-weight:900;">
+                <tr>
+                    <th></th> <!-- New column with empty header -->
+                    @for (int i = 0; i < ViewBag.Col_Head.Count - 1; i++)
+                    {
+                        <th>@ViewBag.Col_Head[i]</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ViewBag.Col_Data)
+                {
+                    var columnCount = ViewBag.Col_Head.Count;
+
+                    <tr>
+                        <td>
+                            <a href="#" class="continue-link">View</a>
+                        </td>
+                        @for (int i = 0; i < ViewBag.Col_Head.Count - 1; i++)
+                        {
+                            var column = ViewBag.Col_Head[i];
+                            var propertyValue = item.GetType().GetProperty(column)?.GetValue(item);
+                            <td>
+                                @(propertyValue != null ? propertyValue.ToString() : "")
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+            //}
+            //else if (ViewBag.Col_Data1 != null && ViewBag.Col_Data1.Count > 0)
+            //{
+        }
+        if (ViewBag.Col_Data1 != null && ViewBag.Col_Data1.Count > 0)
+        {
+        <p style="color: darkblue; font-size: large;font-weight: 500;">Search result from Incomplete customer List</p>
+        <table id="dataGrid_incomplete" class="table table-hover table-striped table-bordered" style="overflow-y: auto; font-size:14px; width:100%; font-weight:500;">
+            <thead style="color:black; font-size:15px; font-weight:900;">
+                <tr>
+                    @foreach (var header in ViewBag.Col_Head1)
+                    {
+                        <th>@header</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ViewBag.Col_Data1)
+                {
+                    <tr>
+                        @foreach (var header in ViewBag.Col_Head1)
+                        {
+                            var propertyValue = item.GetType().GetProperty(header)?.GetValue(item, null);
+                            <td>
+                                @{
+                                    var valueString = propertyValue != null ? propertyValue.ToString() : "";
+                                }
+                                @if (valueString == "Continue")
+                                {
+                                    <a href="@Url.Action("incomplete_continue", "CustomerCreate", new { id = item.ID })">Continue</a>
+                                }
+                                else
+                                {
+                                    @valueString
+                                }
+                            </td>
+                         }
+                    </tr>
+                 }
+            </tbody>
+        </table>
+        }
+    }
+    else
+    {
+       
+        <table class="table table-bordered" style="width:100%;">
+            <tr>
+                <td colspan="@ViewBag.Col_Head1?.Count ?? 1">
+                    <div>
+                        <h6 style="color:red">The entered data does not exist. For creating a new customer, enter mobile number and click on <b>Send OTP</b></h6>
+                        @Html.Partial("otp_partialview")
+                    </div>
+                </td>
+            </tr>
+        </table>
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(".continue-link").on("click", function (e) {
+            e.preventDefault();
+            var row = $(this).closest('tr');
+            var id = parseInt(row.find('td:eq(1)').text()); // Assuming ID is in the second column and converting to integer
+            console.log("Debug: ID found - ", id);
+            $.ajax({
+                url: '@Url.Action("search_view", "CustomerCreate")',
+                type: 'POST',
+                data: { id: id },
+                success: function (result) {
+                    if (result.success === true) {
+                        window.location.href = '@Url.Action("customer_modification", "Customer_modification")';
+                    }
+                },
+                error: function (error) {
+                    console.log("Debug: Ajax error - ", error);
+                }
+            });
+        });
+    });
+</script>

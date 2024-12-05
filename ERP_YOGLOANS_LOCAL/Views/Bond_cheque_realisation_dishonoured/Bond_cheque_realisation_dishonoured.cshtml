@@ -1,0 +1,498 @@
+﻿@using ERP_YOGLOANS_LOCAL.Models.NCD_Models
+@model ERP_YOGLOANS_LOCAL.Models.NCD_Models.NCD_Debenture_Scheme_Model
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .search-container {
+            width: 100%;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .radio-label {
+            margin-left: 10px;
+            margin-right: 15px;
+        }
+
+        .dropdown-label {
+            margin-left: 20px;
+            margin-right: 10px;
+            font-weight: bold;
+            color: red;
+        }
+
+        .styled-dropdown {
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background-color: #fff;
+            cursor: pointer;
+            transition: border 0.3s;
+        }
+
+            .styled-dropdown:hover {
+                border-color: #80bdff;
+            }
+
+        .search-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-main__inner" style="margin-top: -30px; padding: 4px; width: 100%;">
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; text-align: center; font-size: 25px; margin: 0; color: maroon"> Check Realization and Dishonored</h6>
+            </div>
+        </div>
+        <div class="search-container" style="width:850px;">
+            <form method="get" action="@Url.Action("Bond_cheque_realisation_dishonoured", "Bond_cheque_realisation_dishonoured")">
+                <div class="search-wrapper" style="text-align:center;">
+                    <label>Search With:&nbsp;</label>
+                    <input type="radio" id="customerNameRadio" name="searchType" value="customerName" onchange="toggleButtons()">
+                    <label for="customerNameRadio" class="radio-label">Check Realized</label>
+
+                    <input type="radio" id="customerIdRadio" name="searchType" value="customerId" onchange="toggleButtons()">
+                    <label for="customerIdRadio" class="radio-label">Cheque Dishonored</label>
+
+                    <label for="searchDropdown" class="dropdown-label">HO Bank:</label>
+                    <select id="searchDropdown" name="selectedBankId" class="styled-dropdown" onchange="this.form.submit()">
+                        <option value="" disabled selected>Select a bank</option>
+                        @foreach (var bank in Model.Banks)
+                        {
+                            <option value="@bank.SubAccNo">@bank.SubName</option>
+                        }
+                    </select>
+                </div>
+            </form>
+        </div><br />
+
+        <div id="ncd_schemetbl1" style="overflow-y: auto; max-height: 250px; position: relative;">
+            @if (ViewBag.ChequeRealizations != null)
+            {
+                <table id="modifiedDataGrid" class="table table-hover table-striped table-bordered" style="width: 850px; font-size: 11px; font-weight: 500;">
+                    <thead>
+                        <tr>
+                            <th style="background-color: #4D759A; color: white;">
+                                <input type="checkbox" id="selectAll" onchange="toggleAll(this)">
+                            </th>
+                            <th style="background-color: #4D759A; color: white; width: 20px;">Branch Name</th>
+                            <th style="background-color: #4D759A; color: white;">Application ID</th>
+                            <th style="background-color: #4D759A; color: white;">App Money No</th>
+                            <th style="background-color: #4D759A; color: white;">Customer Name</th>
+                            <th style="background-color: #4D759A; color: white;">Bank Name</th>
+                            <th style="background-color: #4D759A; color: white;">IFSC Code</th>
+                            <th style="background-color: #4D759A; color: white;">Bond Amount</th>
+                            <th style="background-color: #4D759A; color: white;">Track ID</th>
+                            <th style="background-color: #4D759A; color: white; width: 25px;">Cheque Number</th>
+                            <th style="background-color: #4D759A; color: white;">Amount</th>
+                            <th style="background-color: #4D759A; color: white;">Sub Name</th>
+                            <th style="background-color: #4D759A; color: white;">Cheque Date</th>
+                            <th style="background-color: #4D759A; color: white;">Clearing Date</th> <!-- New Column -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in ViewBag.ChequeRealizations)
+                        {
+                            <tr style="cursor: pointer;" data-track-id="@item["TrackId_Bond"]" data-application-id="@item["ApplicationId_Bond"]">
+
+                                <td>
+                                    <input type="checkbox" class="rowCheckbox" />
+                                </td>
+                                <td>@item["BranchName_Bond"]</td>
+                                <td>@item["ApplicationId_Bond"]</td>
+                                <td>@item["AppMoneyNo_Bond"]</td>
+                                <td>@item["CustomerName_Bond"]</td>
+                                <td>@item["BankName_Bond"]</td>
+                                <td>@item["IFSCCode_Bond"]</td>
+                                <td>@item["BondAmount_Bond"]</td>
+                                <td>@item["TrackId_Bond"]</td>
+                                <td>@item["ChequeNumber_Bond"]</td>
+                                <td>@item["Amount_Bond"]</td>
+                                <td>@item["SubName_Bond"]</td>
+                                <td>@((DateTime)item["ChequeDate_Bond"])</td>
+                                <td>
+                                    <input type="date" class="clearingDateInput" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            }
+            else
+            {
+                <div style="text-align: center; font-weight: bold;">No records found for cheque realizations. Please select a bank.</div>
+            }
+
+        </div><br />
+              <div style="text-align:center;">
+                  <!-- Buttons -->
+                  <div style="display: flex; justify-content: center; gap: 10px;">
+                      <div id="realizedButton" style="display: none;">
+                          <button style="height:35px; width:150px;" class="mb-2 mr-2 btn-hover-shine btn btn-shadow btn-success" onclick="showApprove('Approve')">Cheque Realized</button>
+                      </div>
+                      <div id="dishonoredButton" style="display: none;">
+                          <button style="height:35px; width:150px;" class="mb-2 mr-2 btn-hover-shine btn btn-shadow btn-success" onclick="showReject('Reject')">Cheque Dishonour</button>
+                      </div>
+
+                      <button style="height: 35px; width: 150px;" class="mb-2 mr-2 btn-hover-shine btn btn-shadow btn-secondary" onclick="location.reload();">Cancel</button>
+                  </div>
+
+                  <script>
+                      function toggleButtons() {
+                          const realizedButton = document.getElementById('realizedButton');
+                          const dishonoredButton = document.getElementById('dishonoredButton');
+
+                          if (document.getElementById('customerNameRadio').checked) {
+                              realizedButton.style.display = 'block';
+                              dishonoredButton.style.display = 'none';
+                          } else if (document.getElementById('customerIdRadio').checked) {
+                              realizedButton.style.display = 'none';
+                              dishonoredButton.style.display = 'block';
+                          } else {
+                              realizedButton.style.display = 'none';
+                              dishonoredButton.style.display = 'none';
+                          }
+                      }
+                  </script>
+              </div>
+
+        <script>
+            function toggleAll(selectAllCheckbox) {
+                const checkboxes = document.querySelectorAll('.rowCheckbox');
+                checkboxes.forEach(checkbox => {
+                    checkbox.checked = selectAllCheckbox.checked;
+                });
+            }
+        </script>
+    </div>
+</body>
+</html>
+<!-- Include SweetAlert2 CSS and JS -->
+<link rel="stylesheet" href="~/Content/cust_apprvlmsgbox1.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="~/Scripts/jquery-3.6.4.min.js"></script>
+<script>
+    function showApprove(action) {
+        const checkedRows = [];
+        const checkboxes = document.querySelectorAll('.rowCheckbox');
+        let allDatesFilled = true; // Flag to check if all dates are filled
+        let atLeastOneChecked = false; // Flag to check if at least one checkbox is checked
+
+        checkboxes.forEach((checkbox) => {
+            if (checkbox.checked) {
+                atLeastOneChecked = true; // Set flag to true if any checkbox is checked
+                const row = checkbox.closest('tr');
+                const trackId = row.getAttribute('data-track-id');
+                const applicationId = row.getAttribute('data-application-id');
+                const clearingDate = row.querySelector('.clearingDateInput').value; // Get the entered clearing date
+
+                // Check if clearing date is filled
+                if (!clearingDate) {
+                    allDatesFilled = false; // Set flag to false if any date is empty
+                }
+
+                checkedRows.push({
+                    trackId: trackId,
+                    applicationId: applicationId,
+                    clearingDate: clearingDate // Include the clearing date in the object
+                });
+            }
+        });
+
+        if (!atLeastOneChecked) {
+            Swal.fire("Error", "Please select at least one row to approve.", "error");
+            return;
+        }
+
+        if (!allDatesFilled) {
+            Swal.fire("Error", "Please fill in the clearing date for all selected rows.", "error");
+            return;
+        }
+
+        // Send the selected IDs to the server
+        Swal.fire({
+            title: "Approve?",
+            showDenyButton: true,
+            confirmButtonText: "Yes",
+            denyButtonText: "No",
+            customClass: 'custom-approve-button',
+            preConfirm: () => {
+                return $.ajax({
+                    url: '/Bond_cheque_realisation_dishonoured/RealizeCheque',
+                    type: 'POST',
+                    contentType: 'application/json', // Ensure JSON format
+                    data: JSON.stringify({ approvals: checkedRows }) // Send the array of approvals as JSON
+                });
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const message = result.value.result; // Access the message
+
+                if (message.startsWith("0")) {
+                    Swal.fire({
+                        title: message,
+                        icon: "error"
+                    }).then(() => {
+                        window.location.href = '/Bond_cheque_realisation_dishonoured/Bond_cheque_realisation_dishonoured';
+                    });
+                } else {
+                    Swal.fire({
+                        title: message,
+                        icon: "success"
+                    }).then(() => {
+                        window.location.href = '/Bond_cheque_realisation_dishonoured/Bond_cheque_realisation_dishonoured';
+                    });
+                }
+            }
+        }).catch((error) => {
+            Swal.fire("Error", "Failed to submit approval. Please try again.", "error");
+        });
+    }
+
+    function showReject(action) {
+        const checkedRows = [];
+        const checkboxes = document.querySelectorAll('.rowCheckbox');
+        let allDatesFilled = true; // Flag to check if all dates are filled
+        let atLeastOneChecked = false; // Flag to check if at least one checkbox is checked
+
+        checkboxes.forEach((checkbox) => {
+            if (checkbox.checked) {
+                atLeastOneChecked = true; // Set flag to true if any checkbox is checked
+                const row = checkbox.closest('tr');
+                const trackId = row.getAttribute('data-track-id');
+                const applicationId = row.getAttribute('data-application-id');
+                const clearingDate = row.querySelector('.clearingDateInput').value; // Get the entered clearing date
+
+                // Check if clearing date is filled
+                if (!clearingDate) {
+                    allDatesFilled = false; // Set flag to false if any date is empty
+                }
+
+                checkedRows.push({
+                    trackId: trackId,
+                    applicationId: applicationId,
+                    clearingDate: clearingDate // Include the clearing date in the object
+                });
+            }
+        });
+
+        if (!atLeastOneChecked) {
+            Swal.fire("Error", "Please select at least one row to reject.", "error");
+            return;
+        }
+
+        if (!allDatesFilled) {
+            Swal.fire("Error", "Please fill in the clearing date for all selected rows.", "error");
+            return;
+        }
+
+        Swal.fire({
+            title: "Do you want to Reject?",
+            showDenyButton: true,
+            confirmButtonText: "Yes",
+            denyButtonText: "No",
+            customClass: 'custom-approve-button',
+            preConfirm: () => {
+                return $.ajax({
+                    url: '/Bond_cheque_realisation_dishonoured/DishorCheque',
+                    type: 'POST',
+                    contentType: 'application/json', // Ensure JSON format
+                    data: JSON.stringify({ approvals: checkedRows }) // Send the array of approvals as JSON
+                });
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const message = result.value.result; // Access the message
+
+                if (message.startsWith("0")) {
+                    Swal.fire({
+                        title: message,
+                        icon: "error"
+                    }).then(() => {
+                        window.location.href = '/Bond_cheque_realisation_dishonoured/Bond_cheque_realisation_dishonoured';
+                    });
+                } else {
+                    Swal.fire({
+                        title: message,
+                        icon: "success"
+                    }).then(() => {
+                        window.location.href = '/Bond_cheque_realisation_dishonoured/Bond_cheque_realisation_dishonoured';
+                    });
+                }
+            }
+        }).catch((error) => {
+            Swal.fire("Error", "Failed to submit rejection. Please try again.", "error");
+        });
+    }
+</script>
+
+@*<script>
+        function showApprove(action) {
+            const checkedRows = [];
+            const checkboxes = document.querySelectorAll('.rowCheckbox');
+            let allDatesFilled = true; // Flag to check if all dates are filled
+            let atLeastOneChecked = false; // Flag to check if at least one checkbox is checked
+
+            checkboxes.forEach((checkbox) => {
+                if (checkbox.checked) {
+                    atLeastOneChecked = true; // Set flag to true if any checkbox is checked
+                    const row = checkbox.closest('tr');
+                    const trackId = row.getAttribute('data-track-id');
+                    const applicationId = row.getAttribute('data-application-id');
+                    const clearingDate = row.querySelector('.clearingDateInput').value; // Get the entered clearing date
+
+                    // Check if clearing date is filled
+                    if (!clearingDate) {
+                        allDatesFilled = false; // Set flag to false if any date is empty
+                    }
+
+                    checkedRows.push({
+                        trackId: trackId,
+                        applicationId: applicationId,
+                        clearingDate: clearingDate // Include the clearing date in the object
+                    });
+                }
+            });
+
+            if (!atLeastOneChecked) {
+                Swal.fire("Error", "Please select at least one row to approve.", "error");
+                return;
+            }
+
+            if (!allDatesFilled) {
+                Swal.fire("Error", "Please fill in the clearing date for all selected rows.", "error");
+                return;
+            }
+
+            // Send the selected IDs to the server
+            Swal.fire({
+                title: "Approve?",
+                showDenyButton: true,
+                confirmButtonText: "Yes",
+                denyButtonText: "No",
+                customClass: 'custom-approve-button',
+                preConfirm: () => {
+                    return $.ajax({
+                        url: '/Bond_cheque_realisation_dishonoured/RealizeCheque',
+                        type: 'POST',
+                        contentType: 'application/json', // Ensure JSON format
+                        data: JSON.stringify({ approvals: checkedRows }) // Send the array of approvals as JSON
+                    });
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const message = result.value.result; // Access the message
+
+                    if (message.startsWith("0")) {
+                        Swal.fire({
+                            title: message,
+                            icon: "error"
+                        }).then(() => {
+                            window.location.href = '/Bond_cheque_realisation_dishonoured/Bond_cheque_realisation_dishonoured';
+                        });
+                    } else {
+                        Swal.fire({
+                            title: message,
+                            icon: "success"
+                        }).then(() => {
+                            window.location.href = '/Bond_cheque_realisation_dishonoured/Bond_cheque_realisation_dishonoured';
+                        });
+                    }
+                }
+            }).catch((error) => {
+                Swal.fire("Error", "Failed to submit approval. Please try again.", "error");
+            });
+        }
+
+        function showReject(action) {
+            const checkedRows = [];
+            const checkboxes = document.querySelectorAll('.rowCheckbox');
+            let allDatesFilled = true; // Flag to check if all dates are filled
+            let atLeastOneChecked = false; // Flag to check if at least one checkbox is checked
+
+            checkboxes.forEach((checkbox) => {
+                if (checkbox.checked) {
+                    atLeastOneChecked = true; // Set flag to true if any checkbox is checked
+                    const row = checkbox.closest('tr');
+                    const trackId = row.getAttribute('data-track-id');
+                    const applicationId = row.getAttribute('data-application-id');
+                    const clearingDate = row.querySelector('.clearingDateInput').value; // Get the entered clearing date
+
+                    // Check if clearing date is filled
+                    if (!clearingDate) {
+                        allDatesFilled = false; // Set flag to false if any date is empty
+                    }
+
+                    checkedRows.push({
+                        trackId: trackId,
+                        applicationId: applicationId,
+                        clearingDate: clearingDate // Include the clearing date in the object
+                    });
+                }
+            });
+
+            if (!atLeastOneChecked) {
+                Swal.fire("Error", "Please select at least one row to reject.", "error");
+                return;
+            }
+
+            if (!allDatesFilled) {
+                Swal.fire("Error", "Please fill in the clearing date for all selected rows.", "error");
+                return;
+            }
+
+            Swal.fire({
+                title: "Do you want to Reject?",
+                showDenyButton: true,
+                confirmButtonText: "Yes",
+                denyButtonText: "No",
+                customClass: 'custom-approve-button',
+                preConfirm: () => {
+                    return $.ajax({
+                        url: '/Bond_cheque_realisation_dishonoured/DishorCheque',
+                        type: 'POST',
+                        contentType: 'application/json', // Ensure JSON format
+                        data: JSON.stringify({ approvals: checkedRows }) // Send the array of approvals as JSON
+                    });
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const message = result.value.result; // Access the message
+
+                    if (message.startsWith("0")) {
+                        Swal.fire({
+                            title: message,
+                            icon: "error"
+                        }).then(() => {
+                            window.location.href = '/Bond_cheque_realisation_dishonoured/Bond_cheque_realisation_dishonoured';
+                        });
+                    } else {
+                        Swal.fire({
+                            title: message,
+                            icon: "success"
+                        }).then(() => {
+                            window.location.href = '/Bond_cheque_realisation_dishonoured/Bond_cheque_realisation_dishonoured';
+                        });
+                    }
+                }
+            }).catch((error) => {
+                Swal.fire("Error", "Failed to submit rejection. Please try again.", "error");
+            });
+        }
+    </script>*@
+

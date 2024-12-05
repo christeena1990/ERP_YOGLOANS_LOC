@@ -1,0 +1,900 @@
+﻿
+@{
+    ViewBag.Title = "NCD_Joint_Applicants";
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+ 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script type="text/javascript">
+        function redirectToCustomerSearch() {
+
+            $.ajax({
+                url: '/NCD_Transferee_Registration/SetSessionValue',
+                    type: 'POST',
+                    data: { key: 'YourKey', value: 'YourValue' },
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Session value updated successfully.");
+                            window.location.href = '@Url.Action("CustomerSearch", "Customer_search")';
+                        }
+                    },
+                    error: function () {
+                        console.error('Error updating session value.');
+                    }
+                });
+
+
+        }
+
+        $(document).ready(function () {
+            // Attach a change event to the radio buttons for AccountType
+            $('input[name="AccountType"]').change(function () {
+                // Check which radio button is selected
+                if ($('#AccountType_joint').is(':checked')) {
+                    // Show the divs when'Joint'is selected
+                    $('#div_no_appli').css('display', 'block');
+                    $('#div_repayMode').css('display', 'block');
+                } else {
+                    // Hide the divs when'Individual'is selected
+                    $('#div_no_appli').css('display', 'none');
+                    $('#div_repayMode').css('display', 'none');
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            // Attach a change event to the radio buttons for AccountType
+            $('input[name="Lien"]').change(function () {
+                // Check which radio button is selected
+                if ($('#Lien_yes').is(':checked')) {
+                    // Show the divs when'Joint'is selected
+                    $('#div_lien_holder').css('display', 'block');
+
+                } else {
+                    // Hide the divs when'Individual'is selected
+                    $('#div_lien_holder').css('display', 'none');
+
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $('#_DP').change(function () {
+
+                var selectedValue = $(this).val();
+                // Check if the selected text is valid (not the default option)
+                if (selectedValue !== "0") {
+
+                    var selectedText = $("#_DP option:selected").text();
+                    var parts = selectedText.split('/');
+
+                    // Check if we have two parts after the split
+                    if (parts.length === 2) {
+                        // Assign the split values to textboxes
+                        $('#txt_DP_ID').val(parts[0]);  // Assign the first part
+                        $('#txt_DP_name').val(parts[1]); // Assign the second part
+                    } else {
+                        console.log("The selected text does not contain a'/'character.");
+                    }
+                } else {
+                    $('#txt_DP_ID').val("");  // Assign the first part
+                    $('#txt_DP_name').val(""); // Assign the second part
+                }
+            });
+        });
+
+ function fillDropdownlist() {
+    // alert("ready drop fill");
+
+         $.ajax({
+             url: "@Url.Action("FillDropdowns", "NCD_Transferee_Registration")",
+             type: 'GET',
+
+                     success: function (response) {
+                         if (response.success) {
+                             // Fill 15G/15H Dropdown
+                             var $15gDropdown = $('#_15gh');
+                             $15gDropdown.empty();
+                             $.each(response.data.FifteenGOptions, function (index, option) {
+                                 $15gDropdown.append($('<option>', {
+                                     value: option.Id,
+                                     text: option.Name
+                                 }));
+                             });
+
+                             // Fill Repayment Dropdown
+                             var $repaymentDropdown = $('#ddl_repayment');
+                             $repaymentDropdown.empty();
+                             $.each(response.data.RepaymentOptions, function (index, option) {
+                                 $repaymentDropdown.append($('<option>', {
+                                     value: option.Id,
+                                     text: option.Name
+                                 }));
+                             });
+
+                             // Fill DP Dropdown
+                             var $dpDropdown = $('#_DP');
+                             $dpDropdown.empty();
+                             $.each(response.data.DpOptions, function (index, option) {
+                                 $dpDropdown.append($('<option>', {
+                                     value: option.Id,
+                                     text: option.Name
+                                 }));
+                             });
+                         } else {
+                             alert(response.message);
+                         }
+                     },
+             error: function () {
+                 alert('Error retrieving dropdown data.');
+             }
+         });
+
+        }
+
+
+      function validateForm() {
+         // alert("validation");
+          var payment_mode = $('#ddl_repayment').val();
+          var no_applicant = $('#txt_No_of_applicant').val();
+          var fifteen_status = $('#_15gh').val();
+          var txt_lien_holder = $('#txt_lien_holder').val();
+          var accountType = document.querySelector('input[name="AccountType"]:checked');
+          var Lien_type = document.querySelector('input[name="Lien"]:checked');
+        //  var txt_DP_ID_value = $('#txt_DP_ID').val();
+          var txt_DP_ID_value = $('#txt_DP_ID').val().trim();
+          var txt_DP_name = $('#txt_DP_name').val();
+          //  var txt_DP_ID_value = $('#txt_DP_ID').val();
+          var txt_DP_name = $('#txt_DP_name').val().trim();
+         // var txt_Nominee_Name = $('#txt_Nominee_Name').val();
+          var txt_Nominee_Name = $('#txt_Nominee_Name').val().trim();
+         // var txt_Relation = $('#txt_Relation').val();
+          var txt_Relation = $('#txt_Relation').val().trim();
+         // var txt_Address = $('#txt_Address').val();
+          var txt_Address = $('#txt_Address').val().trim();
+        //  alert(txt_DP_ID_value);
+         // alert(Lien_type.value);
+          if (fifteen_status =="0") {
+              alert("Please select a 15 status!");
+              $('#_15gh').focus();
+              $('#_15gh').attr('required', true);
+              return false;
+          }
+          else if (accountType == null)
+          {
+              alert("please select account type!");
+              $('#AccountType').focus();
+
+              return false;
+          }
+          else if (accountType.value === 'J' && payment_mode == 0) {
+            // alert("joint acc");
+
+            alert("Please select a Repayment mode!");
+            $('#ddl_repayment').focus();
+            return false;
+          }
+          else if (accountType.value === 'J' && no_applicant == "")
+          {
+                alert("Please Enter Number of applicant!");
+                $('#txt_No_of_applicant').focus();
+                return false;
+
+          }
+          else if (Lien_type == null || Lien_type==" ") {
+              alert("please select Lien !");
+              $('#Lien').focus();
+              return false;
+          }
+          else if (Lien_type.value === 'Y' && txt_lien_holder == "")
+          {
+                  // alert("joint acc");
+
+                      alert("Please Enter Lien holder!");
+                      $('#txt_lien_holder').focus();
+                      return false;
+          }
+          else if (txt_DP_ID_value === '') { // Check if the value is an empty string
+              alert("Please enter DP ID!");
+              $('#txt_DP_ID').focus();
+              return false;
+          }
+          else if (txt_DP_name === '') { // Check if the value is an empty string
+              alert("Please enter DP Name!");
+              $('#txt_DP_name').focus();
+              return false;
+          }
+          else if (txt_Nominee_Name === '') { // Check if the value is an empty string
+              alert("Please enter Nominee Name!");
+              $('#txt_Nominee_Name').focus();
+              return false;
+          }
+          else if (txt_Relation === '') { // Check if the value is an empty string
+              alert("Please enter Nominee Relation!");
+              $('#txt_Relation').focus();
+              return false;
+          }
+          else if (txt_Address === '') { // Check if the value is an empty string
+              alert("Please enter Nominee Address!");
+              $('#txt_Address').focus();
+              return false;
+          }
+          else
+          {
+            return true;
+          }
+
+     }
+
+
+
+  $(document).ready(function () {
+
+
+      @*$('#submitbutton').click(function (event) {
+
+
+         if (!validateForm()) {
+             return; // Exit if validation fails
+         }
+
+          alert("validation passed");
+
+         var issue_no = $('#txt_issueNo').val();
+         var amount = $('#txt_amount').val();
+         var matamt = $('#txt_maturityAmt').val();
+         var totint = $('#txt_intTotal').val();
+         var matdate = $('#txt_maturityDt').val();
+         var nod = $('#txt_noDebenture').val();
+         var canvas_code = $('#txt_canvasserCode').val();
+         var renewal_amt = $('#txt_reniewAmt').val();
+         var nofapplicant = $('#txt_No_of_applicant').val();
+
+         var ac_type = $("input[name='AccountType']:checked").val();
+         /*var tax_payee = $("input[name='TaxPayee']:checked").val();*/
+         var lienholder = $('#txt_lien_holder').val();
+         var lien = $("input[name='Lien']:checked").val();
+         var rpay = $('#ddl_repayment').val();
+         var _15_status = "";
+         var _15_type = "";
+         var _15val = $('#_15gh').val();
+         if (_15val == "1") {
+             _15_status = "Y";
+             _15_type = "G";
+         }
+         else if (_15val == "2") {
+             _15_status = "N";
+             _15_type = "G";
+         }
+         else if (_15val == "3") {
+             _15_status = "Y";
+             _15_type = "H";
+         }
+         else {
+             _15_status = "N";
+             _15_type = "H";
+         }
+         var dp_id = $('#txt_DP_ID').val();
+         var dp_name = $('#txt_DP_name').val();
+          var pancard = $('#jointApplicantpan').val();
+         var nominee = $('#txt_Nominee_Name').val();
+         var nominee_add = $('#txt_Address').val();
+         var relation = $('#txt_Relation').val();
+
+         var formData = new FormData();
+         formData.append('issue_no', issue_no);
+         formData.append('amount', amount);
+         formData.append('matamt', matamt);
+         formData.append('totint', totint);
+         formData.append('matdate', matdate);
+         formData.append('nod', nod);
+         formData.append('canvas_code', canvas_code);
+         formData.append('renewal_amt', renewal_amt);
+         formData.append('nofapplicant', nofapplicant);
+         formData.append('ac_type', ac_type);
+         /*formData.append('tax_payee', tax_payee);*/
+         formData.append('lienholder', lienholder);
+         formData.append('lien', lien);
+         formData.append('rpay', rpay);
+         formData.append('_15_status', _15_status);
+         formData.append('_15_type', _15_type);
+         formData.append('dp_id', dp_id);
+         formData.append('dp_name', dp_name);
+         formData.append('pancard', pancard);
+         formData.append('nominee', nominee);
+         formData.append('nominee_add', nominee_add);
+         formData.append('relation', relation);
+
+        $.ajax({
+             url: "@Url.Action("SubmitApplication", "NCD_Transferee_Registration")",
+             type:'POST',
+             data: formData,
+             contentType: false,
+             processData: false,
+             success: function (response) {
+
+                 if (response.success) {
+                     //alert(response.message);
+
+                     Swal.fire({
+                                 title: response.message,
+                                 icon: "success"
+                             }).then(() => {
+                                 window.location.href = '/NCD_Application_creation/NCD_Application_create';
+                             });
+
+                 } else {
+                     alert("Error Occured!");
+                 }
+
+             },
+             error: function (error) {
+                 alert("error");
+                 console.error('Error sending data:', error);
+             }
+         });
+     });*@
+
+ });
+    </script>
+
+
+</head>
+<body>
+
+
+
+
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            @*<br />*@
+            <div class="card-title">
+
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">  Transferee Registration</h6>
+            </div>
+        </div>
+
+
+
+        <div class="card-body">
+
+
+
+            <div class="row" id="jointcustomersearchdiv" style="padding-bottom: 5px;">
+                <div class="col-md-6 col-lg-3">
+                    <div class="input-container">
+                        <button class="mb-2 mr-2 btn-icon btn btn-primary" type="button" id="jointcustsearch" onclick="redirectToCustomerSearch()" name="jointcustsearch"><i class="fa fa-fw" aria-hidden="true"></i> &nbsp; Search for Transferee </button>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-2">
+                    <div class="input-container">
+                        <input type="text" id="jointApplicantname" name="jointApplicantname" required value="@ViewBag.jointApplicantname" readonly />
+                        <label for="jointApplicantname"> Transferee </label>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-2">
+                    <div class="input-container">
+                        <input type="text" id="customerid" name="customerid" required value=" @Session["application_custId_151"]" readonly />
+                        <label for="customerid">Customer ID </label>
+                    </div>
+                </div>
+
+
+                <div class="col-md-6 col-lg-2">
+                    <div class="input-container">
+                        <input type="text" id="jointApplicantpan" name="jointApplicantpan" value="@ViewBag.jointApplicantpan" readonly />
+                        <label for="jointApplicantpan">PAN Number</label>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-2">
+                    <div class="input-container">
+                        <input type="text" id="jointApplicant_dob_age" name="jointApplicant_dob_age" value="@ViewBag.dob_age" readonly />
+                        <label for="jointApplicantpan">DOB/Age</label>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+            @*<div class="row" style="padding-bottom: 5px;">*@
+
+
+            <div id="Joinapplicationaccttablediv" style="width: 100%; overflow-y: auto; max-height: 180px; ">
+                <!-- Adjust max-height as needed -->
+                <div id="ncd_schemetbl1" style="overflow-y: auto; max-height: 180px;width: 100%; ">
+                    <table id="cus_detailsDataGrid" class="table table-hover table-striped table-bordered" style="width: 100%; font-size: 13px; font-weight: 500; ">
+                        <thead>
+                            <tr>
+                                <th>Select</th> <!-- Selection column header -->
+                                @if (ViewBag.JointaccountDetails != null && ViewBag.JointaccountDetails.Columns.Count > 0)
+                                {
+                                    foreach (System.Data.DataColumn column in ViewBag.JointaccountDetails.Columns)
+                                    {
+                                        if (column.ColumnName != "status_id" && column.ColumnName != "cnt") // Exclude specific columns
+                                        {
+                                            <th>@column.ColumnName</th>
+                                        }
+                                    }
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.JointaccountDetails != null && ViewBag.JointaccountDetails.Rows.Count > 0)
+                            {
+                                foreach (System.Data.DataRow row in ViewBag.JointaccountDetails.Rows)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="selectedRow" class="select-checkbox" value="@row[0]" /> <!-- Checkbox for selecting the row -->
+                                        </td>
+                                        @foreach (System.Data.DataColumn column in ViewBag.JointaccountDetails.Columns)
+                                        {
+                                            if (column.ColumnName != "status_id" && column.ColumnName != "cnt") // Exclude specific columns
+                                            {
+                                                <td>@row[column]</td>
+                                               
+                                            }
+                                        }
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="10">No data available</td> <!-- Updated colspan to account for the selection column -->
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            @*</div>*@
+
+            <br />
+
+
+            <div class="form-row" id="applicantdetailsdiv" style="padding-bottom: 5px; display: none;">
+
+                <div class="col-md-2">
+                    <div class="input-container">
+
+                        <select name="_15gh" id="_15gh" class="form-control" required>
+                        </select>
+                        <label for="loan-type">15 Status<span style="color:red"> *</span></label>
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-6 col-lg-2">
+                    <div class="input-container">
+                        <label for="senior_citizen" style="top: -3px; font-size: 12px; font-weight: bold;"> Account Type</label>
+                        <div class="radio-container">
+                            <div class="radio-option" style="font-size: 8px;">
+                                <input type="radio" id="AccountType_Individual" name="AccountType" value="I" required />
+                                <label for="AccountType_Individual">Indivi</label>
+                            </div>
+
+                            <div class="radio-option" style="font-size: 8px;">
+                                <input type="radio" id="AccountType_joint" name="AccountType" value="J" required />
+                                <label for="AccountType_joint">joint</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2" id="div_no_appli" style="display:none;">
+                    <div class="input-container">
+                        <input  oninput="validateApplicantNumber(this)" type="text" id="txt_No_of_applicant" name="txt_No_of_applicant" class="form-control" style="background-color:white" required />
+                        <label for="input-text">Number of Applicant</label>
+                    </div>
+                </div>
+                <div class="col-md-2" id="div_repayMode" style="display:none;">
+                    <div class="input-container">
+
+                        <select name="ddl_repayment" id="ddl_repayment" class="form-control" required>
+                        </select>
+                        <label for="loan-type">Repayment mode</label>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-2">
+                    <div class="input-container">
+                        <label for="senior_citizen" style="top: -3px; font-size: 12px; font-weight: bold;"> Lien marking</label>
+                        <div class="radio-container">
+                            <div class="radio-option">
+                                <input type="radio" id="Lien_yes" name="Lien" value="Y" required />
+                                <label for="Lien_yes">Yes</label>
+                            </div>
+                            &nbsp; &nbsp; &nbsp;
+                            <div class="radio-option">
+                                <input type="radio" id="Lien_no" name="Lien" value="N" required />
+                                <label for="Lien_no">No</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2" id="div_lien_holder" style="display:none;">
+                    <div class="input-container">
+                        <input  oninput="validateLienHolder(this)" type="text" id="txt_lien_holder" name="txt_lien_holder" class="form-control" style="background-color:white;" required />
+                        <label for="input-text">lien holder</label>
+                    </div>
+                </div>
+
+            </div>
+            <div id="div_DP" style="display:none;">
+                <div class="form-row">
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+
+                            <select name="_DP" id="_DP" class="form-control" required>
+                            </select>
+                            <label for="loan-type">Existing DP</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input   oninput="validateDPID(this)" type="text" id="txt_DP_ID" name="txt_DP_ID" class="form-control" style="background-color:white" required />
+                            <label for="input-text">DP ID<span style="color:red"> *</span></label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input oninput="validateLienHolder(this)" type="text" id="txt_DP_name" name="txt_DP_name" class="form-control" style="background-color:white" required />
+                            <label for="input-text">DP Name<span style="color:red"> *</span></label>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="div_nominee" style="display:none;">
+                <div class="form-row">
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input oninput="validateLienHolder(this)" type="text" id="txt_Nominee_Name" name="txt_Nominee_Name" class="form-control" style="background-color:white" required />
+                            <label for="input-text">Nominee Name</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input oninput="validateLienHolder(this)" type="text" id="txt_Relation" name="txt_Relation" class="form-control" style="background-color:white" required />
+                            <label for="input-text">Relation</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <textarea  oninput="this.value = this.value.toUpperCase();" id="txt_Address" name="txt_Address" class="form-control" style="background-color:white" required></textarea>
+                            <label for="input-text">Address</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="row d-block text-center" id="submit_resetbtndiv" style="padding-bottom: 5px;">
+                <button type="submit" class="btn btn-success " id="submitbutton" style="height: 38px; display: none;">SUBMIT</button> <!-- Button height adjusted -->
+                &nbsp; &nbsp; &nbsp;&nbsp;
+
+                <button type="button" id="resetbutton" onclick="resetForm();" class="btn btn-gradient-secondary" style="height: 38px;">RESET</button>
+            </div>
+
+
+
+
+
+        </div>
+
+
+    </div>
+
+    <script src="~/Scripts/jquery-3.6.4.min.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            //$('#jointApplicantname').val('');  // Clear Joint Applicant Name
+            //$('#customerid').val('');          // Clear Customer ID
+            //$('#jointApplicantpan').val('');   // Clear PAN Number
+            //$('#jointApplicant_dob_age').val(''); // Clear Application ID
+
+
+
+
+            //alert("pageloadedd");
+            $('#applicantdetailsdiv').hide();
+            $('#existingjointapplicantstablediv').hide();
+            $('#submitbutton').hide();
+        
+
+            // Allow only one checkbox to be selected at a time
+            $('input[type="checkbox"].select-checkbox').on('change', function () {
+
+                // First, validate that all fields in 'jointcustomersearchdiv' are filled
+                var isFormValid = validateJointCustomerSearchDiv();
+
+                if (!isFormValid) {
+                    // If the form is not valid, uncheck the checkbox and prevent further action
+                    alert("Please fill all fields in the Transferee Search section before selecting a checkbox.");
+                    $(this).prop('checked', false); // Uncheck the current checkbox
+                    return; // Exit the function
+                }
+
+
+                $('input[type="checkbox"].select-checkbox').not(this).prop('checked', false);
+
+                // If a checkbox is checked, fill the textboxes and call the function to update the second table
+                if ($(this).is(':checked')) {
+                    var selectedRow = $(this).closest('tr'); // Get the closest row of the selected checkbox
+                    var transferID = selectedRow.find('td:eq(1)').text(); // Assuming the 2nd column is Application ID
+                    var transferor_cus_id = selectedRow.find('td:eq(5)').text(); // Assuming the 4th column is Applicant Name
+
+                    localStorage.setItem('transferID', transferID);
+                    //alert("transferor_cus_id:" + transferor_cus_id);
+                    var transfereeId = "@Session["application_custId_151"]";
+                    //alert("transferee id:" + transfereeId);
+
+                    if (transferor_cus_id == transfereeId) {
+                        alert("Transferee CustomerId must not be mathes to Transferor Customer ID");
+                        return false;
+                    }
+
+                    // Show the additional divs
+                    $('#applicantdetailsdiv').show();
+                    fillDropdownlist();
+                    //  $('#existingjointapplicantstablediv').show();
+                    $('#submitbutton').show();
+                    $('#div_DP').show();
+                    $('#div_nominee').show();
+
+                    document.getElementById('_15gh').selectedIndex = 0;
+                    const radios = document.getElementsByName('AccountType');
+                    for (const radio of radios) {
+                        radio.checked = false; // Uncheck all radio buttons
+                    }
+                    $('#div_no_appli').hide();
+                    document.getElementById('txt_No_of_applicant').value = '';
+                    $('#div_repayMode').hide();
+                    document.getElementById('ddl_repayment').value = '';
+                    const radios1 = document.getElementsByName('Lien');
+
+                    for (const radio of radios1) {
+                        radio.checked = false; // Uncheck all radio buttons
+                    }
+                    $('#div_lien_holder').hide();
+                    document.getElementById('txt_lien_holder').value = '';
+
+                    document.getElementById('_DP').selectedIndex = 0;
+
+                    document.getElementById('txt_DP_ID').value = '';
+                    document.getElementById('txt_Nominee_Name').value = '';
+                    document.getElementById('txt_Relation').value = '';
+                    document.getElementById('txt_Address').value = '';
+                    document.getElementById('txt_DP_name').value = '';
+                }
+                else
+                {
+                    $('#applicantdetailsdiv').hide();
+                    $('#submitbutton').hide();
+                    $('#div_DP').hide();
+                    $('#div_nominee').hide();
+                }
+            });
+
+
+              $('#submitbutton').click(function () {
+                  var storedTransferID = localStorage.getItem('transferID');
+               
+                      alert("Stored Transfer ID: " + storedTransferID);
+                      // Optionally, perform other actions based on storedTransferID
+                 
+
+     if (!validateForm()) {
+         return; // Exit if validation fails
+     }
+
+     // alert("validation passed");
+     var transfer_ID = storedTransferID;
+     var issue_no = $('#txt_issueNo').val();
+     var amount = $('#txt_amount').val();
+     var matamt = $('#txt_maturityAmt').val();
+     var totint = $('#txt_intTotal').val();
+     var matdate = $('#txt_maturityDt').val();
+     var nod = $('#txt_noDebenture').val();
+     var canvas_code = $('#txt_canvasserCode').val();
+     var renewal_amt = $('#txt_reniewAmt').val();
+     var nofapplicant = $('#txt_No_of_applicant').val();
+
+     var ac_type = $("input[name='AccountType']:checked").val();
+     /*var tax_payee = $("input[name='TaxPayee']:checked").val();*/
+     var lienholder = $('#txt_lien_holder').val();
+     var lien = $("input[name='Lien']:checked").val();
+     var rpay = $('#ddl_repayment').val();
+     var _15_status = "";
+     var _15_type = "";
+     var _15val = $('#_15gh').val();
+     if (_15val == "1") {
+         _15_status = "Y";
+         _15_type = "G";
+     }
+     else if (_15val == "2") {
+         _15_status = "N";
+         _15_type = "G";
+     }
+     else if (_15val == "3") {
+         _15_status = "Y";
+         _15_type = "H";
+     }
+     else {
+         _15_status = "N";
+         _15_type = "H";
+     }
+     var dp_id = $('#txt_DP_ID').val();
+     var dp_name = $('#txt_DP_name').val();
+      var pancard = $('#jointApplicantpan').val();
+     var nominee = $('#txt_Nominee_Name').val();
+     var nominee_add = $('#txt_Address').val();
+     var relation = $('#txt_Relation').val();
+
+     var formData = new FormData();
+                  
+  
+     formData.append('transfer_ID', transfer_ID);
+     formData.append('issue_no', issue_no);
+     formData.append('amount', amount);
+     formData.append('matamt', matamt);
+     formData.append('totint', totint);
+     formData.append('matdate', matdate);
+     formData.append('nod', nod);
+     formData.append('canvas_code', canvas_code);
+     formData.append('renewal_amt', renewal_amt);
+     formData.append('nofapplicant', nofapplicant);
+     formData.append('ac_type', ac_type);
+     formData.append('lienholder', lienholder);
+     formData.append('lien', lien);
+     formData.append('rpay', rpay);
+     formData.append('_15_status', _15_status);
+     formData.append('_15_type', _15_type);
+     formData.append('dp_id', dp_id);
+     formData.append('dp_name', dp_name);
+     formData.append('pancard', pancard);
+     formData.append('nominee', nominee);
+     formData.append('nominee_add', nominee_add);
+     formData.append('relation', relation);
+
+    $.ajax({
+         url: "@Url.Action("SubmitApplication", "NCD_Transferee_Registration")",
+         type:'POST',
+         data: formData,
+         contentType: false,
+         processData: false,
+         success: function (response) {
+
+             if (response.success) {
+                 //alert(response.message);
+
+                 Swal.fire({
+                             title: response.message,
+                             icon: "success"
+                         }).then(() => {
+                             window.location.reload();
+                         });
+
+             } else {
+                 Swal.fire({
+                     title: "",
+                     text: response.message,
+                     icon: "error",
+                     confirmButtonText: "OK"
+
+                 });
+             }
+
+         },
+         error: function (error) {
+             alert("error");
+             console.error('Error sending data:', error);
+         }
+     });
+ });
+
+
+
+
+
+
+            function validateJointCustomerSearchDiv() {
+                var isValid = true;
+                $('#jointcustomersearchdiv input').each(function () {
+                    if ($(this).val() === "") {
+                        isValid = false;
+                        $(this).addClass('error');
+                    } else {
+                        $(this).removeClass('error');
+                    }
+                });
+                return isValid;
+            }
+
+
+
+
+        });
+
+
+
+
+
+        function resetForm() {
+             alert("resetbtn");
+            // Reset all form fields, including read-only fields
+           // $('#SubmitSchemeRegistration')[0].reset(); // This will reset all non-readonly fields
+
+            // Manually reset read-only fields
+            $('#jointApplicantname').val('');  // Clear Joint Applicant Name
+            $('#customerid').val('');          // Clear Customer ID
+            $('#jointApplicantpan').val('');   // Clear PAN Number
+            $('#applicationIdTextbox').val(''); // Clear Application ID
+            $('#applicantNameTextbox').val(''); // Clear Applicant Name
+            $('#jointApplicant_dob_age').val('');
+            $('#div_DP').hide();
+            $('#div_nominee').hide();
+            document.getElementById('_15gh').selectedIndex = 0;
+            // Hide the divs that were shown after selecting a checkbox
+            $('#applicantdetailsdiv').hide();
+            $('#existingjointapplicantstablediv').hide();
+            $('#submitbutton').hide();
+
+            // Uncheck any checkboxes if applicable
+            $('input[type="checkbox"].select-checkbox').prop('checked', false);
+
+            // Hide the existing joint applicants table if necessary
+            $('#added_row_table_div').hide();
+        }
+
+
+
+        function validateApplicantNumber(input) {
+            // Remove non-numeric characters
+            input.value = input.value.replace(/[^0-9]/g, '');
+
+            // Ensure the value is greater than 1
+            if (input.value && parseInt(input.value, 10) <= 1) {
+                alert("Number of Applicant must be greater than one!");
+                input.value = '';
+            } else {
+                input.setCustomValidity("");
+            }
+        }
+
+        function validateLienHolder(input) {
+            // Remove any character that is not a letter or a space
+            input.value = input.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase();
+        }
+
+
+        function validateDPID(input) {
+            // Remove any character that is not a letter
+            input.value = input.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+        }
+    </script>
+
+</body>
+</html>
+
+
+

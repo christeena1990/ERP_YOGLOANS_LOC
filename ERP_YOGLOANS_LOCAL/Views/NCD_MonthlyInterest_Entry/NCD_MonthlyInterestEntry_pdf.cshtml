@@ -1,0 +1,267 @@
+﻿
+@{
+    ViewBag.Title = "NCD_MonthlyInterestEntry_pdf";
+}
+
+<html>
+<head>
+
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            font-size: 30px;
+        }
+
+        h2, h3 {
+            margin: 0;
+            padding: 5px 0;
+            font-weight: normal;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+
+        th {
+            background-color: maroon;
+            color: white;
+            color-adjust: exact;
+        }
+
+        td {
+            border: 1px solid #fff;
+            /* font-size: 12px;*/
+            font-size: 10px;
+        }
+
+        /* Header Section */
+        #panel_header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #tbl_header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        #tbl_header td {
+            vertical-align: top;
+        }
+
+        #tbl_header .details {
+            font-style: italic;
+            color: darkred;
+            font-size: 10px;
+        }
+
+        /* Section Titles */
+        h3 {
+            color: gray;
+            font-size: 14px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #fff;
+            padding-bottom: 5px;
+        }
+
+        /* Tables */
+        .table-bordered {
+            border: 1px solid #fff;
+        }
+
+            .table-bordered th, .table-bordered td {
+                border: 1px solid #fff;
+            }
+
+        .table thead th {
+            background-color: maroon !important;
+            color: white !important;
+            color-adjust: exact;
+            -webkit-print-color-adjust: exact;
+        }
+
+
+
+        h2, h3 {
+            font-size: 18px;
+        }
+
+        table {
+            page-break-inside: avoid;
+        }
+
+        /**/
+
+
+        .reportheading {
+            font-family: 'Times New Roman';
+            font-style: normal;
+            font-size: 25px;
+            font-weight: bold;
+            color: black !important;
+            -webkit-print-color-adjust: exact;
+            color-adjust: exact;
+            padding-left: 5px;
+        }
+
+        .th_heading {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 16px;
+        }
+
+        .tr_maroon_heading {
+            background-color: maroon !important;
+            color: white !important;
+            -webkit-print-color-adjust: exact;
+            color-adjust: exact;
+        }
+
+        .grey_data {
+            color: grey !important;
+            -webkit-print-color-adjust: exact;
+            color-adjust: exact;
+            font-style: italic;
+            font-size: 15px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .darkgrey_data {
+            color: #31423e !important;
+            -webkit-print-color-adjust: exact;
+            color-adjust: exact;
+            font-style: italic;
+            font-size: 25px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+    </style>
+
+    <link rel="stylesheet" href="~/Content/print.css" media="print">
+
+</head>
+
+<body>
+
+    <form action="@Url.Action("", "")" method="post" id="NCD_MonthlyInterestEntry_pdf" enctype="multipart/form-data" autocomplete="off" style="width:100%;">
+        <div class="input-container" @*style="width:100%"*@>
+            <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+                <div class="input-container" style="width:100%" id="new_form">
+                    <div id="form-container" style="width:100%;">
+
+
+
+                        <br /> <br />
+                        <div id="panel_header">
+                            <br />
+                            <table style="width:100%;text-decoration-color:darkred;font-size:smaller;font-style:italic;" id="tbl_header">
+
+                                <tr>
+                                    <td style="text-align:left; width:30%;">
+                                        <div class="equifax" style="height:42px;vertical-align:top;">
+                                            <img style="width:170px;" src="~/images/logowithtext.png" />
+
+                                        </div>
+
+
+                                    </td>
+                                    <td style="width: 70%;">
+                                        <div class="reportheading">APPLICATION STATUS REPORT</div>
+                                    </td>
+                                </tr>
+
+
+
+                                <tr style="color: #8E191B; font-size: 15px; font-style: italic;font-family:'Times New Roman', Times, serif" ;">
+                                    <td style="font-size: 15px;">
+
+                                        Generated by:&nbsp;<label style="color:black;">@Session["name"]</label><br />
+                                        Branch Name::&nbsp;<label style="color:black;"> @Session["branch"]</label><br />
+
+                                    </td>
+                                    <td style="text-align: right; padding-right: 30px; font-size: 15px;">
+                                        DATE:&nbsp;<label style="color:black;">@Session["currentDate"]</label><br />
+                                        TIME:&nbsp;<label style="color:black;">@Session["currentTime"]</label>
+
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><hr /></td>
+                                </tr>
+
+                                @*<tr>
+                    <td> Report From:&nbsp;<label style="color:black; font-weight:700;"> @Session["fromDate"] </label>&nbsp;&nbsp;&nbsp; To:&nbsp;<label style="color: black; font-weight: 700;"> @Session["toDate"] </label> </td>
+
+                </tr>
+                <tr>
+                    <td> Total Amount:&nbsp;<label style="color: black; font-weight: 700;"> @Session["totalAmount"]  </label> &nbsp;&nbsp;&nbsp;&nbsp;       Total Count:&nbsp;<label style="color: black; font-weight: 700;">@Session["totalCount"]</label>      </td>
+                </tr>*@
+
+
+                                @*<tr>
+
+                    <td>
+                        branches:&nbsp;
+                        <label style="color:black;">Model.RefNo</label>
+                    </td>
+                </tr>*@
+
+
+
+
+
+                            </table>
+                        </div>
+
+
+                        <h1>Monthly Interest Report</h1>
+                        <p><strong>Month:</strong> @ViewBag.Month</p>
+                        <p><strong>Bank Type:</strong> @ViewBag.bankType</p>
+                        <p><strong>Issue Type:</strong> @ViewBag.issueType</p>
+                        <p><strong>Certificate Type:</strong> @ViewBag.certificateType</p>
+
+
+                        <br />
+
+                        <!-- Inject the HTML string passed from the controller -->
+                        <div id="pdfContent">
+
+
+                            @if (ViewBag.HtmlString != null)
+                            {
+                                <div>
+                                    @Html.Raw(ViewBag.HtmlString)
+
+                                </div>
+                            }
+
+
+
+
+                            <!-- Render the HTML string from ViewBag -->
+                        </div>
+
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+</body>
+</html>

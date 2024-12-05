@@ -1,0 +1,198 @@
+﻿
+@{
+    Layout = null;
+}
+@model ERP_YOGLOANS_LOCAL.Models.Bond_models.nominee_details
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nomination Form</title>
+    <style>
+        #table1 {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td, th {
+            border: 1px solid black;
+            text-align: left;
+        }
+    </style>
+</head>
+<body style="font-size:14px;">
+    <div>
+        <div style="width:100%; text-align: center;">
+            <h4 style="margin-bottom: 1px;">Form No. SH-13 </h4>
+
+
+            <p4 style="margin-top: 1px; font-weight: 800;">Nomination Form</p4>
+            <br />
+            <p4 style="margin-top: 1px; font-weight: 800;">
+                [Pursuant to section 72 of the Companies Act, 2013 and rule 19(1) of the Companies (Share Capital and
+                Debentures) Rules 2014]
+            </p4>
+            <br />
+        </div>
+        <div>
+            <p style=" text-align: left;">
+                To<br />
+                Yogakshemam Loans Limited<br />
+                Yogakshemam Apartments<br />
+                Kallingal Lane, Thiruvambadi<br />
+                Thrissur- 680022
+            </p>
+        </div>
+        <div>
+            <p style="text-align: justify;">
+                @*I/We  @Model.customer_name   …………………………,*@
+
+                I/We @(!string.IsNullOrEmpty(Model.customer_name)
+          ? Model.customer_name
+          : "…………………………,")
+                the holder(s) of the securities, particulars of which are given hereunder wish to make
+                nomination and do hereby nominate the following persons in whom shall vest, all the rights in respect of such
+                securities in the event of my/our death.
+            </p>
+        </div>
+        <div>
+            <p4 style="margin-top: 1px; font-weight: 800;">
+                (1) PARTICULARS OF THE SECURITIES (in respect of which nomination is being made)
+            </p4>
+        </div>
+        <br />
+        <table id="table1">
+            <tr>
+                <td rowspan="2">Nature of securities  </td>
+                <td rowspan="2">Folio No.  </td>
+                <td rowspan="2">No. of securities  </td>
+                <td rowspan="2">Certificate No. </td>
+                <td colspan="2">Distinctive No. </td>
+
+            </tr>
+            <tr>
+
+
+                <td>From </td>
+                <td>To</td>
+            </tr>
+            <tr>
+                <td><br /></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><br /></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><br /></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        <br />
+        <div>
+            <p4 style="margin-top: 0px; font-weight: 800;">
+                (2) PARTICULARS OF NOMINEE/S —
+            </p4>
+        </div>
+        <div>
+            <p style="text-align: justify;">
+                (a) Name: @Model.nominee_Name<br />
+                (b) Date of Birth:<br />
+                (c) Father’s/Mother’s/Spouse’s name:<br />
+                (d) Occupation:<br />
+                (e) Nationality:<br />
+                (f) Address:@Model.nominee_add<br />
+                (g) E-mail id:<br />
+                (h) Relationship with the security holder:@Model.relation
+            </p>
+        </div>
+        <div>
+            <p4 style="margin-top: 0px; font-weight: 800;">
+                (3) IN CASE NOMINEE IS A MINOR—
+            </p4>
+        </div>
+        <div>
+            <p style="text-align: justify;">
+                (a) Date of birth:<br />
+                (b) Date of attaining majority:<br />
+                (c) Name of guardian:<br />
+                (d) Address of guardian:
+            </p>
+        </div>
+        <table id="table1">
+            <tr>
+                <td>Name of the Security Holder(s) </td>
+                <td>Signature </td>
+            </tr>
+            <tr>
+                <td><br /></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><br /></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><br /></td>
+                <td></td>
+            </tr>
+        </table>
+        <br />
+        <table id="table1">
+            <tr>
+                <td>Name & Address of the Witness  </td>
+                <td>Signature </td>
+            </tr>
+            <tr>
+                <td><br /><br /><br /><br /></td>
+                <td><br /><br /><br /><br /></td>
+            </tr>
+
+        </table>
+        <br />
+        <hr />
+        <br />
+        <div>
+            <p4 style="margin-top: 0px; font-weight: 1000;">
+                FOR OFFICE USE ONLY
+            </p4>
+        </div>
+
+        <br />
+        <table id="table1" style="width:100%">
+            <tr>
+                <td style="width:50%">Nomination Registration Number</td>
+                <td style="width:50%"></td>
+            </tr>
+
+            <tr>
+                <td style="width:50%">Date of Registration</td>
+                <td style="width:50%"></td>
+            </tr>
+            <tr>
+                <td style="width:50%">Checked by and Signature of Employee</td>
+                <td style="width:50%"></td>
+            </tr>
+
+        </table>
+
+
+
+    </div>
+</body>
+</html>

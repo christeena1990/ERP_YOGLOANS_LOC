@@ -1,0 +1,404 @@
+﻿
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Add Bank Details</title>
+
+
+
+    <style>
+
+        /* Styling for dropdown container */
+        .dropdown-container {
+            width: 200px;
+            position: relative;
+            text-align: center;
+        }
+
+        /* Remove default dropdown arrow */
+        #styledDropdown {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            color: #333;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            background-image: none; /* Remove default arrow */
+            background-position: right 10px center;
+            background-repeat: no-repeat;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+            /* Add a custom arrow */
+            #styledDropdown::after {
+                content: "\25BC"; /* Unicode for downward arrow */
+                position: absolute;
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                pointer-events: none;
+            }
+
+            /* Change color on hover */
+            #styledDropdown:hover {
+                border-color: #007bff;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            }
+
+            /* Change style when focused */
+            #styledDropdown:focus {
+                outline: none;
+                border-color: #007bff;
+            }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+
+
+
+        $(document).ready(function () {
+
+            $('#dropdownMenuButton').on('click', function () {
+               // alert("drop_issue_click");
+            $.ajax({
+                url: '@Url.Action("GetCustomerList", "BOND_Allotment")',
+                type: 'GET',
+                success: function (data) {
+                    $("#customerDropdown").show();
+                    var dropdownMenu = $('#customerDropdown');
+                    dropdownMenu.empty(); // Clear existing options
+
+                    $.each(data, function(index, customer) {
+                        dropdownMenu.append('<button type="button" tabindex="0" class="dropdown-item customer-item" value="' + customer.Value + '">' + customer.Text + '</button>');
+                    });
+
+                    // Handle customer selection
+                    $('.customer-item').on('click', function() {
+                        var issue_no = $(this).val(); // Get the customer ID
+                        var customerName = $(this).text(); // Get the customer name
+
+                        // Update the dropdown button text with selected customer name
+                        $('#dropdownMenuButton').text(customerName);
+
+                        $.ajax({
+                            url: '@Url.Action("GetCustomerDetails_grid_fill", "BOND_Allotment")',
+                            type: 'POST',
+                            data: { issue_no: issue_no },
+                            success: function (response) {
+                                if (response.success) {
+                                    $("#totalTextbox").html('');
+                                    $("#customerDropdown").hide();
+
+                                    renderTable(response.data);
+                                    $('#total_div').show();
+                                    $('#table_div').show();
+
+                                }
+                                else
+                                {
+                                    $("#customerDropdown").hide();
+                                   
+                                    $('#total_div').hide();
+                                    $('#table_div').hide();
+                                    $("#totalTextbox").html('');
+                                    alert(response.Message);
+                                }
+                            },
+                            error: function() {
+                                alert("Error fetching customer details.");
+                            }
+                        });
+                    });
+                },
+                error: function() {
+                    alert("Error fetching data.");
+                }
+            });
+        });
+         });
+
+
+
+
+
+        function calculateTotal(data) {
+            var total = 0;
+
+            data.forEach(function (item, index) {
+                // Check if the corresponding checkbox is checked
+                if ($('#cus_detailsDataGrid tbody .row-checkbox').eq(index).is(':checked')) {
+                    // Assuming the 7th column corresponds to index 6 (0-based)
+                    var value = parseFloat(item[Object.keys(item)[6]]); // Fetching 7th column data
+
+                    if (!isNaN(value)) {
+                        total += value; // Add to total if it's a number
+                    }
+                }
+            });
+
+            // Show the total in the span
+            $('#totalTextbox').text(total.toFixed(2)); // Set the total with 2 decimal points
+        }
+
+
+        function renderTable(data) {
+          //  alert("render");
+
+            // Get the table body element
+            var tbody = $('#cus_detailsDataGrid tbody');
+
+            // Clear any existing rows
+            tbody.empty();
+
+            // Check if data is not empty
+            if (data.length > 0) {
+                // Dynamically create the header (based on the first item)
+                var thead = $('#cus_detailsDataGrid thead tr');
+                thead.empty(); // Clear previous headers
+
+                // Add the "Select All" checkbox header, set to checked by default
+                thead.append('<th><input type="checkbox" id="selectAllCheckbox" checked> Select</th>');
+
+                // Create headers based on keys in the first object
+                var headers = Object.keys(data[0]);
+                headers.forEach(function (header) {
+                    thead.append('<th>' + header + '</th>');
+                });
+
+                // Dynamically create table rows
+                data.forEach(function (item, rowIndex) {
+                    var row = '<tr>';
+                    // Add the checkbox in the first column and check it by default
+                    row += '<td><input type="checkbox" class="row-checkbox" data-row-index="' + rowIndex + '" checked></td>';
+
+                    headers.forEach(function (header) {
+                        row += '<td>' + (item[header] !== null ? item[header] : '') + '</td>';
+                    });
+                    row += '</tr>';
+                    tbody.append(row); // Add the row to the table body
+                });
+
+                // Call the calculateTotal function after rendering the table
+                calculateTotal(data);
+
+                // "Select All" checkbox behavior
+                $('#selectAllCheckbox').on('click', function () {
+                    var isChecked = $(this).is(':checked');
+                    $('.row-checkbox').prop('checked', isChecked);
+                    calculateTotal(data); // Recalculate total on select all
+                });
+
+                // Individual row checkbox behavior
+                $('.row-checkbox').on('click', function () {
+                    // Deselect "Select All" checkbox if a single checkbox is unchecked
+                    if (!$(this).is(':checked')) {
+                        $('#selectAllCheckbox').prop('checked', false);
+                    } else if ($('.row-checkbox:checked').length === $('.row-checkbox').length) {
+                        // Select "Select All" if all checkboxes are checked
+                        $('#selectAllCheckbox').prop('checked', true);
+                    }
+
+                    // Recalculate total whenever a checkbox is clicked
+                    calculateTotal(data);
+                });
+            } else {
+                // Optionally, show a message if there's no data
+                tbody.append('<tr><td colspan="' + (headers.length + 1) + '">No data available</td></tr>');
+            }
+        }
+
+
+
+
+
+
+
+
+// Function to call GetCustomerDetails_grid_fill
+@*function getCustomerDetails(branchId, customerId) {
+   // alert("branch drop click");
+   // alert(branchId);
+  //  alert(customerId);
+    $.ajax({
+        url: '@Url.Action("GetCustomerDetails_grid_fill", "BOND_Allotment")', // Replace with your actual controller name
+        type: 'POST',
+        data: {
+            customerId: customerId,
+            branch_id: branchId
+        },
+        success: function (response) {
+            if (response.success) {
+              //  alert("success");
+                // Handle the data returned from the server
+                $("#customerDropdown_branch").hide();
+                console.log('Customer details:', response.data);
+
+                // Update your UI with the customer details here
+            } else {
+                console.error('Error fetching customer details');
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Error fetching customer details: ' + error);
+        }
+    });
+}*@
+
+        function approveFunction() {
+            //alert(" approve");
+            // Initialize an empty array to hold the concatenated values
+            var concatenatedValues = [];
+
+            // Loop through each checked checkbox
+            $('.row-checkbox:checked').each(function () {
+                // Get the row index from the data attribute
+                var rowIndex = $(this).data('row-index');
+
+                // Get the value from the 8th column (index 7 since it's zero-based)
+                var value = $('#cus_detailsDataGrid tbody tr').eq(rowIndex).find('td').eq(3).text().trim();
+
+                // Add the value to the array if it's not empty
+                if (value) {
+                    concatenatedValues.push(value);
+                }
+            });
+
+            // Join the array into a single string, separated by commas
+            var result = concatenatedValues.join('$');
+           
+            if (result == null || result=="") {
+                alert("Please Select any row");
+                return false;
+            }
+        
+                     $.ajax({
+                type: "POST",
+                url: '@Url.Action("Approve_BtnClick", "BOND_Allotment")', // Replace with your controller name
+                data: { concate_app_id: result },
+                success: function (response) {
+                    if (response.success) {
+                        // alert("success");
+                        // alert(response.data);
+                        Swal.fire({
+
+                            title: response.data,
+                            /* text: result.message,*/
+                            text: "",
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        }).then(() => {
+                            window.location.reload();
+
+                        });
+
+                    }
+                    else {
+
+                        Swal.fire({
+                            title: "",
+                            text: response.message,
+                            icon: "error",
+                            confirmButtonText: "OK"
+
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("AJAX Error: " + error);
+                }
+            });
+            // You can also return the result or perform further actions here
+        }
+
+
+
+    </script>
+</head>
+<body>
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+
+                <h6 style="font-weight: bold; font-size: 25px; margin: 350px;color:maroon">NCD Bulk Allotment</h6>
+            </div>
+        </div>
+        <div class="card-body">
+
+
+            <div class="dropdown d-inline-block">
+                <button type="button" style="width:260px;" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="mb-2 mr-2 dropdown-toggle btn btn-primary" id="dropdownMenuButton">
+                    Select Issue No
+                </button>
+                <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu-rounded dropdown-menu-lg dropdown-menu" id="customerDropdown">
+                </div>
+                <input type="hidden" id="customerId" value="" /> <!-- Hidden input to store customer ID -->
+
+            </div>
+
+
+
+            <div style="overflow-x: auto; max-height: 400px; display:none;" id="table_div">
+
+                <table id="cus_detailsDataGrid" class="table table-hover table-striped table-bordered" style="font-size:14px;">
+                    <thead style="background-color: #4D759A; color: white; ">
+                        <tr>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @*<input type="text" id="totalTextbox" readonly>*@
+
+        <div class="card-body" style="display:none;" id="total_div">
+            <div class="row">
+                <div class="col-lg-6 col-xl-4" style="height:50px;">
+                    <div class="card mb-3 widget-content" style="height:50px;">
+                        <div class="widget-content-wrapper" style="height:50px;">
+                            <div class="widget-content-left">
+                                <div style="font-size:14px;" class="widget-heading">Total Amount</div>
+                            </div>
+                            <div class="widget-content-right">
+                                <div class="widget-numbers text-primary">
+                                    <span id="totalTextbox" style="font-size:20px;"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-lg-4">
+
+                </div>
+                <div class="col-lg-4">
+                    <button style="height:50px;" class="mb-2 mr-2 border-0 btn-transition btn btn-shadow btn-outline-success" onclick="approveFunction()">
+
+                        Confirm
+                    </button>
+                    @*<button style="height:50px;" class="mb-2 mr-2 border-0 btn-transition btn btn-shadow btn-outline-danger" onclick="rejectFunction()">
+                            Reject
+                        </button>*@
+                    <button style="height:50px;" onclick="location.reload();" class="mb-2 mr-2 border-0 btn-transition btn btn-shadow btn-outline-secondary">
+                        Reset
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

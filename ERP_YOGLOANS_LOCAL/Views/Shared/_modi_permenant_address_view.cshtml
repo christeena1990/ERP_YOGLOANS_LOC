@@ -1,0 +1,307 @@
+﻿
+
+
+<div class="row">
+    <div class="col-md-6 col-lg-4">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span style="width:140px;" class="input-group-text">House Name/No<span style="color: red; font-size: 15px;">*</span></span>
+            </div>
+            <input type="text" class="form-control" placeholder="" id="p_house_name" name="p_house_name" aria-label="" aria-describedby="basic-addon1" maxlength="50" required readonly
+                   oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ]/g, '').toUpperCase()"
+                   @if (Model != null) { <text> value="@Model.p_house_name" </text> }>
+
+            <span id="p_housename-error" class="error" style="display: none; color: red;font-size:small;"></span>
+
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span style="width:140px;" class="input-group-text">Land Mark<span style="color: red; font-size: 15px;">*</span></span>
+            </div>
+
+            <input type="text" class="form-control" id="p_landmark" name="p_landmark" placeholder="" aria-label="" aria-describedby="basic-addon1" required readonly
+                   oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ]/g, '').toUpperCase()"
+                   @if (Model != null) { <text> value="@Model.p_landmark" </text> }>
+            <span id="p_landmark-error" class="error" style="display: none; color: red; font-size: small;"></span>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span style="width:140px;" class="input-group-text">City / Place<span style="color: red; font-size: 15px;">*</span></span>
+            </div>
+
+            <input type="text" class="form-control" id="p_City" name="p_City" placeholder="" aria-label="" aria-describedby="basic-addon1" required readonly
+                   oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" @if (Model != null) { <text> value="@Model.p_City" </text> }>
+
+            <span id="p_City-error" class="error" style="display: none; color: red; font-size: small;"></span>
+        </div>
+    </div>
+</div>
+@*Eighth row starts here....*@
+
+<div class="row">
+    <div class="col-md-6 col-lg-4">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span style="width:140px;" class="input-group-text" id="basic-addon1">Pincode<span style="color: red; font-size: 15px;">*</span></span>
+            </div>
+            <input type="text" class="form-control" id="txt_cust_pincode_perm_new" placeholder="" aria-label="" aria-describedby="basic-addon1" onkeyup="if(/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')" maxlength="6" required readonly
+                   @if (Model != null) { <text> value="@Model.p_Pincode" </text> }>
+
+            <span id="p_pincode-error" class="error" style="display: none; color: red; font-size: small;"></span>
+        </div>
+    </div>
+
+
+    <div class="col-md-6 col-lg-4">
+        <div class="input-group mb-3">
+
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span style="width:140px;" class="input-group-text" id="basic-addon1">Post Office<span style="color: red; font-size: 15px;">*</span></span>
+                </div>
+
+
+                <select id="p_PostOffice" class="form-control" name="p_PostOffice" required disabled>
+                    @if (Model != null && Model.p_Post_name != null)
+                    {
+                        <option value="0">----- Select -----</option>
+                        <option value="@Model.p_PostOffice" selected>@Model.p_Post_name</option>
+                    }
+                    else
+                    {
+                        <option value="0" selected>----- Select -----</option>
+                    }
+                </select>
+
+                <span id="p_postname-error" class="error" style="display: none; color: red; font-size: small;"></span>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-6 col-lg-4">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+            
+                <span style="width:140px;" class="input-group-text" id="basic-addon1">District</span>
+            </div>
+            <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" id="p_District" name="p_District"
+                   @if (Model != null) { <text> value="@Model.p_District" </text> } readonly>
+        </div>
+    </div>
+</div>
+
+
+@*Ninenth row starts here....*@
+
+<div class="row" style="margin-top:-15px; margin-bottom:2px;">
+    <div class="col-md-6 col-lg-4">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span style="width:140px;" class="input-group-text" id="basic-addon1">State</span>
+            </div>
+            <input type="text" id="p_State" name="p_State" class="form-control"
+                   @if (Model != null) { <text> value="@Model.p_State" </text> } readonly>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+               
+                <div>
+                    <input type="file" id="image4" name="image4" style="font-size: 15px; display:none" />
+                    <input type="hidden" id="per_attach_Status" value="">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    @*<div class="col-md-6 col-lg-4">
+
+        
+        <img src="~/images/image_attachment_icon.jpg" alt="Icon Image" id="btn_per_attach" onclick="displayPhoto('@Model.ImageUrl1','image')" style="height: 37px; width: 37px; display: none" />
+    
+    </div>*@
+    <div id="photoModal" class="modal">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <img class="modal-content " id="customerPhoto">
+        <div id="caption"></div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $("#txt_cust_pincode_perm_new").on("focusout", function () {
+            var pincode = $(this).val();
+    $.ajax({
+        url: '@Url.Action("permanent_PincodeChanged", "Customer_Registration")',
+        type: 'POST',
+        data: { pincode: pincode },
+        dataType: 'json',
+        success: function (result) {
+            // Clear existing options for Post Office dropdown
+            $("#p_PostOffice").empty();
+
+            // Add new options for Post Office dropdown based on the result
+            $.each(result.PostOffices, function (index, item) {
+                $("#p_PostOffice").append($('<option>', {
+                    value: item.Value,
+                    text: item.Text
+                }));
+            });
+
+            // Set the value for the District text input
+            $("#p_District").val(result.Districts[0].Text); // Assuming you want the first district as an example
+            $("#p_State").val(result.States[0].Text);
+
+
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.log("Error:", jqXHR.responseText);
+            console.log("Status:", textStatus);
+            console.log("Error Thrown:", errorThrown);
+            alert('Error occurred while fetching data. See console for details.');
+        }
+    });
+});
+
+     });
+
+
+        $(document).ready(function () {
+            // Function to fill the Permanent Post Office dropdown based on pincode
+            function fillPermanentDropdown(pincode, selectedValue) {
+                $.ajax({
+                    url: '@Url.Action("permanent_PincodeChanged", "Customer_Registration")',
+                    type: 'POST',
+                    data: { pincode: pincode },
+                    dataType: 'json',
+                    success: function (result) {
+                        // Clear existing options for Permanent Post Office dropdown
+                        $("#p_PostOffice").empty();
+
+                        // Add new options for Permanent Post Office dropdown based on the result
+                        $.each(result.PostOffices, function (index, item) {
+                            var option = $('<option>', {
+                                value: item.Value,
+                                text: item.Text
+                            });
+
+                            // Set selected based on the condition
+                            if (item.Value === selectedValue || (selectedValue === null && item.Value === $('#hiddenPermanentPostOffice').val())) {
+                                option.prop('selected', true);
+                            }
+
+                            $("#p_PostOffice").append(option);
+                        });
+
+                        // Set the value for the District and State text inputs in Permanent Address
+                        $("#p_District").val(result.Districts[0]?.Text || ''); // Assuming you want the first district as an example
+                        $("#p_State").val(result.States[0]?.Text || '');
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error:", jqXHR.responseText);
+                        console.error("Status:", textStatus);
+                        console.error("Error Thrown:", errorThrown);
+                    }
+                });
+            }
+
+            // Function to populate form values for Permanent Address on page load
+            @*function populatePermanentFormValues(model) {
+                // Use the model.p_Pincode and model.p_PostOffice instead of the hardcoded values
+                var pincodeFromTable = model ? model.p_Pincode : null;
+                var selectedValueFromTable = model ? model.p_PostOffice : null;
+
+                // Populate the Permanent Post Office dropdown based on the provided values
+                fillPermanentDropdown(pincodeFromTable, selectedValueFromTable);
+
+                // Additional logic to populate other form fields in Permanent Address with values from the table
+                // ...
+            }
+
+            // Trigger the populatePermanentFormValues function on page load
+            // Pass the model as an argument if it's available in the view
+            populatePermanentFormValues(@Html.Raw(Json.Encode(Model)));*@
+
+            // Check if the model.p_PostOffice is null and trigger the focusout event for Permanent Address
+            if (@Model?.p_PostOffice == null) {
+
+                $("#txt_cust_pincode_perm_new").trigger("focusout");
+            }
+
+           
+            
+        });
+</script>
+
+<script>
+    function displayPhoto(fileUrl, fileType) {
+        var modal = document.getElementById("photoModal");
+        var modalImg = document.getElementById("customerPhoto");
+        var caption = document.getElementById("caption");
+
+        modal.style.display = "block";
+
+        if (fileType === "image") {
+            modalImg.src = fileUrl;
+            caption.innerHTML = '<span id="closeImage">Close Image</span>'; // Modified caption
+            var closeSpan = document.getElementById("closeImage");
+            closeSpan.addEventListener("click", function () {
+                closeModal();
+            });
+        } else if (fileType === "pdf") {
+            modalImg.src = "";
+            caption.innerHTML = '<object data="' + fileUrl + '" type="application/pdf" width="100%" height="100%"><p>PDF viewer required. Download it <a href="' + fileUrl + '">here</a>.</p></object>';
+        }
+
+        var span = document.getElementsByClassName("close")[0];
+        span.onclick = function () {
+            closeModal();
+        };
+    }
+
+    window.onclick = function (event) {
+        var modal = document.getElementById("photoModal");
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    function closeModal() {
+        var modal = document.getElementById("photoModal");
+        modal.style.display = "none";
+    }
+
+   
+
+
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,1179 @@
+﻿
+@{
+    ViewBag.Title = "NCD_Scheme_registration";
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+
+
+    @*/////////////form submission output message shown here///////////*@
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+    $(document).ready(function () {
+        // Get the message and alert type from TempData
+        var message = '@TempData["Message"]';
+        var alertType = '@TempData["AlertType"]';
+
+        if (message) {
+            // Determine the icon based on the alert type
+            var icon = alertType === "success" ? "success" : "error";
+
+            Swal.fire({
+                title: alertType === "success" ? "Scheme registration completed successfully!" : "An error occurred.Please try again.",
+               /* text: message,*/
+                icon: icon,
+                confirmButtonText: "OK"
+            });
+        }
+    });
+    </script>
+
+    @*/////////////form submission output message shown here///////////*@
+
+</head>
+<body>
+
+
+    @*<div class="main-panel" style="background-color: #ffffff; width: 100%;">*@
+
+
+
+            <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+                <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+                    @*<br />*@
+                    <div class="card-title">
+                        <br /><br />
+                        <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">  Scheme Registration</h6>
+                    </div>
+                </div>
+                <br />
+
+                @*------  first row--------*@
+            <form method="post" id="SubmitSchemeRegistration" action="@Url.Action("SubmitSchemeRegistration", "NCD_Scheme_registration")" enctype="multipart/form-data" autocomplete="off" style="width: 100%; ">
+
+                <div class="row" style="padding-bottom: 5px;">
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="issue_no" name="issue_no" required value="@Session["Issue_no"]" readonly />
+                            <label for="issue_no">Issue Number</label>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <label for="interest_type" style="top: -3px; font-size: 12px; font-weight: bold;">Interest Type<span style="color:red"> *</span></label>
+                            <div class="radio-container">
+                                <div class="radio-option">
+                                    <input type="radio" id="interest_type_month" name="interest_type" value="F" required />
+                                    <label for="interest_type_month" style="font-size: 12px; padding-left:1px;">Month</label>
+                                </div>
+                                <div class="radio-option" style="padding-left: 0px;">
+                                    <input type="radio" id="interest_type_cumulative" name="interest_type" value="C" required />
+                                    <label for="interest_type_cumulative" style="font-size: 12px; padding-left: 1px;">Cumltv</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+  
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="period" name="period"
+                                   maxlength="3"
+                                   oninput="this.value = this.value.replace(/\D/g, '').substring(0, 3);"
+                                   required />
+                            <label for="period">Period (Month) <span style="color:red"> *</span></label>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="face_value" name="face_value" readonly required value="@Session["FaceValue"]" />
+                            <label for="face_value">Face Value</label>
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="total_fund" name="total_fund"
+                                    maxlength="11"
+                                   oninput="this.value = this.value.replace(/\D/g, '').substring(0, 11); total_deb(); showAmountInWords('total_fund', 'totalFundInWords');"
+                                   onfocus="showAmountInWords('total_fund', 'totalFundInWords');"
+                                   onblur="hideAmountInWords('totalFundInWords');"
+                                   required />
+                            <label for="total_fund">Total Fund<span style="color:red"> *</span></label>
+                            <span id="totalFundInWords" style="color: red; font-size: 12px; display:none;"></span> <!-- Display for Total Fund in words -->
+                        </div>
+                    </div>
+
+
+
+
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="number_of_debentures" readonly name="number_of_debentures" required />
+                            <label for="number_of_debentures">No. Of Debentures</label>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <!-- Second Row -->
+                <div class="row" style="padding-bottom: 5px;">
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="date" id="issue_start" name="issue_start" oninput="validateDateRange()" required />
+                            <label for="issue_start">Issue Start<span style="color:red"> *</span></label>
+                            <span id="date-error" style="color: red; font-size: small;"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="date" id="issue_end" name="issue_end" oninput="validateDateRange()" required />
+                            <label for="issue_end">Issue End<span style="color:red"> *</span></label>
+                            <span id="date-error" style="color: red; font-size: small;"></span>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="min_amount" name="min_amount"
+                                   oninput="this.value = this.value.replace(/\D/g, ''); validateMinAmount(); showAmountInWords('min_amount', 'minAmountInWords');"
+                                   onfocus="showAmountInWords('min_amount', 'minAmountInWords');"
+                                   onblur="hideAmountInWords('minAmountInWords');"
+                                   required />
+                            <label for="min_amount">Min. Amount<span style="color:red"> *</span></label>
+                            <span id="minAmountInWords" style="color: red; font-size: small; display:none;"></span> <!-- Display for Min. Amount in words -->
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="locking_period" name="locking_period" oninput="this.value = this.value.replace(/\D/g, '');" required />
+                            <label for="locking_period">Locking Period(Year)<span style="color:red;font-size:5px"> *</span></label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="interest_rate" name="interest_rate" maxlength="2" oninput="this.value = this.value.replace(/[^0-9.]/g, '').substring(0, 2); " pattern="\d+(\.\d{1,2})?" required />
+
+                            <label for="interest_rate">Interest Rate (%)<span style="color:red"> *</span></label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <label for="premature_closing" style="top: -3px; font-size: 12px; font-weight: bold;">Premature Closing <span style="color:red"> *</span></label>
+                            <div class="radio-container">
+                                <div class="radio-option">
+                                    <input type="radio" id="premature_closing_yes" name="premature_closing" value="Y" required />
+                                    <label for="premature_closing_yes">Yes</label>
+                                </div>
+                                &nbsp; &nbsp; &nbsp;
+                                <div class="radio-option">
+                                    <input type="radio" id="premature_closing_no" name="premature_closing" value="N" required />
+                                    <label for="premature_closing_no">No</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <!-- Third Row -->
+                <div class="row" style="padding-bottom: 5px;">
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <label for="senior_citizen" style="top: -3px; font-size: 12px; font-weight: bold;">Senior Citizen <span style="color:red"> *</span></label>
+                            <div class="radio-container">
+                                <div class="radio-option">
+                                    <input type="radio" id="senior_citizen_yes" name="senior_citizen" value="Y" required />
+                                    <label for="senior_citizen_yes">Yes</label>
+                                </div>
+                                &nbsp; &nbsp; &nbsp;
+                                <div class="radio-option">
+                                    <input type="radio" id="senior_citizen_no" name="senior_citizen" value="N" required />
+                                    <label for="senior_citizen_no">No</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="senior_citizen_interest" name="senior_citizen_interest" maxlength="2" oninput="this.value = this.value.replace(/[^0-9.]/g, '').substring(0, 2); " pattern="\d+(\.\d{1,2})?" readonly />
+                            <label for="senior_citizen_interest">Senior Cit. Int. (%)</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <label for="canvasser_commission" style="top: -3px; font-size: 12px; font-weight: bold;">Canvasser Comsn<span style="color:red"> *</span></label>
+                            <div class="radio-container">
+                                <div class="radio-option">
+                                    <input type="radio" id="canvasser_commission_yes" name="canvasser_commission" value="Y" required />
+                                    <label for="canvasser_commission_yes">Yes</label>
+                                </div>
+                                &nbsp; &nbsp; &nbsp;
+                                <div class="radio-option">
+                                    <input type="radio" id="canvasser_commission_no" name="canvasser_commission" value="N" required />
+                                    <label for="canvasser_commission_no">No</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="date" id="meet_date" name="meet_date" oninput="validateDOB(this.value)" required />
+                            <label for="meet_date">Meet Date<span style="color:red"> *</span></label>
+                            <span id="dob-error" style="color: red; font-size: small;"></span>
+                        </div>
+                    </div>
+
+                    @*<div class="col-md-6 col-lg-2">
+                <div class="input-container">
+                    <input type="date" id="roc_date" name="roc_date" oninput="validateDOB(this.value)" required />
+                    <label for="roc_date">ROC Date </label>
+                    <span id="dob-error" style="color: red; font-size: small;"></span>
+                </div>
+            </div>*@
+
+                    @*<div class="col-md-6 col-lg-2">
+                <div class="input-container">
+                    <input type="date" id="trust_date" name="trust_date" oninput="validateDOB(this.value)" required />
+                    <label for="trust_date">Trust Date </label>
+                    <span id="dob-error" style="color: red; font-size: small;"></span>
+                </div>
+            </div>*@
+
+
+
+                    <!-- Fourth Row -->
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="agg_amt_from" name="agg_amt_from" maxlength="11" oninput="this.value = this.value.replace(/[^0-9.]/g, '').substring(0,11); " required />
+                            <label for="agg_amt_from">Agg Amt From<span style="color:red"> *</span></label>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="text" id="agg_amt_to" name="agg_amt_to" maxlength="11" oninput="this.value = this.value.replace(/[^0-9.]/g, '').substring(0, 11); " required />
+                            <label for="agg_amt_to">Agg Amt To<span style="color:red"> *</span> </label>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="padding-bottom: 5px;">
+                    <div class="col-md-6 col-lg-2">
+                        <div class="input-container">
+                            <input type="date" id="ppo_date" name="ppo_date" oninput="validateDOB(this.value)" required />
+                            <label for="ppo_date">PPO Date<span style="color:red"> *</span> </label>
+                            <span id="dob-error" style="color: red; font-size: small;"></span>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+
+                <br />
+                <!--------------- add trustee, canvasser, pre mature      ------------------------>
+
+                <div class="row" style="padding-bottom: 5px;">
+
+                    <div class="col-lg-6" id="trustee_div">
+                        <div class=" mb-3 card" style="background-color: #f3f3f3">
+                            <div class="card-body" style="background-color: #f3f3f3">
+                                <h5 class="card-title" style="color:maroon;font-size:16px;padding-left:105px;">Trustee Registration</h5>
+
+                                <!-- Input fields for adding new trustee -->
+                                <div class="mb-2 row">
+                                    <!-- Reduced margin-bottom -->
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="input-container">
+                                            <textarea id="trusteeName" name="temptrusteeName" class="form-control trustee-input" style="background-color:#f3f3f3" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()"></textarea> <!-- Scoped class -->
+                                            <label for="trusteeName" style="background-color: #f3f3f3;">Trustee Name<span style="color:red"> *</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="input-container">
+                                            <input type="text" id="trusteePan" name="temptrusteePan" class="form-control trustee-input" style="background-color:#f3f3f3" onchange="validatePANNumber()" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase()" /> <!-- Scoped class -->
+                                            <label for="trusteePan" style="background-color: #f3f3f3">PAN Number<span style="color:red"> *</span></label>
+                                            <span class="error-message" id="PANNumberError" style="color: red; font-size:small;"></span>
+
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-2">
+                                        <button type="button" class="btn btn-primary btn-small" id="addTrusteeBtn" style="height: 25px;">Add</button> <!-- Button height adjusted -->
+                                    </div>
+                                </div>
+
+                                <!-- Table structure -->
+                                <table class="mb-0 table table-hover" id="trusteeTable" style="font-size: 14px; line-height: 1.2;">
+                                    <!-- Font size and line height adjusted -->
+                                    <thead>
+
+                                    </thead>
+                                    <tbody>
+                                        <!-- New rows will be displayed here dynamically -->
+                                    </tbody>
+                                </table>
+
+                                <!-- Hidden field to store the trustee data -->
+                                <input type="hidden" id="hTrusteeData" name="trusteeName" />
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                    @*///////////////////////////////// Canvasser Registration   //////////////////////////////////////////*@
+                    <div class="col-lg-6" id="canvasser_div" style="display: none;">
+                        <div class=" mb-3 card" style="background-color: #f3f3f3">
+                            <div class="card-body" style="background-color: #f3f3f3">
+                                <h5 class="card-title" style="color:maroon;font-size:16px;padding-left:105px;">Canvasser Commission</h5>
+
+                                <!-- Input fields for adding new canvasser commission -->
+                                <div class="mb-2 row">
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="input-container">
+                                            <input type="text" id="tempamtupto" name="tempamtupto" class="form-control" style="background-color: #f3f3f3;" oninput="this.value = this.value.replace(/[^0-9.]/g, ''); " pattern="\d+(\.\d{1,2})?" />
+                                            <label for="amtupto" style="background-color: #f3f3f3;">Amount Up To<span style="color:red"> *</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="input-container">
+                                            <input type="text" id="tempcnvsrcmsn" name="tempcnvsrcmsn" class="form-control" style="background-color: #f3f3f3;" maxlength="2" oninput="this.value = this.value.replace(/[^0-9.]/g, '').substring(0, 2); " pattern="\d+(\.\d{1,2})?" />
+                                            <label for="cnvsrcmsn" style="background-color: #f3f3f3;">Cnvsr Cmsn (%)<span style="color:red"> *</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-2">
+                                        <button type="button" class="btn btn-primary btn-small" id="addCommissionBtn" style="height: 25px;">Add</button>
+                                    </div>
+                                </div>
+
+                                <!-- Table structure for displaying added canvasser commission rows -->
+                                <table class="mb-0 table table-hover" id="commissionTable" style="font-size: 14px; line-height: 1.2;">
+                                    <thead>
+
+                                    </thead>
+                                    <tbody>
+                                        <!-- New rows will be displayed here dynamically -->
+                                    </tbody>
+                                </table>
+
+                                <!-- Hidden field to store the commission data -->
+                                <input type="hidden" id="hcnvsrcmsn" name="canvasser_commission_data" />
+
+                                <!--<div class="d-flex justify-content-center mt-3">-->
+                                <!-- Submit button to gather and submit the data -->
+                                <!--<button type="button" class="btn btn-success" id="submitCommissionBtn">Confirm </button>
+                    </div>-->
+                            </div>
+                        </div>
+                    </div>
+
+                    @*///////////////////////////////// Pre Mature Closing   //////////////////////////////////////////*@
+
+
+                    <div class="col-lg-6" id="prematureInterestTableDiv" style="display: none;">
+                        <div class=" mb-3 card" style="background-color: #f3f3f3">
+                            <div class="card-body" style="background-color: #f3f3f3">
+                                <h5 class="card-title" style="color:maroon;font-size:16px;padding-left:105px;">Pre Mature Interest</h5>
+
+
+
+                                <table class="mb-0 table table-hover" id="prematureInterestTable" style="font-size: 14px; line-height: 1.2;">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Years After</th>
+                                            <th>Interest (%)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Rows will be dynamically generated here -->
+                                    </tbody>
+                                </table>
+
+                                <!-- Hidden field to store premature closing data -->
+                                <input type="hidden" name="premature_closing_data" id="premature_closing_data" />
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                @*/////////////////////////////////////////////////////////////*@
+
+
+                @*<div class="row" id="submitResetDiv" style="padding-bottom: 5px;"></div>*@
+
+
+
+                <div class="row d-block text-center" style="padding-bottom: 5px;">
+                    <button type="submit" class="btn btn-success " id="submitbutton" style="height: 38px;">SUBMIT</button> <!-- Button height adjusted -->
+                    &nbsp;&nbsp; &nbsp;  &nbsp;
+                    <button type="button" id="resetbutton" class="btn btn-gradient-secondary" style="height: 38px;">RESET</button>
+                </div>
+
+
+
+
+
+
+                <script>
+
+                    ///////////////////////    initial //////////////////////////////////////////
+
+
+                    $(document).ready(function () {
+                        $('#prematureInterestTableDiv').hide();
+                        $('#canvasser_div').hide();
+
+                        total_deb();
+                        toggleCanvasserDiv();
+                        togglePrematureInterestDiv();
+
+
+
+                        /////////////////////////////  Disable the interest field by default  ////////////////////////////////////
+
+                        $('#senior_citizen_interest').prop('readonly', true).css('background-color', '#f0f0f0');
+
+
+                        // Handle the change event on the radio buttons
+                        $('input[name="senior_citizen"]').change(function () {
+                            if ($('#senior_citizen_yes').is(':checked')) {
+                                // Make the interest field editable and required when "Yes" is selected
+                                $('#senior_citizen_interest').prop('readonly', false).css('background-color', '');
+                                $('#senior_citizen_interest').attr('required', true);
+                            } else if ($('#senior_citizen_no').is(':checked')) {
+                                // Make the interest field readonly and remove the required attribute when "No" is selected
+                                $('#senior_citizen_interest').prop('readonly', true).css('background-color', '#f0f0f0');
+                                $('#senior_citizen_interest').removeAttr('required');
+                                // Optionally, clear the input value
+                                $('#senior_citizen_interest').val('');
+                            }
+                        });
+
+
+                    });
+
+
+                    ////////////// no.of debentures testing  ///////////////////////
+
+
+                    function total_deb() {
+                        /* alert("total_deb");*/
+                        var faceValue = parseFloat(document.getElementById("face_value").value);
+                        var totalFund = parseFloat(document.getElementById("total_fund").value);
+
+                        if (isNaN(faceValue) || faceValue <= 0) {
+                            //alert("Please Enter a valid Face Value");
+                            document.getElementById("number_of_debentures").value = "";
+                            return false;
+                        }
+
+                        if (isNaN(totalFund) || totalFund <= 0) {
+                            //alert("Please Enter a valid Total Fund");
+                            document.getElementById("number_of_debentures").value = "";
+                            return false;
+                        }
+
+                        var numberOfDebentures = totalFund / faceValue;
+                        //    document.getElementById("number_of_debentures").value = numberOfDebentures.toFixed(2); // Optional, rounds to 2 decimal places
+                        document.getElementById("number_of_debentures").value = numberOfDebentures; // Optional, rounds to 2 decimal places
+
+                    }
+
+                    ////////////// compare min amt with total fund  ///////////////////////
+
+
+                    // Function to validate that the minimum amount is less than the total fund
+                    function validateMinAmount() {
+                        //alert("validateMinAmount");
+                        const totalFund = parseFloat(document.getElementById("total_fund").value);
+                        const minAmount = parseFloat(document.getElementById("min_amount").value);
+
+                        // Check if both values are valid numbers before comparison
+                        if (!isNaN(totalFund) && !isNaN(minAmount) && minAmount >= totalFund) {
+                            alert("Minimum amount must be less than the total fund.");
+                            document.getElementById("min_amount").value = ""; // Clear the input if the condition is not met
+                        }
+                    }
+
+                    //////////////  convert numbers to words  ///////////////////////
+
+
+                    function numberToWords(num) {
+                        const words = [
+                            '',
+                            'One',
+                            'Two',
+                            'Three',
+                            'Four',
+                            'Five',
+                            'Six',
+                            'Seven',
+                            'Eight',
+                            'Nine',
+                            'Ten',
+                            'Eleven',
+                            'Twelve',
+                            'Thirteen',
+                            'Fourteen',
+                            'Fifteen',
+                            'Sixteen',
+                            'Seventeen',
+                            'Eighteen',
+                            'Nineteen',
+                            'Twenty',
+                            'Thirty',
+                            'Forty',
+                            'Fifty',
+                            'Sixty',
+                            'Seventy',
+                            'Eighty',
+                            'Ninety'
+                        ];
+
+                        if (num === 0) return 'Zero';
+
+                        let result = '';
+
+                        function getBelowThousand(n) {
+                            let str = '';
+
+                            if (n > 99) {
+                                str += words[Math.floor(n / 100)] + ' Hundred ';
+                                n = n % 100;
+                            }
+
+                            if (n > 20) {
+                                str += words[20 + Math.floor(n / 10) - 2] + ' ';
+                                n = n % 10;
+                            }
+
+                            if (n > 0) {
+                                str += words[n] + ' ';
+                            }
+
+                            return str.trim();
+                        }
+
+                        if (num >= 10000000) {
+                            result += getBelowThousand(Math.floor(num / 10000000)) + ' Crore ';
+                            num = num % 10000000;
+                        }
+
+                        if (num >= 100000) {
+                            result += getBelowThousand(Math.floor(num / 100000)) + ' Lakh ';
+                            num = num % 100000;
+                        }
+
+                        if (num >= 1000) {
+                            result += getBelowThousand(Math.floor(num / 1000)) + ' Thousand ';
+                            num = num % 1000;
+                        }
+
+                        if (num > 0) {
+                            result += getBelowThousand(num);
+                        }
+
+                        return result.trim();
+                    }
+
+
+                    /////////////////// show amounts in words ///////////////////
+
+                    // Function to show amounts in words
+                    function showAmountInWords(inputId, displayId) {
+                        const amount = parseFloat(document.getElementById(inputId).value);
+                        if (!isNaN(amount)) {
+                            document.getElementById(displayId).innerText = numberToWords(amount);
+                            document.getElementById(displayId).style.display = 'inline'; // Show the text
+                        }
+                    }
+
+
+                    /////////////////// hide  amounts in words ///////////////////
+
+
+                    // Function to hide amounts in words
+                    function hideAmountInWords(displayId) {
+                        document.getElementById(displayId).style.display = 'none'; // Hide the text
+                    }
+
+
+
+
+                    /////////////////////////////   add trusteee ////////////////////////////////////
+
+
+                    // Add trustee data to the table and hidden field when the "Add" button is clicked
+                    document.getElementById("addTrusteeBtn").addEventListener("click", function () {
+                        const trusteeName = document.getElementById("trusteeName").value;
+                        const trusteePan = document.getElementById("trusteePan").value;
+
+                        // Validate inputs
+                        if (!trusteeName || !trusteePan) {
+                            alert("Please fill both Trustee Name and PAN.");
+                            return;
+                        }
+
+                        // Validate PAN Number
+                        if (!validatePANNumber()) {
+                            return;  // Stop execution if PAN validation fails
+                        }
+
+                        // Get the table body where new rows will be inserted
+                        const tableBody = document.querySelector("#trusteeTable tbody");
+
+                        // Add the trustee details to the table
+                        const row = tableBody.insertRow();
+                        const cell1 = row.insertCell(0);
+                        const cell2 = row.insertCell(1);
+                        const cell3 = row.insertCell(2);
+                        const cell4 = row.insertCell(3);
+
+                        // Insert data into cells
+                        cell1.innerHTML = tableBody.rows.length; // Row number
+                        cell2.innerHTML = trusteeName; // Trustee Name
+                        cell3.innerHTML = trusteePan; // Trustee PAN
+
+                        // Add "Remove" button for the newly added trustee row
+                        cell4.innerHTML = `<button class="btn btn-danger btn-small" onclick="removeTrustee(this)">Remove</button>`;
+
+                        // Clear input fields after adding
+                        document.getElementById("trusteeName").value = "";
+                        document.getElementById("trusteePan").value = "";
+
+                        // Update hidden field data
+                        updateTrusteeData();
+                    });
+
+                    // Function to remove a trustee row
+                    function removeTrustee(button) {
+                        // Remove the row containing the button that was clicked
+                        const row = button.parentElement.parentElement;
+                        row.remove();
+
+                        // Reorder the # column after removal to maintain sequence
+                        reorderTrusteeRows();
+
+                        // Update hidden field data after removing a row
+                        updateTrusteeData();
+                    }
+
+                    // Function to reorder trustee row numbers
+                    function reorderTrusteeRows() {
+                        const rows = document.querySelectorAll("#trusteeTable tbody tr");
+                        rows.forEach((row, index) => {
+                            row.cells[0].innerText = index + 1; // Re-number the row
+                        });
+                    }
+
+                    // Function to collect and update trustee data in the hidden field
+                    function updateTrusteeData() {
+                        const table = document.querySelector("#trusteeTable tbody");
+                        let trusteeData = "";
+
+                        // Loop through each row to gather trustee details
+                        for (let i = 0; i < table.rows.length; i++) {
+                            const name = table.rows[i].cells[1].innerText; // Trustee Name
+                            const pan = table.rows[i].cells[2].innerText; // Trustee PAN
+
+                            if (trusteeData === "") {
+                                trusteeData = name + "*" + pan; // First entry
+                            } else {
+                                trusteeData += "$" + name + "*" + pan; // Subsequent entries
+                            }
+                        }
+
+                        // Set the collected data to the hidden field
+                        document.getElementById("hTrusteeData").value = trusteeData;
+                    }
+
+
+
+                    /////////////////////////////// canvasser div  shows when choose  "Yes" radio button     //////////////////////////////
+
+
+                    // Function to toggle canvasser div based on radio button selection
+                    function toggleCanvasserDiv() {
+                        if ($('#canvasser_commission_yes').is(':checked')) {
+                            $('#canvasser_div').show(); // Show canvasser div when "Yes" is selected
+                        } else {
+                            $('#canvasser_div').hide(); // Hide canvasser div when "No" is selected
+                        }
+                    }
+
+                    // Attach the change event to the canvasser radio buttons
+                    $('input[name="canvasser_commission"]').change(function () {
+                        toggleCanvasserDiv();
+                    });
+
+
+
+
+
+                    ///////////////////////////////////////  add canvasser commission ////////////////// /////////////////////////////////////////////////////////
+
+
+
+
+                    let commissionCount = 0;  // To keep track of the row count
+
+                    // Function to add a new row to the table
+                    document.getElementById("addCommissionBtn").addEventListener("click", function () {
+                        // Get the values from the input fields
+                        const amountUptoField = document.getElementById("tempamtupto");
+                        const commissionField = document.getElementById("tempcnvsrcmsn");
+                        const totalFundField = document.getElementById("total_fund");
+                        const minimumAmountField = document.getElementById("min_amount"); // Ensure this field is defined in your HTML
+
+                        const amountUpto = parseFloat(amountUptoField.value);
+                        const commission = parseFloat(commissionField.value);
+                        const totalFund = parseFloat(totalFundField.value);
+                        const minimumAmount = parseFloat(minimumAmountField.value);
+
+                        // Validate input fields
+                        if (isNaN(amountUpto) || isNaN(commission) || isNaN(totalFund) || isNaN(minimumAmount)) {
+                            alert("Please fill in all fields correctly.");
+                            amountUptoField.focus(); // Focus on the first invalid input
+                            return; // Exit the function if validation fails
+                        }
+
+                        // Validation for amountUpto to be within the range [minimumAmount, totalFund]
+                        if (amountUpto < minimumAmount || amountUpto > totalFund) {
+                            alert(`Enter the amount between ${minimumAmount} and ${totalFund}.`);
+                            amountUptoField.focus(); // Focus on the invalid field
+                            return; // Exit the function if validation fails
+                        }
+
+                        // If validation passes, proceed to add the row
+                        commissionCount++;  // Increment row count for unique ID
+
+                        // Get the table body where new rows will be inserted
+                        const tableBody = document.querySelector("#commissionTable tbody");
+
+                        // Create a new row with the entered data
+                        const newRow = `
+                                                        <tr>
+                                                            <th scope="row">${commissionCount}</th>
+                                                            <td>${amountUpto}</td>
+                                                            <td>${commission}</td>
+                                                            <td>
+                                                                <button class="btn btn-danger btn-small" onclick="removeCommission(this)">Remove</button>
+                                                            </td>
+                                                        </tr>
+                                                    `;
+
+                        // Insert the new row into the table
+                        tableBody.insertAdjacentHTML('beforeend', newRow);
+
+                        // Clear the input fields for the next entry
+                        amountUptoField.value = "";
+                        commissionField.value = "";
+
+                        // Update hidden field with the new data
+                        updateCommissionData();
+                    });
+
+                    // Function to remove a commission row
+                    function removeCommission(button) {
+                        // Remove the row containing the button that was clicked
+                        const row = button.parentElement.parentElement;
+                        row.remove();
+
+                        // Reorder the # column after removal to maintain sequence
+                        reorderCommissionRows();
+
+                        // Update hidden field after removing data
+                        updateCommissionData();
+                    }
+
+                    // Function to reorder commission row numbers
+                    function reorderCommissionRows() {
+                        const rows = document.querySelectorAll("#commissionTable tbody tr");
+                        rows.forEach((row, index) => {
+                            row.querySelector("th").innerText = index + 1;  // Re-number the row
+                        });
+                    }
+
+                    // Function to collect and update commission data in the hidden field
+                    function updateCommissionData() {
+                        const table = document.querySelector("#commissionTable tbody");
+                        let commissionData = "";
+
+                        // Loop through each row and collect commission details
+                        for (let i = 0; i < table.rows.length; i++) {
+                            const amountUpto = table.rows[i].cells[1].innerText;
+                            const commission = table.rows[i].cells[2].innerText;
+
+                            // Build the commission data string
+                            if (commissionData === "") {
+                                commissionData = amountUpto + "*" + commission;
+                            } else {
+                                commissionData += "$" + amountUpto + "*" + commission;
+                            }
+                        }
+
+                        // Set the collected data to the hidden field
+                        document.getElementById("hcnvsrcmsn").value = commissionData;
+                        //    alert(commissionData);
+                    }
+
+
+
+
+                    /////////////////////////////// premature interest div  shows when choose  "Yes" radio button     //////////////////////////////
+
+
+
+                    // Function to toggle premature interest div based on radio button selection
+                    function togglePrematureInterestDiv() {
+                        if ($('#premature_closing_yes').is(':checked')) {
+                            $('#prematureInterestTableDiv').show(); // Show the interest rate table
+                            generatePrematureInterestTable(); // Generate the table dynamically
+                        } else {
+                            $('#prematureInterestTableDiv').hide(); // Hide the table if "No" is selected
+                        }
+                    }
+
+                    // Attach the change event to the premature closing radio buttons
+                    $('input[name="premature_closing"]').change(function () {
+                        togglePrematureInterestDiv();
+                    });
+
+                    // Function to validate locking period
+                    function validateLockingPeriod() {
+                        var t_period = parseFloat($('#period').val()) / 12; // Convert months to years
+                        var a7 = parseFloat($('#locking_period').val()); // Locking period in years
+
+                        // Check if locking period is invalid (equal to or greater than the period)
+                        if (a7 >= t_period) {
+                            alert("Locking period cannot be equal to or greater than the period.");
+                            $('#locking_period').val('');
+                            $('#locking_period').focus();
+                            $('#premature_closing_yes').prop('disabled', true); // Disable the "Yes" radio button
+                            $('#premature_closing_no').prop('checked', true); // Automatically select "No"
+                            $('#prematureInterestTableDiv').hide(); // Hide the table if invalid
+                        } else {
+                            $('#premature_closing_yes').prop('disabled', false); // Enable the "Yes" radio button
+                        }
+                    }
+
+                    // Function to generate the premature interest table
+                    function generatePrematureInterestTable() {
+                        validateLockingPeriod(); // Validate the locking period before generating the table
+
+                        var t_period = parseFloat($('#period').val()) / 12; // Convert months to years
+                        var a7 = parseFloat($('#locking_period').val()); // Locking period in years
+
+                        // Check if locking period is valid
+                        if (a7 >= t_period) {
+                            return; // Exit if the locking period is invalid
+                        }
+
+                        var t_year = t_period - a7;
+                        var t_quotient = Math.floor(t_year); // Full years
+                        var t_mod = $('#period').val() % 12; // Remaining months after full years
+
+                        var tbody = $('#prematureInterestTable tbody'); // Get table body
+                        tbody.empty(); // Clear existing rows
+
+                        var j = a7; // Start from the locking period
+                        for (var n = 0; n < t_quotient; n++) {
+                            var row = `
+                                            <tr>
+                                                <td>${n + 1}</td>
+                                                <td>${j} Years After</td>
+                                                <td><input type='text' maxlength='49' onkeypress='return isNumberKey(event)' id='interest_${j}' class='interest-input' /></td>
+                                            </tr>`;
+                            tbody.append(row);
+                            j++;
+                        }
+
+                        if (t_mod > 0) { // Add a row for remaining months
+                            var modRow = `
+                                            <tr>
+                                                <td>${t_quotient + 1}</td>
+                                                <td>After ${j} Years and ${t_mod} Months</td>
+                                                <td><input type='text' maxlength='49' onkeypress='return isNumberKey(event)' id='interest_${j}_${t_mod}' class='interest-input' /></td>
+                                            </tr>`;
+                            tbody.append(modRow);
+                        }
+
+                        // Call updateHiddenField after table generation to ensure data is stored
+                        updateHiddenField();
+
+                        // Bind event listener to input fields so that changes update the hidden field automatically
+                        $('.interest-input').on('keyup change', function () {
+                            updateHiddenField();
+                        });
+                    }
+
+                    function updateHiddenField() {
+                        var tbody = $('#prematureInterestTable tbody');
+                        var interestData = [];
+
+                        tbody.find('tr').each(function () {
+                            var interestInput = $(this).find('input[type="text"]'); // Get interest value
+                            var interestValue = interestInput.val(); // Get the entered interest value
+                            var periodText = $(this).find('td').eq(1).text(); // Get the "Years After" text
+
+                            // Extract years from the periodText (like "2 Years After" to "2")
+                            var years = periodText.match(/(\d+)/); // Match the first number in the text
+                            var yearCount = years ? years[0] : ''; // Get the matched year or empty if none found
+
+                            // Check if interestValue is not empty and yearCount is available
+                            if (interestValue && interestValue.trim() !== "" && yearCount) {
+                                // Construct the string in the desired format: "2Years After*interestValue*Y*index"
+                                interestData.push(`${yearCount}Years After*${interestValue}*Y*${yearCount}`);
+                            }
+                        });
+
+                        // Debugging: Check if the interestData array has values
+                        console.log("Collected Data: ", interestData);
+                        //alert(interestData.join('$')); // You can remove this alert later if not needed.
+
+                        // Concatenate the data with a dollar sign as the separator
+                        document.getElementById("premature_closing_data").value = interestData.join("$");
+                    }
+
+                    // Attach event listeners to inputs for validation and handle changes
+                    $('#period, #locking_period').on('input', function () {
+                        validateLockingPeriod(); // Validate whenever period or locking period changes
+
+                        // Hide the premature interest div and deselect "Yes" if already visible
+                        if ($('#prematureInterestTableDiv').is(':visible')) {
+                            $('#prematureInterestTableDiv').hide(); // Hide the table
+                            $('#premature_closing_yes').prop('checked', false); // Deselect "Yes"
+                            $('#premature_closing_no').prop('checked', true); // Select "No"
+                        }
+                    });
+
+
+
+                    //////////////////////////  pan validation   //////////////////////////////////////////////
+
+                    function validatePANNumber() {
+                        var panNumber = document.getElementById("trusteePan").value;
+
+                        if (panNumber === "") {
+                            document.getElementById("PANNumberError").textContent = "PAN number cannot be empty!";
+                            document.getElementById("trusteePan").focus();  // Focus the PAN input field
+                            return false;  // Return false if PAN is empty
+                        }
+
+                        // PAN regex for validation
+                        var panRegex = /^[a-zA-Z]{3}P[a-zA-Z][0-9]{4}[a-zA-Z]$/;
+
+                        if (!panRegex.test(panNumber)) {
+                            document.getElementById("PANNumberError").textContent = "Invalid PAN No!";
+                            document.getElementById("trusteePan").focus();  // Focus the PAN input field
+                            return false;  // Return false if PAN is invalid
+                        } else {
+                            document.getElementById("PANNumberError").textContent = "";  // Clear error message if valid
+                            return true;  // Return true if PAN is valid
+                        }
+                    }
+
+                    /////////////////// reset button click  ///////////////////
+
+                    document.getElementById("resetbutton").addEventListener("click", function () {
+
+                        /*alert(" reset button click");*/
+                        // Get the form containing the fields you want to reset
+                        const form = document.querySelector("form");  // Assuming the fields are inside a form tag
+
+                        // Clear all form fields (reset to default values)
+                        form.reset();
+
+                        // Optionally, clear error messages or any dynamically updated UI elements
+                        document.getElementById("PANNumberError").textContent = "";  // Clear the PAN error message
+                        document.getElementById("date-error").textContent = "";  // Clear the PAN error message
+                    });
+
+                    /////////////////// issue start and issue end  ///////////////////
+
+
+                    function validateDateRange() {
+                        //alert(" validateDateRange  click");
+                        // Get the values of the start and end dates
+                        const startDate = document.getElementById("issue_start").value;
+                        const endDate = document.getElementById("issue_end").value;
+
+                        // Get the element to display the error message
+                        const errorMessage = document.getElementById("date-error");
+
+                        // Only validate if both dates have been selected
+                        if (startDate && endDate) {
+                            // Compare the dates
+                            if (new Date(startDate) > new Date(endDate)) {
+                                // Display an error message if the start date is greater than the end date
+                                errorMessage.textContent = "Invalid date range!";
+
+                            } else {
+                                // Clear the error message if the validation passes
+                                errorMessage.textContent = "";
+                            }
+                        } else {
+                            // Clear the error message if one of the fields is empty
+                            errorMessage.textContent = "";
+                        }
+                    }
+
+
+
+                    /////////////////// submit button click  ///////////////////
+
+
+
+
+                    $(document).ready(function () {
+                        $('#submitbutton').click(function (e) {
+                            // Prevent form submission initially
+                            e.preventDefault();
+
+
+                            // Check if the form is valid first (HTML5 required fields)
+                            if (!$('#SubmitSchemeRegistration')[0].checkValidity()) {
+                                // If not valid, show the default validation messages
+                                $('#SubmitSchemeRegistration')[0].reportValidity();
+                                return; // Stop submission
+                            }
+
+
+
+
+                            // Check trustee hidden field
+                            var trusteeData = $('#hTrusteeData').val();
+                            var canvasserCommission = $('input[name="canvasser_commission"]:checked').val();
+                            var canvasserData = $('#hcnvsrcmsn').val();
+                            var prematureClosing = $('input[name="premature_closing"]:checked').val();
+                            var prematureData = $('#premature_closing_data').val();
+
+                            // Validate Trustee Data
+                            if (trusteeData.trim() === "") {
+                                alert("Trustee data is empty. Please provide the data.");
+                                return; // Stop submission
+                            }
+
+                            // Validate Canvasser Commission
+                            if (canvasserCommission === "Y" && (canvasserData.trim() === "")) {
+                                alert("Canvasser Commission data is empty. Please provide the data.");
+                                return; // Stop submission
+                            }
+
+                            // Validate Premature Closing
+                            if (prematureClosing === "Y" && (prematureData.trim() === "")) {
+                                alert("Premature Closing data is empty. Please provide the data.");
+                                return; // Stop submission
+                            }
+
+                            // If all validations pass, submit the form
+                            $('#SubmitSchemeRegistration').submit();
+                        });
+                    });
+
+
+
+
+                </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <style>
+
+
+                    .btn-small {
+                        height: 25px; /* Reduced height */
+                        font-size: 12px; /* Reduced font size */
+                        padding: 0 10px; /* Adjusted padding for better appearance */
+                        line-height: 1.2; /* Adjust line height to match button size */
+                    }
+                </style>
+
+
+
+
+
+
+
+
+
+
+            </form>
+
+
+
+
+
+
+
+            </div>
+
+        @*</div>
+    </div>*@
+
+
+
+</body>
+</html>
+

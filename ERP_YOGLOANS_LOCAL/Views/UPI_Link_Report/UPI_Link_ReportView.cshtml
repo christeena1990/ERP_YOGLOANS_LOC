@@ -1,0 +1,312 @@
+﻿
+@{
+    ViewBag.Title = "UPI_Link_ReportView";
+}
+
+@using System.Data
+
+@{
+    Layout = "~/Views/Shared/_Layout_reports.cshtml";
+
+}
+
+
+
+@{
+    var stage_list_type = ViewData["StageList"] as DataTable;
+
+    if (stage_list_type == null)
+    {
+        // Handle the null case, e.g., return an empty list or show a message
+        <p>No stages available.</p>
+        return;
+    }
+
+    var Stages = stage_list_type.AsEnumerable().Select(row => new
+    {
+        stage_val = row["status"],
+        stage = row["description"] // Adjust based on your DataTable columns
+    }).ToList();
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equifax Enquiry</title>
+
+
+    <style>
+
+
+
+        .fixed-width-card {
+            flex: 1 1 300px; /* Flex-grow: 1, Flex-shrink: 1, Flex-basis: 300px */
+            min-width: 250px; /* Ensure a minimum width */
+            word-wrap: break-word;
+            word-break: break-word;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .text-right {
+            text-align: right;
+        }
+    </style>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+    <link rel="stylesheet" href="~/Content/table_styles.css" />
+
+</head>
+<body>
+    <script>
+        $(document).ready(function () {
+            // Hide table_div when any of the inputs change
+            $('#fromDate, #toDate, #StageType').on('change', function () {
+                $('#table_div').hide();
+            });
+
+            // Prevent submission if From Date is after To Date
+            $('#upi_link_report_form').on('submit', function (e) {
+                var fromDate = new Date($('#fromDate').val());
+                var toDate = new Date($('#toDate').val());
+
+                if (fromDate > toDate) {
+                    e.preventDefault();
+                    alert('From Date cannot be after To Date.');
+                    return false;
+                }
+            });
+
+            // Handle the form submission
+            $('#upi_link_report_form').on('submit', function (event) {
+                event.preventDefault();
+
+                var fromDate = $('#fromDate').val();
+                var toDate = $('#toDate').val();
+                var stageType = $('#StageType').val();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/UPI_Link_Report/btn_report_Click',
+                    data: {
+                        fromDate: fromDate,
+                        toDate: toDate,
+                        StageType: stageType
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#customerTableBody').empty();
+                            $('#table_div').show();
+
+                            if (response.data.length > 0) {
+                                $.each(response.data, function (index, item) {
+                                    $('#customerTableBody').append(`
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td>${item.LoanNo || '-'}</td>
+                                    <td>${item.Customer || '-'}</td>
+                                    <td>${item.Branch || '-'}</td>
+                                    <td>${item.Mobile || '-'}</td>
+                                    <td style="text-align: right;">${item.EMIAmount || '-'}</td>
+                                    <td style="text-align: right;">${item.MessageAmt || '-'}</td>
+                                    <td>${item.MessageDate || '-'}</td>
+                                    <td>${item.LinkValidity || '-'}</td>
+                                    <td style="text-align: right;">${item.PaidAmount || '-'}</td>
+                                    <td>${item.ReceivedDate || '-'}</td>
+                                </tr>
+                            `);
+                                });
+                            } else {
+                                alert('No data found for the selected criteria.');
+                                $('#table_div').hide();
+                            }
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while generating the report.');
+                    }
+                });
+            });
+
+
+        });
+
+
+
+
+    </script>
+
+
+
+
+
+    <div class="app-main__inner" style="margin-top: -30px; padding: 4px; width: 100%;">
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+                <br />
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0; color: maroon;">UPI Link Status Report</h6>
+            </div>
+        </div>
+
+       
+        <br />
+        <div class="card-body">
+            <div id="form-container">
+                <form method="post" id="upi_link_report_form" enctype="multipart/form-data" autocomplete="off">
+                   
+
+
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="date" id="fromDate" name="fromDate" required />
+                                <label for="fromDate" id="fromDate-label">From Date</label>
+                                <span id="dob-error" style="color: red; font-size: small;"></span>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <input type="date" id="toDate" name="toDate" required />
+                                <label for="toDate" id="toDate-label">To Date</label>
+                                <span id="dob-error" style="color: red; font-size: small;"></span>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                                <select name="StageType" id="StageType" class="form-control" required>
+
+                                    @foreach (var loan in Stages)
+                                    {
+                                        <option value="@loan.stage_val">
+                                            @loan.stage
+                                        </option>
+                                    }
+                                </select>
+                                <label for="loan-type">Stage</label>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-3">
+                            <div class="input-container" style="display: flex; align-items: flex-start; justify-content: flex-start; gap: 10px;">
+
+
+                                <button type="submit" id="btn_report" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary"
+                                        style="width: 125px;">
+                                    Generate
+                                </button>
+                                @*<button id="exportButton" title="Download Excel Report" style="border: none; background-color: transparent; padding: 0;" onclick="exportTableToExcel()">
+                                    <img src="~/images/excel-icon1.png" alt="excel Button" style="height: 60px; width: 65px;">
+                                </button>
+                                <button id="generatePdf" type="button" title="Download Pdf Report" style="border: none; background-color: transparent; padding: 0;">
+                                    <img src="~/images/pdf_icon.png" alt="pdf Button" style="height: 45px; width: 43px;" />
+                                </button>*@
+
+                            </div>
+                        </div>
+
+                      
+
+                    </div>
+
+
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                               
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                              
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+                               
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-3">
+                            <div class="input-container">
+
+
+                               
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </form>
+
+                <div id="table_div" style="width: 100%; overflow-y: auto; max-height: 180px; display: none;">
+                    <table id="upi_linkDataGrid" class="table table-hover table-striped table-bordered" style="width: 100%; font-size: 13px; font-weight: 500;">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Loan No</th>
+                                <th>Customer</th>
+                                <th>Branch</th>
+                                <th>Mobile</th>
+                                <th >EMI Amount</th>
+                                <th>Message Amount</th>
+                                <th>Message Date</th>
+                                <th>Link Validity</th>
+                                <th>Paid Amount</th>
+                                <th>Received Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customerTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    @*///////////////////////////////////////////////////////////////////////////////////*@
+
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+

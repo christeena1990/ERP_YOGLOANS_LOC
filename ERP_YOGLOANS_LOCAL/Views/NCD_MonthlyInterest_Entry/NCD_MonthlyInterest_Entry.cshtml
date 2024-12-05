@@ -1,0 +1,801 @@
+﻿
+@{
+    ViewBag.Title = "NCD_MonthlyInterest_Entry";
+}
+
+
+
+@using System.Data
+
+
+
+@{
+    var issue_list_type = ViewData["IssueList"] as DataTable;
+
+    if (issue_list_type == null)
+    {
+        // Handle the null case, e.g., return an empty list or show a message
+        <p>No Issues available.</p>
+        return;
+    }
+
+    var Issues = issue_list_type.AsEnumerable().Select(row => new
+    {
+        issue_val = row["issue_no"],
+        issue = row["txt"] // Adjust based on your DataTable columns
+    }).ToList();
+
+
+
+    var bank_list_type = ViewData["BankList"] as DataTable;
+
+    if (bank_list_type == null)
+    {
+        // Handle the null case, e.g., return an empty list or show a message
+        <p>No cetificates  available.</p>
+        return;
+    }
+
+
+
+    var Banks = bank_list_type.AsEnumerable().Select(row => new
+    {
+        bank_val = row["sub_accno"],
+       bank = row["sub_name"] // Adjust based on your DataTable columns
+    }).ToList();
+
+
+
+
+
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equifax Enquiry</title>
+
+
+    <style>
+
+
+
+        .fixed-width-card {
+            flex: 1 1 300px; /* Flex-grow: 1, Flex-shrink: 1, Flex-basis: 300px */
+            min-width: 250px; /* Ensure a minimum width */
+            word-wrap: break-word;
+            word-break: break-word;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+    </style>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+    <link rel="stylesheet" href="~/Content/table_styles.css" />
+
+</head>
+<body>
+    <script>
+        $(document).ready(function () {
+            $('#exportButton').hide();
+            $('#generatePdf').hide();
+
+            //// Hide table and sum div on input change
+            $('#ncd_monthlyinterest_entry_form input, #issueType,#certificateType').on('change', function () {
+                //alert("input changed");
+                $('#table_div').hide();   // Hide the table div
+                $('#sum_div').hide();     // Hide the sum div
+                $('#exportButton').hide(); // Hide excel export button
+                $('#generatePdf').hide();
+                $('#totals_div').hide();
+                $('#dropdowndiv').hide();
+                $('#submitbutton').hide();
+                $('#resetbutton').hide();
+            });
+
+
+
+
+        });
+
+
+        ////////////////////////////// export table to excel  //////////////////////////////////////////////////
+
+        function exportTableToExcel() {
+            event.preventDefault(); // Prevent the form from submitting and reloading the page
+            // Create an array to hold the data
+            let tableData = [];
+
+            // Get table headers
+            let headers = [];
+            $('#cus_detailsDataGrid thead th').each(function () {
+                headers.push($(this).text().trim());
+            });
+            tableData.push(headers); // Add headers to the data array
+
+            // Alert headers
+            //alert("Headers: " + headers.join(", "));
+
+            // Get table rows
+            $('#customerTableBody tr').each(function () {
+                let rowData = [];
+                $(this).find('td').each(function () {
+                    rowData.push($(this).text().trim());
+                });
+                if (rowData.length > 0) {
+                    tableData.push(rowData);
+                }
+            });
+
+            // Check if tableData has valid data
+            if (tableData.length <= 1 || tableData[1].length === 0) {
+                alert("No data to export!");
+                return;
+            }
+
+            // Convert the table data to CSV format
+            let csvContent = tableData.map(row => row.join(",")).join("\n");
+
+            // Create a link to download the CSV
+            let encodedUri = "data:text/csv;charset=utf-8," + encodeURIComponent(csvContent);
+            let link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "ApplicationStatus_Report.csv");
+
+            document.body.appendChild(link); // Required for Firefox
+            link.click(); // Trigger the download
+            document.body.removeChild(link); // Cleanup
+        }
+
+    </script>
+
+
+
+
+
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+                <br />
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Monthly Interest Entry </h6>
+            </div>
+        </div>
+        <br />
+        <div class="card-body">
+
+            <div id="form-container">
+                <form method="post" id="ncd_monthlyinterest_entry_form" enctype="multipart/form-data" autocomplete="off">
+
+                    <div class="row">
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+
+                                </div>
+                                <div class="input-container fixed-width-card">
+                                    <input type="date" id="Month" name="Month" required />
+                                    <label for="Month" id="Month-label">Month</label>
+                                    <span id="dob-error" style="color: red; font-size:small;"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+
+                                </div>
+
+                                <div class="input-container fixed-width-card">
+
+                                    <select name="issueType" id="issueType" class="form-control" required>
+                                        <option value="">Select Issue Number</option>
+                                        @foreach (var loan in Issues)
+                                        {
+                                            <option value="@loan.issue_val" @(Model != null && Model.LoanType != null && loan.issue_val.ToString() == Model.LoanType.ToString() ? "selected" : "")>@loan.issue</option>
+
+                                        }
+
+                                    </select>
+
+
+
+                                    <label for="Issue-type">Issue Number</label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+
+                                </div>
+
+                                <div class="input-container fixed-width-card">
+
+                                    <select name="certificateType" id="certificateType" class="form-control" required @*style=" max-height: 150px;overflow-y: auto; "*@>
+                                    </select>
+
+
+
+                                    <label for="loan-type">Certificate Number</label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-md-6 col-lg-3">
+
+                        </div>
+                        <div class="col-md-6 col-lg-3">
+
+                            <button class="btn-pill btn-shadow btn-wide fsize-1 btn btn-primary btn-group-sm " id="btn_report" type="button">
+                                <span class="mr-2 opacity-7">
+                                    <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+                                </span>
+                                <span class="mr-1">Generate Data</span>
+                            </button>
+                        </div>
+
+                        <div class="col-md-6 col-lg-3">
+                            <button class="btn-pill btn-shadow btn-wide fsize-1 btn btn-gradient-secondary btn-group-sm " id="btn_reset" type="button">
+                                <span class="mr-2 opacity-7">
+                                    <i class="icon icon-android-cancel ion-android-apps"></i>
+                                </span>
+                                <span class="mr-1">&nbsp;Reset Data &nbsp;</span>
+                            </button>
+                        </div>
+
+
+                        <div class="col-md-6 col-lg-1">
+                            <button id="exportButton" title="Download Excel Report" style="border: none;  background-color: transparent; padding: 0;" onclick="exportTableToExcel()">
+                                <img src="~/images/excel-icon1.png" alt="excel Button" style="height: 60px; width: 65px; " />
+                            </button>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <button id="generatePdf" type="button" title="Download Pdf Report" style="border: none; background-color: transparent;">
+                                <img src="~/images/pdf_icon.png" alt="pdf Button" style="height: 45px; width: 43px; " />
+                            </button>
+                        </div>
+                    </div>
+
+
+
+
+                    @*///////////////////////////////// table /////////////////////////////////////////////////////////////////////////////////*@
+
+
+
+                    <div id="table_div" style="width: 100%; overflow-y: auto; max-height: 180px; display: none;">
+                        <table id="cus_detailsDataGrid" class="table table-hover table-striped table-bordered" style="width: 100%; font-size: 13px; font-weight: 500;">
+                            <thead>
+
+                                <tr>
+                                    <th>#</th>
+                                    <th>Issue No</th>
+                                    <th> Interest</th>
+                                    <th>  TDS</th>
+                                    <th> Short Recovery</th>
+                                    <th> Total TDS</th>
+                                    <th> Pay Amount</th>
+                                    <th>  Debenture Amount</th>
+                                    <th>  No.of Debentures</th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody id="customerTableBody"></tbody>
+                        </table>
+                    </div>
+
+
+
+
+
+                    @*///////////////////////////////// interest, tds , pay amount/////////////////////////////////////////////////////////////////////////////////*@
+
+
+
+
+
+                    <div id="sum_div" style="padding-bottom: 5px;  display:none; width: 93%;">
+                        <span style="color: darkslategrey; font-weight: 700; font-size: 14px; padding-bottom: 20px;"> TOTAL DETAILS </span>
+                        <br />
+
+                        <div class="tab-content">
+
+                            <div class="p-3">
+                                <div class="row">
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="notifications-box">
+                                            <div class="vertical-time-simple vertical-without-time vertical-timeline vertical-timeline--one-column">
+                                                <div class="vertical-timeline-item dot-danger vertical-timeline-element">
+                                                    <div>
+                                                        <span class="vertical-timeline-element-icon bounce-in"></span>
+                                                        <div class="vertical-timeline-element-content bounce-in">
+                                                            <h4 class="timeline-title" id="Interest" name="Interest">
+                                                                <b>Interest</b>:<span id="totalInterest"></span>
+                                                            </h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="notifications-box">
+                                            <div class="vertical-time-simple vertical-without-time vertical-timeline vertical-timeline--one-column">
+                                                <div class="vertical-timeline-item dot-dark vertical-timeline-element">
+                                                    <div>
+                                                        <span class="vertical-timeline-element-icon bounce-in"></span>
+                                                        <div class="vertical-timeline-element-content bounce-in">
+                                                            <h4 class="timeline-title" id="Amount" name="Amount">
+                                                                <b>Amount</b>  :<span id="totalAmount"> </span>
+                                                            </h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="notifications-box">
+                                            <div class="vertical-time-simple vertical-without-time vertical-timeline vertical-timeline--one-column">
+                                                <div class="vertical-timeline-item dot-primary vertical-timeline-element">
+                                                    <div>
+                                                        <span class="vertical-timeline-element-icon bounce-in"></span>
+                                                        <div class="vertical-timeline-element-content bounce-in">
+                                                            <h4 class="timeline-title" id="TDS" name="TDS">
+                                                                <b>TDS</b>:<span id="totalTds"> </span>
+                                                            </h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-lg-3">
+                                        <div class="notifications-box">
+                                            <div class="vertical-time-simple vertical-without-time vertical-timeline vertical-timeline--one-column">
+                                                <div class="vertical-timeline-item dot-success vertical-timeline-element">
+                                                    <div>
+                                                        <span class="vertical-timeline-element-icon bounce-in"></span>
+                                                        <div class="vertical-timeline-element-content bounce-in">
+                                                            <h4 class="timeline-title" id="totalCount" name="totaldebentureCount">
+                                                                <b>Count</b>  : <span id="totaldebentureCount"> </span>
+                                                            </h4>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+
+
+                    @*/////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+                    <div class="row" id="dropdowndiv" style="display: none;">
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+
+                                </div>
+
+                                <div class="input-container fixed-width-card">
+
+                                    <select name="bankType" id="bankType" class="form-control" required>
+
+                                        @foreach (var loan in Banks)
+                                        {
+                                            <option value="@loan.bank_val" @(Model != null && Model.LoanType != null && loan.bank_val.ToString() == Model.LoanType.ToString() ? "selected" : "")>@loan.bank</option>
+
+                                        }
+
+                                    </select>
+
+
+
+                                    <label for="loan-type">Bank Name</label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row d-block text-center" style="padding-bottom: 5px;display: none;">
+                        <button type="submit" class="btn btn-success " id="submitbutton" name="submitbutton" style="height: 40px; display: none;">&nbsp; CONFIRM &nbsp;</button> <!-- Button height adjusted -->
+                        &nbsp;&nbsp; &nbsp;  &nbsp;
+                        <button type="button" id="resetbutton" class="btn btn-gradient-danger" style="height: 40px; display: none;">&nbsp;&nbsp; CANCEL &nbsp;&nbsp;</button>
+                    </div>
+
+                </form>
+
+            </div>
+
+
+
+        </div>
+    </div>
+
+
+    @*</form>*@
+
+
+
+
+
+    @*////////////  correct code  /////////////////////////////////////////////*@
+
+
+    @*<script>
+            $(document).ready(function () {
+                $('#generatePdf').click(function (event) {
+                    event.preventDefault();
+
+                    // Temporarily remove scroll limit
+                    const tableDiv = document.getElementById('table_div');
+                    tableDiv.style.maxHeight = 'none';
+                    tableDiv.style.overflowY = 'visible';
+
+                    var fromDate = $('#fromDate').val();
+                    var toDate = $('#toDate').val();
+                    var stageType = $('#StageType').val();
+                    var totalAmount = $('#totalAmount').text();
+                    //var totalCount = $('#totalCount').text();
+                    var tableHtml = encodeURIComponent($("#table_div").html());
+
+                    $.ajax({
+                        url: '@Url.Action("GeneratePdfClick", "NCD_MonthlyInterest_Entry")',
+                        type: 'POST',
+                        data: {
+                            fromDate: fromDate,
+                            toDate: toDate,
+                            StageType: stageType,
+                            totalAmount: totalAmount,
+                          /*  totalCount: totalCount,*/
+                            htmlString: tableHtml
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                window.location.href = '@Url.Action("NCD_MonthlyInterestEntry_pdf", "NCD_MonthlyInterest_Entry")';
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('AJAX error:', status, error);
+                            console.log('Response Text:', xhr.responseText);
+                            alert('Error generating PDF preview: ' + error);
+                        },
+                        complete: function() {
+                            // Restore original scroll settings after AJAX call completes
+                            tableDiv.style.maxHeight = '180px';
+                            tableDiv.style.overflowY = 'auto';
+                        }
+                    });
+                });
+            });
+        </script>*@
+
+    <script>
+     $(document).ready(function () {
+         $('#generatePdf').click(function (event) {
+             event.preventDefault();
+
+             // Temporarily remove scroll limit
+             const tableDiv = document.getElementById('table_div');
+             tableDiv.style.maxHeight = 'none';
+             tableDiv.style.overflowY = 'visible';
+
+             var Month = $('#Month').val();
+             var issueType = $('#issueType').val();
+             var certificateType = $('#certificateType').val();
+             var bankType = $('#bankType').val();
+             //var totalCount = $('#totalCount').text();
+             var tableHtml = encodeURIComponent($("#table_div").html());
+
+
+
+             $.ajax({
+                 url: '@Url.Action("GeneratePdfClick", "NCD_MonthlyInterest_Entry")',
+                 type: 'POST',
+                 data: {
+                     Month: Month,
+                     issueType: issueType,
+                     certificateType: certificateType,
+                     bankType: bankType,
+                     htmlString: tableHtml
+                 },
+                 success: function (response) {
+                     if (response.success) {
+                         window.location.href = '@Url.Action("NCD_MonthlyInterestEntry_pdf", "NCD_MonthlyInterest_Entry")';
+                     }
+                 },
+                 error: function (xhr, status, error) {
+                     console.error('AJAX error:', status, error);
+                     console.log('Response Text:', xhr.responseText);
+                     alert('Error generating PDF preview: ' + error);
+                 },
+                 complete: function() {
+                     // Restore original scroll settings after AJAX call completes
+                     tableDiv.style.maxHeight = '180px';
+                     tableDiv.style.overflowY = 'auto';
+                 }
+             });
+         });
+     });
+    </script>
+
+
+    @*///////////////////////////////////////////////////////////////////////////////////*@
+
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        $('#issueType').change(function () {
+          //  alert("issue changed");
+            var issueNo = $(this).val();
+
+            // Clear existing options in the certificateType dropdown
+            $('#certificateType').empty();
+
+            // Make an AJAX request to get certificates for the selected issue
+            $.ajax({
+                url: '@Url.Action("GetCertificatesByIssue", "NCD_MonthlyInterest_Entry")', // Replace with your controller name
+                type: 'POST',
+                data: { issue_no: issueNo },
+                success: function (data) {
+                    // Populate the certificateType dropdown with the new options
+                    $('#certificateType').append('<option value="">Select Certificate</option>');
+                    $.each(data, function (index, item) {
+                        $('#certificateType').append('<option value="' + item.Value + '">' + item.Text + '</option>');
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+        });
+    });
+    </script>
+
+
+    @*///////////////////////////////////////////////////////////////////////////////////*@
+
+
+
+
+
+    <script>
+        $(document).ready(function () {
+            $('#btn_report').on('click', function () {
+               // alert("btn report click");
+
+                // Get form data
+                var month = $('#Month').val();
+                var issueNo = $('#issueType').val();
+                var cert = $('#certificateType').val();
+
+                // Check if inputs are filled
+                if (!month || !issueNo || !cert) {
+                    alert('Please fill all required fields.');
+                    return;
+                }
+
+                // Call the controller action via AJAX
+                $.ajax({
+                    url: '@Url.Action("btn_report_Click", "NCD_MonthlyInterest_Entry")',
+                    type: 'GET',
+                    data: { month: month, issueNo: issueNo, cert: cert },
+                    success: function (response) {
+                        if (response.success) {
+                            // Clear existing table rows
+                            $('#customerTableBody').empty();
+
+                            // Initialize totals
+                            let totalInterest = 0;
+                            let totalAmount = 0;
+                            let totalTds = 0;
+
+                            // Populate the table with the data
+                            if (response.data && response.data.length > 0) {
+                                $.each(response.data, function(index, item) {
+                                    $('#customerTableBody').append(
+                                        '<tr>' +
+                                            '<td>' + (index + 1) + '</td>' +
+                                        '<td>' + item.Issue_No + '</td>' +
+                                        '<td>' + item.Interest + '</td>' +
+                                        '<td>' + item.TDS+ '</td>' +
+                                        '<td>' + item.Short_Recovery + '</td>' +
+                                        '<td>' + item.TotalTDS + '</td>' +
+                                        '<td>' + item.PayAmount + '</td>' +
+                                        '<td>' + item.DebentureAmount + '</td>' +
+                                        '<td>' + item.NoofDebentures + '</td>' +
+
+                                        '</tr>'
+                                    );
+
+                                    // Update totals
+                                    //totalAmount++;
+                                    //totalTds++;
+                                    //totalInterest++;
+
+                                    totalAmount += parseFloat(item.PayAmount) || 0;
+                                    totalTds += parseFloat(item.TotalTDS) || 0;
+                                    totalInterest += parseFloat(item.Interest) || 0;
+
+
+
+                                });
+
+
+
+                                // Show the summary and table
+                                $('#sum_div').show();
+                                $('#table_div').show();
+                                $('#exportButton').show();
+                                $('#generatePdf').show();
+                                $('#totals_div').show();
+                                $('#dropdowndiv').show();
+                                $('#totals_div').show();
+                                $('#dropdowndiv').show();
+                                $('#submitbutton').show();
+                                $('#resetbutton').show();
+
+                                // Display totals
+                                /* $('#totalCount').text(totalCount);*/
+                                $('#totalAmount').text(totalAmount);
+                                $('#totalTds').text(totalTds);
+                                $('#totalInterest').text(totalInterest);
+
+                            } else {
+                                alert('No data found for the selected criteria.');
+                                $('#table_div').hide();
+                                $('#sum_div').hide();
+                                $('#exportButton').hide();
+                                $('#generatePdf').hide();
+                                $('#totals_div').hide();
+                                $('#dropdowndiv').hide();
+                                $('#submitbutton').hide();
+                                $('#resetbutton').hide();
+
+                            }
+
+                            // Handle the session value (countofdebentures)
+                            if (response.countofdebentures != null) {
+                                // Display the session value in an alert or update the DOM
+                               // alert("Count of Debentures: " + response.countofdebentures);
+                                $('#totaldebentureCount').text(response.countofdebentures); // Update the element with session value
+                            } else {
+                                // Handle if countofdebentures is null
+                                alert("No debenture count found.");
+                            }
+
+
+                        } else {
+                            alert(response.message || "No data found.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        alert("An error occurred while generating the report.");
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+
+    @*//////////////////////////////  -----  submit click  ----    ///////////////////////////////////////////*@
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#submitbutton').on('click', function (event) {
+               // alert("submit click");
+                event.preventDefault(); // Prevent default form submission
+
+                // Validate the dropdown selection
+                var bankType = document.getElementById("bankType");
+                if (bankType.value === "0") {
+                    alert("Please select a valid bank name.");
+                    return; // Stop here if validation fails
+                }
+
+                // Gather form data
+                var formData = {
+                    month: $('#Month').val(),
+                    issueNo: $('#issueType').val(),
+                    cert: $('#certificateType').val(),
+                    bank_branch: $('#bankType').val() // Dropdown value
+                };
+
+                // Debugging alerts for data gathered
+                alert(formData.month);
+                alert(formData.issueNo);
+                alert(formData.cert);
+                alert(formData.bank_branch);
+
+                // Send form data via AJAX to the controller
+                $.ajax({
+                    url: '@Url.Action("btn_save_Click", "NCD_MonthlyInterest_Entry")', // Update with actual controller name
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function(response) {
+                        alert('Data saved successfully.');
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

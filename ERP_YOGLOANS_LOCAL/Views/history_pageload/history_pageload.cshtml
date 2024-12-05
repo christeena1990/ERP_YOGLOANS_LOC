@@ -1,0 +1,262 @@
+﻿
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Add Bank Details</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+    <style>
+
+        .suggestionsclass {
+            font-size: 14px; /* Adjust this value to your desired font size */
+            position: absolute;
+            top: 100%; /* Position below the search box */
+            left: 0;
+            width: 300px; /* Match the width of the search box */
+            background-color: white;
+            border: 1px solid white;
+            border-radius: 3px;
+            z-index: 1000; /* Ensure the suggestions appear above other elements */
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            /*margin-left: 30px;*/
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+            .suggestionsclass li {
+                padding: 5px;
+            }
+
+                .suggestionsclass li:hover {
+                    background-color: darkgray;
+                    cursor: pointer;
+                    color: blue;
+                }
+    </style>
+    <script>
+
+
+        function initSearch(searchBoxId, suggestionsId, selectedCustomerIdId) {
+         const searchBox = document.getElementById(searchBoxId);
+         const suggestions = document.getElementById(suggestionsId);
+         const selectedCustomerId = document.getElementById(selectedCustomerIdId);
+
+         searchBox.addEventListener("input", function () {
+             const search_txt = searchBox.value;
+             if (search_txt.length >= 2) {
+                 fetch(`@Url.Action("GetSearchSuggestions", "history_pageload")?search_txt=${search_txt}`)
+                     .then(response => response.json())
+                     .then(data => {
+                         suggestions.innerHTML = "";
+                         data.forEach(item => {
+                             const li = document.createElement("li");
+                             li.textContent = item; // Display the concatenated string
+                             li.addEventListener("click", function () {
+                                 const selectedValue = item.split('~')[0]; // Extract the customer ID
+                                 selectedCustomerId.value = selectedValue;
+                                 searchBox.value = item; // Set the input value to the selected item
+                                 suggestions.innerHTML = "";
+                             });
+                             suggestions.appendChild(li);
+                         });
+                     });
+             } else {
+                 suggestions.innerHTML = "";
+                 selectedCustomerId.value = "";
+             }
+         });
+
+         document.addEventListener("click", function (event) {
+             if (!suggestions.contains(event.target) && event.target !== searchBox) {
+                 suggestions.innerHTML = "";
+             }
+         });
+     }
+        @*function search() {
+            alert("search_click");
+            // Check if the input is empty
+            if ($("#selectedCustomerId").val() == "") {
+                alert("Please enter a value");
+                $("#searchBox").focus();
+                return; // Exit function early if input is empty
+            }
+
+            // Get the input value
+            var input = $("#selectedCustomerId").val();
+
+
+            // AJAX request to fetch data and open a new window with the result
+            $.ajax({
+                url: '/Customer_History/cus_history', // Replace with your controller and action method
+                type: 'GET', // Or 'POST', depending on your action method
+                data: { customerId: input }, // Pass the input value as a parameter
+                success: function (response) {
+                    alert("success");
+
+
+                    //openInNewTab('@Url.Action("cus_history", "Customer_History")')
+                    var url = '/Customer_History/cus_history?customerId=' + encodeURIComponent(input);
+                    window.open(url, '_blank');
+
+
+                },
+                error: function (xhr, status, error) {
+                    // Handle any errors
+                    alert("An error occurred: " + xhr.responseText);
+                }
+            });
+        }*@
+        function search() {
+          //  alert("search_click");
+
+            // Check if the input is empty
+            if ($("#selectedCustomerId").val() == "") {
+                alert("Please enter a value");
+                $("#searchBox").focus();
+                return; // Exit function early if input is empty
+            }
+
+            // Get the input value
+            var input = $("#selectedCustomerId").val();
+           // alert(input);
+            // AJAX request to store the input in session and then open a new window
+            $.ajax({
+                url: '/history_pageload/SetCustomerSession', // New controller action to set the session
+                type: 'POST', // POST request since we are modifying the session
+                data: { customerId: input }, // Pass the input value as a parameter
+                success: function (response) {
+                   // alert("Session set successfully");
+
+                    // Open a new blank window without passing the customerId in the URL
+                    var url = '/Customer_History/cus_history';
+                    window.open(url, '_blank');
+                   // openInNewTab('@Url.Action("cus_history", "Customer_History")')
+                },
+                error: function (xhr, status, error) {
+                    // Handle any errors
+                    alert("An error occurred: " + xhr.responseText);
+                }
+            });
+        }
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize the search functionality
+            initSearch("searchBox", "suggestions", "selectedCustomerId");
+            initSearch("secondSearchBox", "secondSuggestions", "secondSelectedCustomerId");
+
+            // Clear the search boxes and localStorage values on page load
+            document.getElementById("searchBox").value = "";
+            document.getElementById("selectedCustomerId").value = "";
+            localStorage.setItem('activeButton', "");
+            localStorage.setItem('onceSearched', false.toString());
+
+            // Manage button group functionality
+            const buttons = document.querySelectorAll('.btn-group .btn');
+
+            // Function to update active class and save to localStorage
+            function setActiveButton(button) {
+                // Remove active class from all buttons
+                buttons.forEach(btn => btn.classList.remove('active'));
+
+                // Add active class to the clicked button
+                button.classList.add('active');
+
+                // Save the value of the active button to localStorage
+                localStorage.setItem('activeButton', button.value);
+                var activeValue1 = localStorage.getItem('activeButton');
+
+                // Display appropriate message based on the button value
+                if (activeValue1 == "B") {
+                    document.getElementById('lbl_message').textContent = "You are trying to BLOCK the following Customer.";
+                } else if (activeValue1 == "C") {
+                    document.getElementById('lbl_message').textContent = "You are trying to CLOSE the following Customer ID.";
+                }
+
+                //alert(activeValue1);
+            }
+
+            // Attach event listener to each button
+            buttons.forEach(button => {
+                button.addEventListener('click', function () {
+                    let isActive = (localStorage.getItem('onceSearched') === 'true');
+
+                    if (isActive) {
+                        // Store the clicked button value before reloading
+                        localStorage.setItem('clickedButtonValue', button.value);
+                        location.reload(); // Reload the page
+                    } else {
+                        setActiveButton(button);
+                    }
+                });
+            });
+
+            // After page reload, apply the setActiveButton to the clicked button
+            const clickedButtonValue = localStorage.getItem('clickedButtonValue');
+            if (clickedButtonValue) {
+                buttons.forEach(button => {
+                    if (button.value === clickedButtonValue) {
+                        setActiveButton(button);
+                    }
+                });
+                localStorage.removeItem('clickedButtonValue'); // Clear after applying
+            }
+
+            // Load the active button from localStorage on page load
+            const activeButtonValue = localStorage.getItem('activeButton');
+            if (activeButtonValue) {
+                buttons.forEach(button => {
+                    if (button.value === activeButtonValue) {
+                        button.classList.add('active');
+                    }
+                });
+            }
+        });
+
+    </script>
+</head>
+<body>
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Customer HISTORY</h6>
+            </div>
+        </div>
+        <div class="card-body" style="width:100%;">
+
+            <div class="row">
+                <div class="col-md-6 col-lg-10">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            @*<div class="input-group-text">
+                                    <i class="fa fa-search"></i>
+                                </div>*@
+                        </div>
+                        <input id="searchBox" placeholder="Customer ID/Name/Phone" type="text" class="form-control" autocomplete="off">
+                        <div class="input-group-text" style="height:39px;" onclick="search()">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <ul id="suggestions" class="suggestionsclass"></ul>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-2">
+                    <div class="input-group mb-3">
+                        <input type="text" id="selectedCustomerId" placeholder="ID" class="form-control" style="width:120px;" readonly />
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+</body>
+</html>

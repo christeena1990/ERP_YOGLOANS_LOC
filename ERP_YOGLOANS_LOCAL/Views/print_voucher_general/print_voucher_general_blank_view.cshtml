@@ -1,0 +1,414 @@
+﻿
+
+@{
+
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @Styles.Render("~/Content/css")
+
+    <script>
+        //$(document).ready(function () {
+        //    // Alert to indicate document is ready
+        //   // alert("Document ready");
+
+        //    // Get the current date and format it
+        //    var currentDate = new Date();
+        //    var day = String(currentDate.getDate()).padStart(2, '0');  // Add leading zero if needed
+        //    var month = String(currentDate.getMonth() + 1).padStart(2, '0');  // Months are zero-based
+        //    var year = currentDate.getFullYear();
+        //    var formattedDate = `Date: ${day}/${month}/${year}`;
+
+        //    // Get the current time and format it (HH:MM)
+        //    var hours = String(currentDate.getHours()).padStart(2, '0');  // Add leading zero if needed
+        //    var minutes = String(currentDate.getMinutes()).padStart(2, '0');  // Add leading zero if needed
+        //    var formattedTime = `Time: ${hours}:${minutes}`;
+
+        //    // Display date and time in their respective elements
+        //   // alert(formattedDate);
+        //   // alert(formattedTime);
+        //    $('#system_date').text(formattedDate);
+        //    $('#system_date_office').text(formattedDate);
+        //    $('#system_time').text(formattedTime);
+        //    $('#system_time_office').text(formattedTime);
+
+        //    // Perform AJAX call to fetch voucher details
+        //    $.ajax({
+        //        url: '/print_voucher_general/FT_voucher1_select',
+        //        type: 'GET',
+        //        success: function (response) {
+        //            if (response.success) {
+        //                // Destructure the response to get the necessary data
+        //                const { cash_ids, branches, msgs, amounts, login_users, CIN, GSTIN } = response;
+
+        //                // Fill table cells with the desired format
+        //                $('#cash_ids').text(`Cash ID: ${cash_ids}`);                       
+        //                $('#branches').text(`Branch: ${branches}`);                      
+        //                $('#msgs').text(msgs);                       
+        //                $('#amount').text(`Amount: ${amounts}`);                       
+        //                $('#login_users').text(`User: ${login_users}`);                    
+        //                $('#CIN').text(`${CIN}`);
+        //                $('#GSTIN').text(`GSTIN: ${GSTIN}`);
+                       
+
+        //                $('#cash_ids_office').text(`Cash ID: ${cash_ids}`);
+        //                $('#branches_office').text(`Branch: ${branches}`);
+        //                $('#msgs_office').text(msgs);
+        //                $('#amount_office').text(`Amount: ${amounts}`);
+        //                $('#login_users_office').text(`User: ${login_users}`);
+        //                $('#CIN_office').text(`${CIN}`);
+        //                $('#GSTIN_office').text(`GSTIN: ${GSTIN}`);
+
+        //                const amountInWords = convertToWords(parseFloat(amounts));
+        //               // alert(`Converted Amount in Words: ${amountInWords}`);
+        //                $('#amountCell').text(amountInWords);
+        //                $('#amountCell_office').text(amountInWords);
+
+
+        //                // Log values for debugging
+        //            } else {
+        //                // Show error message if the response fails
+        //                alert(`Failed: ${response.message}`);
+        //            }
+        //        },
+        //        error: function (xhr, status, error) {
+        //            // Handle any AJAX errors
+        //            console.log(`Error: ${error}`);
+        //        }
+        //    });
+        //});
+
+        $(document).ready(function () {
+            // Get the current date and time
+            //var currentDate = new Date();
+            //var formattedDate = `Date: ${currentDate.toLocaleDateString()}`;
+            var currentDate = new Date();
+
+            // Array of month names
+            var monthNames = [
+                "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+            ];
+
+            // Get the day, month, and year
+            var day = currentDate.getDate();
+            var month = monthNames[currentDate.getMonth()];
+            var year = currentDate.getFullYear();
+
+            // Format the date
+            var formattedDate = `Date:${day}-${month}-${year}`;
+            var formattedTime = `Time: ${currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
+            // Display date and time in their respective elements
+            $('#system_date').text(formattedDate);
+            $('#system_date_office').text(formattedDate);
+            $('#system_time').text(formattedTime);
+            $('#system_time_office').text(formattedTime);
+
+            // Perform AJAX call to fetch voucher details
+            $.ajax({
+                url: '/print_voucher_general/FT_voucher1_select',
+                type: 'GET',
+                success: function (response) {
+                    if (response.success) {
+                        // Destructure the response to get the necessary data
+                        const { cash_ids, branches, msgs, amounts, login_users, CIN, GSTIN } = response;
+
+                        // Clear any previous copies from the body
+                        $('body').empty();
+
+                        // Initialize a variable to hold all copies
+                        let allCopiesHtml = '';
+
+                        // Loop through the entries to construct the HTML
+                        for (let i = 0; i < cash_ids.length; i++) {
+                            // Create the customer copy
+                            let customerCopyHtml = `
+                        <div id="customerCopy" style="page-break-after: always;font-family:Cambria;">
+                            <table style="width:100%;height:155px;color:black;">
+                                <tr>
+                                    <td style="width:33%;"></td>
+                                    <td style="width:33%;" align="center">YOGAKSHEMAM LOANS LTD</td>
+                                    <td style="width:33%;"></td>
+                                </tr>
+                                <tr>
+                                    <td id="CIN">${CIN}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td id="branches">Branch: ${branches[i]}</td>
+                                    <td align="right" id="GSTIN">GSTIN: ${GSTIN}</td>
+                                    <td align="right" id="system_date">${formattedDate}</td>
+                                </tr>
+                                <tr>
+                                    <td id="cash_ids">Cash ID: ${cash_ids[i]}</td>
+                                    <td></td>
+                                    <td align="right" id="system_time">${formattedTime}</td>
+                                </tr>
+                            </table>
+                            <hr />
+                            <table style="width:100%;height:155px;color:black;">
+                                <tr>
+                                    <td align="center" style="padding-left:150px;" id="msgs">${msgs[i]}</td>
+                                </tr>
+                                <tr>
+                                    <td align="center" style="padding-left:150px;" id="amountCell">${convertToWords(parseFloat(amounts[i]))}</td>
+                                </tr>
+                                <tr>
+                                     
+                                </tr>
+                                <tr>
+                                  <td align="center" style="padding-left:150px;">customer copy</td>
+                                     <td align="right" id="login_users">${login_users[i]}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    `;
+
+                            // Add customer copy to all copies HTML
+                            allCopiesHtml += customerCopyHtml;
+
+                            // Create one office copy
+                            let officeCopyHtml = `
+                        <div id="officeCopy" style="page-break-after: always;font-family:Cambria;">
+                            <table style="width:100%;height:155px;color:black;">
+                                <tr>
+                                    <td style="width:33%;"></td>
+                                    <td style="width:33%;" align="center">YOGAKSHEMAM LOANS LTD</td>
+                                    <td style="width:33%;"></td>
+                                </tr>
+                                <tr>
+                                    <td id="CIN_office"> ${CIN}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td id="branches_office">Branch: ${branches[i]}</td>
+                                    <td align="right" id="GSTIN_office">GSTIN: ${GSTIN}</td>
+                                    <td align="right" id="system_date_office">${formattedDate}</td>
+                                </tr>
+                                <tr>
+                                    <td id="cash_ids_office">Cash ID: ${cash_ids[i]}</td>
+                                    <td></td>
+                                    <td align="right" id="system_time_office">${formattedTime}</td>
+                                </tr>
+                            </table>
+                            <hr />
+                            <table style="width:100%;height:155px;color:black;">
+                                <tr>
+                                    <td align="center" style="padding-left:150px;" id="msgs_office">${msgs[i]}</td>
+                                </tr>
+                                <tr>
+                                    <td align="center" style="padding-left:150px;" id="amountCell_office">${convertToWords(parseFloat(amounts[i]))}</td>
+                                </tr>
+                                <tr>
+                                     
+                                </tr>
+                                <tr>
+                                   <td align="center" style="padding-left:150px;">office copy</td>
+                                    <td align="right" id="login_users_office">${login_users[i]}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    `;
+                            // Add office copy to all copies HTML
+                            allCopiesHtml += officeCopyHtml;
+                        }
+
+                        // Append all constructed copies to the body (or a specific section)
+                        $('body').append(allCopiesHtml);
+                    } else {
+                        // Show error message if the response fails
+                        alert(`Failed: ${response.message}`);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle any AJAX errors
+                    console.log(`Error: ${error}`);
+                }
+            });
+        });
+
+
+
+
+
+        function convertToWords(amount) {
+            //alert(amount);
+           // alert("in words");
+
+            if (isNaN(amount) || amount < 0) {
+                alert("Invalid amount provided");
+                return; // Exit if amount is not valid
+            }
+
+            const units = [
+                '', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine',
+                'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen',
+                'Seventeen', 'Eighteen', 'Nineteen'
+            ];
+            const tens = [
+                '', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'
+            ];
+            const scales = [
+                '', 'Thousand', 'Lakh', 'Crore'
+            ];
+
+            if (amount === 0) return 'Zero Rupees Only';
+
+            let words = '';
+            let numStr = String(amount);
+            let scaleIndex = 0;
+
+            // Group digits from right to left, ensuring the first group is always up to three digits.
+            while (numStr.length > 0) {
+                let part = '';
+
+                if (numStr.length > 3) {
+                    // For thousands and above, always take the last three digits
+                    part = numStr.slice(-3);
+                    numStr = numStr.slice(0, -3);
+                } else {
+                    part = numStr; // Handle the remaining part (less than 1000)
+                    numStr = ''; // Set to empty as this is the last part
+                }
+
+                let num = parseInt(part, 10);
+
+                if (num > 0) {
+                    let str = '';
+
+                    // Handle hundreds
+                    if (part.length === 3) {
+                        str += units[Math.floor(num / 100)] + ' Hundred ';
+                        num = num % 100; // Extract the last two digits for tens and units
+                    }
+
+                    // Handle tens and units
+                    if (num < 20) {
+                        str += units[num] + ' ';
+                    } else {
+                        str += tens[Math.floor(num / 10)] + ' ';
+                        str += units[num % 10] + ' ';
+                    }
+
+                    // Prepend the scale (e.g., thousand, lakh, crore)
+                    words = str + scales[scaleIndex] + ' ' + words;
+                }
+
+                scaleIndex++;
+            }
+
+            return words.trim() + ' Rupees Only';
+        }
+
+
+
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault(); // Prevent default right-click menu
+
+            // Trigger print dialog
+            window.print();
+        });
+
+      
+
+    </script>
+
+</head>
+<body>
+
+    <h1 style="padding-left:100px;"></h1>
+    @*--------customer copy------------*@
+    <!--<div id="customerCopy" >
+        <table style="width:100%;height:152px;color:black;">
+            <tr>
+                <td style="width:33%;"></td>
+                <td style="width:33%;" align="center">YOGAKSHEMAM LOANS LTD</td>
+                <td style="width:33%;"></td>
+            </tr>
+            <tr>
+                <td id="CIN">CIN</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td id="branches">Branch</td>
+                <td align="right" id="GSTIN">GSTIN</td>
+                <td align="right" id="system_date">Date</td>
+            </tr>
+            <tr>
+                <td id="cash_ids">Cash ID</td>
+                <td></td>
+                <td align="right" id="system_time">Time</td>
+            </tr>
+        </table>
+        <hr />
+
+        <table style="width:100%;height:150px;color:black;">
+            <tr>
+                <td align="center" id="msgs"></td>
+            </tr>
+            <tr>
+                <td align="center" id="amountCell"></td>
+            </tr>
+            <tr>
+                <td align="right" id="login_users"></td>
+            </tr>
+            <tr>
+                <td align="center">customer copy</td>
+            </tr>
+        </table>
+    </div>-->
+    @*--------office copy------------*@
+    <!--<div id="officeCopy" >
+        <table style="width:100%;height:152px;color:black;">
+            <tr>
+                <td style="width:33%;"></td>
+                <td style="width:33%;" align="center">YOGAKSHEMAM LOANS LTD</td>
+                <td style="width:33%;"></td>
+            </tr>
+            <tr>
+                <td id="CIN_office">CIN</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td id="branches_office">Branch</td>
+                <td align="right" id="GSTIN_office">GSTIN</td>
+                <td align="right" id="system_date_office">Date</td>
+            </tr>
+            <tr>
+                <td id="cash_ids_office">Cash ID</td>
+                <td></td>
+                <td align="right" id="system_time_office">Time</td>
+            </tr>
+        </table>
+        <hr />
+
+        <table style="width:100%;height:150px;color:black;">
+            <tr>
+                <td align="center" id="msgs_office"></td>
+            </tr>
+            <tr>
+                <td align="center" id="amountCell_office"></td>
+            </tr>
+            <tr>
+                <td align="right" id="login_users_office"></td>
+            </tr>
+            <tr>
+                <td align="center">office copy</td>
+            </tr>
+        </table>
+    </div>-->
+</body>
+</html>

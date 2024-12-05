@@ -1,0 +1,382 @@
+﻿
+@model ERP_YOGLOANS_LOCAL.Models.declaration_view
+
+
+
+@{
+
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html @*xmlns="http://www.w3.org/1999/xhtml*@">
+<head runat="server">
+    <title></title>
+
+    <style type="text/css" media="print">
+        @*@page*@ {
+            size: auto;
+            margin: 10px;
+        }
+    </style>
+
+    <style type="text/css">
+    </style>
+
+
+    <script>
+     // Check if the page was loaded directly (not via navigation within the site)
+     if (document.referrer === '') {
+         // If there is no referrer, redirect to the login page
+         window.location.href = '/Smart_Login/Login'; // Change to your login page URL
+     }
+    </script>
+
+
+
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div id="div_dec" runat="server">
+            <table style="width:95%; border: 1px solid black; border-collapse: collapse;">
+                <tr>
+                    <td style="text-align:center;background-color:white;color:black;font-weight:200" colspan="2">YOGAKSHEMAM LOANS LTD </td>
+
+                </tr>
+
+                <tr>
+                    <td style="text-align:center;background-color:white;color:black;" colspan="2">
+                        Branch Name:
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td style="text-align:center;background-color:maroon;color:white;" colspan="2">
+                        KYC & CKYC Form Aoutherised Signatory
+
+
+                    </td>
+                </tr>
+                @*<br />
+
+                <br />*@
+
+
+                <tr>
+                    <td>
+                        <br />
+                        CKYC:  <input type="text" runat="server" ID="txt_fullname" placeholder="" style="width: 300px;">
+                    </td>
+
+                    <td style="text-align:left">
+                        Customer ID:
+                        <input type="text" runat="server" ID="cid" placeholder="" style="width: 300px; " value="">
+                    </td>
+
+
+                </tr>
+                <tr>
+                </tr>
+                <tr><td colspan="2"> <hr /></td></tr>
+                <tr>
+                    <td>
+                        <table>
+                            <tr>
+
+                                <td>First name:&nbsp;&nbsp; <input type="text" runat="server" ID="txt_fullname" placeholder="" style="width: 300px; " value=""></td>
+
+                                <td colspan="2">Second name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" runat="server" ID="txt_fullname" placeholder="" style="width: 300px;" value=""></td>
+                            </tr>
+
+                            <tr>
+                                <td>Father name:<input type="text" runat="server" ID="txt_fullname" placeholder="" style="width: 300px;" value=""></td>&nbsp;&nbsp;
+                                <td colspan="2">Mother name:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" runat="server" ID="txt_fullname" placeholder="" style="width: 300px;" value=""></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Marital Status<span style="font-size:x-small">(Single/Married/Widow/Widower/Living Separate/Divorcee)</span>:
+                                    @*<asp:Label runat="server" ID="lbl_marital" Text="--------------"></asp:Label>*@
+                                </td>
+                                <td colspan="2">Name of Spouse:<label for="spouse"></label>@*<asp:Label runat="server" ID="lbl_spouse" Text="------------------------"></asp:Label>*@</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Date Of Birth<span style="font-size:x-small">(dd/mm/yyyy): </span><label for="date"></label>@*<asp:Label runat="server" ID="lbl_dob" Text="-----------------------"></asp:Label>*@
+                                </td>
+
+
+                                <td colspan="2">
+                                    Gender:
+                                    @*@if (Model != null)
+                            {*@
+                                    <input type="checkbox" id="male" name="gender" value="M">
+                                    <label for="male">Male</label>
+
+                                    <input type="checkbox" id="female" name="gender" value="F">
+                                    <label for="female">Female</label>
+
+                                    <input type="checkbox" id="transgender" name="gender" value="T">
+                                    <label for="transgender">Transgender</label>
+
+
+                                    @*}*@
+                                </td>
+
+                            <tr>
+                                <td>
+                                    Nationality:<label for="nationality"></label>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+
+                                <td colspan="2">
+                                    Residential Status:
+                                    <input type="checkbox" id="ownedCheckbox" name="residenceType" value="O"> Owned
+                                    <input type="checkbox" id="rentCheckbox" name="residenceType" value="R"> Rent
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style="padding:10px;">
+
+
+                        <div style="width:120px; height:150px; border:dashed; text-align:center;">
+
+                            <img id="photo" src="" style="width: 100%; height: 100%;" />
+                        </div>
+                    </td>
+                </tr>
+                <tr><td colspan="2"> <hr /></td></tr>
+                <tr>
+                    <td colspan="2">
+                        <table style="width:100%;border: 1px solid black; border-collapse: collapse;">
+                            <thead style="background-color:maroon;color:white;">
+                                <tr>
+                                    <th>Occupation</th>
+                                    <th>Annual Income</th>
+                                    <th>Education</th>
+                                    <th>Proof of Identity</th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td>
+
+                                    <input type="checkbox" id="cbox1" name="box1" value="1">Private Sector Service<br />
+                                    <input type="checkbox" id="cbox2" name="box2" value="2">Public Sector Service<br />
+                                    <input type="checkbox" id="cbox3" name="box3" value="3">Government Sector Service<br />
+                                    <input type="checkbox" id="cbox4" name="box4" value="4">Business<br />
+                                    <input type="checkbox" id="cbox5" name="box5" value="5">Professional<br />
+                                    <input type="checkbox" id="cbox6" name="box6" value="6">Self Employed<br />
+                                    <input type="checkbox" id="cbox7" name="box7" value="7">Others<br />
+                                </td>
+                                <td>
+                                    <input type="checkbox" id="cbox8" name="box8" value="8">Below 1 Lac<br />
+                                    <input type="checkbox" id="cbox9" name="box9" value="9">1 to 5 Lac<br />
+                                    <input type="checkbox" id="cbox10" name="box10" value="10">5 to 10 Lac<br />
+                                    <input type="checkbox" id="cbox11" name="box11" value="11">10 to 15 Lac<br />
+                                    <input type="checkbox" id="cbox12" name="box12" value="12">15 to 25 Lac<br />
+                                    <input type="checkbox" id="cbox13" name="box13" value="13">25 Lac above<br />
+                                </td>
+
+
+                                <td>
+                                    <input type="checkbox" id="cbox14" name="box14" value="14">Below SSLC<br />
+                                    <input type="checkbox" id="cbox15" name="box15" value="15">SSLC<br />
+                                    <input type="checkbox" id="cbox16" name="box16" value="16">HSC<br />
+                                    <input type="checkbox" id="cbox17" name="box17" value="17">Graduate<br />
+                                    <input type="checkbox" id="cbox18" name="box18" value="18">Masters<br />
+                                    <input type="checkbox" id="cbox19" name="box19" value="19">Professional<br />
+
+                                </td>
+                                <td>
+
+                                    Pan No:<label for="pan_no"></label><br />
+                                    Aadhar:<label for="aadhaar"></label><br />
+                                    Voters:<label for="voters"></label><br />
+                                    Driving Licence:<label for="drivingliscence"></label><br />
+                                    Ration Card:<label for="rationcard"></label><br />
+                                    Passport:<label for="passport"></label><br />
+
+                                </td>
+                            </tr>
+
+                        </table>
+                    </td>
+                </tr>
+                <tr><td colspan="2"> <hr /></td></tr>
+                <tr>
+                    <td colspan="2">
+                        <table style="width:100%">
+                            <tr>
+                                <td style="width:50%">
+                                    <table style="width:100%">
+                                        <tr style="background-color:maroon;color:white;">
+                                            <td colspan="2">Communication Address</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>
+
+                                                Address:<label for="address"></label><br />
+
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>State: <label for="state"></label></td>
+                                            <td></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>PIN:<label for="pin"></label></td>
+                                            <td></td>
+                                        </tr>
+
+                                        <tr>
+                                            @*<td>District Name:<label for="country">@Model.c_district</label></td>*@
+                                            <td>Country:<label for="country"></label></td>
+                                            <td></td>
+                                        </tr>
+
+                                        <tr>
+                                            <td>Mobile:<label for="mobile"></label></td>
+                                            <td></td>
+                                        </tr>
+
+                                    </table>
+
+                                </td>
+
+                                <td style="width:50%">
+
+                                    @*@if (string.IsNullOrEmpty(Model.p_pin))
+                            {
+                                <hr />
+                                <table style="width:100%">
+                                    <tr style="background-color:maroon;color:white;">
+                                        <td colspan="2">Permanent Address</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Address:<label for="address"></label><br />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            State:
+                                            <label for="state"></label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            PIN:
+                                            <label for="pin"></label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Country:
+                                            <label for="country"></label>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Mobile:
+                                            <label for="mobile"></label>
+                                        </td>
+                                    </tr>
+                                </table>
+
+
+                            }
+                            else
+                            {*@
+                                    <table style="width:100%">
+                                        <tr style="background-color:maroon;color:white;">
+                                            <td colspan="2">Permanent Address</td>
+
+
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Address:<label for="address"></label><br />
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                State:
+                                                <label for="state"></label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                PIN:
+                                                <label for="pin"></label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Country:
+                                                <label for="country"></label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                Mobile:
+                                                <label for="mobile"></label>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+
+                                    @*}*@
+
+
+
+                                </td>
+                            </tr>
+                        </table>
+
+
+                    </td>
+
+                </tr>
+                <tr><td colspan="2"> <hr /></td></tr>
+                <tr>
+                    <td colspan="2" style="background-color:maroon;color:white;"> Declaration</td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <br />
+
+
+                        I/We hereby declare that the details furnished above are true and correct.I have submitted my physical Aadhaar card /E-Aadhaar card /Masked Aadhaar /Offline Electronic Aadhaar xml voluntarily as an officially valid document for opening customer  account and  all the above information voluntarily furnished by me is true, correct and complete.
+                        <br />
+                        <br />
+
+                        I/we undertake to inform you of any changes therein, immediately. In case any of the above information is found to be false or untrue or misleading or misrepresenting, I/we am/are aware that I/we may be held liable for it. I/We hereby undertake that periodic KYC updations will be carried out as per the policy.
+                        <br />
+                        <br />
+                        I/We authorise you to link Aadhaar No. for aadhaar and biometric for aadhaar authentication service, E-KYC. My/our personal KYC details may be shared with Central KYC Registry / TaxAuthorities / Regulators . I/We hereby consent to receiving information from Central KYC Registry through SMS/ Email on the above registered number / email address.
+                        <br />
+                        <br />
+                        <br />
+                        Place:<label for="place">--------------------</label>&nbsp;&nbsp;&nbsp;
+                        Date:<label for="date">--------------------</label>&nbsp;&nbsp;&nbsp;
+                        Signature:<label for="sign">--------------------</label><br />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <asp:HiddenField ID="h_slno" runat="server" />
+    </form>
+
+</body>
+</html>
+
+

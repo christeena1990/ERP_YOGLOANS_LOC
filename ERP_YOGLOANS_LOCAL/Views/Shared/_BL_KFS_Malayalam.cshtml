@@ -1,0 +1,917 @@
+﻿
+@{
+    ViewBag.Title = "_BL_KFS_Malayalam";
+}
+@model ERP_YOGLOANS_LOCAL.Models.Legality_Model.ApplicationAndKFSViewModel
+
+
+
+@{
+    Layout = null;
+}
+
+@*---------------------------------------KFS English & Malayalam--------------------------------*@
+<div id="KFS_eng&malayalam">
+    <div id="annex_a" class="page-break">
+        <br />  <br />
+        <div class="logo-src" style="height: 42px; vertical-align: top; text-align: center; margin-top: -5px; margin-bottom: 2px;">
+            <img style="width:170px;" src="~/images/logowithtext.png" />
+        </div>
+        <div class="company-info" style="margin-bottom: -15px; line-height: 1.2;">
+            <div style=" font-weight: normal;">യോഗക്ഷേമം ലോൺസ് ലിമിറ്റഡ്</div>
+            <div style=" font-weight: normal;">YOGAKSHEMAM LOANS LIMITED</div>
+            <div style="font-size: 12px; font-weight: normal;">റെജി. ഓഫീസ്: ഒറ്റപ്പാത്ത് ടവർ, അശ്വിനി ജംഗ്ഷൻ, തിരുവമ്പാടി പി.ഒ, തൃശൂർ 680022, കേരളം </div>
+            <div style="font-size: 12px; font-weight: normal;">Regd Office : Ottappath Tower, Aswini Junction, Thiruvambady P.O, Thrissur 680022, Kerala.</div>
+            <div style="text-align: center; font-size: 11px; font-weight: normal; "> ശാഖ/Branch :</div>
+        </div>
+        <h1 style="text-align: right; font-size: 11px; font-weight: bold;">Annex A</h1><br />
+
+        <div class="heading-container" style="text-align: center; font-size: 12px; line-height: 0.5; font-weight: bold; ">
+            <p>Key Facts Statement/പ്രധാന വസ്തുതകളുടെ പ്രസ്താവന</p>
+            <p>Part 1 (Interest rate and fees/charges)/ഭാഗം 1 (പലിശ നിരക്കും ഫീസും/ചാർജുകളും)</p>
+        </div>
+        @*<h1 style="text-align:right; font-size:11px;">Annex A</h1><br />
+        <div class="heading-container" style="text-align: center; font-size: 12px;">
+            <p>Key Facts Statement</p><br />
+            <p>Part 1 (Interest rate and fees/charges)</p>
+        </div>*@
+
+
+        <div class="table-container">
+
+            <table id="content100" style="width:100%">
+                <tr>
+                    <td style="width:3.5%;">1</td>
+                    <td style="width:24%">Loan proposal/ account No:<br />വായ്പാ നിർദ്ദേശം/ അക്കൗണ്ട് നമ്പർ.</td>
+                    <td style="width:180px;">@Model.KFSFormData.ApplicationId</td>
+                    <td style="width:25%">Type of Loan:&nbsp;<br />വായ്പയുടെ തരം</td>
+                    <td @*style="width:180px;"*@ style="width:24%">@Model.KFSFormData.LoanType</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td colspan="2">Sanctioned Loan amount (in Rupees) <br />അനുവദിച്ച വായ്പാ തുക (രൂപയിൽ)</td>
+                    <td colspan="2">@Model.KFSFormData.LoanAmount</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td colspan="2">
+                        <span class="disbursal-schedule">Disbursal schedule/&nbsp;വിതരണ ഷെഡ്യൂൾ</span><br>
+                        <span class="disbursal-details">
+                            (i) &nbsp;Disbursement in stages or 100% upfront.<br /> &nbsp;ഘട്ടം ഘട്ടമായോ 100% മുൻകൂട്ടിയോ വിതരണം ചെയ്യുക.<br>
+                            (ii) &nbsp; If it is stage wise, mention the clause of loan<br /> agreement having relevant details<br /> &nbsp;ഇത് ഘട്ടം തിരിച്ചാണെങ്കിൽ, പ്രസക്തമായ വിശദാംശങ്ങളുള്ള ലോൺ കരാറിൻ്റെ ക്ലോസ് സൂചിപ്പിക്കുക.
+                        </span>
+                    </td>
+                    <td colspan="2">@Model.KFSFormData.DisbursementStages<br />@Model.KFSFormData.Schedule</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td colspan="2">Loan term (year/months/days)<br />വായ്പാ കാലാവധി (വർഷം/മാസം/ദിവസം)</td>
+                    <td colspan="2">@Model.KFSFormData.Duration</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td colspan="2">Instalment details / ഇൻസ്‌റ്റാൾമെൻ്റ് വിശദാംശങ്ങൾ</td>
+                </tr>
+            </table>
+
+
+            <table id="content2">
+                <thead>
+                    <tr>
+                        <th style="width:50px; font-weight:normal">Type of instalments/തവണകളുടെ തരം</th>
+                        <th style="width: 50px; font-weight:normal">Number of EPIs/EPI-കളുടെ എണ്</th>
+                        <th style="width: 50px; font-weight:normal">EPI (₹)</th>
+                        <th style="width: 50px; font-weight: normal">Commencement of repayment, post sanction<br />തിരിച്ചടവിൻ്റെ ആരംഭം, അനുമതിക്ക് ശേഷം</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@Model.KFSFormData.Instalment</td>
+                        <td>@Model.KFSFormData.NumberOfEPIs</td>
+                        <td>@Model.KFSFormData.EPI</td>
+                        <td>@Model.KFSFormData.CommencementOfRepayment</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table id="content3">
+                <tr>
+                    <td>6</td>
+                    <td colspan="3">Interest rate (%) and type (fixed or floating or hybrid)<br />പലിശ നിരക്കും (%) തരവും (നിശ്ചിത അല്ലെങ്കിൽ ഫ്ലോട്ടിംഗ് അല്ലെങ്കിൽ ഹൈബ്രിഡ്)</td>
+                    <td>@Model.KFSFormData.InterestRate</td>
+                    <td>@Model.KFSFormData.InterestRateType</td>
+                </tr>
+            </table>
+            <table id="content5">
+                <tr>
+                    <td>7</td>
+                    <td>Additional Information in case of Floating rate of interest<br />ഫ്ലോട്ടിംഗ് പലിശ നിരക്കിൻ്റെ കാര്യത്തിൽ അധിക വിവരങ്ങൾ</td>
+                </tr>
+            </table>
+
+            <table id="content4">
+                <tr>
+                    <th rowspan="2" style="font-weight: normal">Reference<br>Benchmark<br />റഫറൻസ്<br> ബെഞ്ച്മാർക്ക്</th>
+                    <th rowspan="2" style="font-weight: normal">Benchmark<br>rate (%) (B)<br />ബെഞ്ച്മാർക്ക് <br> നിരക്ക്(%) (B)</th>
+                    <th rowspan="2" style="font-weight: normal">Spread<br /> വ്യാപനം (%) (S)</th>
+                    <th rowspan="2" style="font-weight: normal">Final rate<br />അന്തിമ നിരക്ക്<br /> (%)R = (B) + (S)</th>
+                    <td colspan="2" style="font-weight: normal">Reset<br>periodicity 2(Months)<br />ആവർത്തനം2(മാസം)<br />പുനഃസജ്ജമാക്കുക</td>
+                    <th colspan="2" style="font-weight: normal">Impact of change in the reference<br />benchmark<br />(for 25 bps change in ‘R’, change in:3)<br />റഫറൻസ് ബെഞ്ച്മാർക്കിലെ<br>മാറ്റത്തിൻ്റെ ആഘാതം<br></th>
+                </tr>
+                <tr>
+                    <td>B</td>
+                    <td>S</td>
+                    <td>EPI (₹)</td>
+                    <td>No. of EPIs</td>
+                </tr>
+                <tr>
+                    <td>@Model.KFSFormData.RefeBenchmark</td>
+                    <td>@Model.KFSFormData.BenchmarkRate</td>
+                    <td>@Model.KFSFormData.Spread</td>
+                    <td>@Model.KFSFormData.FinalRate</td>
+                    <td>@Model.KFSFormData.ResetPeriodB</td>
+                    <td>@Model.KFSFormData.ResetPeriodS</td>
+                    <td>@Model.KFSFormData.BenchEPI</td>
+                    <td>@Model.KFSFormData.BenchNoEPI</td>
+
+                </tr>
+            </table>
+
+            <table id="content5">
+                <tr>
+                    <td style="width:3.5%;">8</td>
+                    <td colspan="2">Fee/ Charges ഫീസ് / ചാർജുകൾ</td>
+                </tr>
+            </table>
+
+            <table id="combined-table">
+                <tr>
+                    <th colspan="2"></th>
+                    <th colspan="2" style="font-weight: normal">Payable to the RE (A)<br />RE (A) ലേക്ക് നൽകണം</th>
+                    <th colspan="2" style="font-weight: normal">Payable to a third party through RE (B)<br />RE (B) വഴി ഒരു മൂന്നാം കക്ഷിക്ക് നൽകാവുന്നതാണ്</th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>One-time/Recurring<br />ഒറ്റത്തവണ/ ആവർത്തന</td>
+                    <td>Amount (in ₹) or Percentage (%) as applicable<br />തുക (₹ അല്ലെങ്കിൽ ശതമാനത്തിൽ (%) ബാധകമായത്</td>
+                    <td>One-time/Recurring<br />ഒറ്റത്തവണ/ ആവർത്തന</td>
+                    <td>Amount (in ₹) or Percentage (%) as applicable<br />തുക (₹ അല്ലെങ്കിൽ ശതമാനത്തിൽ (%) ബാധകമായത്</td>
+                </tr>
+                <tr>
+                    <td>i)</td>
+                    <td>Processing fees &nbsp;<span style="font-size:10px">(Including GST)</span><br />പ്രോസസ്സിംഗ് ഫീസ് &nbsp;<span style="font-size:10px">(ജിഎസ്ടി ഉൾപ്പെടെ)</span></td>
+                    <td>@Model.KFSFormData.REAProcessingRecurring</td>
+                    <td>@Model.KFSFormData.REAProcessingAmount</td>
+                    <td>@Model.KFSFormData.REBProcessingRecurring</td>
+                    <td>@Model.KFSFormData.REBProcessingAmount</td>
+                </tr>
+                <tr>
+                    <td>ii)</td>
+                    <td>Insurance charges&nbsp;<span style="font-size:10px">(Including GST)</span><br />ഇൻഷുറൻസ് നിരക്കുകൾ  &nbsp;<span style="font-size:10px">(ജിഎസ്ടി ഉൾപ്പെടെ)</span></td>
+                    <td>@Model.KFSFormData.REAInsuranceRecurring</td>
+                    <td>@Model.KFSFormData.REAInsuranceAmount</td>
+                    <td>@Model.KFSFormData.REBInsuranceRecurring</td>
+                    <td>@Model.KFSFormData.REBInsuranceAmount</td>
+                </tr>
+                <tr>
+                    <td>iii)</td>
+                    <td>Service charges&nbsp;<span style="font-size:10px">(Including GST)</span><br />സേവനം നിരക്കുകൾ &nbsp;<span style="font-size:10px">(ജിഎസ്ടി ഉൾപ്പെടെ)</span></td>
+                    <td>@Model.KFSFormData.REAServiceRecurring</td>
+                    <td>@Model.KFSFormData.REAServiceAmount</td>
+                    <td>@Model.KFSFormData.REBServiceRecurring</td>
+                    <td>@Model.KFSFormData.REBServiceAmount</td>
+
+                </tr>
+                <tr>
+                    <td>iv)</td>
+                    <td>eSigning charges&nbsp;<span style="font-size:10px">(Including GST)</span><br />ഇ-സൈനിംഗ് നിരക്കുകൾ&nbsp;<span style="font-size:10px">(ജിഎസ്ടി ഉൾപ്പെടെ)</span></td>
+                    <td>@Model.KFSFormData.REAeSigningRecurring</td>
+                    <td>@Model.KFSFormData.REAeSigningAmount</td>
+                    <td>@Model.KFSFormData.REBeSigningRecurring</td>
+                    <td>@Model.KFSFormData.REBeSigningAmount</td>
+
+                </tr>
+                <tr>
+                    <td>v)</td>
+                    <td>Stamp Duty<br />സ്റ്റാമ്പ് ഡ്യൂട്ടി&nbsp;<span style="font-size:10px">(ജിഎസ്ടി ഉൾപ്പെടെ)</span> </td>
+                    <td>@Model.KFSFormData.REAStampRecurring</td>
+                    <td>@Model.KFSFormData.REAStampAmount</td>
+                    <td>@Model.KFSFormData.REBStampRecurring</td>
+                    <td>@Model.KFSFormData.REBStampAmount</td>
+
+                </tr>
+                <tr>
+                    <td>vi)</td>
+                    <td>Appraisal Charge&nbsp;<span style="font-size:10px">(Including GST)</span><br />അപ്രൈസൽ ചാർജ്&nbsp;<span style="font-size:10px">(ജിഎസ്ടി ഉൾപ്പെടെ)</span></td>
+                    <td>@Model.KFSFormData.REAAppRecurring</td>
+                    <td>@Model.KFSFormData.REAAppAmount</td>
+                    <td>@Model.KFSFormData.REBAppRecurring</td>
+                    <td>@Model.KFSFormData.REBAppAmount</td>
+                </tr>
+                <tr>
+                    <td>vii)</td>
+                    <td>eStamping charges<br />ഇസ്റ്റാമ്പിംഗ് നിരക്കുകൾ</td>
+                    <td>@Model.KFSFormData.REAeStamp</td>
+                    <td>@Model.KFSFormData.REAeStampAmount</td>
+                    <td>@Model.KFSFormData.REBeStampRecurring</td>
+                    <td>@Model.KFSFormData.REBeStampAmount</td>
+                </tr>
+                <tr>
+                    <td>viii)</td>
+                    <td>Bureau charges<br />ബ്യൂറോ നിരക്കുകൾ </td>
+                    <td>@Model.KFSFormData.REABureau</td>
+                    <td>@Model.KFSFormData.REABureauAmount</td>
+                    <td>@Model.KFSFormData.REBBureauRecurring</td>
+                    <td>@Model.KFSFormData.REBBureauAmount</td>
+                </tr>
+                <tr>
+                    <td>iX)</td>
+                    <td>Valuation charges<br />മൂല്യനിർണ്ണയ നിരക്കുകൾ </td>
+                    <td>@Model.KFSFormData.REAValuatioRecurring</td>
+                    <td>@Model.KFSFormData.REAValuatioAmount</td>
+                    <td>@Model.KFSFormData.REBValuatioRecurring</td>
+                    <td>@Model.KFSFormData.REBValuatioAmount</td>
+                </tr>
+                <tr>
+                    <td>x)</td>
+                    <td>Interest on broken periods<br />തകർന്ന കാലഘട്ടങ്ങളിലെ പലിശ</td>
+                    <td>@Model.KFSFormData.REABrokRecurring</td>
+                    <td>@Model.KFSFormData.REABrokAmount</td>
+                    <td>@Model.KFSFormData.REBBrokRecurring</td>
+                    <td>@Model.KFSFormData.REBBrokAmount</td>
+                </tr>
+
+                <tr>
+                    <td>xi)</td>
+                    <td>Advance Amount<br />അഡ്വാൻസ് തുക</td>
+                    <td>@Model.KFSFormData.REAAdRecurring</td>
+                    <td>@Model.KFSFormData.REAAdAmount</td>
+                    <td>@Model.KFSFormData.REBAdRecurring</td>
+                    <td>@Model.KFSFormData.REBAdAmount</td>
+                </tr>
+                <tr>
+                    <td>Xii)</td>
+                    <td>Others-specify<br />മറ്റുള്ളവ - വ്യക്തമാക്കുക</td>
+                    <td>@Model.KFSFormData.REAothRecurring</td>
+                    <td>@Model.KFSFormData.REAothAmount</td>
+                    <td>@Model.KFSFormData.REBothRecurring</td>
+                    <td>@Model.KFSFormData.REBothAmount</td>
+                </tr>
+
+            </table>
+            <table id="content11" class="no-space content">
+                <tr>
+                    <td style="width:3.5%;">9</td>
+                    <td colspan="3">Annual Percentage Rate (APR) (%)<br />വാർഷിക ശതമാനം നിരക്ക് (APR) (%)</td>
+                    <td>@Model.KFSFormData.APR</td>
+                </tr>
+
+            </table>
+
+            <table id="content6" class="no-space content">
+                <tr>
+                    <td style="width:3.5%;">10</td>
+                    <td colspan="2">Details of Contingent Charges (in ₹ or %, as applicable)<br />കണ്ടിജൻ്റ് ചാർജുകളുടെ വിശദാംശങ്ങൾ</td>
+                </tr>
+            </table>
+
+            <table id="content7">
+                <tr>
+                    <td>i)</td>
+                    <td>Penal charges, if any, in case of delayed payment<br />കാലതാമസമുണ്ടായാൽ പിഴ ചുമത്തുക</td>
+                    <td>@Model.KFSFormData.PenalCharge</td>
+                </tr>
+                <tr>
+                    <td>ii)</td>
+                    <td>Other penal charges, if any<br />മറ്റ് ശിക്ഷാ നിരക്കുകൾ, എന്തെങ്കിലും ഉണ്ടെങ്കിൽ</td>
+                    <td>@Model.KFSFormData.OtherPenalCharge</td>
+                </tr>
+                <tr>
+                    <td>iii)</td>
+                    <td>Foreclosure charges, if applicable<br />ഫോർക്ലോഷർ ചാർജുകൾ, ബാധകമെങ്കിൽ</td>
+                    <td>@Model.KFSFormData.ForeclosureCharge</td>
+                </tr>
+                <tr>
+                    <td>iv)</td>
+                    <td>Charges for switching of loans from floating to fixed rate and vice versa<br />ഫ്ലോട്ടിംഗിൽ നിന്ന് ഫിക്സഡ് നിരക്കിലേക്കും തിരിച്ചും വായ്പകൾ മാറുന്നതിനുള്ള നിരക്കുകൾ</td>
+                    <td>>@Model.KFSFormData.SwitchingCharge</td>
+                </tr>
+
+                <tr>
+                    <td>v)</td>
+                    <td>Any other charges (please specify)<br />മറ്റേതെങ്കിലും നിരക്കുകൾ (ദയവായി വ്യക്തമാക്കുക)</td>
+                    <td>@Model.KFSFormData.OtherCharge</td>
+                </tr>
+                <tr>
+                    <td>vi)</td>
+                    <td>Notice charges/നോട്ടീസ് ചാർജുകൾ</td>
+                    <td>@Model.KFSFormData.NoticeCharge</td>
+                </tr>
+                <tr>
+                    <td>vii)</td>
+                    <td>Postage charges/തപാൽ ചാർജുകൾ</td>
+                    <td>@Model.KFSFormData.PostageCharge</td>
+                </tr>
+                <tr>
+                    <td>viii)</td>
+                    <td>Advertisement charge/പരസ്യ നിരക്ക്  </td>
+                    <td>@Model.KFSFormData.AdvertisementCharge</td>
+                </tr>
+                <tr>
+                    <td>ix)</td>
+                    <td>Minimum interest + Charges<br />കുറഞ്ഞ പലിശ നിരക്കുകൾ</td>
+                    <td>@Model.KFSFormData.MinInt</td>
+                </tr>
+                <tr>
+                    <td>x)</td>
+                    <td>Loan follow up/ recovery charges<br />ലോൺ ഫോളോ അപ്പ് / റിക്കവറി നിരക്കുകൾ</td>
+                    <td>@Model.KFSFormData.Recovery</td>
+                </tr>
+                <tr>
+                    <td>xi)</td>
+                    <td>cheque, Nach bounce/collection charges<br />ചെക്ക്, നാച്ച് ബൗൺസ്/ശേഖരണ നിരക്കുകൾ</td>
+                    <td>@Model.KFSFormData.Cheque</td>
+                </tr>
+            </table>
+
+
+        </div>
+
+        <div class="heading-container">
+            <p style="text-align:center;">Part 2 (Other qualitative information)/ഭാഗം 2 (മറ്റ് ഗുണപരമായ വിവരങ്ങൾ)</p>
+            <table id="content8">
+                <tr>
+                    <td style="width:3%;">1</td>
+                    <td style="width:48.5%;">
+                        Clause of Loan agreement relating to
+                        engagement of recovery agents<br />റിക്കവറി ഏജൻ്റുമാരുടെ ഇടപെടൽ സംബന്ധിച്ച ലോൺ കരാറിൻ്റെ വ്യവസ്ഥ
+                    </td>
+                    <td>@Model.KFSFormData.ClauseAgent</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>
+                        Clause of Loan agreement which details
+                        grievance redressal mechanism<br />പരാതി പരിഹാര സംവിധാനം വിശദമാക്കുന്ന ലോൺ കരാറിൻ്റെ ക്ലോസ്
+                    </td>
+                    <td>@Model.KFSFormData.ClauseRedressalMechanism</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>
+                        Phone number and email id of the nodal
+                        grievance redressal officer<br />നോഡൽ പരാതി പരിഹാര ഓഫീസറുടെ ഫോൺ നമ്പറും ഇമെയിൽ ഐഡിയും
+                    </td>
+                    <td>@Model.KFSFormData.PhoneEmailNodal</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>
+                        Whether the loan is, or in future maybe, subject
+                        to transfer to other REs or securitisation (Yes/ No)<br />ലോൺ, അല്ലെങ്കിൽ ഭാവിയിൽ, മറ്റ് RE -കളിലേക്കോ സെക്യൂരിറ്റൈസേഷനിലേക്കോ കൈമാറ്റം ചെയ്യപ്പെടുന്നതിന് വിധേയമാണെങ്കിലും (അതെ/ ഇല്ല)
+                    </td>
+                    <td>@Model.KFSFormData.TransferToRE</td>
+                </tr>
+            </table>
+            <table id="content11">
+
+                <tr>
+                    <td>5</td>
+                    <td>
+                        In case of lending under collaborative lending arrangements (e.g., co-lending/ outsourcing),
+                        following additional details may be furnished:<br />സഹകരണ വായ്പാ ക്രമീകരണങ്ങൾക്ക് കീഴിൽ വായ്പ നൽകുന്ന കാര്യത്തിൽ (ഉദാ. കോ-ലെൻഡിംഗ്/ ഔട്ട്‌സോഴ്‌സിംഗ്), ഇനിപ്പറയുന്ന കൂടുതൽ വിശദാംശങ്ങൾ നൽകാവുന്നതാണ്:
+                    </td>
+
+                </tr>
+            </table>
+
+
+            <table id="content10">
+                <tr>
+                    <th style="font-weight: normal">
+                        Name of the originating RE, along<br />
+                        with its funding proportion<br />RE -യുടെ പേര്, അതിൻ്റെ <br />ഫണ്ടിംഗ് അനുപാതം
+                    </th>
+                    <th style="font-weight: normal">
+                        Name of the partner RE along with its<br />
+                        proportion of funding<br />പങ്കാളിയുടെ പേര് RE അതിൻ്റെ <br /> ഫണ്ടിംഗിൻ്റെ അനുപാതത്തോടൊപ്പം
+                    </th>
+                    <th style="font-weight: normal">Blended rate of interest <br />ബ്ലെൻഡഡ് പലിശ നിരക്ക്</th>
+                </tr>
+                <tr>
+                    <td>@Model.KFSFormData.NameOfOriginatingRE</td>
+                    <td>@Model.KFSFormData.NameOfPartnerRE</td>
+                    <td>@Model.KFSFormData.BlendedRateOfInterest</td>
+                </tr>
+            </table>
+            <table id="content11">
+                <tr>
+                    <td>6</td>
+                    <td colspan="2">
+                        In case of digital loans, following specific disclosures may be furnished:<br />ഡിജിറ്റൽ ലോണുകളുടെ കാര്യത്തിൽ, ഇനിപ്പറയുന്ന പ്രത്യേക വെളിപ്പെടുത്തലുകൾ നൽകാവുന്നതാണ്:
+                    </td>
+                </tr>
+            </table>
+            <table id="content12">
+                <tr>
+                    <td>
+                        <span class="numbered-item">(i)</span>
+                        <span class="description">
+                            Cooling off/look-up period, in terms of RE’s
+                            board approved
+                            <span class="multiline">
+                                policy, during which borrower
+                                shall not be charged any penalty on
+                                prepayment of loan
+                            </span><br />RE യുടെ ബോർഡ് അംഗീകൃത പോളിസിയുടെ അടിസ്ഥാനത്തിൽ, കൂളിംഗ് ഓഫ് / ലുക്ക്-അപ്പ് കാലയളവ്, ഈ കാലയളവിൽ വായ്പയുടെ മുൻകൂർ പേയ്മെൻ്റിന് വായ്പക്കാരന് പിഴ ഈടാക്കില്ല
+                        </span>
+                    </td>
+                    <td>@Model.KFSFormData.LookUpPeriod</td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <span class="numbered-item">(ii)</span>
+                        <span class="description">
+                            Details of LSP acting as recovery agent and
+                            authorized to
+                            <span class="multiline">
+                                approach the borrower
+                            </span><br />റിക്കവറി ഏജൻ്റായി പ്രവർത്തിക്കുകയും കടം വാങ്ങുന്നയാളെ സമീപിക്കാൻ അധികാരമുള്ള എൽഎസ്പിയുടെ വിശദാംശങ്ങൾ
+                        </span>
+                    </td>
+                    <td>@Model.KFSFormData.DetailsOfLSP</td>
+                </tr>
+            </table>
+            <div style="display: flex; justify-content: space-between; font-size:10px; margin-bottom:-15px;">
+                <p>Authorized Signatory<br />അംഗീകൃത ഒപ്പ്</p><p>Copy Received<br />പകർപ്പ് ലഭിച്ചു</p>
+            </div>
+            <div style="text-align:right; font-size:10px;">
+                <p style="text-align:right; font-size:10px;">Explained,Understood and Agreed<br />വിശദീകരിച്ചു, മനസ്സിലാക്കി, സമ്മതിച്ചു</p>
+            </div>
+
+            <p style="text-align: left; font-size: 10px; margin-bottom:-5px;">Branch Manager <br />ബ്രാഞ്ച് മാനേജർ</p>
+            <p style="text-align: left; font-size: 10px;">
+                ശാഖ/Branch :&nbsp;@Model.KFSFormData.Branch
+
+            </p>
+            <div style="display: flex; justify-content: space-between; font-size:10px; margin-bottom:-15px;">
+                <p style="text-align: left; font-size: 10px;">തീയതി/Date :&nbsp;@Model.KFSFormData.PrintDate </p> <p style="text-align:right; font-size:10px;">Customer signature<br />ഉപഭോക്തൃ ഒപ്പ്</p>
+            </div>
+        </div><br />
+
+    </div>
+
+    @*----------------------AnnexB------------------------*@
+
+<div class="application-id page-break">
+    <br /> <br />
+    <p style="text-align:right; font-size:11px;">Annex B</p><br />
+    <p style="text-align: center; font-size: 12px;">Illustration for computation of APR for Retail and MSME loans<br />റീട്ടെയിൽ, എംഎസ്എംഇ വായ്പകൾക്കുള്ള എപിആർ കണക്കാക്കുന്നതിനുള്ള ചിത്രീകരണം </p>
+    <table id="content1" class="content">
+        <thead>
+            <tr>
+                <th style="text-align: center; font-weight: normal; width:3%">Sl.No<br />സീരിയൽ നമ്പർ</th>
+                <th style="text-align:center ; font-weight: normal ">Parameter / പരാമീറ്റർ </th>
+                <th style="text-align:center;font-weight: normal">Details/വിശദാംശങ്ങൾ</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td style="text-align: center;">1</td>
+                <td>
+                    Sanctioned Loan amount (in Rupees) (Sl no. 2 of the KFS
+                    template – Part 1)<br />റീട്ടെയിൽ, എംഎസ്എംഇ വായ്പകൾക്കുള്ള എപിആർ കണക്കാക്കുന്നതിനുള്ള ചിത്രീകരണം @*അനുവദിച്ച ലോൺ തുക (രൂപയിൽ)  (Sl no. 2 of the KFS template – Part 1)*@
+                </td>
+                <td>@Model.KFSFormData_AnnexB.LoanAmt</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">2</td>
+                <td>
+                    Loan Term (in years/ months/ days) (Sl No.4  of the KFS
+                    template – Part 1)<br />@*അനുവദിച്ച ലോൺ തുക (രൂപയിൽ)  (Sl no. 2 of the KFS template – Part 1)*@ ലോൺ കാലാവധി (വർഷങ്ങൾ/ മാസങ്ങൾ/ ദിവസങ്ങളിൽ) (KFS-ൻ്റെ Sl No.4
+                    ടെംപ്ലേറ്റ് - ഭാഗം 1)
+                </td>
+                <td>@Model.KFSFormData_AnnexB.Tenure</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">a)</td>
+                <td>
+                    No. of instalments for payment of principal, in case of non
+                    equated periodic loans<br />ആനുകാലികമല്ലാത്ത വായ്പകളുടെ കാര്യത്തിൽ, പ്രിൻസിപ്പൽ അടയ്ക്കുന്നതിനുള്ള തവണകളുടെ എണ്ണം
+                </td>
+                <td>@Model.KFSFormData_AnnexB.NoOfInstallments</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">b)</td>
+                <td>
+                    Type of EPI
+                    Amount of each EPI (in Rupees) and
+                    nos. of EPIs (e.g., no. of EMIs in case of monthly
+                    instalments)
+                    (Sl No. 5 of the KFS template – Part 1)<br />ഓരോ ഇപിഐയുടെയും ഇപിഐ തുക (രൂപയിൽ) കൂടാതെ സംഖ്യയും. (EPI)-കളുടെ (ഉദാ. പ്രതിമാസ തവണകളുടെ കാര്യത്തിൽ -EMI കളുടെ എണ്ണം)(Sl No. 5 of the KFS template – Part 1)
+                </td>
+                <td>@Model.KFSFormData_AnnexB.EpiAmount</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">c)</td>
+                <td>
+                    No. of instalments for payment of capitalised interest, if any<br />മൂലധന പലിശയുണ്ടെങ്കിൽ അടയ്‌ക്കുന്നതിനുള്ള തവണകളുടെ എണ്ണം
+                </td>
+                <td>@Model.KFSFormData_AnnexB.NoOfInstallmentsInt</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">d)</td>
+                <td>
+                    Commencement of repayments, post sanction (Sl No. 5 of
+                    the KFS template – Part 1)<br />തിരിച്ചടവ് ആരംഭിക്കൽ, അനുമതിക്ക് ശേഷം (Sl no. 5 of the KFS template – Part 1)
+                </td>
+                <td>@Model.KFSFormData_AnnexB.CommencementOfRepayments</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">3</td>
+                <td>
+                    Interest rate type (fixed or floating or hybrid) (Sl No. 6 of the
+                    KFS template – Part 1)<br />പലിശ നിരക്ക് തരം (ഫിക്സഡ് അല്ലെങ്കിൽ ഫ്ലോട്ടിംഗ് അല്ലെങ്കിൽ ഹൈബ്രിഡ്) (Sl No. 6 of the KFS template – Part 1)
+                </td>
+                <td>@Model.KFSFormData_AnnexB.InterestRateType</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">4</td>
+                <td>
+                    Rate of Interest (Sl No. 6 of the KFS template – Part 1)<br />പലിശ നിരക്ക് (Sl No. 6 of the KFS template – Part 1)
+                </td>
+                <td>@Model.KFSFormData_AnnexB.RateOfInterest</td>
+            </tr>
+
+            <tr>
+                <td style="text-align: center;">5</td>
+                <td>
+                    Total Interest Amount to be charged during the entire tenor
+                    of the loan as per the rate prevailing on sanction date (in
+                    Rupees)<br />ലോണിൻ്റെ മുഴുവൻ കാലയളവിലും ഈടാക്കേണ്ട മൊത്തം പലിശ തുക അനുവദിച്ച തീയതിയിൽ നിലവിലുള്ള നിരക്ക് (രൂപയിൽ)
+                </td>
+                <td>@Model.KFSFormData_AnnexB.TotalInterestAmount</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">6</td>
+                <td>
+                    Fee/ Charges payable8 (in Rupees)<br />അടയ്‌ക്കേണ്ട ഫീസ്/ ചാർജുകൾ 8 (രൂപയിൽ)
+                </td>
+                <td>@Model.KFSFormData_AnnexB.FeeCharges</td>
+            </tr>
+
+            <tr>
+                <td style="text-align: center;">A</td>
+                <td>
+                    Payable to the RE (Sl No.8A of the KFS template-Part 1)<br />RE-ലേക്ക് പണമടയ്ക്കേണ്ടതാണ് (Sl No. 8A of the KFS template – Part 1)
+                </td>
+                <td>@Model.KFSFormData_AnnexB.PayableToRE</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">B</td>
+                <td>
+                    Payable to third-party routed through RE (Sl No.8B of the
+                    KFS template – Part 1)<br />RE വഴി റൂട്ട് ചെയ്ത മൂന്നാം കക്ഷിക്ക് പണമടയ്ക്കാം(Sl No. 8B of the KFS template – Part 1)
+                </td>
+                <td>@Model.KFSFormData_AnnexB.PayableToThirdPartyRoutedThroughRE</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">7</td>
+                <td>
+                    Net disbursed amount (1-6) (in Rupees)<br />അറ്റ വിതരണം ചെയ്ത തുക (1-6) (രൂപയിൽ)
+                </td>
+                <td>@Model.KFSFormData_AnnexB.NetDisbursedAmount</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">8</td>
+                <td>
+                    Total amount to be paid by the borrower (sum of 1 and 5)
+                    (in Rupees)<br />കടം വാങ്ങുന്നയാൾ നൽകേണ്ട ആകെ തുക (sum of 1,5 and 6A)(രൂപയിൽ)
+                </td>
+                <td>@Model.KFSFormData_AnnexB.TotalAmountToBePaid</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">9</td>
+                <td>
+                    Annual Percentage rate- Effective annualized interest rate
+                    (in percentage)10  (Sl No.9 of the KFS template-Part 1)<br />വാർഷിക ശതമാനം നിരക്ക്- ഫലപ്രദമായ വാർഷിക പലിശ നിരക്ക് (ശതമാനത്തിൽ)10 (Sl No.9 of the KFS template-Part 1)
+                </td>
+                <td>@Model.KFSFormData_AnnexB.AnnualPercentageRate</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">10</td>
+                <td>
+                    Schedule of disbursement as per terms and conditions<br />നിബന്ധനകളും വ്യവസ്ഥകളും അനുസരിച്ച് വിതരണത്തിൻ്റെ ഷെഡ്യൂൾ
+                </td>
+                <td>@Model.KFSFormData_AnnexB.ScheduleOfDisbursement</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;">11</td>
+                <td>
+                    Due date of payment of instalment and interest<br />തവണയും പലിശയും അടയ്‌ക്കേണ്ട തീയതി
+                </td>
+                <td>@Model.KFSFormData_AnnexB.DueDate</td>
+            </tr>
+        </tbody>
+    </table>
+    <div style="display: flex; justify-content: space-between; font-size:10px; margin-bottom:-15px;">
+        <p>Authorized Signatory<br />അംഗീകൃത ഒപ്പ്</p><p>Copy Received<br />പകർപ്പ് ലഭിച്</p>
+    </div>
+    <div style="text-align:right; font-size:10px;">
+        <p style="text-align:right; font-size:10px;">Explained,Understood and Agreed<br />വിശദീകരിച്ചു, മനസ്സിലാക്കി, സമ്മതിച്</p>
+    </div>
+
+    <p style="text-align: left; font-size: 10px; margin-bottom:-5px;">Branch Manager <br />ബ്രാഞ്ച് മാനേജർ</p>
+    <p style="text-align: left; font-size: 10px;">
+        ശാഖ /Branch :&nbsp;@Model.KFSFormData.Branch
+
+    </p>
+    <div style="display: flex; justify-content: space-between; font-size:10px; margin-bottom:-15px;">
+        <p style="text-align: left; font-size: 10px;">തീയതി/Date:&nbsp;@Model.KFSFormData.PrintDate </p> <p style="text-align:right; font-size:10px;">Customer signature<br />ഉപഭോക്തൃ ഒപ്പ്</p>
+    </div>
+</div>
+
+    @*------------------------------AnnexC------------------------*@
+    <div class="application-id  page-break">
+        <br />
+        <br />
+        <br />
+        <p style="text-align: right; font-size: 11px;">Annex C</p><br />
+        <p style="text-align: center; font-size: 12px;">
+            Illustrative Repayment Schedule under Equated Periodic Instalment for the
+            hypothetical loan illustrated in Annex B<br />തുല്യ ആനുകാലിക തവണകൾക്ക് കീഴിലുള്ള തിരിച്ചടവ് ഷെഡ്യൂൾ
+        </p>
+
+        @if (Model.KFSFormData_AnnexC != null && Model.KFSFormData_AnnexC.Any())
+        {
+            <table>
+                <thead>
+                    <tr>
+                        <th style="text-align:center">Instalment No.<br />ഗഡു<br /> നമ്പർ.</th>
+                        <th style="text-align:center">Outstanding Principal (in Rupees)<br />കുടിശ്ശികയായ മുതല്‍ (രൂപയിൽ)</th>
+                        <th style="text-align:center">Principal (in Rupees)<br />പ്രിൻസിപ്പൽ<br /> (രൂപയിൽ)</th>
+                        <th style="text-align:center">Interest (in Rupees)<br />പലിശ (രൂപയിൽ)</th>
+                        <th style="text-align:center">Instalment (in Rupees)<br />ഗഡു (രൂപയിൽ)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.KFSFormData_AnnexC)
+                    {
+                        <tr>
+                            <td style="text-align:center">@item.InstalmentNo</td>
+                            <td style="text-align:center">@item.OutstandingPrincipal</td>
+                            <td style="text-align:center">@item.Principal</td>
+                            <td style="text-align:center">@item.Interest</td>
+                            <td style="text-align:center">@item.Instalment</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No data available for Annex C.</p>
+        }
+
+        @*<div style="display:flex;justify-content:space-between;">
+                <table id="content1" class="content" style="width:48%">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center">
+                                Instalment
+                                No.
+                            </th>
+                            <th style="text-align:center">
+                                Outstanding
+                                Principal (in
+                                Rupees)
+                            </th>
+                            <th style="text-align:center">
+                                Principal (in
+                                Rupees)
+                            </th>
+                            <th style="text-align:center">
+                                Interest (in
+                                Rupees)
+                            </th>
+                            <th style="text-align:center">
+                                Instalment (in
+                                Rupees)
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td style="text-align:center">1</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">2</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">3</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">4</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">5</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">6</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">7</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"></td>
+                            <td style="text-align:center"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">8</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">9</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <table id="content1" class="content" style="width:48%">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center">
+                                Instalment
+                                No.
+                            </th>
+                            <th style="text-align:center">
+                                Outstanding
+                                Principal (in
+                                Rupees)
+                            </th>
+                            <th style="text-align:center">
+                                Principal (in
+                                Rupees)
+                            </th>
+                            <th style="text-align:center">
+                                Interest (in
+                                Rupees)
+                            </th>
+                            <th style="text-align:center">
+                                Instalment (in
+                                Rupees)
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td style="text-align:center">1</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">2</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">3</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">4</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">5</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">6</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">7</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"></td>
+                            <td style="text-align:center"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">8</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center">9</td>
+                            <td style="text-align:center">
+                            </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                            <td style="text-align:center"> </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+
+            </div>*@
+
+    <p>
+        <span style="font-weight:bold;">Note:</span> This Key Fact Sheet is provided for information purpose only. Borrowers are advised to review the complete loan agreement for a comprehensive understanding of the terms and conditions.
+        <span style="font-size:9px;">ശ്രദ്ധിക്കുക: ഈ കീ ഫാക്റ്റ് ഷീറ്റ് വിവര ആവശ്യങ്ങൾക്കായി മാത്രമാണ് നൽകിയിരിക്കുന്നത്. നിബന്ധനകളെയും വ്യവസ്ഥകളെയും കുറിച്ച് സമഗ്രമായ ധാരണയ്ക്കായി പൂർണ്ണമായ ലോൺ ഉടമ്പടി അവലോകനം ചെയ്യാൻ വായ്പയെടുക്കുന്നവരോട് നിർദ്ദേശിക്കുന്നു</span>
+    </p>
+
+        <div style="display: flex; justify-content: space-between; font-size:10px; margin-bottom:-15px;">
+            <p>Authorized Signatory<br />അംഗീകൃത ഒപ്പ്</p><p>Copy Received<br />പകർപ്പ് ലഭിച്</p>
+        </div>
+        <div style="text-align:right; font-size:10px;">
+            <p style="text-align:right; font-size:10px;">Explained,Understood and Agreed<br />വിശദീകരിച്ചു, മനസ്സിലാക്കി, സമ്മതിച്</p>
+        </div>
+
+        <p style="text-align: left; font-size: 10px; margin-bottom:-5px;">Branch Manager <br />ബ്രാഞ്ച് മാനേജർ</p>
+        <p style="text-align: left; font-size: 10px;">
+            ശാഖ/Branch :&nbsp;@Model.KFSFormData.Branch
+
+        </p>
+        <div style="display: flex; justify-content: space-between; font-size:10px; margin-bottom:-15px;">
+            <p style="text-align: left; font-size: 10px;">തീയതി/Date :&nbsp;@Model.KFSFormData.PrintDate </p> <p style="text-align:right; font-size:10px;">Customer signature<br />ഉപഭോക്തൃ ഒപ്പ്</p>
+        </div>
+
+    </div>
+
+    @*-------------------------------------------KFS End------------------------------------------------------*@
+
+
+</div>

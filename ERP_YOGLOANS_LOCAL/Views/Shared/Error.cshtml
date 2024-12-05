@@ -1,0 +1,133 @@
+﻿@*<!DOCTYPE html>
+    <html>
+    <head>
+        <meta name="viewport" content="width=device-width" />
+        <title>Error</title>
+    </head>
+    <body>
+        <hgroup>
+            <h1>Error.</h1>
+            <h2>An error occurred while processing your request.</h2>
+        </hgroup>
+    </body>
+    </html>*@
+
+
+@{
+   
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Error Page</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #fff;
+            margin: 0;
+            display: flex;
+            justify-content: flex-end; /* Align content to the right side */
+            align-items: center;
+            min-height: 100vh; /* Ensure the page takes up at least the full viewport height */
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            padding: 50px;
+            text-align: center; /* Center content horizontally within the container */
+            margin-right: 150px; /* Add right margin to move slightly to the left */
+            margin-left: 20px; /* Add left margin to move closer to the image */
+            margin-top: -50px; /* Move the content upwards */
+        }
+
+        .error-code {
+            font-size: 120px;
+            margin: 0;
+            /*color: #d32f2f;*/ /* Dark red color */
+            color: #0056a1; /* Dark blue color */
+            font-weight: 900;
+        }
+
+        .error-text {
+            font-size: 36px;
+            vertical-align: super;
+            font-weight: 700;
+            /*color: #000;*/ /* Black color */
+            color: #abdbe3; /* light blue color */
+        }
+
+        h2 {
+            /* font-size: 48px;*/
+            font-size: 65px;
+            margin: 10px 0 20px; /* Adjust top and bottom margins */
+            font-weight: 900;
+            /*color: #d32f2f;*/
+            color: #000; /* Black color */
+        }
+
+        .message {
+            color: #d32f2f; /* Dark red color */
+            font-weight: 400;
+            font-size: 40px;
+        }
+
+        p {
+            font-size: 19px;
+            color: #666;
+            font-weight: 550;
+            margin-bottom: 10px; /* Adjust bottom margin */
+        }
+
+        /* Style for the image container */
+        .image-container {
+            position: absolute;
+            left: 100px; /* Position the container slightly to the right */
+            top: 50%; /* Position vertically at the middle */
+            transform: translateY(-50%);
+        }
+
+        /* Style for the image */
+        .error-image {
+            max-width: 500px; /* Increase the maximum width of the image */
+            height: auto;
+        }
+
+        #btn_home {
+            background-color: #d32f2f; /* red button */
+            /*background-color: #0056a1;*/ /*blue button */
+            color: white;
+            padding: 10px 30px;
+            font-size: 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    @*Image container on the left side*@
+    <div class="image-container">
+        <img src="~/images/error.png" alt="Error Image" class="error-image">
+    </div>
+    @*Content container on the right side*@
+<div class="container">
+    <h1 class="error-code">404<span class="error-text">ERROR</span></h1>
+    <h2>OH NO! <span class="message">But that's okay!</span></h2>
+    <p>Even cool people lose their way online at some point, and today is your point. <br />Don't worry, you'll find your way back.</p>
+
+    <div style="padding-top:15px;">
+                   <button id="btn_home" onclick="window.location.href='@Url.Action("Login", "Smart_Login")'">CLOSE</button>
+               </div>
+</div>
+</body>
+</html>
+
+

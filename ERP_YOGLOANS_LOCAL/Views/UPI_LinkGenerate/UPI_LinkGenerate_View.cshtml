@@ -1,0 +1,239 @@
+﻿@model System.Data.DataTable
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>UPI Link Generation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <style>
+
+        #emi_detailsDataGrid {
+            overflow-y: auto;
+            font-size: 12px; /* Reduced font size */
+            width: 100%;
+            font-weight: 500;
+            border-collapse: collapse;
+        }
+
+        #added_row_table {
+            overflow-y: auto;
+            font-size: 12px; /* Reduced font size */
+            width: 90%;
+            font-weight: 500;
+            border-collapse: collapse;
+        }
+
+        #selectedRowTable {
+            overflow-y: auto;
+            font-size: 12px; /* Reduced font size */
+            width: 100%;
+            font-weight: 500;
+            border-collapse: collapse;
+        }
+
+            #emi_detailsDataGrid th, #emi_detailsDataGrid td,
+            #added_row_table th, #added_row_table td,
+            #selectedRowTable th, #selectedRowTable td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: center;
+            }
+
+            /* Styling for table header */
+            #added_row_table th,
+            #emi_detailsDataGrid th,
+            #selectedRowTable th {
+                background-color: #4D759A;
+                color: white;
+            }
+
+        /* Style for the selected row table */
+        #selectedRowTable {
+            margin-top: 20px;
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+            #selectedRowTable th, #selectedRowTable td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: center;
+            }
+    </style>
+
+    @*<script>
+            $(document).ready(function () {
+                $('#form1').on('submit', function (e) {
+                    // Check if at least one checkbox is selected
+                    if ($("input[name='selectedRow']:checked").length === 0) {
+                        e.preventDefault(); // Prevent form submission
+                        Swal.fire({
+                          /*  title: '',*/
+                            text: 'Please select at least one record.',
+                           /* icon: 'error',*/
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
+        </script>*@
+
+    @*<script>
+            $(document).ready(function () {
+                $('#form1').on('submit', function (e) {
+                    // Gather selected checkbox values
+                    var selected = $("input[name='selectedRow']:checked").map(function () {
+                        return $(this).val();
+                    }).get();
+
+                    // If no checkboxes are selected, prevent form submission
+                    if (selected.length === 0) {
+                        e.preventDefault();
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Please select at least one record.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    } else {
+                        // Set the selected values to the hidden input
+                        $('#selectedRows').val(selected.join(','));
+                    }
+                });
+            });
+        </script>*@
+
+    <script>
+        $(document).ready(function () {
+            $('#form1').on('submit', function (e) {
+                var selectedData = [];
+
+                // Gather data from selected checkboxes
+                $("input[name='selectedRow']:checked").each(function () {
+                    var row = $(this).closest('tr'); // Get the closest row
+                    var rowData = {
+                        LoanNo: row.find('td:nth-child(3)').text(), // Adjust based on your column index
+
+                        CustomerID: row.find('td:nth-child(5)').text(),
+                        Customer: row.find('td:nth-child(6)').text(),
+                        Mobile: row.find('td:nth-child(7)').text(),
+                        EMI: row.find('td:nth-child(8)').text(),
+                        Installment: row.find('td:nth-child(4)').text()
+                    };
+                    selectedData.push(rowData);
+                });
+
+
+
+
+                // Set the selected data to the hidden input as a JSON string
+                $('#selectedData').val(JSON.stringify(selectedData));
+            });
+        });
+    </script>
+
+
+
+
+
+
+
+
+</head>
+<body>
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0; color: maroon">UPI LINK GENERATION</h6>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <!-- Original Data Grid Table -->
+            <div style="overflow-x:auto; max-height: 400px;">
+                <table id="emi_detailsDataGrid" class="table table-hover table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+
+                            @if (ViewBag.EMI_RecordList != null && ViewBag.EMI_RecordList.Columns.Count > 0)
+                            {
+                                foreach (System.Data.DataColumn column in ViewBag.EMI_RecordList.Columns)
+                                {
+                                    <th>@column.ColumnName</th>
+                                }
+                            }
+                        </tr>
+                    </thead>
+
+
+                    <tbody>
+                        @if (ViewBag.EMI_RecordList != null && ViewBag.EMI_RecordList.Columns.Count > 0)
+
+                        {
+                            foreach (System.Data.DataRow row in ViewBag.EMI_RecordList.Rows)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="selectedRow" class="select-checkbox" value="@row[0]" /> <!-- Checkbox for selecting the row -->
+                                    </td>
+                                    @foreach (var item in row.ItemArray)
+                                    {
+                                        <td>@item</td>
+                                    }
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6">No data available</td> <!-- Updated colspan to account for the selection column -->
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            @*<form id="form1" action="#">*@
+            <form id="form1" action="/UPI_LinkGenerate/SubmitSelectedRows" method="post">
+
+                <input type="hidden" name="selectedRows" id="selectedRows" />
+                <input type="hidden" name="selectedData" id="selectedData" />
+
+                <br />
+
+                <div class="divider"></div>
+                <div class="row" id="AddBtn_div">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <button type="submit" class="mb-2 mr-2 btn btn-primary btn-sm btn-block">Send Message</button>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</body>
+</html>

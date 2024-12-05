@@ -1,0 +1,729 @@
+﻿
+
+
+@using System.Data
+@using System.Web.Mvc
+@model ERP_YOGLOANS_LOCAL.Models.Equifax_Model.Equifax_Enquiry_Model
+
+
+
+@{
+    Layout = null;
+
+    // Retrieve the AddressList from ViewData
+    List<ERP_YOGLOANS_LOCAL.Models.Equifax_Model.Address> addressList = null;
+    if (ViewData["AddressList"] != null)
+    {
+        addressList = ViewData["AddressList"] as List<ERP_YOGLOANS_LOCAL.Models.Equifax_Model.Address>;
+    }
+
+    List<ERP_YOGLOANS_LOCAL.Models.Equifax_Model.Scores> scoreList = null;
+
+    // Check if ViewData contains "ScoreList" and cast it to the appropriate type
+    if (ViewData["ScoreList"] != null)
+    {
+        scoreList = ViewData["ScoreList"] as List<ERP_YOGLOANS_LOCAL.Models.Equifax_Model.Scores>;
+
+    }
+    var lblEquiScore = ViewData["lbl_equi_score"] as string;
+
+    var lblMfiScore = ViewData["lbl_mfi_score"] as string;
+    var mfiScoreList = ViewData["mfScoreList"] as List<ERP_YOGLOANS_LOCAL.Models.Equifax_Model.Scores>;
+
+
+    ViewBag.Title = "Retail Account Summary";
+    var reAccSumm = ViewBag.ReAccSumm as DataTable;
+
+    var microfinanceAccountSummary = ViewData["MicrofinanceAccountSummary"] as DataTable;
+
+    // Retrieve the HTML string from ViewData
+    var retailAccountDetailsHtml = ViewData["RetailAccountDetailsHtml"] as string;
+
+    string microfinanceDetails = ViewData["MicrofinanceAccountDetailsHtml"] as string;
+
+    var enquiries = ViewBag.Enquiries as List<Enquiry>;
+
+
+    //DataTable addressData = ViewBag.AddressData as DataTable;
+
+    //// Assuming you want to use the first row from the DataTable
+    //string address1 = addressData.Rows.Count > 0 ? addressData.Rows[0]["Address"].ToString() : string.Empty;
+    //string state = addressData.Rows.Count > 0 ? addressData.Rows[0]["State"].ToString() : string.Empty;
+    //string pinno = addressData.Rows.Count > 0 ? addressData.Rows[0]["Postal"].ToString() : string.Empty;
+
+    DataTable addressData = ViewBag.AddressData as DataTable;
+
+    string address1 = string.Empty;
+    string state = string.Empty;
+    string pinno = string.Empty;
+
+    if (addressData != null && addressData.Rows.Count > 0)
+    {
+        address1 = addressData.Rows[0]["Address"] != DBNull.Value ? addressData.Rows[0]["Address"].ToString() : string.Empty;
+        state = addressData.Rows[0]["State"] != DBNull.Value ? addressData.Rows[0]["State"].ToString() : string.Empty;
+        pinno = addressData.Rows[0]["Postal"] != DBNull.Value ? addressData.Rows[0]["Postal"].ToString() : string.Empty;
+    }
+
+
+
+    string fname = ViewBag.Fname;
+    string dob = ViewBag.Dob;
+    string pan = ViewBag.Pan;
+    string voterid = ViewBag.Voterid;
+    string passportid = ViewBag.Passportid;
+    string aadhar = ViewBag.Aadhar;
+    string driverslicense = ViewBag.DriversLicense;
+    string rationcard = ViewBag.RationCard;
+    string mobile = ViewBag.MobileNo;
+    //string address1 = ViewBag.Address;
+    //string address2 = ViewBag.AddressData;
+    //string state = ViewBag.State;
+    //string pinno = ViewBag.PinNo;
+
+}
+
+<html>
+<head>
+
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            font-size: 30px;
+        }
+
+        h2, h3 {
+            margin: 0;
+            padding: 5px 0;
+            font-weight: normal;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 5px;
+            text-align: left;
+        }
+
+        th {
+            background-color: maroon;
+            color: white;
+        }
+
+        td {
+            border: 1px solid #fff;
+            /* font-size: 12px;*/
+            font-size: 10px;
+        }
+
+        /* Header Section */
+        #panel_header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #tbl_header h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        #tbl_header td {
+            vertical-align: top;
+        }
+
+        #tbl_header .details {
+            font-style: italic;
+            color: darkred;
+            font-size: 10px;
+        }
+
+        /* Section Titles */
+        h3 {
+            color: gray;
+            font-size: 14px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #fff;
+            padding-bottom: 5px;
+        }
+
+        /* Tables */
+        .table-bordered {
+            border: 1px solid #fff;
+        }
+
+            .table-bordered th, .table-bordered td {
+                border: 1px solid #fff;
+            }
+
+        .table thead th {
+            background-color: maroon;
+            color: white;
+        }
+
+        .table tbody tr {
+            background-color: #f9f9f9;
+        }
+
+
+        h2, h3 {
+            font-size: 18px;
+        }
+
+        table {
+            page-break-inside: avoid;
+        }
+
+
+
+        .equifax {
+            font-size:35px;
+            font-family: 'Times New Roman', Times, serif;
+            color: #8E191B;
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        .reportheading {
+            font-family: 'Times New Roman';
+            font-style: normal;
+            font-size: 30px;
+            font-weight: bold;
+            color: grey !important;
+            -webkit-print-color-adjust: exact;
+            color-adjust: exact;
+            padding-left: 5px;
+        }
+
+        .th_heading {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 16px;
+        }
+
+        .tr_maroon_heading {
+            background-color: maroon !important;
+            color: white !important;
+            -webkit-print-color-adjust: exact;
+            color-adjust: exact;
+        }
+
+        .grey_data {
+            color: grey !important;
+            -webkit-print-color-adjust: exact;
+            color-adjust: exact;
+            font-style: italic;
+            font-size:15px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+        .darkgrey_data {
+            color: #31423e !important;
+            -webkit-print-color-adjust: exact;
+            color-adjust: exact;
+            font-style: italic;
+            font-size: 25px;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        
+    </style>
+
+    <link rel="stylesheet" href="~/Content/print.css" media="print">
+
+</head>
+
+<body>
+
+    <form action="@Url.Action("", "")" method="post" id="equifax_enquiry_form" enctype="multipart/form-data" autocomplete="off" style="width:100%;">
+        <div class="input-container" @*style="width:100%"*@>
+            <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+                <div class="input-container" style="width:100%" id="new_form">
+                    <div id="form-container" style="width:100%;">
+
+
+
+                        <br /> <br />
+                        <div id="panel_header">
+                            <br />
+                            <table style="width:100%;text-decoration-color:darkred;font-size:smaller;font-style:italic;" id="tbl_header">
+
+                                <tr>
+                                    <td style="text-align:left; width:30%;">
+                                        <div class="equifax">EQUIFAX</div>
+                                    </td>
+                                    <td style="width: 70%;">
+                                        <div class="reportheading"> CONSUMER CREDIT REPORT</div>
+                                    </td>
+                                </tr>
+
+
+
+                                <tr style="color: #8E191B; font-size: 15px; font-style: italic;font-family:'Times New Roman', Times, serif" ;">
+                                    <td style="font-size: 15px;">
+
+                                        CLIENT ID:&nbsp;<label style="color:black;">@Model.ClientId</label><br />
+                                        REPORT ORDER NO.:&nbsp;<label style="color:black;">@Model.OrderNo</label><br />
+                                        REFERENCE NUMBER:&nbsp;<label style="color:black;">@Model.RefNo</label>
+                                    </td>
+                                    <td style="text-align: right; padding-right: 30px; font-size: 15px;">
+                                        DATE:&nbsp;<label style="color:black;">@Model.Date</label><br />
+                                        TIME:&nbsp;<label style="color:black;">@Model.Time</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><hr /></td>
+                                </tr>
+
+                            </table>
+                        </div>
+
+
+
+                        <div id="pnl_document" style="width:100%;">
+
+                            <h3 class="darkgrey_data">Consumer Name: <span style="color:black;">@Model.lbl_name</span></h3>
+                            <table style="width: 100%;">
+                                <tr class="tr_maroon_heading">
+                                    <th class="th_heading">Personal Information</th>
+                                    <th class="th_heading">Identification</th>
+                                    <th class="th_heading">Contact Details</th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="color:gray;font-style:italic;font-size:15px; font-family:'Times New Roman', Times, serif" ;">
+                                            <span class="grey_data">Name:</span> <span style="color:black;">@Model.lbl_name.</span><br />
+                                            <span class="grey_data">DOB:</span> <span style="color:black;">@Model.lbl_dob</span><br />
+                                            <span class="grey_data">Age:</span> <span style="color:black;">@Model.lbl_age</span><br />
+                                            <span class="grey_data">Gender:</span> <span style="color:black;">@Model.lbl_gender</span><br />
+                                            <span class="grey_data">Total Income:</span> <span style="color:black;">@Model.lbl_income</span><br />
+                                            <span class="grey_data">Occupation:</span> <span style="color:black;">@Model.lbl_occupation</span><br />
+                                            <span class="grey_data">Marital Status:</span> <span style="color:black;">@Model.lbl_marital</span><br />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="color: gray; font-style: italic; font-size: 15px; font-family: 'Times New Roman', Times, serif" ;">
+                                            <span class="grey_data">PAN:</span> <span style="color:black;">@Model.lbl_pan</span><br />
+                                            <span class="grey_data">Voter ID:</span> <span style="color:black;">@Model.lbl_voter</span><br />
+                                            <span class="grey_data">Passport ID:</span> <span style="color:black;">@Model.lbl_passport</span><br />
+                                            <span class="grey_data">UID:</span> <span style="color:black;">@Model.lbl_uid</span><br />
+                                            <span class="grey_data">Driver's License:</span> <span style="color:black;">@Model.lbl_Dlicense</span><br />
+                                            <span class="grey_data">Ration Card:</span> <span style="color:black;">@Model.lbl_ration</span><br />
+                                            <span class="grey_data">ID - Other:</span> <span style="color:black;">@Model.lbl_otherid</span><br />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="color: gray; font-style: italic; font-size: 15px; font-family: 'Times New Roman', Times, serif" ;">
+                                            <span class="grey_data">Home:</span> <span style="color:black;">@Model.lbl_home</span><br />
+                                            <span class="grey_data">Office:</span> <span style="color:black;">@Model.lbl_office</span><br />
+                                            <span class="grey_data">Mobile:</span> <span style="color:black;">@Model.lbl_mob</span><br />
+                                            <span class="grey_data">Alt. Home/Other No:</span> <span style="color:black;">@Model.Label17</span><br />
+                                            <span class="grey_data">Alt. Office:</span> <span style="color:black;">@Model.Label18</span><br />
+                                            <span class="grey_data">Alt. Mobile:</span> <span style="color:black;">@Model.Label19</span><br />
+                                            <span class="grey_data">Email:</span> <span style="color:black;">@Model.lbl_email</span><br />
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            @*////////////////////////////// ------  Consumer Address  ------  /////////////////////////////////*@
+
+                            <h3 class="darkgrey_data">Consumer Address:</h3>
+                            <table ID="grid_address" style="width: 100%; border: 2px solid lightgrey;  ">
+                                <tr class="tr_maroon_heading">
+
+
+                                    <th class="th_heading">Seq</th>
+                                    <th class="th_heading">Address</th>
+                                    <th class="th_heading">ReportedDate</th>
+                                    <th class="th_heading">Postal</th>
+                                    <th class="th_heading">State</th>
+                                </tr>
+                                @if (addressList != null && addressList.Any())
+                                {
+                                    foreach (var address in addressList)
+                                    {
+                                        <tr>
+                                            <td style="font-size:15px; font-family:'Times New Roman', Times, serif;">@address.Seq</td>
+                                            <td style="font-size: 15px; font-family: 'Times New Roman', Times, serif; ">@address.Address1</td>
+                                            <td style="font-size: 15px; font-family: 'Times New Roman', Times, serif; ">@address.ReportedDate</td>
+                                            <td style="font-size: 15px; font-family: 'Times New Roman', Times, serif; ">@address.Postal</td>
+                                            <td style="font-size: 15px; font-family: 'Times New Roman', Times, serif; ">@address.State</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" style="text-align:center;">No address information available.</td>
+                                    </tr>
+                                }
+
+                            </table>
+
+                            @*////////////////////////////// ------  equifax score details ------  /////////////////////////////////*@
+
+
+                            <h3 class="darkgrey_data">@lblEquiScore</h3>
+
+                            <table style="width: 100%; border: 2px solid lightgrey; ">
+                                <tr class="tr_maroon_heading">
+                                    <th class="th_heading">Name</th>
+                                    <th class="th_heading">Score</th>
+                                    <th class="th_heading">Type</th>
+                                    <th class="th_heading">Scoring Elements</th>
+                                </tr>
+
+                                @if (scoreList != null && scoreList.Any())
+                                {
+                                    foreach (var score in scoreList)
+                                    {
+                                        <tr>
+                                            <td style=" font-size: 15px;">@score.Name</td>
+                                            <td style=" font-size: 15px;">@score.Value</td>
+                                            <td style=" font-size: 15px;">@score.Type</td>
+                                            <td>
+                                                @if (score.Elements != null && score.Elements.Any())
+                                                {
+                                                    <table style="width:80%;border-collapse:collapse;border:none;" cellspacing="0" cellpadding="2">
+                                                        <tr>
+                                                            <td style="border: 1px solid lightgrey; font-size: 11px;">Seq</td>
+                                                            <td style="border: 1px solid lightgrey; font-size: 11px;">Description</td>
+                                                        </tr>
+                                                        @foreach (var element in score.Elements)
+                                                        {
+                                                            <tr>
+                                                                <td style="border: 1px solid lightgrey; font-size: 11px;">@element.Seq</td>
+                                                                <td style="border: 1px solid lightgrey; font-size: 11px;">@element.Description</td>
+                                                            </tr>
+                                                        }
+                                                    </table>
+                                                }
+                                                else
+                                                {
+                                                    <p>No elements available.</p>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4" style="text-align:center;">No score details available.</td>
+                                    </tr>
+                                }
+                            </table>
+
+
+
+
+
+                     
+
+                            @*//////////////////////////////////////   ------ micro finance score details -----/////////////////////////////////////////////////////////////////////*@
+
+
+
+
+                            <h3 class="darkgrey_data"><span>@lblMfiScore</span></h3>
+                            <table style="width: 100%; border: 2px solid lightgrey;">
+                                <tr class="tr_maroon_heading">
+                                    <th class="th_heading">Name</th>
+                                    <th class="th_heading">Score</th>
+                                    <th class="th_heading">Type</th>
+                                    <th class="th_heading">ScoringElements</th>
+                                </tr>
+
+                                @if (mfiScoreList != null && mfiScoreList.Count > 0)
+                                {
+                                    foreach (var score in mfiScoreList)
+                                    {
+                                        <tr>
+                                            <td style=" font-size: 15px;">@score.Name</td>
+                                            <td style="font-size: 15px; ">@score.Value</td>
+                                            <td style="font-size: 15px; ">@score.Type</td>
+                                            <td>
+                                                <table style="width:80%;border-collapse:collapse;border:none;" cellspacing="0" cellpadding="4">
+                                                    <tr>
+                                                        <td style="border: 1px solid lightgrey; font-size: 11px;">Seq</td>
+                                                        <td style="border: 1px solid lightgrey; font-size: 11px;">Description</td>
+                                                    </tr>
+                                                    @foreach (var element in score.Elements)
+                                                    {
+                                                        <tr>
+                                                            <td style="border: 1px solid lightgrey; font-size: 11px;">@element.Seq</td>
+                                                            <td style="border: 1px solid lightgrey; font-size: 11px;">@element.Description</td>
+                                                        </tr>
+                                                    }
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="4">No scores available</td>
+                                    </tr>
+                                }
+                            </table>
+
+
+
+
+
+
+
+                            @*//////////////////////////////////////   ------ retail account summary -----/////////////////////////////////////////////////////////////////////*@
+
+
+
+                            <h3 class="darkgrey_data">@Model.lbl_retail</h3>
+
+                            <table style="width: 100%; border-collapse: collapse; border: 2px solid lightgrey;">
+                                <thead>
+                                    <tr class="tr_maroon_heading">
+                                        <th class="th_heading" style="width: 33%;"></th>
+                                        <th class="th_heading" style="width: 33%;">Credit Report summary</th>
+                                        <th class="th_heading" style="width: 34%;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (reAccSumm != null && reAccSumm.Rows.Count > 0)
+                                    {
+                                        <!-- Column 1 -->
+                                        <tr>
+                                            <td>
+                                                <table style="width: 100%; border-collapse: collapse; font-size: 15px;">
+                                                    <tbody>
+                                                        <tr><td class="grey_data">Total Accounts</td><td>@reAccSumm.Rows[0]["NoOfAccounts"]</td></tr>
+                                                        <tr><td class="grey_data">Number of Open Accounts</td><td>@reAccSumm.Rows[0]["NoOfActiveAccounts"]</td></tr>
+                                                        <tr><td class="grey_data">No Of Write Offs</td><td>@reAccSumm.Rows[0]["NoOfWriteOffs"]</td></tr>
+                                                        <tr><td class="grey_data">Total Outstanding Balance</td><td>@reAccSumm.Rows[0]["TotalBalanceAmount"]</td></tr>
+                                                        <tr><td class="grey_data">Number of Past Due Accounts</td><td>@reAccSumm.Rows[0]["NoOfPastDueAccounts"]</td></tr>
+                                                        <tr><td class="grey_data">Most Severe Status Within 24 Months</td><td>@reAccSumm.Rows[0]["MostSevereStatusWithIn24Months"]</td></tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                            <td>
+                                                <table style="width: 100%; border-collapse: collapse;">
+                                                    <tbody>
+                                                        <tr><td class="grey_data">Single Highest Credit</td><td>@reAccSumm.Rows[0]["SingleHighestCredit"]</td></tr>
+                                                        <tr><td class="grey_data">Single Highest Sanction Amount</td><td>@reAccSumm.Rows[0]["SingleHighestSanctionAmount"]</td></tr>
+                                                        <tr><td class="grey_data">Total High Credit</td><td>@reAccSumm.Rows[0]["TotalHighCredit"]</td></tr>
+                                                        <tr><td class="grey_data">Average Open Balance</td><td>@reAccSumm.Rows[0]["AverageOpenBalance"]</td></tr>
+                                                        <tr><td class="grey_data">Single Highest Balance</td><td>@reAccSumm.Rows[0]["SingleHighestBalance"]</td></tr>
+                                                        <tr><td class="grey_data">Number of Zero Balance Accounts</td><td>@reAccSumm.Rows[0]["NoOfZeroBalanceAccounts"]</td></tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                            <td>
+                                                <table style="width: 100%; border-collapse: collapse;">
+                                                    <tbody>
+                                                        <tr><td class="grey_data">Recent Account</td><td>@reAccSumm.Rows[0]["RecentAccount"]</td></tr>
+                                                        <tr><td class="grey_data">Oldest Account</td><td>@reAccSumm.Rows[0]["OldestAccount"]</td></tr>
+                                                        <tr><td class="grey_data">Total Sanction Amount</td><td>@reAccSumm.Rows[0]["TotalSanctionAmount"]</td></tr>
+                                                        <tr><td class="grey_data">Total Credit Limit</td><td>@reAccSumm.Rows[0]["TotalCreditLimit"]</td></tr>
+                                                        <tr><td class="grey_data">Total Monthly Payment Amount</td><td>@reAccSumm.Rows[0]["TotalMonthlyPaymentAmount"]</td></tr>
+                                                        @*<tr>
+                                        <td>Total Written Off Amount</td>
+                                        <td>@reAccSumm.Rows[0]["TotalWrittenOffAmount"]</td>
+                                    </tr>*@
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="3">No data available</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+
+
+                            @*//////////////////////////////////////   ------ micro finance summary -----/////////////////////////////////////////////////////////////////////*@
+
+
+                            @if (microfinanceAccountSummary != null && microfinanceAccountSummary.Rows.Count > 0)
+                            {
+                                <h3 class="darkgrey_data">@Model.lbl_micro</h3>
+
+                                <table style="width: 100%; border-collapse: collapse; border: 2px solid lightgrey; font-size: 15px;" >
+                                    <thead>
+                                        <tr class="tr_maroon_heading">
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (DataRow row in microfinanceAccountSummary.Rows)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <p>Id: @row["id"]</p>
+                                                    <p>No of Active Accounts: @row["NoOfActiveAccounts"]</p>
+                                                    <p>Total Past Due: @row["TotalPastDue"]</p>
+                                                </td>
+                                                <td>
+                                                    <p>No of Past Due Accounts: @row["NoOfPastDueAccounts"]</p>
+                                                    <p>Recent Account: @row["RecentAccount"]</p>
+                                                    <p>Total Balance Amount: @row["TotalBalanceAmount"]</p>
+                                                </td>
+                                                <td>
+                                                    <p>Total Monthly Payment Amount: @row["TotalMonthlyPaymentAmount"]</p>
+                                                    <p>Total Written Off Amount: @row["TotalWrittenOffAmount"]</p>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <div id="lbl_micro">
+                                    No Micro Finance Account Summary available.
+                                </div>
+                            }
+
+
+
+
+                            @*/////////////////////////////////////////////// --- RetailAccountDetails  ----   ////////////////////////////////////////////////////////////////////////////*@
+
+                            <!-- Check if retail account details HTML content is available -->
+                            @if (!string.IsNullOrEmpty(ViewData["RetailAccountDetailsHtml"] as string))
+                            {
+                                <!-- Render the HTML content from ViewData -->
+                                @Html.Raw(ViewData["RetailAccountDetailsHtml"] as string)
+                            }
+
+
+                            @*/////////////////////////////////////////////////    ---- MicrofinanceAccountDetails ----   //////////////////////////////////////////////////////////////////////////*@
+
+
+
+
+                            <!-- Check if microfinance account details HTML content is available -->
+                            @if (!string.IsNullOrEmpty(ViewData["MicrofinanceAccountDetailsHtml"] as string))
+                            {
+                                <!-- Render the HTML content from ViewData -->
+                                @Html.Raw(ViewData["MicrofinanceAccountDetailsHtml"] as string)
+                            }
+
+                            @*/////////////////////////////////////////////////    ----  enquiries ----   //////////////////////////////////////////////////////////////////////////*@
+
+
+                            @if (enquiries != null && enquiries.Count > 0)
+                            {
+                                <h3 id="lbl_enquery" class="grey_data">Enquiries</h3>
+                                <table id="grid_enqueries" class="table" border="1" style="border: 2px solid lightgrey; ">
+                                    <thead>
+                                        <tr class=" tr_maroon_heading">
+                                            <th class="th_heading">Seq</th>
+                                            <th class="th_heading">Institution</th>
+                                            <th class="th_heading">Date</th>
+                                            <th class="th_heading">Time</th>
+                                            <th class="th_heading">Request Purpose</th>
+                                            <th class="th_heading">Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var enquiry in enquiries)
+                                        {
+                                            <tr>
+                                                <td style="border: 1px solid lightgrey; font-size: 15px;">@enquiry.seq</td>
+                                                <td style="border: 1px solid lightgrey; font-size: 15px;">@enquiry.Institution</td>
+                                                <td style="border: 1px solid lightgrey; font-size: 15px;">@enquiry.Date</td>
+                                                <td style="border: 1px solid lightgrey; font-size: 15px;">@enquiry.Time</td>
+                                                <td style="border: 1px solid lightgrey; font-size: 15px;">@enquiry.RequestPurpose</td>
+                                                <td style="border: 1px solid lightgrey; font-size: 15px;">@enquiry.Amount</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <p>No enquiries found.</p>
+                            }
+
+
+                            @*/////////////////////////////////////////////////    ---- INQUIRIES ----   //////////////////////////////////////////////////////////////////////////*@
+
+
+
+                            <h3 class="darkgrey_data">Inquiry Details</h3>
+
+                            <table style=" font-size: 15px;">
+                                <thead>
+                                    <tr class="tr_maroon_heading">
+                                        <th class="th_heading">Personal & Account Information</th>
+                                        <th class="th_heading">ID & Phone Numbers</th>
+                                        <th class="th_heading">Contact Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style=" font-size: 15px;">
+                                            <p><strong>Name:</strong> @fname</p>
+                                            <p><strong>DOB:</strong> @dob</p>
+                                        </td>
+                                        <td style=" font-size: 15px;">
+                                            <p><strong>PAN:</strong> @pan</p>
+                                            <p><strong>Voter ID:</strong> @voterid</p>
+                                            <p><strong>Passport ID:</strong> @passportid</p>
+                                            <p><strong>Aadhar:</strong> @aadhar</p>
+                                            <p><strong>Driver's License:</strong> @driverslicense</p>
+                                            <p><strong>Ration Card:</strong> @rationcard</p>
+                                        </td>
+                                        <td style=" font-size: 15px;">
+                                            <p><strong>Mobile:</strong> @mobile</p>
+                                            <p><strong>Address:</strong> @address1</p>
+                                            <p><strong>State:</strong> @state</p>
+                                            <p><strong>PIN No:</strong> @pinno</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+
+
+
+
+
+
+                            <div id="panel_footer" style="width:100%;height:8px;">
+                                <table id="tbl_footer" style="width:100%;height:8px;">
+                                    <tr><td><hr /></td></tr>
+                                    <tr><td style="font-size:10px">This is system generated document as per Equifax Data.</td></tr>
+                                </table>
+                            </div>
+
+
+                        </div>
+
+
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+
+
+</body>
+</html>
+
+
+

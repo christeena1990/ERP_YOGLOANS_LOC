@@ -1,0 +1,268 @@
+﻿
+@{
+    ViewBag.Title = "Bond_StatementofAccountsearch";
+}
+
+
+@using System.Data
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statement Of Account</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+
+    @*<script>
+        function initSearch(searchBoxId, suggestionsId) {
+            const searchBox = document.getElementById(searchBoxId);
+            const suggestions = document.getElementById(suggestionsId);
+
+            // Event handler for input changes in the search box
+            searchBox.addEventListener("input", function () {
+                const search_txt = searchBox.value;
+                if (search_txt.length >= 2) {
+                    fetch(`@Url.Action("GetSearchSuggestions", "NCD_StatementofAccountsearch")?search_txt=${search_txt}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            suggestions.innerHTML = ""; // Clear old suggestions
+                            data.forEach(item => {
+                                const li = document.createElement("li");
+                                li.textContent = item; // Display suggestion text
+                                li.style.cursor = 'pointer'; // Change cursor for clickable items
+
+                                // Click event for the suggestion item
+                                li.addEventListener("click", function () {
+                                    //alert("Selected Item: " + item);
+                                    // Extract the value inside the parentheses
+                                    const selectedValue = item.match(/\(([^)]+)\)/)[1];
+
+                                    // Get the loan number from the item
+                                    const loanNo = item.split('~')[0]; // Extract loan number
+                                    document.getElementById("loanNumber").value = loanNo; // Store loan number in hidden field
+                                    //alert(loanNo);
+
+
+                                    // Fill the search box with the selected item
+                                    searchBox.value = item;
+                                    selectedCustomerId.value = selectedValue;
+                                    suggestions.innerHTML = ""; // Clear suggestions after selection
+                                });
+
+                                suggestions.appendChild(li);
+                            });
+                        });
+                } else {
+                    suggestions.innerHTML = ""; // Clear suggestions if input length is less than 2
+                }
+            });
+
+            // Hide suggestions when clicking outside the input or suggestion list
+            document.addEventListener("click", function (event) {
+                if (!suggestions.contains(event.target) && event.target !== searchBox) {
+                    suggestions.innerHTML = ""; // Hide suggestions list
+                }
+            });
+        }
+
+        // Initialize the search box functionality on page load
+        $(document).ready(function () {
+            initSearch('searchBox', 'suggestions');
+        });
+
+        </script>*@
+
+
+
+
+    <style>
+        .suggestionsclass {
+            font-size: 14px; /* Adjust this value to your desired font size */
+            background-color: ghostwhite;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+            .suggestionsclass li {
+                padding: 5px;
+            }
+
+                .suggestionsclass li:hover {
+                    background-color: darkgray;
+                    cursor: pointer;
+                    color: blue;
+                }
+    </style>
+
+
+</head>
+<body>
+
+
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+                <br />
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Statement Of Account</h6>
+            </div>
+        </div>
+        <br />
+        <div class="card-body">
+
+            <div id="form-container">
+                <form id="statementForm" method="post" @*action="@Url.Action("btn_Stmntofaccnt_Click","PL_Report_StatementofAccount")"*@>
+
+
+                    <div class="row" style="width:1000px;">
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <!-- Prepend the search icon -->
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text" style="height:39px;">
+                                        <i class="fa fa-search"></i>
+                                    </div>
+                                </div>
+                                <!-- Input textbox -->
+                                <input style="font-size:12px;" id="searchBox" placeholder="Customer ID/Name/Phone" type="text" class="form-control" autocomplete="off">
+                                <ul id="suggestions" class="suggestionsclass"></ul>
+                            </div>
+                            <!-- Hidden field to store loan number -->
+                            @*<input type="hidden" id="debId" name="debId" />*@
+                        </div>
+
+
+                        <div class="col-md-6 col-lg-6">
+                            <button class="mb-2 mr-2 btn-icon btn btn-primary" type="button" onclick="GetLoanStatementData()" id="btnStatementOfAccount" name="btnStatementOfAccount">Statement Of Account</button>
+
+                            <button class="mb-2 mr-2 btn-icon  btn btn-secondary" id="RepaymentSchedule" name="RepaymentSchedule">Reset</button>
+                        </div>
+
+
+
+                        <div class="col-md-6 col-lg-2">
+
+                            <input type="hidden" id="selected_debId" placeholder="ID" class="form-control" style="width:120px;" readonly />
+
+                        </div>
+
+
+                    </div>
+
+
+                </form>
+
+
+            </div>
+
+
+
+
+            <script>
+                $(document).ready(function () {
+                    // Handle keyup event for search box
+                    $("#searchBox").on("keyup", function () {
+                        let searchText = $(this).val();
+                        if (searchText.length >= 2) { // Trigger search for 2 or more characters
+                            $.ajax({
+                                url: '/Bond_StatementofAccountsearch/GetSearchSuggestions', // Adjust URL if necessary
+                                type: 'GET',
+                                data: { search_txt: searchText },
+                                success: function (data) {
+                                    let suggestionsList = $("#suggestions");
+                                    suggestionsList.empty(); // Clear existing suggestions
+                                    if (data && data.length) {
+                                        data.forEach(function (item) {
+                                            // Populate suggestions with name and deb_id
+                                            suggestionsList.append(
+                                                `
+                                                 <li class="suggestion-item" data-deb-id="${item.deb_id}">${item.name}</li>`
+                                            );
+                                        });
+                                    }
+                                },
+                                error: function () {
+                                    console.error("Error fetching suggestions.");
+                                }
+                            });
+                        } else {
+                            $("#suggestions").empty(); // Clear suggestions if input is too short
+                        }
+                    });
+
+
+
+                    /////////////    Handle suggestion click  /////////////////
+                    $(document).on("click", ".suggestion-item", function () {
+                        let selectedText = $(this).text(); // Get the display name
+                        let debId = $(this).data("deb-id"); // Get the deb_id from data attribute
+
+                        $("#searchBox").val(selectedText); // Fill the textbox with the selected name
+                        /* $("#debId").val(debId); */      // Store deb_id in hidden field
+                        $("#selected_debId").val(debId);
+
+                        alert(debId);
+                        $("#suggestions").empty();         // Clear the suggestions list
+                    });
+
+                    // Hide suggestions when clicking outside the input or suggestions list
+                    $(document).click(function (event) {
+                        if (!$(event.target).closest("#searchBox, #suggestions").length) {
+                            $("#suggestions").empty();
+                        }
+                    });
+                });
+
+     /////////////// button btnStatementOfAccount click //////////////
+
+
+          $(document).ready(function () {
+    $('#btnStatementOfAccount').click(function () {
+        var bond_id = $('#selected_debId').val();
+
+        if (bond_id != null && bond_id != 0) {
+            // Save debid to TempData via an AJAX call
+            $.ajax({
+                url: '@Url.Action("SaveBondId", "Bond_StatementofAccount")',
+                type: 'POST',
+                data: { bond_id: bond_id },
+                success: function () {
+                    // Redirect to the view after saving debid
+                    let url = '@Url.Action("Bond_StatementofAccount", "Bond_StatementofAccount")';
+                    window.open(url, '_blank'); // Open in a new tab
+                },
+                error: function () {
+                    alert("Error saving debenture ID.");
+                }
+            });
+        } else {
+            alert("Debenture ID is required.");
+        }
+    });
+});
+
+
+
+            </script>
+
+        </div>
+    </div>
+
+
+</body>
+</html>
+
+
+
+

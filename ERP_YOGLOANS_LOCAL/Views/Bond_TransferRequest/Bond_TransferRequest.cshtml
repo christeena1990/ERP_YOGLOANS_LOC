@@ -1,0 +1,475 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Add Bank Details</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css">
+    <link rel="stylesheet" href="~/Content/cust_apprvlmsgbox1.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <style>
+        /* General styles */
+        .suggestionsclass {
+            font-size: 14px;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 300px;
+            background-color: white;
+            border: 1px solid white;
+            border-radius: 3px;
+            z-index: 1000;
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+            .suggestionsclass li {
+                padding: 5px;
+            }
+
+                .suggestionsclass li:hover {
+                    background-color: darkgray;
+                    cursor: pointer;
+                    color: blue;
+                }
+
+        .fixed-width-card {
+            flex: 1 1 300px;
+            min-width: 250px;
+            word-wrap: break-word;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .form-group {
+            margin: 0;
+        }
+
+        .vertical-timeline-item {
+            padding: 5px 0;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-main__inner" style="margin-top: -30px; padding: 4px; width: 100%;">
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0; color: maroon">Transfer Request</h6>
+            </div>
+        </div>
+
+        <div class="card-body" style="width: 100%;">
+            <div class="row">
+                <div class="col-md-12 col-lg-10">
+                    <div class="input-group mb-3">
+                        <input id="searchBox" placeholder="Issue No with Certificate No" type="text" class="form-control" autocomplete="off" oninput="getSuggestions(this.value)">
+                        <div class="input-group-text" style="height: 39px;" onclick="search()">
+                            <i class="fa fa-search"></i>
+                        </div>
+                        <ul id="suggestions" class="suggestionsclass" style="display: none;"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tabs-animation" id="div_cust_details" style="display: none;">
+                <div class="main-card mb-2 card">
+                    <div class="card-body">
+                        <h5 class="card-title">Application Details</h5>
+                        <div id="div_activeloan" style="display: none;">
+                            <div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
+                                <div class="vertical-timeline-item vertical-timeline-element">
+                                    @* Details will be populated here *@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*<form id="register_form" enctype="multipart/form-data">*@
+            <div class="tabs-animation" id="div_radio" style="display:none;">
+                <div class="main-card mb-2 card">
+                    <div class="card-body">
+                        <div style="border: 1px solid #28a745; border-radius: 5px; padding: 10px; background-color: #f9f9f9;">
+                            <h5 class="card-title">Type</h5>
+                            <div class="form-group" style="margin-top: 7px; display: flex; gap: 15px; font-size:15px;">
+                                <label style="color: #28a745; display: flex; align-items: center;">
+                                    <input type="radio" name="applicationType" value="transfer" id="radioTransfer" onclick="toggleFormSection()" style="margin-right: 5px;">
+                                    Transfer
+                                </label>
+                                <label style="color: #28a745; display: flex; align-items: center;">
+                                    <input type="radio" name="applicationType" value="transmission" id="radioTransmission" onclick="toggleFormSection()" style="margin-right: 5px;">
+                                    Transmission
+                                </label>
+                            </div>
+
+                            @*<div id="transferSection" style="display: none; margin-top: 15px;">
+                                <label style="color: #007bff;">Transfer Form:</label>
+                                <input type="file" id="transferInput" name="transferInput" style="font-size: 15px;" required />
+                            </div>
+                            <div id="transmissionSection" style="display: none; margin-top: 15px;">
+                                <label style="color: #007bff;">Indemnity Bond:</label>
+                                <input type="file" id="transmissionInput" name="transmissionInput" style="font-size: 15px;" required />
+                            </div>*@
+                        </div>
+                    </div>
+                </div>
+                @*<div id="buttonsdiv" class="row d-block text-center" style="padding-bottom: 5px;">
+                        <button type="button" class="btn btn-success" id="submitbutton" onclick="submitForm()" style="height: 38px; width:160px;">SUBMIT</button>
+                        <button type="button" id="resetbutton" class="btn btn-gradient-secondary" style="height: 38px; width: 160px;">RESET</button>
+                    </div>*@
+            <form id="register_form" style="text-align:center;">
+                <input type="hidden" id="bondIdInput" value="" />
+
+                <button type="button" class="btn btn-success" id="submitButton" style="height: 38px; width:160px;">SUBMIT</button>
+                <button type="button" id="resetbutton" class="btn btn-gradient-secondary" style="height: 38px; width: 160px;">RESET</button>
+                @*<button id="submitButton">Submit</button>*@
+            </form>
+
+                <script>
+                        $('#submitButton').on('click', function (event) {
+                            event.preventDefault(); // Prevent default form submission
+                            submitForm();
+                        });
+
+                        function submitForm() {
+                            console.log("submitForm called"); // Debugging line
+                            const formData = new FormData(document.getElementById('register_form'));
+                            // Rest of your function...
+                        }
+                </script>
+
+            </div>
+            @*</form>*@
+
+        </div>
+    </div>
+
+    <script>
+        function toggleFormSection() {
+            const isTransfer = document.getElementById("radioTransfer").checked;
+            const isTransmission = document.getElementById("radioTransmission").checked;
+
+            document.getElementById("transferSection").style.display = isTransfer ? "block" : "none";
+            document.getElementById("transmissionSection").style.display = isTransmission ? "block" : "none";
+        }
+
+        function getSuggestions(searchText) {
+
+            document.getElementById("div_cust_details").style.display = "none";
+            document.getElementById("div_radio").style.display = "none";
+
+
+            if (searchText.length < 2) {
+                document.getElementById("suggestions").style.display = "none";
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("GetSearchSuggestions", "Bond_TransferRequest")',
+                type: 'GET',
+                data: { search_txt: searchText },
+                success: function(data) {
+                    const suggestions = document.getElementById("suggestions");
+                    suggestions.innerHTML = '';
+                    if (data && data.length > 0) {
+                        data.forEach(item => {
+                            const li = document.createElement('li');
+                            li.textContent = item.Name;
+                            li.dataset.bond_id = item.bond_id;
+
+                            li.onclick = function() {
+                                document.getElementById("searchBox").value = item.Name;
+                                suggestions.style.display = "none";
+                            };
+
+                            suggestions.appendChild(li);
+                        });
+                        suggestions.style.display = "block";
+                    } else {
+                        suggestions.style.display = "none";
+                        alert("No suggestions found."); // Alert when no suggestions are available
+                        searchBox.value = ""; // Clear the input box
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX Error: " + error);
+                }
+            });
+        }
+
+document.addEventListener('click', function(event) {
+    const suggestions = document.getElementById("suggestions");
+    if (!suggestions.contains(event.target) && event.target.id !== "searchBox") {
+        suggestions.style.display = "none";
+    }
+});
+
+        function showDetails(issueNo, bond_id, cerno) {
+            $.ajax({
+        url: '@Url.Action("GetDetails", "Bond_TransferRequest")',
+        type: 'GET',
+        data: { issue_no: issueNo, bond_id: bond_id, cerno: cerno },
+                success: function(data) {
+                    var divActiveLoan = $("#div_activeloan .vertical-timeline-item");
+                    divActiveLoan.empty();
+
+                    if (data.length > 0) {
+                        data.forEach(function(detail) {
+                            var loanHtml = `
+                            <div class="vertical-timeline-item vertical-timeline-element">
+                                <div>
+                                    <span class="vertical-timeline-element-icon bounce-in">
+                                        <i class="badge badge-dot badge-dot-xl badge-primary"></i>
+                                    </span>
+                                    <div class="vertical-timeline-element-content bounce-in">
+                                        <h4 class="timeline-title text-success">Details for Issue No: ${detail.IssueNo}</h4>
+                                        <p>
+                                            Amount: <span style="font-weight:bold;color:#3f6ad8">${detail.Amount}</span>
+                                            Customer Name: <span style="font-weight:bold;color:orange">${detail.CustomerName}</span>
+                                            Certificate No: <span style="font-weight:bold;color:purple">${detail.CertificateNo}</span>
+                                            Interest Type: <span style="font-weight:bold;color:red">${detail.InterestType}</span>
+                                            Interest Rate: <span style="font-weight:bold;color:#16aaff">${detail.InterestRate}</span>
+                                            Period: <span style="font-weight:bold;color:green">${detail.Period}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>`;
+
+                            divActiveLoan.append(loanHtml);
+                        });
+                        $('#div_activeloan').show();
+                    } else {
+                        divActiveLoan.append('<p>No details found for this issue number.</p>');
+                        $('#div_activeloan').show();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error occurred: " + error);
+                }
+            });
+        }
+
+
+//---------------------------------current----------------------------------------------------
+        function search() {
+            var inputValue = document.getElementById("searchBox").value.trim();
+            var parts = inputValue.split(" ");
+
+            if (parts.length >= 2) {
+                var issueCertificate = parts[0];
+                var customerName = parts.slice(1).join(" ");
+                var [issueNo, certificateNo] = issueCertificate.split("/");
+
+                var suggestionItems = document.querySelectorAll('#suggestions li');
+                var bond_id = null; // Initialize bond_id
+
+                suggestionItems.forEach(item => {
+                    if (item.textContent === inputValue) {
+                        bond_id = item.dataset.bond_id; // Get the bond_id from the dataset
+                        document.getElementById("bondIdInput").value = bond_id; // Set the bond ID in the hidden input
+                    }
+                });
+
+
+                if (bond_id) {
+                    showDetails(issueNo, bond_id, certificateNo);
+                    $("#div_cust_details").show();
+                    $("#div_radio").show();
+                    $("#register_form").show();
+                } else {
+                    alert("No matching suggestion found.");
+                }
+            } else {
+                alert("Please enter the data in the correct format: IssueNo/CertificateNo CustomerName");
+            }
+        }
+
+
+
+        $(document).on('click', '#resetbutton', function () {
+            location.reload();
+        });
+
+
+@*function submitForm() {
+    console.log("submitForm called"); // Debugging line
+    const formData = new FormData(document.getElementById('register_form'));
+
+    const inputValue = $('#searchBox').val().trim();
+    const parts = inputValue.split("/");
+
+    // Check if we have both Issue No and Certificate No
+    if (parts.length < 2) {
+        console.log("Input format is incorrect. Please use 'IssueNo/CertificateNo' (followed by Customer Name).");
+        return;
+    }
+
+    const issueNo = parts[0].trim();
+    const certif = parts[1].trim().split(" ")[0]; // Get the first part after "/"
+
+    const transtype = $('input[name="applicationType"]:checked').val();
+    const transtypeValue = transtype === "transfer" ? 1 : 2;
+
+    formData.append('IssueNo', issueNo);
+    formData.append('CertificateNo', certif);
+    formData.append('Transtype', transtypeValue);
+
+    const debId = document.getElementById("bondIdInput").value; // Retrieve debId from the hidden input
+    if (debId) {
+        formData.append('bond_id', bond_id);
+    } else {
+        console.log("Deb_id is missing. Please ensure the correct selection in the search.");
+        return;
+    }
+
+    // Validate the image input based on the selected transaction type
+    let imageFile;
+    if (transtype === "transfer") {
+        imageFile = document.getElementById('transferInput').files[0];
+        if (!imageFile) {
+            Swal.fire("Error", "Image is required for Transfer.", "error");
+            return;
+        }
+        formData.append('Image', imageFile);
+    } else if (transtype === "transmission") {
+        imageFile = document.getElementById('transmissionInput').files[0];
+        if (!imageFile) {
+            Swal.fire("Error", "Indemnity Bond is required for Transmission.", "error");
+            return;
+        }
+        formData.append('Image', imageFile);
+    }
+
+    $.ajax({
+        url: '@Url.Action("SubmitTransferRequest", "Bond_TransferRequest")',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            if (response.result) {
+                Swal.fire({
+                    title: response.result,
+                    icon: 'success'
+                }).then(() => {
+                    window.location.href = '/Bond_TransferRequest/Bond_TransferRequest';
+                });
+            } else {
+                Swal.fire({
+                    title: "Error",
+                    text: "Something went wrong.",
+                    icon: 'error'
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error: " + error);
+            Swal.fire("Error", "An error occurred while submitting the request.", "error");
+        }
+    });
+}*@
+function submitForm() {
+    console.log("submitForm called"); // Debugging line
+    const formData = new FormData(document.getElementById('register_form'));
+
+    const inputValue = $('#searchBox').val().trim();
+    const parts = inputValue.split("/");
+
+    // Check if we have both Issue No and Certificate No
+    if (parts.length < 2) {
+        console.log("Input format is incorrect. Please use 'IssueNo/CertificateNo' (followed by Customer Name).");
+        Swal.fire("Error", "Please enter the correct format: IssueNo/CertificateNo CustomerName.", "error");
+        return;
+    }
+
+    const issueNo = parts[0].trim();
+    const certif = parts[1].trim().split(" ")[0]; // Get the first part after "/"
+
+    const transtype = $('input[name="applicationType"]:checked').val();
+    const transtypeValue = transtype === "transfer" ? 1 : 2;
+
+    formData.append('IssueNo', issueNo);
+    formData.append('CertificateNo', certif);
+    formData.append('Transtype', transtypeValue);
+
+    const debId = document.getElementById("bondIdInput").value; // Retrieve debId from the hidden input
+    console.log("Deb_id value:", debId); // Debugging line
+    if (debId) {
+        formData.append('bond_id', debId);
+    } else {
+        console.log("Deb_id is missing. Please ensure the correct selection in the search.");
+        Swal.fire("Error", "Deb_id is missing. Please ensure the correct selection in the search.", "error");
+        return;
+    }
+
+    // Validate the image input based on the selected transaction type
+    //let imageFile;
+    //if (transtype === "transfer") {
+    //    imageFile = document.getElementById('transferInput').files[0];
+    //    if (!imageFile) {
+    //        Swal.fire("Error", "Image is required for Transfer.", "error");
+    //        return;
+    //    }
+    //    formData.append('image', imageFile);
+    //} else if (transtype === "transmission") {
+    //    imageFile = document.getElementById('transmissionInput').files[0];
+    //    if (!imageFile) {
+    //        Swal.fire("Error", "Indemnity Bond is required for Transmission.", "error");
+    //        return;
+    //    }
+    //    formData.append('image', imageFile);
+    //}
+
+    // Append anti-forgery token if required
+    const token = $('input[name="__RequestVerificationToken"]').val();
+    if (token) {
+        formData.append('__RequestVerificationToken', token);
+    }
+
+    $.ajax({
+        url: '@Url.Action("SubmitTransferRequest", "Bond_TransferRequest")',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            console.log("Response received:", response);
+            if (response.result) {
+                Swal.fire({
+                    title: response.result,
+                    icon: 'success'
+                }).then(() => {
+                    window.location.href = '/Bond_TransferRequest/Bond_TransferRequest';
+                });
+            } else {
+                Swal.fire({
+                    title: "Error",
+                    text: "Something went wrong.",
+                    icon: 'error'
+                });
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error: " + error);
+            Swal.fire("Error", "An error occurred while submitting the request.", "error");
+        }
+    });
+}
+
+
+    </script>
+</body>
+</html>

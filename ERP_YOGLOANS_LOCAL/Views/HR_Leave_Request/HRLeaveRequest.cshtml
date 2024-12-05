@@ -1,0 +1,73 @@
+﻿
+@*@{
+    ViewBag.Title = "HRLeaveRequest";
+}*@
+
+
+@model System.Data.DataTable
+
+@{
+
+    Layout = null;
+}
+
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <link href="../Content/main.d810cf0ae7f39f28f336.css" rel="stylesheet">
+</head>
+<body>
+    <form id="hrleaveapplyForm" action="@Url.Action("HRLeaveRequest", "HR_Leave_RequestController")" method="post" autocomplete="off">
+        <div>
+            <div class="col-lg-12">
+                <div class="main-card mb-5 card">
+                    <div class="card-body">
+                        <h1 class="card-title" style="color: white; width: 100%; height: 55px; font-size:large; background-color: #103db0; padding-top: 20px; "> &nbsp; &nbsp; &nbsp; &nbsp;To avoid being marked as LOP, please apply for leave and seek approval.</h1>
+
+                        @if (Model != null && Model.Rows.Count > 0)
+                        {
+
+                            <table class="mb-0 table table-striped">
+                                @*aquamarine*@
+
+                                <thead style="color: maroon;font-size:medium;">
+                                    <tr>
+
+                                        <th>Employee ID</th>
+                                        <th>Leave Type</th>
+                                        <th>Leave From</th>
+                                        <th>Leave To</th>
+                                        <th>No of Days</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (System.Data.DataRow row in Model.Rows)
+
+                                    {
+                                        <tr>
+                                            <td>@row["EmployeeId"]</td>
+                                            <td>@row["Leave Type"]</td>
+                                            <td>@row["Leave From"]</td>
+                                            <td>@row["Leave To"]</td>
+                                            <td>@row["NoOfDays"]</td>
+                                            <td>@row["Status"]</td>
+                                        </tr>
+
+                                    }
+
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
+

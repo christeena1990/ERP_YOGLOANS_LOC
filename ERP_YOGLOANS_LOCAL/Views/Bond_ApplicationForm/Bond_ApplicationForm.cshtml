@@ -1,0 +1,686 @@
+﻿
+@{
+    Layout = null;
+    ViewBag.Title = "Bond_ApplicationForm";
+}
+
+@using System.Data
+
+@*@model ERP_YOGLOANS_LOCAL.Models.NCD_Models.DataFillViewModel*@
+@model ERP_YOGLOANS_LOCAL.Models.Bond_models.CombinedViewModel
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>APPLICATION FOR BOND</title>
+    <style type="text/css">
+        /* Reset and general settings */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Cambria, sans-serif;
+        }
+
+        .main-container {
+            width: 95%;
+            margin: auto;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* Header Section */
+        .header-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 15px;
+            border-bottom: .1px solid #000;
+        }
+
+        .company-logo {
+            width: 200px;
+            height: 50px;
+        }
+
+        .company-details {
+            text-align: left;
+        }
+
+            .company-details p {
+                margin: 2px 0;
+            }
+
+        /* Title */
+        .application-title {
+            margin: 20px 0;
+            font-size: 14px;
+            text-decoration: underline;
+        }
+
+
+            .application-title h4 {
+                margin-bottom: 5px; /* Adjust the bottom margin of the <h4> to reduce space */
+            }
+
+            .application-title p {
+                margin-top: 0; /* Remove or reduce the top margin of the <p> */
+                padding-top: 0; /* Remove any padding at the top of <p> */
+            }
+
+
+
+
+        /* Bordered box for image */
+        .bordered-box {
+            width: 90px;
+            height: 90px;
+            border: 1px solid #000;
+            padding: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        /* Image styling */
+        .applicant-photo {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        /* Applicant message section */
+        .applicant-message {
+            margin: 15px 0;
+            font-size: 10px;
+            text-align: left;
+            margin-bottom: 5px;
+        }
+
+            .applicant-message p {
+                font-size: 10px;
+                margin: 5px 0;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+        }
+
+        td {
+            padding: 2px;
+            text-align: left;
+            border: 1px solid #000;
+        }
+
+        #details-table td {
+            border: none;
+        }
+
+
+        /*        //////////////////////////////////*/
+
+
+
+      
+
+        .tdcolapsed {
+            width: 1px;
+            border: 1px solid #000;
+            text-align: center;
+            padding: 2px;
+        }
+
+
+
+        /*        ////////////////////////////////////*/
+
+        #panelBank, #panel5, #panelSignature {
+            text-align: center;
+            width: 100%;
+        }
+
+        .tableDate {
+            width: 95%;
+            font-size: 10px;
+            height: 10px;
+            margin: auto;
+        }
+
+            .tableDate td {
+                padding: 2px;
+                border: 1px solid #000;
+                text-align: center;
+            }
+
+        .tdcolaps {
+            border: 1px solid #000;
+        }
+
+
+        .tdlabelbold {
+            font-weight: 600;
+        }
+
+        .page-break {
+            break-after: page; /* Forces a page break */
+        }
+    </style>
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+    <script>
+
+        $(document).ready(function () {
+            //alert("ajax loaded");
+            $.ajax({
+                url: '/Bond_ApplicationForm/Bond_ApplicationFormfill',
+                type: 'POST',
+                success: function (secondResponse) {
+                    if (secondResponse.success) {
+                        var model = secondResponse.model;
+
+                        // Populate the fields with model data
+                        $('#ApplicationId').text(model.ApplicationId);
+                        $('#CustomerId').text(model.CustomerId);
+                        $('#Date').text(model.Date);
+                        $('#FirstApplicant').text(model.FirstApplicant);
+                        $('#FatherName').text(model.FatherName);
+                        $('#Email').text(model.Email);
+                        $('#Age').text(model.Age + " Years");
+                        $('#MobileNo').text(model.MobileNo);
+                        $('#SecondApplicant').text(model.SecondApplicant);
+                        $('#Nominee_Name').text(model.Nominee_Name);
+                        $('#Nominee_Relation').text(model.Nominee_Relation);
+                        
+
+                        $('#repayment_payee_name').text(model.repayment_payee_name);
+                        $('#repayment_banki_ac').text(model.repayment_banki_ac);
+                       $('#repayment_ifsc_code').text(model.repayment_ifsc_code);
+                        $('#repayment_bank_name').text(model.repayment_bank_name);
+                        $('#repayment_branch_name').text(model.repayment_branch_name);
+
+
+
+                        $('#interest_payee_name').text(model.interest_payee_name);
+                        $('#interest_banki_ac').text(model.interest_banki_ac);
+                        $('#interest_ifsc_code').text(model.interest_ifsc_code);
+                        $('#interest_bank_name').text(model.interest_bank_name);
+                        $('#interest_branch_name').text(model.interest_branch_name);
+
+
+                        // Conditionally set Contact with a preceding comma if it has a value
+                        if (model.Contact) {
+                            $('#Contact').text(', ' + model.Contact);
+                        } else {
+                            $('#Contact').text('');  // Clear Contact if empty
+                        }
+
+                        $('#KycDocName').text(model.KycDocName);
+                        $('#KycNo').text(model.KycNo);
+                        $('#Dob').text(model.Dob);
+
+
+
+
+                        // Set Base64 image source for photo
+                        if (model.Base64Photo) {
+                            $('#Base64Photo').attr('src', 'data:image/png;base64,' + model.Base64Photo);
+                        } else {
+                            // Optional: handle if no photo is available
+                            $('#Base64Photo').attr('alt', 'No photo available');
+                        }
+
+
+                        // Conditionally show or hide the Co-Applicant Container
+                        if (model.SecondApplicant) {
+                            $('#Base64CoApplicantPhoto').attr('src', 'data:image/png;base64,' + model.Base64CoApplicantPhoto);
+                            $('#CoApplicantContainer').show();
+                        } else {
+                            $('#CoApplicantContainer').hide();
+                        }
+
+
+                        $('#Duration').text(model.Duration);
+                        $('#DurationType').text(model.DurationType);
+                        $('#InterestRate').text(model.InterestRate);
+                        $('#InterestTypeFixed').prop('checked', model.InterestTypeFixed); // Assuming it's a checkbox
+                        $('#InterestTypeCompound').prop('checked', model.InterestTypeCompound); // Assuming it's a checkbox
+                        $('#Category').text(model.Category);
+                        $('#Place').text(model.Place);
+                        $('#DeclarationDate').text(model.DeclarationDate);
+                        $('#Declaration').html(model.Declaration);
+                        $('#Address').text(model.Address);
+                        $('#DpId').text(model.DpId);
+                        $('#DpName').text(model.DpName);
+
+
+                        // Start table with inline styles for border
+                        var tableHtml = '<table style="width: 100%; border-collapse: collapse; border: 1px solid black;"><thead><tr>';
+
+                        // Add headers with border
+                        model.GridDatachequeColumns.forEach(function (colName) {
+                            tableHtml += '<th style="border: 1px solid black; /*padding: 8px;*/">' + colName + '</th>';
+                        });
+                        tableHtml += '</tr></thead><tbody>';
+
+                        // Add rows with bordered cells
+                        model.GridDatacheque.forEach(function (rowData) {
+                            tableHtml += '<tr>';
+                            model.GridDatachequeColumns.forEach(function (colName) {
+                                tableHtml += '<td style="border: 1px solid black;text-align:center ">' + (rowData[colName] || '') + '</td>';
+                            });
+                            tableHtml += '</tr>';
+                        });
+
+                        tableHtml += '</tbody></table>';
+
+                        // Append the table to the HTML container
+                        $('#gridContainer').html(tableHtml);
+
+
+
+                    } else {
+                        alert("Error: " + secondResponse.message);
+                    }
+                },
+                error: function (error) {
+                    alert("Error occurred during data retrieval");
+                }
+            });
+        });
+    </script>
+
+
+</head>
+<body>
+    <div class="main-container">
+        <div class="header-section">
+            <img src="~/images/logo.jpg" alt="Logo" class="company-logo" />
+            <div class="company-details">
+                <p>YOGAKSHEMAM LOANS LTD.</p>
+                <p>Regd.office, 3rd Floor, Ottappath Tower, Aswini Junction</p>
+                <p>Thiruvambady(Post) ,Thrissur, Kerala - 680 022</p>
+                <p>Tel: 0487-2320102</p>
+            </div>
+        </div>
+
+        <div class="application-title">
+            <h3>APPLICATION FOR UNSECURED SUBORDINATED DEBTS</h3>
+            @*<p>(To be filled in by Applicant, Use BLOCK LETTERS Tick wherever applicable)</p>*@
+            <p>(Private Circulation Only)</p>
+
+        </div>
+
+        <table id="details-table">
+            <tr>
+
+                <td>
+                    <div class="infocell1">
+                        <div style="padding-bottom:2px;">Application ID: <span id="ApplicationId" style="font-weight:600"></span></div>
+                        <div style="padding-bottom:2px;">Customer ID: <span id="CustomerId" style="font-weight:600"></span></div>
+                        <div style="padding-bottom:2px;">Date: <span id="Date" style="font-weight:600"></span></div>
+                        <div style="padding-bottom:2px;">
+                            Issue No: <span id="lbl_issue_no" style="font-weight:600"> @Session["issueno"]</span>
+                        </div>
+                    </div>
+                </td>
+
+
+                <td>
+                    <div class="bordered-box">
+                        <img src="" alt="Applicant Photo" class="applicant-photo" id="Base64Photo" />
+                    </div>
+                </td>
+                <td>
+                    <div class="bordered-box" id="CoApplicantContainer">
+                        <img src="" alt="Co-applicant Photo" class="applicant-photo" id="Base64CoApplicantPhoto" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <div class="applicant-message">
+            <div style="text-align:left;border:.2px solid; width:25%;padding-left:5px;font-size:13px;font-weight:600">
+                <p>To<br /> The Board Of Directors</p>
+                <p>Yogakshemam Loans Limited</p>
+            </div>
+            <p>
+                Having paid to the company as mentioned below towards SUBORDINATED DEBT of the maturity mentioned  here in subject to the terms and conditions mentioned overleaf.I/we authorize you to place our names in the respective records as per the particulars contained here in.
+            </p>
+        </div>
+
+
+        <table>
+
+            <tr>
+
+                <td>FIRST APPLICANT NAME</td>
+                <td class="tdlabelbold" id="FirstApplicant"></td>
+                <td>DOB & AGE</td>
+                <td class="tdlabelbold" id="DobAge">
+                    <span id="Dob"></span> & <span id="Age"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td>FATHER/HUSBAND NAME </td>
+                <td class="tdlabelbold" id="FatherName">  </td>
+                <td>SECOND APPLICANT NAME </td>
+                <td class="tdlabelbold" id="SecondApplicant"> </td>
+            </tr>
+
+
+            <tr>
+                <td>NOMINEE. IF ANY    </td>
+                <td class="tdlabelbold" id="Nominee_Name"> </td>
+                <td>RELATIONSHIP WITH NOMINEE</td>
+                <td class="tdlabelbold" id="Nominee_Relation"> </td>
+            </tr>
+
+            <tr>
+
+                <td>KYC DOC </td>
+                <td class="tdlabelbold" id="KycDocName"></td>
+                <td>KYC DOC NO </td>
+                <td class="tdlabelbold" id="KycNo"> </td>
+            </tr>
+
+
+
+
+            <tr>
+
+                <td>ADDRESS OF THE FIRST APPLICANT</td>
+                <td class="tdlabelbold" id="Address"> </td>
+                <td>CUSTOMER CATEGORY </td>
+                <td class="tdlabelbold" id="Category"> </td>
+            </tr>
+
+            <tr>
+                <td>EMAIL ID</td>
+                <td class="tdlabelbold" id="Email"> </td>
+                <td>MOBILE NO </td>
+                <td class="tdlabelbold" id="mobland">
+                    <span id="MobileNo"></span>  <span id="Contact"></span>
+                </td>
+
+
+
+
+            </tr>
+
+
+        </table>
+
+        <br />
+
+
+        <div id="gridContainer"></div>
+
+        <p style="text-align:left;font-size:8px;">Cheques are subject to realization</p>
+
+        <table width="100%">
+            <tr>
+                <!-- Payment Of Interest Label -->
+                <td align="left" width="40%">
+                    Payment Of Interest:
+
+                    <input type="checkbox" id="InterestTypeFixed" style=" pointer-events: none" />
+
+                    Monthly
+
+                    <input type="checkbox" id="InterestTypeCompound" style="pointer-events:none" />
+
+                    Cumulative
+                </td>
+
+                <!-- Period of Investment Label -->
+                <td align="left" width="30%">
+                    Period Of Investment:
+
+                    <span id="Duration" class="tdlabelbold"></span>
+                    <span id="DurationType" class="tdlabelbold"></span>
+                </td>
+
+                <!-- Rate of Interest -->
+                <td width="30%" align="left">
+                    Rate of interest: <span id="InterestRate" class="tdlabelbold"></span>
+                </td>
+            </tr>
+        </table>
+
+        <br />
+
+        @*////////////////////////////////////*@
+
+
+
+        @*<div id="Panel_pay" style="text-align: center; width: 100%;">
+        </div>*@
+
+        <div id="Panelbank" style="text-align: center; width: 100%;">
+            <table width="100%" border="1" align="center">
+                @*style="border: thin groove #000000; border-collapse: collapse; font-family: Cambria; color: Black; font-size: 12px;">*@
+                <tr>
+                    <td colspan="2">REPAYMENT OF PRINCIPAL TO BE CREDITED TO - BANK ACCOUNT DETAILS</td>
+                    <td>Payee</td>
+                    <td id="repayment_payee_name"></td>
+                </tr>
+                <tr>
+                    <td align="left">Account No</td>
+                    <td align="left" id="repayment_banki_ac"></td>
+                    <td align="left">IFSC Code</td>
+                    <td align="left" id="repayment_ifsc_code"></td>
+                </tr>
+                <tr>
+                    <td>Bank Name</td>
+                    <td id="repayment_bank_name"></td>
+                    <td>Branch Name</td>
+                    <td id="repayment_branch_name"></td>
+                </tr>
+            </table>
+        </div>
+        <br />
+
+
+       
+
+
+
+
+        <div id="Panel4" style="text-align: center; width: 100%;">
+            <table width="100%" border="1" align="center">
+                <tr>
+                    <td colspan="2">* PAYMENT OF INTEREST TO BE CREDITED TO - BANK ACCOUNT DETAILS</td>
+                    <td>Payee</td>
+                    <td id="interest_payee_name"></td>
+                </tr>
+                <tr>
+                    <td>Account No</td>
+                    <td id="interest_banki_ac"></td>
+                    <td>IFSC Code</td>
+                    <td id="interest_ifsc_code"></td>
+                </tr>
+                <tr>
+                    <td>Bank Name</td>
+                    <td id="interest_bank_name"></td>
+                    <td>Branch Name</td>
+                    <td id="interest_branch_name"></td>
+                </tr>
+            </table>
+        </div>
+     
+
+
+
+
+
+        @*///////////////////////////////////////////////////////////////*@
+
+
+        @*<br />*@
+
+        <table style="border-collapse: collapse; border: none; width: 100%;">
+            <tr>
+                <td style="border: none;" align="left" colspan="5">
+                    For the purpose of the Income Tax Act, the first named applicant is the beneficiary and both interest and principal
+                    will be credited to his/her account only unless mandated otherwise.<br />
+                    <input type="checkbox" id="checkbox1" />
+                    <label for="checkbox1">
+                        I understand that this instrument of Sub-Ordinated Debt in the form of promissory note payable after date and is not a security.
+                    </label>
+                    <br />
+                    <input type="checkbox" id="checkbox2" />
+                    <label for="checkbox2">
+                        I understand that this is not a deposit and is sub-ordinate to all other claims, redeemable only after a period of 60 months from the date of issue.
+                    </label>
+                </td>
+            </tr>
+        </table>
+
+        <p4 style="text-align: center;font-size:11px;">Signature Of Applicant/s</p4>
+
+        <div id="panelSignature" style="text-align: center; width: 95%; justify-content: center;  ">
+            <table class="tableDate" style="width: 95%; font-size: 10px; height: 10px; margin: auto;">
+
+                <tr>
+                    <td style="width: 50%; text-align: center; font-size: 8px;border:none">1st Applicant</td>
+                    <td style="width: 50%; text-align: center; font-size: 8px; border: none">2nd Applicant</td>
+                </tr>
+
+                <tr>
+                    <td class="tdcolaps" style="height: 25px;"></td>
+                    <td class="tdcolaps" style="height: 25px;"></td>
+                </tr>
+                <tr style="border:none">
+                    <td colspan="2"  style="border: none; text-align: left;font-size:8px;">* In case of different account is designated for interest payment supporting authorisation letter to be obtained.</td>
+                </tr>
+            </table>
+        </div>
+
+        @*<br />*@
+        @*///////////////////////////////////////////////////////////////////////////*@
+
+        <hr style="border: 1.5px dashed;" />
+
+
+        <div style="text-align: center; width: 100%;">
+            <p style="text-align: center" class="tdlabelbold"> FOR OFFICE USE</p>
+            <p style="text-align: center"> Declaration</p>
+
+
+            <table style="width:100%; font-family: Cambria; color: black; font-size: 12px; border-collapse: collapse; margin: auto;">
+
+
+                <tr>
+                    <td colspan="2" align="left" style="font-size: 10px;border:none" id="Declaration">
+                        <!-- Replace with Model.Declaration if using a model property -->
+                    </td>
+                </tr>
+                <tr style="font-size: 9px;">
+                    <td style="text-align: left; border: none">
+                        Place:<span id="Place"></span> <!-- Replace with Model.Place if using a model property -->
+                    </td>
+
+                </tr>
+                <tr style="font-size: 10px;">
+                    <td style="font-size: 10px; text-align: left; border: none">
+                        Date: <span id="DeclarationDate"></span> <!-- Replace with Model.Date if using a model property -->
+                    </td>
+                    @*<td style="font-size: 10px; text-align: left; border: none">&nbsp;</td>*@
+                    <td style="font-size: 10px; text-align: right; border: none">
+                        Signature Of The Branch Manager With Seal&nbsp;
+                    </td>
+                </tr>
+                <tr style="font-size: 10px;">
+                    <td colspan="2" style="font-size: 8px; text-align: left; border: none">
+                        * Any Amount Collection mode are subject to realization.
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+
+
+
+
+        @*///////////////////////////////////////////////////////////////////*@
+
+
+
+
+        <div class="page-break"></div>
+
+        <div style="text-align:center;">
+            <p class="tdlabelbold">Terms Of Issue</p>
+        </div>
+
+        <!-- Panel 1: Body1 Data -->
+        <div id="panel_form" style="text-align: justify; width: 100%; font-size: 11px;" class="body">
+            @foreach (var body in Model.TableData.Body1Data)
+            {
+                <div><b> @body.RuleNo  @body.RuleName</b> @body.Data</div>
+            }
+        </div>
+
+      
+  
+        <br />
+
+        <!-- Panel 2: Body2 Data -->
+        <div id="panelform3" style="text-align: justify; width: 100%; font-size: 11px;" class="body">
+            @foreach (var body in Model.TableData.Body2Data)
+            {
+                <div> <b>  @body.RuleName </b> </div>
+            }
+        </div>
+
+      
+
+
+        <p style="text-align: center;font-size:11px;">Signature Of Applicant/s</p>
+
+        <div id="panelfoot3" style="text-align: center; width: 100%;">
+            <table class="tableDate3" style="width: 95%; font-size: 10px; height: 10px; margin: auto;">
+
+                <tr>
+                    <td style="width: 50%; text-align: center; font-size: 8px;border:none">1st Applicant</td>
+                    <td style="width: 50%; text-align: center; font-size: 8px; border: none">2nd Applicant</td>
+                </tr>
+
+                <tr>
+                    <td class="tdcolaps" style="height: 25px;"></td>
+                    <td class="tdcolaps" style="height: 25px;"></td>
+                   
+                </tr>
+
+            </table>
+        </div>
+
+
+
+
+
+    </div>
+
+
+</body>
+</html>
+
+
+
+
+
+

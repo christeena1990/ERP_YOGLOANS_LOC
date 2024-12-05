@@ -1,0 +1,472 @@
+﻿
+
+@using ERP_YOGLOANS_LOCAL.Models
+@{
+    var model = new ModuleMenuViewModel
+    {
+        ModuleName = Session["ModuleName"] as string,
+        Menus = Session["Menus"] as List<SubMenu>,
+        SubMenus = Session["SubMenus"] as List<SubMenu>
+    };
+}
+
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="en">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>YOGLOANS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
+    <meta name="description" content="This is an example dashboard created using build-in elements and components.">
+
+    <meta name="msapplication-tap-highlight" content="no">
+    <link href="~/Content/main.d810cf0ae7f39f28f336.css" rel="stylesheet">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <!-- code for back and next button disable  -->
+    <script type="text/javascript">
+        function preventBack() {
+            window.history.forward();
+        }
+
+        setTimeout("preventBack()", 0);
+
+        window.onunload = function () {
+            null;
+        };
+    </script>
+
+
+   @*///////////////////////////////  for restrict multiple tab access//////////////////////////////////////*@
+
+    <script>
+        (function () {
+            const SESSION_KEY = 'user_session_status';
+            const SESSION_LOGGED_IN = 'loggedIn';
+            const SESSION_LOGGED_OUT = 'loggedOut';
+
+            function setSessionStatus(status) {
+                localStorage.setItem(SESSION_KEY, status);
+            }
+
+            function getSessionStatus() {
+                return localStorage.getItem(SESSION_KEY);
+            }
+
+            function handleTabOpen() {
+                if (getSessionStatus() === SESSION_LOGGED_IN) {
+                    alert('You cannot open the application in multiple tabs.');
+                    window.location.href = '/Smart_Login/Login';
+                } else {
+                    setSessionStatus(SESSION_LOGGED_IN);
+                }
+            }
+
+            window.addEventListener('storage', function (event) {
+                if (event.key === SESSION_KEY && event.newValue === SESSION_LOGGED_OUT) {
+                    window.location.href = '/Smart_Login/Login';
+                }
+            });
+
+            window.addEventListener('load', handleTabOpen);
+            window.addEventListener('beforeunload', function () {
+                setSessionStatus(SESSION_LOGGED_OUT);
+            });
+        })();
+    </script>
+
+
+
+    @*////////////////////////////////////  for restrict url copy paste  ////////////////////////////////////////////////////////*@
+
+    <script>
+        // Check if the page was loaded directly (not via navigation within the site)
+        if (document.referrer === '') {
+            // If there is no referrer, redirect to the login page
+            window.location.href = '/Smart_Login/Login'; // Change to your login page URL
+        }
+    </script>
+
+    @*////////////////////////////////////////////////////////////////////////////////////////////*@
+
+
+
+
+</head>
+<body>
+    <div class="app-container app-theme-white body-tabs-shadow fixed-header fixed-sidebar">
+        <div class="app-header header-shadow" style="background-color:#103db0;color:white">
+            <div class="app-header__logo">
+                <div class="logo-src" style="height:42px;vertical-align:top">
+                    <img style="width:170px;" src="~/images/logowithtext.png" />
+
+                </div>
+
+                <div class="header__pane ml-auto">
+                    <div>
+                        <button type="button" class="hamburger close-sidebar-btn hamburger--elastic" data-class="closed-sidebar">
+                            <span class="hamburger-box">
+                                <span class="hamburger-inner"></span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="app-header__mobile-menu">
+                <div>
+                    <button type="button" class="hamburger hamburger--elastic mobile-toggle-nav">
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <div class="app-header__menu">
+                <span>
+                    <button type="button" class="btn-icon btn-icon-only btn btn-primary btn-sm mobile-toggle-header-nav">
+                        <span class="btn-icon-wrapper">
+                            <i class="fa fa-ellipsis-v fa-w-6"></i>
+                        </span>
+                    </button>
+                </span>
+            </div>
+            <div class="app-header__content">
+                @*<div class="app-header-left">
+                        <div class="search-wrapper">
+                            <div class="input-holder">
+                                <input type="text" class="search-input" placeholder="Type to search">
+                                <button class="search-icon"><span></span></button>
+                            </div>
+                            <button class="close"></button>
+                        </div>
+                    </div>*@
+
+
+
+                <div class="app-header-right">
+                    <div class="header-dots">
+
+
+
+                        @*///////////////////////////////////////////////////////////////////home icon place /////////////////////////////////////////////////////////*@
+
+
+                        <div class="dropdown">
+                            <a href="@Url.Action("Index", "Home")">
+                                <i class="fa fa-fw" aria-hidden="true" style="font-size: 32px; padding: 10px; color: navajowhite;"></i>
+                            </a>
+                        </div>
+
+
+                        @*</div>*@
+
+                        &nbsp; &nbsp; &nbsp;
+
+                        @*//////////////////////////////////////////// Image Dropdown - employee profile/////////////////////////////////////////////////////////////*@
+
+
+
+                        <div class="header-btn-lg pr-0">
+                            <div class="widget-content p-0">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-left">
+                                        <div class="btn-group">
+                                            <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="p-0 btn">
+                                                <img width="33" class="rounded-circle" src="../images/profile_pic.jpg" alt="">
+                                                <i class="fa fa-angle-down ml-2 opacity-8"></i>
+                                            </a>
+                                            <div tabindex="-1" role="menu" aria-hidden="true" class="rm-pointers dropdown-menu-lg dropdown-menu dropdown-menu-right">
+                                                <div class="dropdown-menu-header">
+                                                    <div class="dropdown-menu-header-inner bg-info">
+                                                        <div class="menu-header-image opacity-2" style="background-image: url('../images/dropdown-header/city3.jpg');"></div>
+                                                        <div class="menu-header-content text-left">
+                                                            <div class="widget-content p-0">
+                                                                <div class="widget-content-wrapper">
+                                                                    <div class="widget-content-left mr-3">
+                                                                        <img width="33" class="rounded-circle" src="../images/profile_pic.jpg" alt="">
+                                                                    </div>
+                                                                    <div class="widget-content-left">
+                                                                        <div class="widget-heading"> @Session["name"]  </div>
+                                                                        <div class="widget-subheading opacity-8">@Session["login_user"]</div>
+                                                                        <div class="widget-subheading opacity-8">@Session["branch"]</div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="grid-menu grid-menu-2col">
+                                                    <div class="no-gutters row">
+                                                        <div class="col-sm-6">
+                                                            <button class="btn-icon-vertical btn-transition btn-transition-alt pt-2 pb-2 btn btn-outline-warning" id="ResetpswdButton">
+                                                                <i class="fa fa-fw" aria-hidden="true" style="font-size:20px;"></i> <br />
+                                                                <b>Reset Password</b>
+                                                            </button>
+                                                        </div>
+                                                        <div class="col-sm-6">
+                                                            <button class="btn-icon-vertical btn-transition btn-transition-alt pt-2 pb-2 btn btn-outline-danger" id="logoutButton">
+                                                                <i class="fa fa-fw" aria-hidden="true" style="font-size:20px;"></i>  <br />
+                                                                <b>Logout</b>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @*<div class="widget-content-left  ml-3 header-user-info">
+                                            <div class="widget-heading">  @Session["name"]  </div>
+                                            <div class="widget-subheading"> @Session["login_user"] </div>
+                                            <div class="widget-subheading opacity-8">@Session["branch"]</div>
+
+                                        </div>*@
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="header-btn-lg">
+
+                        </div>
+
+
+                        @*///////////////////////////////////////////////  SOS Button //////////////////////////////////////////////////////////////////////////*@
+
+
+
+
+                        <div class="dropdown">
+                            <a href="" id="sosIcon" style="font-size: 27px;">
+                                <img src="~/images/sos_3.png" alt="SOS Button" style="height: 55px; width: 55px; padding-top:6px;" /> @*width="50px" height="50px">*@
+                            </a>
+                        </div>
+
+
+                    </div>
+
+
+
+                    @*///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+
+
+
+                </div>
+            </div>
+        </div> <div class="ui-theme-settings">
+            <button type="button" id="TooltipDemo" class="btn-open-options btn btn-warning">
+                <i class="fa fa-cog fa-w-16 fa-spin fa-2x"></i>
+            </button>
+
+        </div>
+
+        <div class="app-main">
+            <div class="app-sidebar sidebar-shadow">
+                <div class="app-header__logo">
+                    <div class="logo-src"></div>
+                    <div class="header__pane ml-auto">
+                        UI COMPONENTS
+                        <div>
+                            <button type="button" class="hamburger close-sidebar-btn hamburger--elastic" data-class="closed-sidebar">
+                                <span class="hamburger-box">
+                                    <span class="hamburger-inner"></span>
+                                </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="app-header__mobile-menu">
+                    <div>
+                        <button type="button" class="hamburger hamburger--elastic mobile-toggle-nav">
+                            <span class="hamburger-box">
+                                <span class="hamburger-inner"></span>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+                <div class="app-header__menu">
+                    <span>
+                        <button type="button" class="btn-icon btn-icon-only btn btn-primary btn-sm mobile-toggle-header-nav">
+                            <span class="btn-icon-wrapper">
+                                <i class="fa fa-ellipsis-v fa-w-6"></i>
+                            </span>
+                        </button>
+                    </span>
+                </div>
+
+                @*/////////////////   DYNAMIC SIDE NAVIGATION BAR  - PARTIAL VIEW //////////////////////////////////////*@
+
+                <div class="scrollbar-sidebar">
+                    <div class="app-sidebar__inner" id="navigationBar">
+                        @Html.Partial("~/Views/Shared/_Menu_submenupartialView.cshtml", model)
+                    </div>
+                </div>
+            </div>
+
+            @*//////////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+
+            <div class="app-main__outer">
+                <div class="app-main__inner">
+                    <div class="app-page-title">
+                        <div class="page-title-wrapper">
+                            <div class="page-title-heading">
+                                @*<div class="page-title-icon">
+            <i class="pe-7s-car icon-gradient bg-mean-fruit"></i>
+        </div>*@
+
+                                @Scripts.Render("~/bundles/jquery")
+                                @Scripts.Render("~/bundles/bootstrap")
+
+
+
+                                @RenderSection("scripts", required: false)
+
+
+
+
+
+                                @*<div class="container body-content">*@
+                                @RenderBody()
+                                @*<hr />*@
+                                @*<footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>*@
+                                @*</div>*@
+
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    @*//////////////////////////////////// Script for logout  ////////////////////////////////////////////////////////////////////////////////*@
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+    <script>
+    $(document).ready(function () {
+        // Add click event handler to the logout button
+        $('#logoutButton').click(function () {
+           // alert("logout buttonclick");
+            // Redirect to the Logout action in the Smart_LoginController
+            window.location.href = '@Url.Action("Logout", "Smart_Login")';
+        });
+    });
+    </script>
+
+
+
+    @*<script>
+            $(document).ready(function () {
+                // Add click event handler to the logout button
+                $('#logoutButton').click(function () {
+                    // Redirect to the Login method in the Smart_LoginController
+                    window.location.href = '/Smart_Login/Login';
+                });
+            });
+        </script>*@
+    @*//////////////////////////////////// Script for reset pswd  ////////////////////////////////////////////////////////////////////////////////*@
+    <script>
+        $(document).ready(function () {
+            // Add click event handler to the logout button
+            $('#ResetpswdButton').click(function () {
+                // Redirect to the Login method in the Smart_LoginController
+                window.location.href = '/Reset_Password/Resetpassword';
+            });
+        });
+    </script>
+
+
+    @*////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+
+
+    <script>
+        // Get all the navigation links
+        var navLinks = document.querySelectorAll('.vertical-nav-menu a');
+
+        // Remove the 'mm-active' class from all navigation links when the page loads
+        window.addEventListener('load', function () {
+            navLinks.forEach(function (link) {
+                link.classList.remove('mm-active');
+            });
+        });
+
+        // Loop through each navigation link
+        navLinks.forEach(function (link) {
+            // Add a click event listener to each navigation link
+            link.addEventListener('click', function (event) {
+                // Remove the 'mm-active' class from all navigation links
+                navLinks.forEach(function (navLink) {
+                    navLink.classList.remove('mm-active');
+                });
+
+                // Add the 'mm-active' class to the clicked navigation link
+                link.classList.add('mm-active');
+            });
+        });
+    </script>
+
+
+
+    <script>
+        // Function to open URL in a new tab
+        function openInNewTab(url) {
+            var win = window.open(url, '_blank');
+            win.focus();
+        }
+    </script>
+
+    @*//////////////////////////////////// sos  alert script //////////////////////////////*@
+
+    <script>
+ $(document).ready(function () {
+     $('#sosIcon').click(function () {
+
+        // alert("sos click event ");
+
+         $.ajax({
+             url: '@Url.Action("SendSOSAlert", "SOSalert")',
+             type: 'POST',
+             dataType: 'json',
+             success: function (response) {
+                 if (response.success) {
+                     alert('SOS Alert Sent Successfully!');
+                 } else {
+                     alert('Error: ' + response.message);
+                 }
+             },
+             error: function () {
+                 alert('Error sending SOS Alert. Please try again.');
+             }
+         });
+     });
+ });
+    </script>
+
+
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,2035 @@
+﻿@model ERP_YOGLOANS_LOCAL.Models.Customer_Approval_Model
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    @*---------KYC & Other details: For customer and document photo---------*@
+
+    <style>
+
+        /*--------------------Approve msg box style----------------*/
+
+
+        /* Add your custom styles */
+        .custom-approve-button .swal2-confirm, .custom-approve-button .swal2-deny {
+            background-color: #3085d6;
+            color: #fff;
+            border: none !important; /* Remove the border */
+            box-shadow: none !important; /* Remove the box shadow */
+            outline: none; /* Remove the outline on click */
+            /* Add any other styles you need for both buttons */
+        }
+
+            .custom-approve-button .swal2-deny::after {
+                content: none; /* Remove the default ::after pseudo-element */
+            }
+
+        /* ----------------------------------------------------------------------*/
+
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+        }
+
+        /* Modal Content (image) */
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+        }
+
+
+        /* Caption of Modal Image */
+        #caption {
+            margin: auto;
+            display: block;
+            width: 60%;
+            /*max-width: 700px;*/
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            /*height: 150px;*/
+            height: 100%;
+        }
+
+        /* The Close Button */
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: #bbb;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+
+        /* The Close Button on Photo */
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #fff;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+            .close:hover {
+                color: #ccc;
+            }
+    </style>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    @*<link rel="stylesheet" href="~/Content/Approval_photopopup.css">*@
+
+    @*------------------------------------------------------------------------------------------------------*@
+
+
+</head>
+
+<body>
+
+    @*<div class="main-panel">
+        <div class="content">
+            <div class="page-inner">
+                <div class="col-md-12">
+                    <div class="card" style="padding-left:4px; background-color: #fcfcfc">
+            <br />*@
+
+
+    <div class="app-main__inner" style="margin-top: -30px;padding:2px;">
+        <br />
+
+        <div style="height: 25px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Customer Approval</h6>
+            </div>
+        </div><br />
+
+
+
+
+        @*---------------------------------------Approval_type 2-- > Modify Approval------------------------------------*@
+
+        @if ((int)Session["Approve_type"] == 2)
+        {
+            <div class="row justify-content-end" style="width:100%;">
+                <div class="col-md-6 col-lg-4 d-flex justify-content-end">
+                    <button type="button" id="viewDocumentsBtn1" class="btn btn-primary btn-custom" onclick="openInNewTab('@Url.Action("FillDetails", "Customer_CustView")')">Existing Customer Details</button>&nbsp;
+                </div>
+            </div>
+            if (Session["Slno"] != null)
+            {
+                <p style="display: none;">Sl No: @Session["Slno"]</p>
+                @*<p style="color: darkblue;font-family:verdabna; padding: 10px; font-weight: 500;">Modification Information: <label style="color: red; font-weight: 600;"> @Model.modi_status</label></p>*@
+                <p style="color: darkblue; font-weight: 500; font-size: medium">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Modification Information:&nbsp;<label style="color: red; font-weight: 500;" font-size: medium"> @Model.modi_status</label></p>
+            }
+
+            if (@Model.rekyc_status == 1)
+            {
+
+                <p style="color: darkblue; font-weight: 500;  font-size: medium">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Re-KYC Reason:&nbsp;<label style="color: red; font-weight: 500;" font-size: medium">@Model.rekyc_reason</label></p>
+
+
+            }
+
+
+
+    <div class="card-body">
+
+
+        @*...second row...*@
+        <div class="row" style="width:100%;">
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Customer ID</span>
+                    </div>
+                    @*<input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null && Model.customer_id != null) { <text> value="@Model.customer_id" </text> }>*@
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.customer_id" </text> }>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Customer Category</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.category" </text> }>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Customer Name</span>
+                    </div>
+                    @*<input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.customer_name" </text> }>*@
+                    <textarea class="form-control" readonly id="customer_name" name="customer_name" placeholder="" aria-label="" aria-describedby="basic-addon1" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" maxlength="50" style="width: 100px; height: 38px; resize: none; overflow-y: auto;">
+        @if (Model != null)
+        { @Model.customer_name }
+        </textarea>
+                    @*<textarea class="form-control" readonly id="customer_name" name="customer_name" rows="1" placeholder="">
+                    @if (Model != null)
+                     { @Model.customer_name.Trim() }</textarea>*@
+                </div>
+            </div>
+        </div>
+        @*...Third row...*@
+        <div class="row" style="width:100%;">
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Customer Branch</span>
+                    </div>
+                    <input type="text" readonly class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.cust_branch" </text> }>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Create Date</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.cust_create_date" </text> }>
+                </div>
+            </div>
+            <!--<div class="col-md-6 col-lg-4">
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span style="width:140px;" class="input-group-text" id="basic-addon1">Customer Status</span>
+            </div>-->
+            @*<input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.cust_status" </text> }>*@
+            <!--<textarea class="form-control" readonly id="cust_status" name="cust_status" placeholder="" aria-label="" aria-describedby="basic-addon1" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" maxlength="50" style="width: 140px; height: 38px; resize: none; overflow-y: auto;">
+                             @if (Model != null)
+                             { @Model.cust_status }
+                             </textarea>
+
+            </div>
+
+        </div>-->
+        </div>
+        <br />
+
+        @*...Third row...*@
+        <p style="color: darkblue; font-weight: 500; font-size: medium ">Customer Name</p>
+        <div class="row" style="width:100%;">
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">First Name</span>
+                    </div>
+                    <input type="text" readonly class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.first_name" </text> }>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Second Name</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.second_name" </text> }>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Last Name</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.last_name" </text> }>
+                </div>
+            </div>
+        </div>
+        <br />
+
+        <div class="row" style="margin-top:-15px; margin-bottom:2px;">
+            <div class="col-md-6 col-lg-4">
+                <p style="color: darkblue; font-weight: 500;  font-size: medium">
+                    Customer photo &nbsp; &nbsp; <a href="#" onclick="displayPhoto('@Model.ImageUrl1','image')"> <i class="fa fa-fw" style="font-size:20px;" aria-hidden="true" title="Copy to use file-photo-o"></i></a>
+                    <br />
+
+            </div>
+        </div>
+
+
+        <!-- ... previous code ... -->
+
+        <p style="color: darkblue; font-weight: 500; font-size: medium ">KYC & Other Details</p>
+        <div style="width: 100%; overflow-y: auto;">
+            @*<table id="dataGrid" class="mb-0 table table-bordered" style="font-size: 14px; width: 100%; font-weight: 500;">*@
+
+            <table id="dataGrid" class="table table-hover table-striped table-bordered" style="overflow-y: auto; font-size: 14px; width: 100%; font-weight: 500;">
+
+                <thead style="color: black;font-weight:900;">
+                    <tr>
+                        <th>#</th>
+                        <th>Proof Type</th>
+                        <th>KYC</th>
+                        <th>ID-No</th>
+                        <th>Valid-From</th>
+                        <th>Valid-To</th>
+                        <th>Name</th>
+                        <th>Father Name</th>
+                        <th>DOB</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Data != null && Model.Data.Count > 0)
+                    {
+                        foreach (var item in Model.Data)
+                        {
+                            <tr>
+                                <td>
+                                    @if (item.ContainsKey("image") && item["image"] != null)
+                                    {
+                                        <a href="#" onclick="displayPhoto('@item["image"]','image')">
+                                            @*<i class="fa-regular fa-image" style="font-size:23px;"></i>*@
+
+
+                                            @*<div class="font-icon-wrapper">*@
+
+                                            <i class="fa fa-fw" aria-hidden="true" style="font-size:20px;" title="Copy to use file-photo-o"></i>
+
+                                            @*<p>pe-7s-photo</p>*@
+                                            @*</div>*@
+
+                                        </a>
+                                    }
+                                    else if (item.ContainsKey("pdf") && item["pdf"] != null)
+                                    {
+                                        <a href="#" onclick="displayPhoto('@item["pdf"]','pdf')">
+                                            @*<i class="fa-regular fa-file-pdf" style="font-size:23px;"></i>*@
+
+                                            <i class="fa fa-fw" style="font-size:20px;" aria-hidden="true" title="Copy to use file-pdf-o"></i>
+                                        </a>
+                                    }
+                                </td>
+                                <td>@item["proof_type"]</td>
+                                <td>@item["kyc"]</td>
+                                <td>@item["id_no"]</td>
+                                <td>@item["valid_from"]</td>
+                                <td>@item["valid_to"]</td>
+                                <td>@item["name"]</td>
+                                <td>@item["father"]</td>
+                                <td>@item["dob_kyc"]</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        @*<div class="row justify-content-end" style="width:100%;">
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group mb-3">
+                    <button type="button" id="viewDocumentsBtn" class="btn btn-primary" onclick="openInNewTab('@Url.Action("ViewAllDocuments_modi", "Customer_approve")')">View All Documents</button>
+                </div>
+            </div>
+        </div>*@
+
+        <div class="row justify-content-end" style="width:100%;">
+            <div class="col-md-6 col-lg-4 d-flex justify-content-end">
+                <button type="button" id="viewDocumentsBtn1" class="btn btn-primary btn-custom" onclick="openInNewTab('@Url.Action("ViewAllDocuments_modi", "Customer_approve")')">View New KYC Docs</button>&nbsp;
+                <button type="button" id="viewDocumentsBtn2" class="btn btn-primary btn-custom" onclick="openInNewTab('@Url.Action("ViewAllExistingKYC", "Customer_approve")')">View Existing KYC Docs</button>
+            </div>
+        </div>
+
+
+        @*--------------Image POPUP div-----------------*@
+        @*<div id="photoModal" class="modal">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <img class="modal-content " id="customerPhoto">
+            <div id="caption"></div>
+        </div>*@
+
+        <div id="mediaModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; padding-top: 50px; background-color: rgba(0,0,0,0); z-index: 1000;">
+            <div id="mediaModalContent" style="position: relative; cursor: move; margin: auto; padding: 40px; width: 60%; height: 90%; ">
+                <div id="pdfViewer" style="width: 100%; cursor: move; height: calc(100% - 40px);"></div>
+
+                @*Zoom Controls*@
+                <div id="zoomControls" style="text-align:center;">
+
+                    <button id="zoomIn" style="margin-right: 10px; background:transparent; border:none; font-size:24px; cursor:pointer;">
+                        <i class="fas fa-search-plus"></i>
+                    </button>
+
+                    <!-- Zoom Out button with icon -->
+                    <button id="zoomOut" style="background:transparent; border:none; font-size:24px; cursor:pointer;">
+                        <i class="fas fa-search-minus"></i>
+                    </button>
+                    <!-- Rotate button with icon -->
+                    <button id="rotateImage" style="background:transparent; border:none; font-size:24px; cursor:pointer;">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+
+
+                <button onclick="closeModal()" style="position:absolute; top:10px; right:10px; background:transparent; border:none; font-size:24px; cursor:pointer;">
+                    <i class="fas fa-times"></i>
+                </button>
+                @*</div>*@
+            </div>
+        </div>
+
+        <p style="color: darkblue; font-weight: 500; font-size : medium">Personal Details</p>
+        @*...Fourth row...*@
+
+        <div class="row" style="width:100%;">
+            <div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Mobile No.</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.mobile_no" </text> }>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Residence Ph.No.</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.residence_no" </text> }>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Office Ph.No</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.office_no" </text> }>
+                </div>
+
+            </div>
+        </div>
+        @*...Fifth row...*@
+        <div class="row" style="width:100%;">
+            <div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Email ID</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.email" </text> }>
+                </div>
+
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Date of Birth</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.dob" </text> }>
+                </div>
+
+            </div>
+            <div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Gender</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.gender" </text> }>
+                </div>
+
+            </div>
+        </div>
+        @*...Sixth row...*@
+        <div class="row" style="width:100%;">
+            <div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Marital Status</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.marital_status" </text> }>
+                </div>
+
+            </div>
+            <div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Spouse Name</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.spouse" </text> }>
+                </div>
+
+            </div>
+            <div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Father's Name</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.father_name" </text> }>
+                </div>
+
+            </div>
+        </div>
+        @*...Seventh row...*@
+        <div class="row" style="width:100%;">
+            <div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Mother's Name</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.mother_name" </text> }>
+                </div>
+
+            </div>
+            @*<div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Guardian Type</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.guardiantype" </text> }>
+                </div>
+
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Guardian Name</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.guardian_name" </text> }>
+                </div>
+            </div>*@                  <div class="col-md-6 col-lg-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Residence Type</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.residence_type" </text> }>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Year of Stay</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.yearofstay" </text> }>
+                </div>
+
+            </div>
+        </div>
+        @*...Eight row...*@
+        <div class="row" style="width:100%;">
+            @*<div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Year's of Stay</span>
+                    </div>
+                    <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.yearofstay" </text> }>
+                </div>
+
+            </div>*@
+            <div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Dist. from Branch</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.dist_from_branch" </text> }>
+                </div>
+
+            </div>
+            <div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Annual Income</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.annual_income" </text> }>
+                </div>
+
+            </div>
+            <div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Education</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.education" </text> }>
+                </div>
+
+            </div>
+        </div>
+        <div class="row" style="width:100%;">
+            <div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Occupation</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.occupation" </text> }>
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <p style="color: darkblue; font-weight: 500; font-size: medium">Communication Address</p>
+
+        @*<div id="P_add_div">
+            @Html.Partial("_Permanent_address_partial_view")
+        </div>*@
+
+
+        @*...9th row...*@
+        <div class="row" style="width:100%;">
+            <div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">House Name</span>
+                    </div>
+                    @*<input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.commu_address" </text> }>*@
+                    <textarea class="form-control" readonly id="commu_address" name="commu_address" placeholder="" aria-label="" aria-describedby="basic-addon1" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" maxlength="50" style="width: 100px; height: 38px; resize: none; overflow-y: auto;">
+                                         @if (Model != null)
+                                         { @Model.commu_address }
+                                         </textarea>
+
+                </div>
+
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Land Mark</span>
+                    </div>
+                    @*<input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.land_mark" </text> }>*@
+                    <textarea class="form-control" readonly id="land_mark" name="land_mark" placeholder="" aria-label="" aria-describedby="basic-addon1" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" maxlength="50" style="width: 100px; height: 38px; resize: none; overflow-y: auto;">
+                                          @if (Model != null)
+                                          { @Model.land_mark }
+                                          </textarea>
+
+
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">City</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.c_city" </text> }>
+                </div>
+            </div>
+        </div>
+        @*...10th row...*@
+        <div class="row" style="width:100%;">
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Pin Code</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.c_pin" </text> }>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Post</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.c_post" </text> }>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">District</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.c_district" </text> }>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="width:100%;">
+            <div class="col-md-6 col-lg-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span style="width:140px;" class="input-group-text" id="basic-addon1">State</span>
+                    </div>
+                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.c_state" </text> }>
+                </div>
+            </div>
+        </div>
+
+
+        @*<div id="P_add_div">
+            @Html.Partial("_Permanent_address_partial_view")
+        </div>*@
+
+
+
+        @if (Model.IsPermanentSameAsCommunication)
+        {
+            <div>
+                <p style="color: darkblue; font-weight: 500; " font-size: medium">Permanent Address&nbsp;(Same as above)</p>
+            </div>
+        }
+        else
+        {
+            <div>
+
+                <p style="color: darkblue; font-weight: 500; font-size: medium">Permanent Address</p>
+
+                <div class="row" style="width:100%;">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">House Name</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.p_address" </text> }>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Land Mark</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.p_mark" </text> }>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">City</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.p_city" </text> }>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="width:100%;">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Pin Code</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.p_pin" </text> }>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Post</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.p_post" </text> }>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">District</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.p_district" </text> }>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="width:100%;">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">State</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.p_state" </text> }>
+                        </div>
+                    </div>
+                </div>
+                <!-- Your existing HTML code for displaying permanent address -->
+                @*<p>Permanent Address: @Model.p_address, @Model.p_city, @Model.p_state, etc.</p>*@
+            </div>
+        }
+
+
+        <br />
+
+        <div class="row">
+
+            <div class="col-md-6 col-lg-6">
+
+            </div>
+            @*&nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;*@
+            @*<div class="col-md-6 col-lg-4">
+
+            </div>*@
+            <div class="col-md-6 col-lg-6">
+                @*<button class="mb-2 mr-2 btn-transition btn btn-outline-primary" onclick="showApprove('Approve')" style="background-color:green;height:40px;width:100px;border-radius:8px;color:white;border-color:white;">Approve</button>*@
+                <button onclick="showApproveModi('Approve')" style="background-color:green;height:40px;width:100px;border-radius:8px;color:white;border-color:white;">Approve</button>
+                <button onclick="showReturnModi('Return')" style="background-color:#007FFF;height:40px;width:100px;border-radius:8px;color:white;border-color:white;">Return</button>
+                <button onclick="showRejectModi('Reject')" style="background-color:red;height:40px;width:100px;border-radius:8px;color:white;border-color:white;">Reject</button>
+            </div>
+        </div>
+        <br />
+
+
+
+    </div>
+        }
+        else              // First Approval//
+        {
+
+            <div class="card-body">
+
+
+                @*...second row...*@
+                <div class="row" style="width:100%;">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Customer Temp ID</span>
+                            </div>
+                            @*<input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null && Model.customer_id != null) { <text> value="@Model.customer_id" </text> }>*@
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.customer_temp_id" </text> }>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Customer Category</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.category" </text> }>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Customer Name</span>
+                            </div>
+                            @*<input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.customer_name" </text> }>*@
+                            <textarea class="form-control" readonly id="customer_name" name="customer_name" placeholder="" aria-label="" aria-describedby="basic-addon1" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" maxlength="50" style="width: 100px; height: 38px; resize: none; overflow-y: auto;">
+                            @if (Model != null)
+                            { @Model.customer_name }
+                            </textarea>
+                        </div>
+                    </div>
+                </div>
+                @*...Third row...*@
+                <div class="row" style="width:100%;">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Customer Branch</span>
+                            </div>
+                            <input type="text" readonly class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.cust_branch" </text> }>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Create Date</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.cust_create_date" </text> }>
+                        </div>
+                    </div>
+                    <!--<div class="col-md-6 col-lg-4">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span style="width:140px;" class="input-group-text" id="basic-addon1">Customer Status</span>
+                        </div>-->
+                    @*<input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.cust_status" </text> }>*@
+                    <!--<textarea class="form-control" readonly id="cust_status" name="cust_status" placeholder="" aria-label="" aria-describedby="basic-addon1" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" maxlength="50" style="width: 140px; height: 38px; resize: none; overflow-y: auto;">
+                         @if (Model != null)
+                         { @Model.cust_status }
+                         </textarea>
+
+                        </div>
+
+                    </div>-->
+                </div>
+
+
+                <!-- ... previous code ... -->
+                <p style="color: darkblue; font-weight: 500; font-size: medium">KYC & Other Details</p>
+                <div style="width: 100%; overflow-y: auto;">
+                    @*<table id="dataGrid" class="mb-0 table table-bordered" style="font-size: 14px; width: 100%; font-weight: 500;">*@
+                    <table id="dataGrid" class="table table-hover table-striped table-bordered" style="overflow-y: auto; font-size: 14px; width: 100%; font-weight: 500;">
+                        <thead style="color:black;font-weight:900;">
+                            <tr>
+                                <th>#</th>
+                                <th>Proof Type</th>
+                                <th>KYC</th>
+                                <th>ID-No</th>
+                                <th>Valid-From</th>
+                                <th>Valid-To</th>
+                                <th>Name</th>
+                                <th>Father Name</th>
+                                <th>DOB</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Data != null && Model.Data.Count > 0)
+                            {
+                                foreach (var item in Model.Data)
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (item.ContainsKey("image") && item["image"] != null)
+                                            {
+                                                <a href="#" onclick="displayPhoto('@item["image"]','image')">
+                                                    @*<i class="fa-regular fa-image" style="font-size:23px;"></i>*@
+                                                    <i class="fa fa-fw" style="font-size:20px;" aria-hidden="true" title="Copy to use file-photo-o"></i>
+                                                </a>
+                                            }
+                                            else if (item.ContainsKey("pdf") && item["pdf"] != null)
+                                            {
+                                                <a href="#" onclick="displayPhoto('@item["pdf"]','pdf')">
+                                                    @*<i class="fa-regular fa-file-pdf" style="font-size:23px;"></i>*@
+                                                    <i class="fa fa-fw" style="font-size:20px;" aria-hidden="true" title="Copy to use file-pdf-o"></i>
+                                                </a>
+                                            }
+                                        </td>
+                                        <td>@item["proof_type"]</td>
+                                        <td>@item["kyc"]</td>
+                                        <td>@item["id_no"]</td>
+                                        <td>@item["valid_from"]</td>
+                                        <td>@item["valid_to"]</td>
+                                        <td>@item["name"]</td>
+                                        <td>@item["father"]</td>
+                                        <td>@item["dob_kyc"]</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+
+
+                <div class="row justify-content-end" style="width:100%;">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+
+                            <button type="button" id="viewDocumentsBtn" class="btn btn-primary" onclick="openInNewTab('@Url.Action("ViewAllDocuments", "Customer_approve")')">View All Documents</button>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                @*--------------Image POPUP div-----------------*@
+                @*<div id="photoModal" class="modal">
+                        <span class="close" onclick="closeModal()">&times;</span>
+                        <img class="modal-content " id="customerPhoto">
+                        <div id="caption"></div>
+                    </div>*@
+                <div id="mediaModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; padding-top: 50px; background-color: rgba(0,0,0,0); z-index: 1000;">
+                    <div id="mediaModalContent" style="position: relative; cursor: move; margin: auto; padding: 40px; width: 60%; height: 90%; ">
+                        <div id="pdfViewer" style="width: 100%; cursor: move; height: calc(100% - 40px);"></div>
+
+                        @*Zoom Controls*@
+                        <div id="zoomControls" style="text-align:center;">
+
+                            <button id="zoomIn" style="margin-right: 10px; background:transparent; border:none; font-size:24px; cursor:pointer;">
+                                <i class="fas fa-search-plus"></i>
+                            </button>
+
+                            <!-- Zoom Out button with icon -->
+                            <button id="zoomOut" style="background:transparent; border:none; font-size:24px; cursor:pointer;">
+                                <i class="fas fa-search-minus"></i>
+                            </button>
+                            <!-- Rotate button with icon -->
+                            <button id="rotateImage" style="background:transparent; border:none; font-size:24px; cursor:pointer;">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+
+
+                        <button onclick="closeModal()" style="position:absolute; top:10px; right:10px; background:transparent; border:none; font-size:24px; cursor:pointer;">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        @*</div>*@
+                    </div>
+                </div>
+
+                <p style="color: darkblue; font-weight: 500;font-size:medium">Personal Details</p>
+
+
+                <div class="row" style="width:100%;">
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">First Name</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.first_name" </text> }>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Second Name</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.second_name" </text> }>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Last Name</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.last_name" </text> }>
+                        </div>
+
+                    </div>
+                </div>
+
+                @*...Fourth row...*@
+
+                <div class="row" style="width:100%;">
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Mobile No.</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.mob_no" </text> }>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Residence Ph.No.</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.residence_no" </text> }>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Office Ph.No</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.office_no" </text> }>
+                        </div>
+
+                    </div>
+                </div>
+                @*...Fifth row...*@
+                <div class="row" style="width:100%;">
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Email ID</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.email" </text> }>
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Date of Birth</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.dob" </text> }>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Gender</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.gender" </text> }>
+                        </div>
+
+                    </div>
+                </div>
+                @*...Sixth row...*@
+                <div class="row" style="width:100%;">
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Marital Status</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.marital_status" </text> }>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Spouse Name</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.spouse" </text> }>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Father's Name</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.father_name" </text> }>
+                        </div>
+
+                    </div>
+                </div>
+                @*...Seventh row...*@
+                <div class="row" style="width:100%;">
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Mother's Name</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.mother_name" </text> }>
+                        </div>
+
+                    </div>
+                    @*<div class="col-md-6 col-lg-4">
+
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text" id="basic-addon1">Guardian Type</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.guardiantype" </text> }>
+                            </div>
+
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text" id="basic-addon1">Guardian Name</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.guardian_name" </text> }>
+                            </div>
+                        </div>*@                  <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Residence Type</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.residence_type" </text> }>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Year of Stay</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.yearofstay" </text> }>
+                        </div>
+
+                    </div>
+                </div>
+                @*...Eight row...*@
+                <div class="row" style="width:100%;">
+                    @*<div class="col-md-6 col-lg-4">
+
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text" id="basic-addon1">Year's of Stay</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.yearofstay" </text> }>
+                            </div>
+
+                        </div>*@
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Dist. from Branch</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.dist_from_branch" </text> }>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Annual Income</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.annual_income" </text> }>
+                        </div>
+
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Education</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.education" </text> }>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="row" style="width:100%;">
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Occupation</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.occupation" </text> }>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+                <p style="color: darkblue; font-weight: 500; font-size: medium">Communication Address</p>
+
+                @*<div id="P_add_div">
+                        @Html.Partial("_Permanent_address_partial_view")
+                    </div>*@
+
+
+                @*...9th row...*@
+                <div class="row" style="width:100%;">
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">House Name</span>
+                            </div>
+                            @*<input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.commu_address" </text> }>*@
+                            <textarea class="form-control" readonly id="commu_address" name="commu_address" placeholder="" aria-label="" aria-describedby="basic-addon1" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" maxlength="50" style="width: 100px; height: 38px; resize: none; overflow-y: auto;">
+                         @if (Model != null)
+                         { @Model.commu_address }
+                         </textarea>
+
+                        </div>
+
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Land Mark</span>
+                            </div>
+                            @*<input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.land_mark" </text> }>*@
+                            <textarea class="form-control" readonly id="land_mark" name="land_mark" placeholder="" aria-label="" aria-describedby="basic-addon1" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" maxlength="50" style="width: 100px; height: 38px; resize: none; overflow-y: auto;">
+                          @if (Model != null)
+                          { @Model.land_mark }
+                          </textarea>
+
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">City</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.c_city" </text> }>
+                        </div>
+                    </div>
+                </div>
+                @*...10th row...*@
+                <div class="row" style="width:100%;">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Pin Code</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.c_pin" </text> }>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Post</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.c_post" </text> }>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">District</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.c_district" </text> }>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="width:100%;">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">State</span>
+                            </div>
+                            <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.c_state" </text> }>
+                        </div>
+                    </div>
+                </div>
+
+
+                @*<div id="P_add_div">
+                        @Html.Partial("_Permanent_address_partial_view")
+                    </div>*@
+
+
+
+                @if (Model.IsPermanentSameAsCommunication)
+                {
+                    <div>
+                        <p style="color: darkblue; font-weight: 500; font-size: medium">Permanent Address&nbsp;(Same as above)</p>
+                    </div>
+                }
+                else
+                {
+                    <div>
+
+                        <p style="color: darkblue; font-weight: 500; font-size: medium">Permanent Address</p>
+
+                        <div class="row" style="width:100%;">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" class="input-group-text" id="basic-addon1">House Name</span>
+                                    </div>
+                                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.p_address" </text> }>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Land Mark</span>
+                                    </div>
+                                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.p_mark" </text> }>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" class="input-group-text" id="basic-addon1">City</span>
+                                    </div>
+                                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.p_city" </text> }>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="width:100%;">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Pin Code</span>
+                                    </div>
+                                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.p_pin" </text> }>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" class="input-group-text" id="basic-addon1">Post</span>
+                                    </div>
+                                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.p_post" </text> }>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-lg-4">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" class="input-group-text" id="basic-addon1">District</span>
+                                    </div>
+                                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.p_district" </text> }>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="width:100%;">
+                            <div class="col-md-6 col-lg-4">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width:140px;" class="input-group-text" id="basic-addon1">State</span>
+                                    </div>
+                                    <input type="text" class="form-control" readonly placeholder="" aria-label="" aria-describedby="basic-addon1" @if (Model != null) { <text> value="@Model.p_state" </text> }>
+                                </div>
+                            </div>
+
+                            @*<div class="col-md-6 col-lg-4">
+                                    <div class="input-group mb-3">
+                                        <button id="viewDocumentsBtn" class="btn btn-primary" onclick="openInNewTab('@Url.Action("ViewAllDocuments", "Customer_approve")')">View All Documents</button>
+                                    </div>
+                                </div>*@
+
+                        </div>
+
+                    </div>
+                }
+
+
+                <div class="row">
+
+                    <div class="col-md-6 col-lg-6">
+
+                    </div>
+                    @*&nbsp;  &nbsp; &nbsp; &nbsp;  &nbsp;  &nbsp; &nbsp;*@
+                    @*<div class="col-md-6 col-lg-4">
+
+                        </div>*@
+                    <div class="col-md-6 col-lg-6">
+                        @*<button class="mb-2 mr-2 btn-transition btn btn-outline-primary" onclick="showApprove('Approve')" style="background-color:green;height:40px;width:100px;border-radius:8px;color:white;border-color:white;">Approve</button>*@
+                        <button onclick="showApprove('Approve')" style="background-color:green;height:40px;width:100px;border-radius:8px;color:white;border-color:white;">Approve</button>
+                        <button onclick="showReturn('Return')" style="background-color:#007FFF;height:40px;width:100px;border-radius:8px;color:white;border-color:white;">Return</button>
+                        <button onclick="showReject('Reject')" style="background-color:red;height:40px;width:100px;border-radius:8px;color:white;border-color:white;">Reject</button>
+                    </div>
+                </div>
+                <br />
+
+
+
+            </div>
+
+        }
+
+
+    </div>
+    @*</div>
+        </div>
+        </div>*@
+</body>
+</html>
+
+
+
+@*---------------------------For viewing all documents-------------------*@
+
+@*<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>*@
+
+<script src="~/Scripts/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.0.0/pdf.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+        $(document).ready(function () {
+            $("#viewDocumentsBtn").click(function () {
+                var customerId = @Model.customer_temp_id; // Get the customer ID from your model
+                var url = "@Url.Action("ViewAllDocuments", "Customer_approve")?customerId=" + customerId;
+                openInNewTab(url);
+            });
+
+            // Function to open URL in a new tab
+            function openInNewTab(url) {
+               /* var win = window.open(url, '_blank');*/
+                win.focus();
+            }
+        });
+</script>
+
+<script>
+        $(document).ready(function () {
+            $("#viewDocumentsBtn1").click(function () {
+                var customerId = @Model.customer_id; // Get the customer ID from your model
+                var url = "@Url.Action("ViewAllDocuments_modi", "Customer_approve")?customerId=" + customerId;
+                openInNewTab_modi(url);
+            });
+
+            // Function to open URL in a new tab
+            function openInNewTab_modi(url) {
+               /* var win = window.open(url, '_blank');*/
+                win.focus();
+            }
+        });
+</script>
+<script>
+
+     $(document).ready(function () {
+
+
+         $("#viewDocumentsBtn2").click(function () {
+              var customerId = @Model.customer_id; // Get the customer ID from your model
+              var url = "@Url.Action("ViewAllExistingKYC", "Customer_approve")?customerId=" + customerId;
+              openInNewTab_existing(url);
+          });
+
+         // Function to open URL in a new tab
+         function openInNewTab_existing(url) {
+            /* var win = window.open(url, '_blank');*/
+             win.focus();
+         }
+     });
+
+
+
+
+</script>
+
+
+
+
+
+
+@*---------------------------KYC & Other details: For customer and document photo-------------------*@
+
+<script>
+    //    function displayPhoto(fileUrl, fileType) {
+
+    //    var modal = document.getElementById("photoModal");
+    //    var modalImg = document.getElementById("customerPhoto");
+    //    var caption = document.getElementById("caption");
+
+    //    modal.style.display = "block";
+
+    //    if (fileType === "image") {
+    //        modalImg.src = fileUrl;
+    //    caption.innerHTML = '<span id="closeImage">Close Image</span>'; // Modified caption
+    //    var closeSpan = document.getElementById("closeImage");
+    //    closeSpan.addEventListener("click", function () {
+    //        closeModal();
+    //        });
+    //    } else if (fileType === "pdf") {
+    //        modalImg.src = "";
+    //    caption.innerHTML = '<object data="' + fileUrl + '" type="application/pdf" width="100%" height="100%"><p>PDF viewer required. Download it <a href="' + fileUrl + '">here</a>.</p></object>';
+    //    }
+
+    //    var span = document.getElementsByClassName("close")[0];
+    //    span.onclick = function () {
+    //        closeModal();
+    //    };
+    //}
+
+    //    window.onclick = function (event) {
+    //    var modal = document.getElementById("photoModal");
+    //    if (event.target == modal) {
+    //        closeModal();
+    //    }
+    //}
+
+    //    function closeModal() {
+    //    var modal = document.getElementById("photoModal");
+    //    modal.style.display = "none";
+    //}
+
+    function displayPhoto(dataUrl, type) {
+       // alert("display");
+        var modal = document.getElementById('mediaModal');
+        var content = document.getElementById('pdfViewer'); // Use pdfViewer as content
+
+        if (type === 'pdf') {
+            // Convert base64 to Blob
+            var base64Data = dataUrl.split(',')[1];
+            var binaryString = atob(base64Data);
+            var len = binaryString.length;
+            var bytes = new Uint8Array(len);
+            for (var i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            var blob = new Blob([bytes], { type: 'application/pdf' });
+            var blobUrl = URL.createObjectURL(blob);
+
+            // Embed PDF in an iframe
+            content.innerHTML = `
+        <iframe id="pdfFrame" src="${blobUrl}" style="width:100%; height:400px; border:none; border: 7px solid #ddd;" frameborder="0"></iframe>`;
+
+            //        content.innerHTML = `
+            ////          <div style="padding-top:25px; padding-left:120px;">
+            ////            <iframe src="${blobUrl}" style="width:100%; height:600px; border:none;" frameborder="0"></iframe>
+            ////          </div>`;
+
+            // Hide zoom controls for PDFs
+            document.getElementById('zoomControls').style.display = 'none';
+
+        } else if (type === 'image') {
+            content.innerHTML = `
+      <div id="imageWrapper" style="width:700px; height:400px; overflow:auto; background-color:white; border: 7px solid #ddd;">
+          <img id="modalImage" src="${dataUrl}" style="width:600px; padding-left:120px; padding-top:35px; transform: scale(1);" />
+      </div>`;
+
+            // Show zoom controls for images
+            document.getElementById('zoomControls').style.display = 'block';
+
+            // Add zoom functionality for image
+            let scale = 1;
+            const zoomStep = 0.1;
+            const modalImage = document.getElementById('modalImage');
+
+            document.getElementById('zoomIn').addEventListener('click', () => {
+                scale += zoomStep;
+                modalImage.style.transform = `scale(${scale})`;
+            });
+
+            document.getElementById('zoomOut').addEventListener('click', () => {
+                if (scale > zoomStep) {
+                    scale -= zoomStep;
+                    modalImage.style.transform = `scale(${scale})`;
+                }
+            });
+        }
+
+        modal.style.display = 'block';
+    }
+
+
+    function makeDraggable(element) {
+        var isDragging = false;
+        var offsetX, offsetY;
+
+        element.onmousedown = function (event) {
+            isDragging = true;
+            offsetX = event.clientX - element.getBoundingClientRect().left;
+            offsetY = event.clientY - element.getBoundingClientRect().top;
+
+            document.onmousemove = function (event) {
+                if (isDragging) {
+                    var modal = document.getElementById('mediaModal');
+                    modal.style.left = (event.clientX - offsetX) + 'px';
+                    modal.style.top = (event.clientY - offsetY) + 'px';
+                }
+            };
+
+            document.onmouseup = function () {
+                isDragging = false;
+                document.onmousemove = null;
+            };
+        };
+    }
+
+    // Apply dragging functionality to the header
+    document.getElementById('mediaModalContent').addEventListener('mousedown', function (event) {
+        makeDraggable(document.getElementById('mediaModal'));
+    });
+
+
+
+    // Apply dragging functionality to the header
+    document.getElementById('pdfViewer').addEventListener('mousedown', function (event) {
+        makeDraggable(document.getElementById('mediaModal'));
+    });
+
+
+    window.onclick = function (event) {
+        //  alert("mediaModal click");
+        var modal = document.getElementById("mediaModal");
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    function closeModal() {
+        // alert("close");
+        var modal = document.getElementById("mediaModal");
+        modal.style.display = "none";
+    }
+
+    let rotationAngle = 0;
+
+    document.getElementById('rotateImage').addEventListener('click', function () {
+        rotationAngle += 90; // Rotate by 90 degrees each time the button is clicked
+        document.getElementById('modalImage').style.transform = 'rotate(' + rotationAngle + 'deg)';
+    });
+
+</script>
+
+
+@*-----------Return,Approve & Reject Message Box-------------*@
+
+<!-- Include SweetAlert2 CSS and JS -->
+<link rel="stylesheet" href="~/Content/cust_apprvlmsgbox1.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+@*<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>*@
+
+<script src="~/Scripts/jquery-3.6.4.min.js"></script>
+
+
+
+
+@*<script>
+        function showApprove(action) {
+
+            Swal.fire({
+
+                title: "Approve?",
+                showDenyButton: true,
+                confirmButtonText: "Yes",
+                denyButtonText: "No",
+                customClass: 'custom-approve-button',
+                preConfirm: (reason) => {
+                    $.ajax({
+                        url: '/Customer_approve/ApproveCustomer',
+                        type: 'POST',
+                        data: { reason: reason },
+                        success: function (data) {
+                            alert(data.result);
+                            // Access the result property in the response
+                            var stringArray = data.result.split('#');
+
+                            var id = stringArray[0];
+                            //alert(id);
+                            var message = stringArray[1];
+                            //alert(message);
+                            if (id === "0") {
+                                // Mobile Number already exists
+                                Swal.fire({
+                                    //title: "Mobile Number already exists.",
+                                    title: message,
+                                    icon: "Error"
+                                }).then(() => {
+                                    window.location.href = '/Customer_approvelist/Cus_approvelist';
+                                });
+                            } else  {
+                                ALERT(11);
+                                // Approved Successfully
+                                Swal.fire({
+                                    /* title: "Approved Successfully.",*/
+                                    /*title: "Approved Successfully. Customer ID: " + data.customerID,*/
+                                    title: message,
+                                    icon: "success"
+                                }).then(() => {
+                                    window.location.href = '/Customer_approvelist/Cus_approvelist';
+                                });
+                            }
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            alert(1);
+                            Swal.fire(
+                                "Error",
+                                "Failed to submit reason. Please try again.",
+                                "error"
+                            );
+                        }
+                    });
+                }
+            });
+        }
+    </script>*@
+
+<script>
+    function showApproveModi(action) {
+
+        Swal.fire({
+
+            title: "Approve?",
+            showDenyButton: true,
+            confirmButtonText: "Yes",
+            denyButtonText: "No",
+            customClass: 'custom-approve-button',
+            preConfirm: (reason) => {
+                $.ajax({
+                    url: '/Customer_approve/ApproveCustomer',
+                    type: 'POST',
+                    data: { reason: reason },
+                    success: function (data) {
+                        var stringArray = data.result.split('#');
+                        var id = stringArray[0].trim(); // Ensure removing leading/trailing spaces
+                        var message = stringArray[1].trim(); // Ensure removing leading/trailing spaces
+
+                        if (id === "0") {
+                            // Mobile Number already exists
+                            Swal.fire({
+                                title: message,
+                                icon: "error"
+                            }).then(() => {
+                                window.location.href = '/Customer_approvelistModify/Cus_modiapprovelist';
+                            });
+                        } else {
+                            // Approved Successfully
+                            Swal.fire({
+                                title: message,
+                                icon: "success"
+                            }).then(() => {
+                                window.location.href = '/Customer_approvelistModify/Cus_modiapprovelist';
+                            });
+                        }
+
+                        //// Access the result property in the response
+                        //if (data.result === "0") {
+                        //    // Mobile Number already exists
+                        //    Swal.fire({
+                        //        title: "Mobile Number already exists.",
+                        //        icon: "Error"
+                        //    }).then(() => {
+                        //        window.location.href = '/Customer_approvelist/Cus_approvelist';
+                        //    });
+                        //} else if (data.result === "1") {
+                        //    // Approved Successfully
+                        //    Swal.fire({
+                        //        title: "Approved Successfully.",
+                        //        icon: "success"
+                        //    }).then(() => {
+                        //        window.location.href = '/Customer_approvelist/Cus_approvelist';
+                        //    });
+                        //}
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        alert(1);
+                        Swal.fire(
+                            "Error",
+                            "Failed to submit reason. Please try again.",
+                            "error"
+                        );
+                    }
+                });
+            }
+        });
+    }
+</script>
+
+
+<script>
+    function showApprove(action) {
+        Swal.fire({
+            title: "Approve?",
+            showDenyButton: true,
+            confirmButtonText: "Yes",
+            denyButtonText: "No",
+            customClass: 'custom-approve-button',
+            preConfirm: (reason) => {
+                $.ajax({
+                    url: '/Customer_approve/ApproveCustomer',
+                    type: 'POST',
+                    data: { reason: reason },
+                    success: function (data) {
+                        // Access the result property in the response
+                        var stringArray = data.result.split('#');
+                        var id = stringArray[0].trim(); // Ensure removing leading/trailing spaces
+                        var message = stringArray[1].trim(); // Ensure removing leading/trailing spaces
+
+                        if (id === "0") {
+                            // Mobile Number already exists
+                            Swal.fire({
+                                title: message,
+                                icon: "error"
+                            }).then(() => {
+                                window.location.href = '/Customer_approvelist/Cus_approvelist';
+                            });
+                        } else {
+                            // Approved Successfully
+                            Swal.fire({
+                                title: message,
+                                icon: "success"
+                            }).then(() => {
+                                window.location.href = '/Customer_approvelist/Cus_approvelist';
+                            });
+                        }
+                    },
+                    error: function (xhr, textStatus, errorThrown) {
+                        Swal.fire(
+                            "Error",
+                            "Failed to submit reason. Please try again.",
+                            "error"
+                        );
+                    }
+                });
+            }
+        });
+    }
+
+
+</script>
+
+
+<script>
+
+
+    function showReject(action) {
+        Swal.fire({
+            title: "Reason for " + action + ":",
+            input: "text",
+            showCancelButton: false,
+            confirmButtonText: "OK",
+            //cancelButtonText: "Cancel",
+            preConfirm: (rejectReason) => {
+                if (!rejectReason || rejectReason.trim() === "") {
+                    Swal.showValidationMessage("Please enter a valid reason.");
+                    return false; // prevent closing the dialog
+                } else {
+                    // Perform the RejectCustomer action when the user clicks "OK"
+                    $.ajax({
+                        url: '/Customer_approve/RejectCustomer',
+                        type: 'POST',
+                        data: { rejectReason: rejectReason },
+                        success: function (data) {
+                            // Handle success response from the server if needed
+                            Swal.fire(
+                                "Rejected Successfully..",
+                                "Reason for " + action + ": " + rejectReason,
+                                "success"
+                            ).then(() => {
+                                // Redirect to the approval list after showing the success message
+                                window.location.href = '/Customer_approvelist/Cus_approvelist';
+                            });
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            // Handle error response from the server if needed
+                            Swal.fire(
+                                "Error",
+                                "Failed to submit reason. Please try again.",
+                                "error"
+                            );
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    function showRejectModi(action) {
+        Swal.fire({
+            title: "Reason for " + action + ":",
+            input: "text",
+            showCancelButton: false,
+            confirmButtonText: "OK",
+            //cancelButtonText: "Cancel",
+            preConfirm: (rejectReason) => {
+                if (!rejectReason || rejectReason.trim() === "") {
+                    Swal.showValidationMessage("Please enter a valid reason.");
+                    return false; // prevent closing the dialog
+                } else {
+                    // Perform the RejectCustomer action when the user clicks "OK"
+                    $.ajax({
+                        url: '/Customer_approve/RejectCustomer',
+                        type: 'POST',
+                        data: { rejectReason: rejectReason },
+                        success: function (data) {
+                            // Handle success response from the server if needed
+                            Swal.fire(
+                                "Rejected Successfully..",
+                                "Reason for " + action + ": " + rejectReason,
+                                "success"
+                            ).then(() => {
+                                // Redirect to the approval list after showing the success message
+                                window.location.href = '/Customer_approvelistModify/Cus_modiapprovelist';
+                            });
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            // Handle error response from the server if needed
+                            Swal.fire(
+                                "Error",
+                                "Failed to submit reason. Please try again.",
+                                "error"
+                            );
+                        }
+                    });
+                }
+            }
+        });
+    }
+</script>
+
+
+<script>
+    function showReturn(action) {
+
+        Swal.fire({
+            title: "Reason for " + action + ":",
+            input: "text",
+            showCancelButton: false,
+            confirmButtonText: "OK",
+            //cancelButtonText: "Cancel",
+            customClass: {
+                confirmButton: 'swal2-confirm swal2-styled', // Styles for OK button
+                cancelButton: 'swal2-confirm swal2-styled', // Styles for Cancel button
+            },
+            preConfirm: (returnReason) => {
+                if (!returnReason || returnReason.trim() === "") {
+                    Swal.showValidationMessage("Please enter a valid reason.");
+                    return false; // prevent closing the dialog
+                } else {
+                    // Perform the ReturnCustomer action when the user clicks "OK"
+                    $.ajax({
+                        url: '/Customer_approve/ReturnCustomer',
+                        type: 'POST',
+                        data: { returnReason: returnReason },
+                        success: function (data) {
+                            // Handle success response from the server if needed
+                            Swal.fire(
+                                "Returned Successfully..",
+                                "Reason for " + action + ": " + returnReason,
+                                "success"
+                            ).then(() => {
+                                // Redirect to the approval list after showing the success message
+                                window.location.href = '/Customer_approvelist/Cus_approvelist';
+                            });
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            // Handle error response from the server if needed
+                            Swal.fire(
+                                "Error",
+                                "Failed to submit reason. Please try again.",
+                                "error"
+                            );
+                        }
+                    });
+                }
+            }
+        });
+    }
+    function showReturnModi(action) {
+
+        Swal.fire({
+            title: "Reason for " + action + ":",
+            input: "text",
+            showCancelButton: false,
+            confirmButtonText: "OK",
+            //cancelButtonText: "Cancel",
+            customClass: {
+                confirmButton: 'swal2-confirm swal2-styled', // Styles for OK button
+                cancelButton: 'swal2-confirm swal2-styled', // Styles for Cancel button
+            },
+            preConfirm: (returnReason) => {
+                if (!returnReason || returnReason.trim() === "") {
+                    Swal.showValidationMessage("Please enter a valid reason.");
+                    return false; // prevent closing the dialog
+                } else {
+                    // Perform the ReturnCustomer action when the user clicks "OK"
+                    $.ajax({
+                        url: '/Customer_approve/ReturnCustomer',
+                        type: 'POST',
+                        data: { returnReason: returnReason },
+                        success: function (data) {
+                            // Handle success response from the server if needed
+                            Swal.fire(
+                                "Returned Successfully..",
+                                "Reason for " + action + ": " + returnReason,
+                                "success"
+                            ).then(() => {
+                                // Redirect to the approval list after showing the success message
+                                window.location.href = '/Customer_approvelistModify/Cus_modiapprovelist';
+                            });
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            // Handle error response from the server if needed
+                            Swal.fire(
+                                "Error",
+                                "Failed to submit reason. Please try again.",
+                                "error"
+                            );
+                        }
+                    });
+                }
+            }
+        });
+    }
+</script>

@@ -1,0 +1,1179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{89E2161C-70B3-450D-B01C-210CC5CA179D}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ERP_YOGLOANS_LOCAL</RootNamespace>
+    <AssemblyName>ERP_YOGLOANS_LOCAL</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort>44398</IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.9.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.9\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="DinkToPdf, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DinkToPdf.1.0.8\lib\netstandard1.6\DinkToPdf.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.3, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13.3\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.TimeProvider, Version=8.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.TimeProvider.8.0.1\lib\net462\Microsoft.Bcl.TimeProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.IdentityModel.Abstractions, Version=8.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Abstractions.8.1.1\lib\net472\Microsoft.IdentityModel.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=8.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.JsonWebTokens.8.1.1\lib\net472\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=8.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Logging.8.1.1\lib\net472\Microsoft.IdentityModel.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=8.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.8.1.1\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Win32.Primitives.4.0.1\lib\net46\Microsoft.Win32.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Rotativa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Rotativa.1.7.4-rc\lib\net45\Rotativa.dll</HintPath>
+    </Reference>
+    <Reference Include="Rotativa.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Rotativa.Core.2.0.0\lib\net45\Rotativa.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.AppContext, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.AppContext.4.1.0\lib\net463\System.AppContext.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Console, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Console.4.0.0\lib\net46\System.Console.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.0.0\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Diagnostics.Tracing, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.Tracing.4.1.0\lib\net462\System.Diagnostics.Tracing.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Globalization.Calendars, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Globalization.Calendars.4.0.1\lib\net46\System.Globalization.Calendars.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=8.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.8.1.1\lib\net472\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.4.1.0\lib\net462\System.IO.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.4.1.0\lib\net46\System.IO.Compression.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.IO.Compression.ZipFile, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Compression.ZipFile.4.0.1\lib\net46\System.IO.Compression.ZipFile.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.4.0.1\lib\net46\System.IO.FileSystem.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.Primitives.4.0.1\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Linq, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.4.1.0\lib\net463\System.Linq.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Linq.Expressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Linq.Expressions.4.1.0\lib\net463\System.Linq.Expressions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Http.4.1.0\lib\net46\System.Net.Http.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Net.Sockets, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.Sockets.4.1.0\lib\net46\System.Net.Sockets.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reflection, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.4.3.0\lib\net462\System.Reflection.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Reflection.TypeExtensions, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.TypeExtensions.4.3.0\lib\net462\System.Reflection.TypeExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Extensions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.Extensions.4.1.0\lib\net462\System.Runtime.Extensions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.4.3.0\lib\net463\System.Runtime.InteropServices.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.0.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.2.0\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Encoding, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Encoding.4.0.0\lib\net46\System.Security.Cryptography.Encoding.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Primitives, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Primitives.4.0.0\lib\net46\System.Security.Cryptography.Primitives.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.X509Certificates, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.X509Certificates.4.1.0\lib\net461\System.Security.Cryptography.X509Certificates.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Text.Encodings.Web, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.8.0.0\lib\net462\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json, Version=8.0.0.4, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.8.0.4\lib\net462\System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.RegularExpressions.4.1.0\lib\net463\System.Text.RegularExpressions.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Thread, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Thread.4.0.0\lib\net46\System.Threading.Thread.dll</HintPath>
+      <Private>True</Private>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=2.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.2.0.1\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+    </Reference>
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.9\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.9\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr3.Runtime">
+      <Private>True</Private>
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
+      <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\BundleConfig2.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AttachmentController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\Bond\BOND_AllotmentController.cs" />
+    <Compile Include="Controllers\Bond\Bond_Amound_CollectionController.cs" />
+    <Compile Include="Controllers\Bond\Bond_ApplicationFormController.cs" />
+    <Compile Include="Controllers\Bond\Bond_ApplicationFormDownloadController.cs" />
+    <Compile Include="Controllers\Bond\Bond_Application_Approval_BranchController.cs" />
+    <Compile Include="Controllers\Bond\Bond_Application_CreateController.cs" />
+    <Compile Include="Controllers\Bond\BOND_Application_HO_ApproveController.cs" />
+    <Compile Include="Controllers\Bond\Bond_Application_MoneyReceievedController.cs" />
+    <Compile Include="Controllers\Bond\BOND_Approve_SettlmentController.cs" />
+    <Compile Include="Controllers\Bond\Bond_Bank_detailsController.cs" />
+    <Compile Include="Controllers\Bond\Bond_cheque_realisation_dishonourController.cs" />
+    <Compile Include="Controllers\Bond\Bond_CirtificateController.cs" />
+    <Compile Include="Controllers\Bond\BOND_Cirtificate_blankPrintController.cs" />
+    <Compile Include="Controllers\Bond\Bond_Joint_ApplicantsController.cs" />
+    <Compile Include="Controllers\Bond\BOND_MonthlyInterest_EntryController.cs" />
+    <Compile Include="Controllers\Bond\Bond_monthly_interest_approvalController.cs" />
+    <Compile Include="Controllers\Bond\Bond_Report_ApplicationStatusController.cs" />
+    <Compile Include="Controllers\Bond\Bond_Scheme_ApprovalController.cs" />
+    <Compile Include="Controllers\Bond\Bond_Scheme_RegistrationController.cs" />
+    <Compile Include="Controllers\Bond\BOND_Settlment_RequestController.cs" />
+    <Compile Include="Controllers\Bond\BOND_Settlment_SanctionController.cs" />
+    <Compile Include="Controllers\Bond\Bond_StatementofAccountController.cs" />
+    <Compile Include="Controllers\Bond\Bond_StatementofAccountsearchController.cs" />
+    <Compile Include="Controllers\Bond\BOND_Tranfer_ApprovalController.cs" />
+    <Compile Include="Controllers\Bond\BOND_Transferee_RegistrationController.cs" />
+    <Compile Include="Controllers\Bond\BOND_Transfere_BankaddController.cs" />
+    <Compile Include="Controllers\Bond\Bond_TransferRequestController.cs" />
+    <Compile Include="Controllers\Bond\Bond_Transfer_JointController.cs" />
+    <Compile Include="Controllers\Business_Loan\ApplicationForm_BLKeralaController.cs" />
+    <Compile Include="Controllers\Business_Loan\BLKerala_ApplicationFormController.cs" />
+    <Compile Include="Controllers\Business_Loan\BL_DocEsign_SecondController.cs" />
+    <Compile Include="Controllers\Business_Loan\BL_KFS_keralaController.cs" />
+    <Compile Include="Controllers\Business_Loan\BL_Leegal_Doc_DownloadController.cs" />
+    <Compile Include="Controllers\Common_Forms\Deposit_Nomination_FormController.cs" />
+    <Compile Include="Controllers\Common_Forms\Fifteen_G_FormController.cs" />
+    <Compile Include="Controllers\Common_Forms\Fifteen_H_FormController.cs" />
+    <Compile Include="Controllers\Common_Forms\Transfer_formController.cs" />
+    <Compile Include="Controllers\customer\CustomerCreateController.cs" />
+    <Compile Include="Controllers\customer\Customer_AddBankController.cs" />
+    <Compile Include="Controllers\customer\Customer_ApproveBankController.cs" />
+    <Compile Include="Controllers\customer\Customer_approveController.cs" />
+    <Compile Include="Controllers\customer\Customer_approvelistController.cs" />
+    <Compile Include="Controllers\customer\Customer_approvelistModifyController.cs" />
+    <Compile Include="Controllers\customer\Customer_BankPendinglistController.cs" />
+    <Compile Include="Controllers\customer\Customer_BlockApproveListController.cs" />
+    <Compile Include="Controllers\customer\Customer_BlockController.cs" />
+    <Compile Include="Controllers\customer\Customer_CustViewController.cs" />
+    <Compile Include="Controllers\customer\Customer_DeclarationblankController.cs" />
+    <Compile Include="Controllers\customer\Customer_DeclarationController.cs" />
+    <Compile Include="Controllers\customer\Customer_Form60blankController.cs" />
+    <Compile Include="Controllers\customer\Customer_HistoryController.cs" />
+    <Compile Include="Controllers\customer\Customer_KYCController.cs" />
+    <Compile Include="Controllers\customer\Customer_modificationController.cs" />
+    <Compile Include="Controllers\customer\Customer_modifyapproveController.cs" />
+    <Compile Include="Controllers\customer\Customer_RegistrationController.cs" />
+    <Compile Include="Controllers\customer\history_pageloadController.cs" />
+    <Compile Include="Controllers\customer\incomplete_listController.cs" />
+    <Compile Include="Controllers\customer\KYC_return_listController.cs" />
+    <Compile Include="Controllers\customer\modify_returnController.cs" />
+    <Compile Include="Controllers\customer\NewDeclarationController.cs" />
+    <Compile Include="Controllers\Customer_searchController.cs" />
+    <Compile Include="Controllers\DefaultController.cs" />
+    <Compile Include="Controllers\Equifax\EquifaxController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\Legality\AnnexController.cs" />
+    <Compile Include="Controllers\LienController.cs" />
+    <Compile Include="Controllers\Login\AttendanceController.cs" />
+    <Compile Include="Controllers\Login\Forgot_passwordController.cs" />
+    <Compile Include="Controllers\Login\HR_Cashier_ApproveController.cs" />
+    <Compile Include="Controllers\Login\HR_Cashier_AssignController.cs" />
+    <Compile Include="Controllers\Login\HR_Leave_RequestController.cs" />
+    <Compile Include="Controllers\Login\Smart_LoginController.cs" />
+    <Compile Include="Controllers\menu_submenuController.cs" />
+    <Compile Include="Controllers\NCD\Form_MarkingController.cs" />
+    <Compile Include="Controllers\NCD\NCD_AmountCollectionController.cs" />
+    <Compile Include="Controllers\NCD\NCD_ApplicationFormController.cs" />
+    <Compile Include="Controllers\NCD\NCD_ApplicationFormDownloadController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Application_Approval_BranchController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Application_creationController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Application_HO_ApproveController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Application_MoneyReceievedController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Approve_SettlmentController.cs" />
+    <Compile Include="Controllers\NCD\NCD_bank_detailsController.cs" />
+    <Compile Include="Controllers\NCD\NCD_BOND_Download_UploadController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Canvaser_RegistrationController.cs" />
+    <Compile Include="Controllers\NCD\NCD_ChequePresentedController.cs" />
+    <Compile Include="Controllers\NCD\NCD_cheque_realisation_dishonouredController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Debenture_AllotmentController.cs" />
+    <Compile Include="Controllers\NCD\NCD_indemnityController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Interest_block_releaseController.cs" />
+    <Compile Include="Controllers\NCD\NCD_interest_block_release_ApproveController.cs" />
+    <Compile Include="Controllers\NCD\NCD_issueUpdationController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Joint_ApplicantsController.cs" />
+    <Compile Include="Controllers\NCD\NCD_MonthlyInterest_EntryController.cs" />
+    <Compile Include="Controllers\NCD\NCD_monthly_interest_approvalController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Oversubscription_FormController.cs" />
+    <Compile Include="Controllers\NCD\NCD_ReceiptController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Report_ApplicationStatusController.cs" />
+    <Compile Include="Controllers\NCD\NCD_scheduleController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Scheme_ApprovalController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Scheme_registrationController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Settlment_RequestController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Settlment_SanctionController.cs" />
+    <Compile Include="Controllers\NCD\NCD_StatementofAccountController.cs" />
+    <Compile Include="Controllers\NCD\NCD_StatementofAccountsearchController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Tranfer_ApprovalController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Transferee_RegistrationController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Transfere_BankaddController.cs" />
+    <Compile Include="Controllers\NCD\NCD_TransferRequestController.cs" />
+    <Compile Include="Controllers\NCD\NCD_Transfer_JointController.cs" />
+    <Compile Include="Controllers\OtpController.cs" />
+    <Compile Include="Controllers\Personal_loan\Application_FormController.cs" />
+    <Compile Include="Controllers\Personal_loan\PersonalLoan_collectionController.cs" />
+    <Compile Include="Controllers\Personal_loan\PersonalLoan_Collection_ApproveController.cs" />
+    <Compile Include="Controllers\Personal_loan\Personal_loanController.cs" />
+    <Compile Include="Controllers\Personal_loan\Personal_Loan_ApproveController.cs" />
+    <Compile Include="Controllers\Personal_loan\Personal_Loan_Branch_DisburseController.cs" />
+    <Compile Include="Controllers\Personal_loan\Personal_Loan_DisburseController.cs" />
+    <Compile Include="Controllers\Personal_loan\PL_Disbursement_MemoController.cs" />
+    <Compile Include="Controllers\Personal_loan\PL_Report_DisbursementTrackerController.cs" />
+    <Compile Include="Controllers\Personal_loan\PL_Report_SanctionTrackerController.cs" />
+    <Compile Include="Controllers\Personal_loan\PL_Report_StatementofAccountController.cs" />
+    <Compile Include="Controllers\Personal_loan\PL_settlement_Branch_ApproveController.cs" />
+    <Compile Include="Controllers\Personal_loan\PL_settlement_HO_ApproveController.cs" />
+    <Compile Include="Controllers\Personal_loan\PL_Settlement_RequestController.cs" />
+    <Compile Include="Controllers\Personal_loan\print_voucher_generalController.cs" />
+    <Compile Include="Controllers\ReportFilterController.cs" />
+    <Compile Include="Controllers\Reset_PasswordController.cs" />
+    <Compile Include="Controllers\SOSalertController.cs" />
+    <Compile Include="Controllers\UPIController.cs" />
+    <Compile Include="Controllers\UPI_LinkGenerateController.cs" />
+    <Compile Include="Controllers\UPI_Link_ReportController.cs" />
+    <Compile Include="Controllers\YogController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Models\attandance_model.cs" />
+    <Compile Include="Models\Bond_models\bond_scheme_model.cs" />
+    <Compile Include="Models\Bond_models\Bond_Transfer_Model.cs" />
+    <Compile Include="Models\Bond_models\bond_applicationdownload_model.cs" />
+    <Compile Include="Models\Bond_models\Bond_statementofaccount.cs" />
+    <Compile Include="Models\canvasser_model.cs" />
+    <Compile Include="Models\CustomerBlock.cs" />
+    <Compile Include="Models\CustomerCreate_model.cs" />
+    <Compile Include="Models\Customer_AddBank_Model.cs" />
+    <Compile Include="Models\Customer_Approval_Model.cs" />
+    <Compile Include="Models\Customer_Blocklist_Model.cs" />
+    <Compile Include="Models\Customer_Registration_model.cs" />
+    <Compile Include="Models\Customer_Search.cs" />
+    <Compile Include="Models\DB.cs" />
+    <Compile Include="Models\Disbursement_model.cs" />
+    <Compile Include="Models\doc_compression.cs" />
+    <Compile Include="Models\Equifax_Model\equifax_json.cs" />
+    <Compile Include="Models\Equifax_Model\Equifax_Enquiry_Model.cs" />
+    <Compile Include="Models\FileCompressor.cs" />
+    <Compile Include="Models\History_model.cs" />
+    <Compile Include="Models\IDFC\idfcmultipaymentmodel.cs" />
+    <Compile Include="Models\IDFC\IDFC_BearerTokenRetriever.cs" />
+    <Compile Include="Models\IDFC\IDFC_decryption.cs" />
+    <Compile Include="Models\IDFC\IDFC_directCustomer.cs" />
+    <Compile Include="Models\IDFC\IDFC_encryption.cs" />
+    <Compile Include="Models\IDFC\IDFC_Json.cs" />
+    <Compile Include="Models\IDFC\IDFC_JWTTokenGenerator.cs" />
+    <Compile Include="Models\IDFC\IDFC_MultiPaymentRequestSender.cs" />
+    <Compile Include="Models\IDFC\IDFC_MultiPaymentStatusEnquiry.cs" />
+    <Compile Include="Models\IDFC\IDFC_RSA_Class.cs" />
+    <Compile Include="Models\IDFC\IDFC_singlePayment.cs" />
+    <Compile Include="Models\IDFC\IDFC_singlepaymentModel.cs" />
+    <Compile Include="Models\IDFC\IDFC_singlepaymentResponseModel.cs" />
+    <Compile Include="Models\IDFC\IDFC_singlePaymentStatusModel.cs" />
+    <Compile Include="Models\IDFC\IDFC_singlePayStatusClass.cs" />
+    <Compile Include="Models\IDFC\IDFC_throughIDFC.cs" />
+    <Compile Include="Models\Legality_Model\Annex_model.cs" />
+    <Compile Include="Models\Legality_Model\Leegality_docStatusClass.cs" />
+    <Compile Include="Models\Legality_Model\Leegality_DocumentDetailsFetcher.cs" />
+    <Compile Include="Models\Legality_Model\LeegalityApiClient.cs" />
+    <Compile Include="Models\Legality_Model\Leegality_Business_request.cs" />
+    <Compile Include="Models\Legality_Model\Leegality_Business_response.cs" />
+    <Compile Include="Models\Legality_Model\Leegality_DataFill_Models.cs" />
+    <Compile Include="Models\Legality_Model\Leegality_docDownloadApi.cs" />
+    <Compile Include="Models\Legality_Model\Leegality_docDownloadClass.cs" />
+    <Compile Include="Models\Legality_Model\Leegality_docStatusApi.cs" />
+    <Compile Include="Models\Legality_Model\Leegality_docStatusResponse.cs" />
+    <Compile Include="Models\LoanDocuments_Model.cs" />
+    <Compile Include="Models\menu_submenu_model.cs" />
+    <Compile Include="Models\modify_model.cs" />
+    <Compile Include="Models\NCD_Models\ncd_applicationdownload_model.cs" />
+    <Compile Include="Models\NCD_Models\NCD_Debenture_Scheme_Model.cs" />
+    <Compile Include="Models\NCD_Models\ncd_reports.cs" />
+    <Compile Include="Models\NCD_Models\NCD_shedule.cs" />
+    <Compile Include="Models\NCD_Models\Ncd_statementofaccount.cs" />
+    <Compile Include="Models\NCD_Models\NCD_Transfer_Model.cs" />
+    <Compile Include="Models\personal_loan_models\personal_loan_create_model.cs" />
+    <Compile Include="Models\personal_loan_models\PLForms_Model.cs" />
+    <Compile Include="Models\personal_loan_models\pl_reports.cs" />
+    <Compile Include="Models\personal_loan_models\pl_statement_model.cs" />
+    <Compile Include="Models\report_filter_model.cs" />
+    <Compile Include="Models\Smart_Login_model.cs" />
+    <Compile Include="Models\tbl_customer_photo.cs" />
+    <Compile Include="Models\UpiLinkModel.cs" />
+    <Compile Include="Models\yog_customer_index_model.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\Approvallist.css" />
+    <Content Include="Content\Approval_photopopup.css" />
+    <Content Include="Content\cust_apprvlmsgbox1.css" />
+    <Content Include="Content\cust_apprvlmsgbox2.css" />
+    <Content Include="Content\input_styles.css" />
+    <Content Include="Content\table_styles.css" />
+    <Content Include="images\excel-icon.png" />
+    <Content Include="images\excel-icon1.png" />
+    <Content Include="images\logo.jpg" />
+    <Content Include="images\mark.jpg" />
+    <Content Include="images\module_intro_images\pinkgraph.png" />
+    <Content Include="images\module_intro_images\purple.png" />
+    <Content Include="images\pdf_icon.png" />
+    <Content Include="images\printer.png" />
+    <Content Include="images\yog.jpg" />
+    <Content Include="Rotativa\help-wkhtmltoimage.txt" />
+    <Content Include="Rotativa\help-wkhtmltopdf.txt" />
+    <Content Include="Rotativa\wkhtmltoimage.exe" />
+    <Content Include="Rotativa\wkhtmltopdf.exe" />
+    <Content Include="Scripts\jquery-3.6.0.min.js" />
+    <Content Include="Scripts\spin.min.js" />
+    <Content Include="Smart_Login\css\login_page_styles.css" />
+    <Content Include="Content\main.d810cf0ae7f39f28f336.css" />
+    <Content Include="favicon.ico" />
+    <Content Include="fonts\AD.svg" />
+    <Content Include="fonts\AE.svg" />
+    <Content Include="fonts\AF.svg" />
+    <Content Include="fonts\AG.svg" />
+    <Content Include="fonts\AI.svg" />
+    <Content Include="fonts\AL.svg" />
+    <Content Include="fonts\AM.svg" />
+    <Content Include="fonts\AO.svg" />
+    <Content Include="fonts\AR.svg" />
+    <Content Include="fonts\AS.svg" />
+    <Content Include="fonts\AT.svg" />
+    <Content Include="fonts\AU.svg" />
+    <Content Include="fonts\AW.svg" />
+    <Content Include="fonts\AX.svg" />
+    <Content Include="fonts\AZ.svg" />
+    <Content Include="fonts\BA.svg" />
+    <Content Include="fonts\BB.svg" />
+    <Content Include="fonts\BD.svg" />
+    <Content Include="fonts\BE.svg" />
+    <Content Include="fonts\BF.svg" />
+    <Content Include="fonts\BG.svg" />
+    <Content Include="fonts\BH.svg" />
+    <Content Include="fonts\BI.svg" />
+    <Content Include="fonts\BJ.svg" />
+    <Content Include="fonts\BL.svg" />
+    <Content Include="fonts\BM.svg" />
+    <Content Include="fonts\BN.svg" />
+    <Content Include="fonts\BO.svg" />
+    <Content Include="fonts\BR.svg" />
+    <Content Include="fonts\BS.svg" />
+    <Content Include="fonts\BT.svg" />
+    <Content Include="fonts\BV.svg" />
+    <Content Include="fonts\BW.svg" />
+    <Content Include="fonts\BY.svg" />
+    <Content Include="fonts\BZ.svg" />
+    <Content Include="fonts\CA.svg" />
+    <Content Include="fonts\CC.svg" />
+    <Content Include="fonts\CD.svg" />
+    <Content Include="fonts\CF.svg" />
+    <Content Include="fonts\CG.svg" />
+    <Content Include="fonts\CH.svg" />
+    <Content Include="fonts\CI.svg" />
+    <Content Include="fonts\CK.svg" />
+    <Content Include="fonts\CL.svg" />
+    <Content Include="fonts\CM.svg" />
+    <Content Include="fonts\CN.svg" />
+    <Content Include="fonts\CO.svg" />
+    <Content Include="fonts\CR.svg" />
+    <Content Include="fonts\CU.svg" />
+    <Content Include="fonts\CV.svg" />
+    <Content Include="fonts\CW.svg" />
+    <Content Include="fonts\CX.svg" />
+    <Content Include="fonts\CY.svg" />
+    <Content Include="fonts\CZ.svg" />
+    <Content Include="fonts\DE.svg" />
+    <Content Include="fonts\DJ.svg" />
+    <Content Include="fonts\DK.svg" />
+    <Content Include="fonts\DM.svg" />
+    <Content Include="fonts\DO.svg" />
+    <Content Include="fonts\DZ.svg" />
+    <Content Include="fonts\EC.svg" />
+    <Content Include="fonts\EE.svg" />
+    <Content Include="fonts\EG.svg" />
+    <Content Include="fonts\ER.svg" />
+    <Content Include="fonts\ES.svg" />
+    <Content Include="fonts\ET.svg" />
+    <Content Include="fonts\EU.svg" />
+    <Content Include="fonts\fa-solid-900.svg" />
+    <Content Include="fonts\FI.svg" />
+    <Content Include="fonts\FJ.svg" />
+    <Content Include="fonts\FK.svg" />
+    <Content Include="fonts\FM.svg" />
+    <Content Include="fonts\FO.svg" />
+    <Content Include="fonts\FR.svg" />
+    <Content Include="fonts\GA.svg" />
+    <Content Include="fonts\GB-ENG.svg" />
+    <Content Include="fonts\GB-NIR.svg" />
+    <Content Include="fonts\GB-SCT.svg" />
+    <Content Include="fonts\GB-WLS.svg" />
+    <Content Include="fonts\GB-ZET.svg" />
+    <Content Include="fonts\GB.svg" />
+    <Content Include="fonts\GD.svg" />
+    <Content Include="fonts\GE.svg" />
+    <Content Include="fonts\GF.svg" />
+    <Content Include="fonts\GG.svg" />
+    <Content Include="fonts\GH.svg" />
+    <Content Include="fonts\GI.svg" />
+    <Content Include="fonts\GL.svg" />
+    <Content Include="fonts\GM.svg" />
+    <Content Include="fonts\GN.svg" />
+    <Content Include="fonts\GP.svg" />
+    <Content Include="fonts\GQ.svg" />
+    <Content Include="fonts\GR.svg" />
+    <Content Include="fonts\GS.svg" />
+    <Content Include="fonts\GT.svg" />
+    <Content Include="fonts\GU.svg" />
+    <Content Include="fonts\GW.svg" />
+    <Content Include="fonts\GY.svg" />
+    <Content Include="fonts\HK.svg" />
+    <Content Include="fonts\HM.svg" />
+    <Content Include="fonts\HN.svg" />
+    <Content Include="fonts\HR.svg" />
+    <Content Include="fonts\HT.svg" />
+    <Content Include="fonts\HU.svg" />
+    <Content Include="fonts\ID.svg" />
+    <Content Include="fonts\IE.svg" />
+    <Content Include="fonts\IL.svg" />
+    <Content Include="fonts\IM.svg" />
+    <Content Include="fonts\IN.svg" />
+    <Content Include="fonts\IO.svg" />
+    <Content Include="fonts\ionicons.svg" />
+    <Content Include="fonts\IQ.svg" />
+    <Content Include="fonts\IR.svg" />
+    <Content Include="fonts\IS.svg" />
+    <Content Include="fonts\IT.svg" />
+    <Content Include="fonts\JE.svg" />
+    <Content Include="fonts\JM.svg" />
+    <Content Include="fonts\JO.svg" />
+    <Content Include="fonts\JP.svg" />
+    <Content Include="fonts\KE.svg" />
+    <Content Include="fonts\KG.svg" />
+    <Content Include="fonts\KH.svg" />
+    <Content Include="fonts\KI.svg" />
+    <Content Include="fonts\KM.svg" />
+    <Content Include="fonts\KN.svg" />
+    <Content Include="fonts\KP.svg" />
+    <Content Include="fonts\KR.svg" />
+    <Content Include="fonts\KW.svg" />
+    <Content Include="fonts\KY.svg" />
+    <Content Include="fonts\KZ.svg" />
+    <Content Include="fonts\LA.svg" />
+    <Content Include="fonts\LB.svg" />
+    <Content Include="fonts\LC.svg" />
+    <Content Include="fonts\LGBT.svg" />
+    <Content Include="fonts\LI.svg" />
+    <Content Include="fonts\Linearicons-Free.svg" />
+    <Content Include="fonts\LK.svg" />
+    <Content Include="fonts\LR.svg" />
+    <Content Include="fonts\LS.svg" />
+    <Content Include="fonts\LT.svg" />
+    <Content Include="fonts\LU.svg" />
+    <Content Include="fonts\LV.svg" />
+    <Content Include="fonts\LY.svg" />
+    <Content Include="fonts\MA.svg" />
+    <Content Include="fonts\MC.svg" />
+    <Content Include="fonts\MD.svg" />
+    <Content Include="fonts\ME.svg" />
+    <Content Include="fonts\MF.svg" />
+    <Content Include="fonts\MG.svg" />
+    <Content Include="fonts\MH.svg" />
+    <Content Include="fonts\MK.svg" />
+    <Content Include="fonts\ML.svg" />
+    <Content Include="fonts\MM.svg" />
+    <Content Include="fonts\MN.svg" />
+    <Content Include="fonts\MO.svg" />
+    <Content Include="fonts\MP.svg" />
+    <Content Include="fonts\MQ.svg" />
+    <Content Include="fonts\MR.svg" />
+    <Content Include="fonts\MS.svg" />
+    <Content Include="fonts\MT.svg" />
+    <Content Include="fonts\MU.svg" />
+    <Content Include="fonts\MV.svg" />
+    <Content Include="fonts\MW.svg" />
+    <Content Include="fonts\MX.svg" />
+    <Content Include="fonts\MY.svg" />
+    <Content Include="fonts\MZ.svg" />
+    <Content Include="fonts\NA.svg" />
+    <Content Include="fonts\NC.svg" />
+    <Content Include="fonts\NE.svg" />
+    <Content Include="fonts\NF.svg" />
+    <Content Include="fonts\NG.svg" />
+    <Content Include="fonts\NI.svg" />
+    <Content Include="fonts\NL.svg" />
+    <Content Include="fonts\NO.svg" />
+    <Content Include="fonts\NP.svg" />
+    <Content Include="fonts\NR.svg" />
+    <Content Include="fonts\NU.svg" />
+    <Content Include="fonts\NZ.svg" />
+    <Content Include="fonts\OM.svg" />
+    <Content Include="fonts\PA.svg" />
+    <Content Include="fonts\Pe-icon-7-stroke.svg" />
+    <Content Include="fonts\PE.svg" />
+    <Content Include="fonts\PF.svg" />
+    <Content Include="fonts\PG.svg" />
+    <Content Include="fonts\PH.svg" />
+    <Content Include="fonts\PK.svg" />
+    <Content Include="fonts\PL.svg" />
+    <Content Include="fonts\PM.svg" />
+    <Content Include="fonts\PN.svg" />
+    <Content Include="fonts\PR.svg" />
+    <Content Include="fonts\PS.svg" />
+    <Content Include="fonts\PT.svg" />
+    <Content Include="fonts\PW.svg" />
+    <Content Include="fonts\PY.svg" />
+    <Content Include="fonts\QA.svg" />
+    <Content Include="fonts\RE.svg" />
+    <Content Include="fonts\RO.svg" />
+    <Content Include="fonts\RS.svg" />
+    <Content Include="fonts\RU.svg" />
+    <Content Include="fonts\RW.svg" />
+    <Content Include="fonts\SA.svg" />
+    <Content Include="fonts\SB.svg" />
+    <Content Include="fonts\SC.svg" />
+    <Content Include="fonts\SD.svg" />
+    <Content Include="fonts\SE.svg" />
+    <Content Include="fonts\SG.svg" />
+    <Content Include="fonts\SH.svg" />
+    <Content Include="fonts\SI.svg" />
+    <Content Include="fonts\SJ.svg" />
+    <Content Include="fonts\SK.svg" />
+    <Content Include="fonts\SL.svg" />
+    <Content Include="fonts\SM.svg" />
+    <Content Include="fonts\SN.svg" />
+    <Content Include="fonts\SO.svg" />
+    <Content Include="fonts\SR.svg" />
+    <Content Include="fonts\SS.svg" />
+    <Content Include="fonts\ST.svg" />
+    <Content Include="fonts\SV.svg" />
+    <Content Include="fonts\SX.svg" />
+    <Content Include="fonts\SY.svg" />
+    <Content Include="fonts\SZ.svg" />
+    <Content Include="fonts\TC.svg" />
+    <Content Include="fonts\TD.svg" />
+    <Content Include="fonts\TF.svg" />
+    <Content Include="fonts\TG.svg" />
+    <Content Include="fonts\TH.svg" />
+    <Content Include="fonts\TJ.svg" />
+    <Content Include="fonts\TK.svg" />
+    <Content Include="fonts\TL.svg" />
+    <Content Include="fonts\TM.svg" />
+    <Content Include="fonts\TN.svg" />
+    <Content Include="fonts\TO.svg" />
+    <Content Include="fonts\TR.svg" />
+    <Content Include="fonts\TT.svg" />
+    <Content Include="fonts\TV.svg" />
+    <Content Include="fonts\TW.svg" />
+    <Content Include="fonts\TZ.svg" />
+    <Content Include="fonts\UA.svg" />
+    <Content Include="fonts\UG.svg" />
+    <Content Include="fonts\UM.svg" />
+    <Content Include="fonts\US-CA.svg" />
+    <Content Include="fonts\US.svg" />
+    <Content Include="fonts\UY.svg" />
+    <Content Include="fonts\UZ.svg" />
+    <Content Include="fonts\VA.svg" />
+    <Content Include="fonts\VC.svg" />
+    <Content Include="fonts\VE.svg" />
+    <Content Include="fonts\VG.svg" />
+    <Content Include="fonts\VI.svg" />
+    <Content Include="fonts\VN.svg" />
+    <Content Include="fonts\VU.svg" />
+    <Content Include="fonts\WF.svg" />
+    <Content Include="fonts\WS.svg" />
+    <Content Include="fonts\XK.svg" />
+    <Content Include="fonts\YE.svg" />
+    <Content Include="fonts\YT.svg" />
+    <Content Include="fonts\ZA.svg" />
+    <Content Include="fonts\ZM.svg" />
+    <Content Include="fonts\ZW.svg" />
+    <Content Include="Global.asax" />
+    <Content Include="images\ajax-loader.gif" />
+    <Content Include="images\avatars\1.jpg" />
+    <Content Include="images\avatars\10.jpg" />
+    <Content Include="images\avatars\12.jpg" />
+    <Content Include="images\avatars\2.jpg" />
+    <Content Include="images\avatars\3.jpg" />
+    <Content Include="images\avatars\4.jpg" />
+    <Content Include="images\avatars\5.jpg" />
+    <Content Include="images\avatars\6.jpg" />
+    <Content Include="images\avatars\7.jpg" />
+    <Content Include="images\avatars\8.jpg" />
+    <Content Include="images\avatars\9.jpg" />
+    <Content Include="images\dropdown-header\abstract1.jpg" />
+    <Content Include="images\dropdown-header\abstract10.jpg" />
+    <Content Include="images\dropdown-header\abstract2.jpg" />
+    <Content Include="images\dropdown-header\abstract3.jpg" />
+    <Content Include="images\dropdown-header\abstract4.jpg" />
+    <Content Include="images\dropdown-header\abstract5.jpg" />
+    <Content Include="images\dropdown-header\abstract6.jpg" />
+    <Content Include="images\dropdown-header\city1.jpg" />
+    <Content Include="images\dropdown-header\city2.jpg" />
+    <Content Include="images\dropdown-header\city3.jpg" />
+    <Content Include="images\dropdown-header\city4.jpg" />
+    <Content Include="images\dropdown-header\city5.jpg" />
+    <Content Include="images\error.png" />
+    <Content Include="images\error_page.jpeg" />
+    <Content Include="images\HOME_ICONS\18.png" />
+    <Content Include="images\HOME_ICONS\19.png" />
+    <Content Include="images\HOME_ICONS\20.png" />
+    <Content Include="images\HOME_ICONS\21.png" />
+    <Content Include="images\HOME_ICONS\22.png" />
+    <Content Include="images\HOME_ICONS\23.png" />
+    <Content Include="images\HOME_ICONS\24.png" />
+    <Content Include="images\HOME_ICONS\accounts.png" />
+    <Content Include="images\HOME_ICONS\audit.png" />
+    <Content Include="images\HOME_ICONS\bond.png" />
+    <Content Include="images\HOME_ICONS\businessloan.png" />
+    <Content Include="images\HOME_ICONS\cdloan.png" />
+    <Content Include="images\HOME_ICONS\current_erp.png" />
+    <Content Include="images\HOME_ICONS\customer.png" />
+    <Content Include="images\HOME_ICONS\emicalculator.png" />
+    <Content Include="images\HOME_ICONS\equifax.png" />
+    <Content Include="images\HOME_ICONS\goldloan.png" />
+    <Content Include="images\HOME_ICONS\goldoverdraft.png" />
+    <Content Include="images\HOME_ICONS\hr.png" />
+    <Content Include="images\HOME_ICONS\microlan.png" />
+    <Content Include="images\HOME_ICONS\miscellaneous.png" />
+    <Content Include="images\HOME_ICONS\ncd.png" />
+    <Content Include="images\HOME_ICONS\old_erp_version.png" />
+    <Content Include="images\HOME_ICONS\personal_loan.png" />
+    <Content Include="images\HOME_ICONS\suit.png" />
+    <Content Include="images\HOME_ICONS\termloan.png" />
+    <Content Include="images\HOME_ICONS\vehicleloan.png" />
+    <Content Include="images\icons-rtl.gif" />
+    <Content Include="images\icons.gif" />
+    <Content Include="images\image_attachment_icon.jpg" />
+    <Content Include="images\loading.gif" />
+    <Content Include="images\logo-inverse.png" />
+    <Content Include="images\logowithtext.png" />
+    <Content Include="images\module_intro_images\agelimit.png" />
+    <Content Include="images\module_intro_images\clock-Photo.png" />
+    <Content Include="images\module_intro_images\customer-is-king.jpg" />
+    <Content Include="images\module_intro_images\customer-king- %281%29.jpg" />
+    <Content Include="images\module_intro_images\image_customer.jpg" />
+    <Content Include="images\module_intro_images\output-onlinepngtools.png" />
+    <Content Include="images\module_intro_images\pan_aadhar.png" />
+    <Content Include="images\originals\city.jpg" />
+    <Content Include="images\originals\citydark.jpg" />
+    <Content Include="images\originals\citynights.jpg" />
+    <Content Include="images\originals\fence-small.jpg" />
+    <Content Include="images\profile_pic.jpg" />
+    <Content Include="images\profile_pic1.jpg" />
+    <Content Include="images\resetpswd.jpg" />
+    <Content Include="images\resetpswd1.jpg" />
+    <Content Include="images\sidebar\abstract1.jpg" />
+    <Content Include="images\sidebar\abstract10.jpg" />
+    <Content Include="images\sidebar\abstract2.jpg" />
+    <Content Include="images\sidebar\abstract3.jpg" />
+    <Content Include="images\sidebar\abstract4.jpg" />
+    <Content Include="images\sidebar\abstract5.jpg" />
+    <Content Include="images\sidebar\abstract6.jpg" />
+    <Content Include="images\sidebar\abstract7.jpg" />
+    <Content Include="images\sidebar\abstract8.jpg" />
+    <Content Include="images\sidebar\abstract9.jpg" />
+    <Content Include="images\sidebar\city1.jpg" />
+    <Content Include="images\sidebar\city2.jpg" />
+    <Content Include="images\sidebar\city3.jpg" />
+    <Content Include="images\sidebar\city4.jpg" />
+    <Content Include="images\sidebar\city5.jpg" />
+    <Content Include="images\sos-button-metallic.png" />
+    <Content Include="images\sos1.png" />
+    <Content Include="images\sos2.png" />
+    <Content Include="images\sos_3.png" />
+    <Content Include="images\sos_4.png" />
+    <Content Include="images\sos_5.png" />
+    <Content Include="images\vline-rtl.gif" />
+    <Content Include="images\vline.gif" />
+    <Content Include="fonts\fa-solid-900-1.eot" />
+    <Content Include="fonts\fa-solid-900.eot" />
+    <Content Include="fonts\fa-solid-900.ttf" />
+    <Content Include="fonts\fa-solid-900.woff" />
+    <Content Include="fonts\fa-solid-900.woff2" />
+    <Content Include="fonts\ionicons.eot" />
+    <Content Include="fonts\ionicons.ttf" />
+    <Content Include="fonts\ionicons.woff" />
+    <Content Include="fonts\Linearicons-Free-1.eot" />
+    <Content Include="fonts\Linearicons-Free.eot" />
+    <Content Include="fonts\Linearicons-Free.ttf" />
+    <Content Include="fonts\Linearicons-Free.woff" />
+    <Content Include="fonts\Linearicons-Free.woff2" />
+    <Content Include="fonts\Pe-icon-7-stroke-1.eot" />
+    <Content Include="fonts\Pe-icon-7-stroke.eot" />
+    <Content Include="fonts\Pe-icon-7-stroke.ttf" />
+    <Content Include="fonts\Pe-icon-7-stroke.woff" />
+    <Content Include="Scripts\jquery-3.6.4.min.js" />
+    <Content Include="Scripts\main.d810cf0ae7f39f28f336.js" />
+    <Content Include="Scripts\preloader_script.js" />
+    <Content Include="Smart_Login\css\font-awesome.min.css" />
+    <Content Include="Smart_Login\css\style.css" />
+    <Content Include="Smart_Login\fonts\fontawesome-webfont.svg" />
+    <Content Include="Smart_Login\images\b4.jpg" />
+    <Content Include="Smart_Login\images\m.jpg" />
+    <Content Include="Smart_Login\images\m1.jpg" />
+    <Content Include="Smart_Login\images\yogloans_icon.jpg" />
+    <Content Include="Web.config" />
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Controllers\Vehicle_Loan\" />
+    <Folder Include="Data\" />
+    <Folder Include="Views\Base\" />
+    <Folder Include="Views\BOND\" />
+    <Folder Include="Views\Bond_Trasfer_Joint\" />
+    <Folder Include="Views\Otp\" />
+    <Folder Include="Views\SOSalert\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Browsers\qt.browser" />
+    <Content Include="Cerificate\wildcard_yogloans_com.pem" />
+    <None Include="packages.config" />
+    <Content Include="Smart_Login\fonts\fontawesome-webfont.eot" />
+    <Content Include="Smart_Login\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Smart_Login\fonts\fontawesome-webfont.woff" />
+    <Content Include="Smart_Login\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Smart_Login\fonts\FontAwesome.otf" />
+    <Content Include="Views\Attendance\Mark_Attendance.cshtml" />
+    <Content Include="Views\Customer_approve\Cus_approve.cshtml" />
+    <Content Include="Views\Customer_approvelist\Cus_approvelist.cshtml" />
+    <Content Include="Views\Customer_Declaration\Declaration.cshtml" />
+    <Content Include="Views\Customer_Declaration\form_60.cshtml" />
+    <Content Include="Views\Customer_KYC\kyc_approval.cshtml" />
+    <Content Include="Views\Customer_modification\customer_modification.cshtml" />
+    <Content Include="Views\Customer_modification\declaration_modification_view_new.cshtml" />
+    <Content Include="Views\Customer_modification\form60_modify_view_m.cshtml" />
+    <Content Include="Views\Customer_Registration\Cust_Registration.cshtml" />
+    <Content Include="Views\CustomerCreate\CustomerCreate.cshtml" />
+    <Content Include="Views\CustomerCreate\CustomerCreate_form1.cshtml" />
+    <Content Include="Views\CustomerCreate\resend_otp.cshtml" />
+    <Content Include="Views\Default\demo_Index.cshtml" />
+    <Content Include="Views\Default\demo_Table.cshtml" />
+    <Content Include="Views\Forgot_password\forgot_password.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\HR_Cashier_Approve\Cashier_Approve.cshtml" />
+    <Content Include="Views\HR_Cashier_Assign\Cashier_Assign.cshtml" />
+    <Content Include="Views\HR_Leave_Request\HRLeaveRequest.cshtml" />
+    <Content Include="Views\Reset_Password\Resetpassword.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\grid_view.cshtml" />
+    <Content Include="Views\Shared\grid_view_modifi.cshtml" />
+    <Content Include="Views\Shared\KYC_partial.cshtml" />
+    <Content Include="Views\Shared\KYC_partial_modi.cshtml" />
+    <Content Include="Views\Shared\otp_partialview.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\_Layout_Home.cshtml" />
+    <Content Include="Views\Shared\_modi_permenant_address_view.cshtml" />
+    <Content Include="Views\Shared\_Permanent_address_partial_view.cshtml" />
+    <Content Include="Views\Shared\_search_table_partial.cshtml" />
+    <Content Include="Views\Smart_Login\Login.cshtml" />
+    <Content Include="Views\Yog\Yog_customer_Index.cshtml" />
+    <Content Include="Views\Shared\_OtpVerificationPartial.cshtml" />
+    <Content Include="Views\Shared\_search_incomplete_partial1.cshtml" />
+    <Content Include="Views\Home\Error_page.cshtml" />
+    <Content Include="Views\Customer_approve\ViewAllDocuments.cshtml" />
+    <Content Include="Views\Customer_approve\ViewAllDocuments_modi.cshtml" />
+    <Content Include="Views\Customer_Declarationblank\Declarationblank.cshtml" />
+    <Content Include="Views\Customer_Form60blank\Form60blank.cshtml" />
+    <Content Include="Views\NewDeclaration\Declaration.cshtml" />
+    <Content Include="Views\Default\demo_demo.cshtml" />
+    <Content Include="Views\Shared\_combined_partial_view.cshtml" />
+    <Content Include="Views\incomplete_list\incomplete_list_view.cshtml" />
+    <Content Include="Views\modify_return\modify_return_view.cshtml" />
+    <Content Include="Views\menu_submenu\add_menu_submenu.cshtml" />
+    <Content Include="Views\Default\demo_menu.cshtml" />
+    <Content Include="Views\Customer_approvelistModify\Cus_modiapprovelist.cshtml" />
+    <Content Include="Views\Customer_AddBank\Cus_addbank.cshtml" />
+    <Content Include="Views\Customer_ApproveBank\Cus_bankdetailsapproval.cshtml" />
+    <Content Include="Views\Shared\_Layout_without_empicon.cshtml" />
+    <Content Include="Views\Customer_modification\DownloadAllDocuments.cshtml" />
+    <Content Include="Views\Shared\_Menu_submenupartialView.cshtml" />
+    <Content Include="Views\Personal_loan\personal_loan_create.cshtml" />
+    <Content Include="Views\Customer_History\cus_history.cshtml" />
+    <Content Include="Views\Annex\Annex.cshtml" />
+    <Content Include="Views\Equifax\Equifax_Enquiry.cshtml" />
+    <Content Include="Views\Customer_BankPendinglist\Cus_BankPendinglist.cshtml" />
+    <Content Include="Views\Customer_approve\ViewAllExistingKYC.cshtml" />
+    <Content Include="Views\Customer_CustView\FillDetails.cshtml" />
+    <Content Include="Views\Shared\EquifaxEnquiryPdfPartialView.cshtml" />
+    <Content Include="Views\Customer_Block\Customer_block.cshtml" />
+    <Content Include="Views\history_pageload\history_pageload.cshtml" />
+    <Content Include="Views\Customer_BlockApproveList\BlockList.cshtml" />
+    <Content Include="Views\Personal_Loan_Approve\Personal_Loan_ApproveView.cshtml" />
+    <Content Include="Views\PersonalLoan_collection\PersonalLoan_collection_view.cshtml" />
+    <Content Include="Views\Personal_Loan_Disburse\Personal_Loan_DisburseView.cshtml" />
+    <Content Include="Views\Attachment\LoanAttachments_View.cshtml" />
+    <Content Include="Views\Attachment\BankAttachments_View.cshtml" />
+    <Content Include="Views\PersonalLoan_Collection_Approve\PersonalLoan_Collection_Approve_view.cshtml" />
+    <Content Include="Views\PL_Report_SanctionTracker\PL_SanctionTracker.cshtml" />
+    <Content Include="Views\Personal_Loan_Branch_Disburse\Personal_Loan_Branch_Disburse_View.cshtml" />
+    <Content Include="Views\print_voucher_general\print_voucher_general_blank_view.cshtml" />
+    <Content Include="Views\PL_Report_DisbursementTracker\PL_DisbursementTracker.cshtml" />
+    <Content Include="Views\PL_Report_StatementofAccount\PL_StatementofAccount.cshtml" />
+    <Content Include="Views\PL_Settlement_Request\PL_Settlement_View.cshtml" />
+    <Content Include="Views\ReportFilter\ReportFilter_treeview.cshtml" />
+    <Content Include="Views\Application_Form\ApplctnForm_PL.cshtml" />
+    <Content Include="Views\Shared\_Layout_reports.cshtml" />
+    <Content Include="Views\PL_settlement_Branch_Approve\PL_Settle_Branch_Approve_View.cshtml" />
+    <Content Include="Views\PL_settlement_HO_Approve\PL_Settle_HO_Approve_View.cshtml" />
+    <Content Include="Views\PL_Disbursement_Memo\PL_Disbursement_Memo_View.cshtml" />
+    <Content Include="Views\PL_Report_SanctionTracker\PL_SanctionTracker_pdf.cshtml" />
+    <Content Include="Views\NCD_Scheme_registration\NCD_Scheme_registration.cshtml" />
+    <Content Include="Views\NCD_AmountCollection\NCD_AmountCollection_view.cshtml" />
+    <Content Include="Views\Customer_search\CustomerSearch.cshtml" />
+    <Content Include="Views\NCD_Scheme_Approval\NCD_Scheme_Approval.cshtml" />
+    <Content Include="Views\NCD_Application_creation\NCD_Application_create.cshtml" />
+    <Content Include="Views\ApplicationForm_BLKerala\ApplicationForm_BLKerala.cshtml" />
+    <Content Include="Views\Bond_Amound_Collection\Bond_Amound_Collection_View.cshtml" />
+    <Content Include="Views\NCD_bank_details\NCD_bank_details_View.cshtml" />
+    <Content Include="Views\KYC_return_list\KYC_return_list_View.cshtml" />
+    <Content Include="Views\Bond_Scheme_Registration\Bond_Scheme_Registration.cshtml" />
+    <Content Include="Views\NCD_Joint_Applicants\NCD_Joint_Applicants.cshtml" />
+    <Content Include="Views\Bond_Bank_details\Bond_Bank_details_View.cshtml" />
+    <Content Include="Views\NCD_Application_Approval_Branch\NCD_Application_Approval_Branch_View.cshtml" />
+    <Content Include="Views\Bond_Application_Create\Bond_Application_Create.cshtml" />
+    <Content Include="Views\Bond_Joint_Applicants\Bond_Joint_Applicants.cshtml" />
+    <Content Include="Views\Bond_Scheme_Approval\Bond_Scheme_Approval.cshtml" />
+    <Content Include="Views\NCD_Application_MoneyReceieved\NCD_Application_MoneyReceieved.cshtml" />
+    <Content Include="Views\NCD_ChequePresented\NCD_ChequePresented.cshtml" />
+    <Content Include="Views\NCD_cheque_realisation_dishonoured\NCD_cheque_realisation_dishonoured.cshtml" />
+    <Content Include="Views\NCD_Receipt\NCD_Receipt_View.cshtml" />
+    <Content Include="Views\NCD_Canvaser_Registration\Canvaser_Registration_View.cshtml" />
+    <Content Include="Views\Bond_Application_Approval_Branch\Bond_Application_Approval_Branch_View.cshtml" />
+    <Content Include="Views\NCD_Application_HO_Approve\NCD_Application_HO_Approve_View.cshtml" />
+    <Content Include="Views\Bond_Application_MoneyReceieved\Bond_Application_MoneyReceieved.cshtml" />
+    <Content Include="Views\BOND_Application_HO_Approve\BOND_Application_HO_Approve_View.cshtml" />
+    <Content Include="Views\NCD_Debenture_Allotment\NCD_Debenture_Allotment_View.cshtml" />
+    <Content Include="Views\NCD_Report_ApplicationStatus\NCD_Report_ApplicationStatus.cshtml" />
+    <Content Include="Views\NCD_Report_ApplicationStatus\NCD_Applicationstatusreport_pdf.cshtml" />
+    <Content Include="Views\Bond_Report_ApplicationStatus\Bond_Report_ApplicationStatus.cshtml" />
+    <Content Include="Views\NCD_TransferRequest\NCD_TransferRequest.cshtml" />
+    <Content Include="Views\BOND_Allotment\BOND_Allotment_View.cshtml" />
+    <Content Include="Views\NCD_Transferee_Registration\NCD_Transferee_Registration_View.cshtml" />
+    <Content Include="Views\Bond_Report_ApplicationStatus\Bond_Applicationstatusreport_pdf.cshtml" />
+    <Content Include="Views\NCD_Transfer_Joint\NCD_Transfer_Joint.cshtml" />
+    <Content Include="Views\Bond_Transfer_Joint\Bond_Transfer_Joint.cshtml" />
+    <Content Include="Views\Bond_TransferRequest\Bond_TransferRequest.cshtml" />
+    <Content Include="Views\BLKerala_ApplicationForm\BLKerala_ApplicationForm.cshtml" />
+    <Content Include="Views\NCD_MonthlyInterest_Entry\NCD_MonthlyInterest_Entry.cshtml" />
+    <Content Include="Views\BOND_Transferee_Registration\BOND_Transferee_Registration_View.cshtml" />
+    <Content Include="Views\BOND_MonthlyInterest_Entry\BOND_MonthlyInterest_Entry.cshtml" />
+    <Content Include="Views\Fifteen_H_Form\Fifteen_H_Form_View.cshtml" />
+    <Content Include="Views\Fifteen_G_Form\Fifteen_G_Form.cshtml" />
+    <Content Include="Views\Deposit_Nomination_Form\Deposit_Nomination_Form_View.cshtml" />
+    <Content Include="Views\Form_Marking\Form_Marking_View.cshtml" />
+    <Content Include="Views\NCD_MonthlyInterest_Entry\NCD_MonthlyInterestEntry_pdf.cshtml" />
+    <Content Include="Views\NCD_ApplicationFormDownload\NCD_ApplicationFormDownload.cshtml" />
+    <Content Include="Views\NCD_ApplicationForm\NCD_ApplicationForm.cshtml" />
+    <Content Include="Views\NCD_Transfere_Bankadd\NCD_Transfere_Bankadd_View.cshtml" />
+    <Content Include="Views\BL_Leegal_Doc_Download\BL_Leegal_Doc_Download.cshtml" />
+    <Content Include="Views\NCD_Tranfer_Approval\NCD_Tranfer_Approval_View.cshtml" />
+    <Content Include="Views\BOND_Tranfer_Approval\BOND_Tranfer_Approval_View.cshtml" />
+    <Content Include="Views\BOND_Transfere_Bankadd\BOND_Transfere_Bankadd_View.cshtml" />
+    <Content Include="Views\BOND_Settlment_Request\BOND_Settlment_Request_View.cshtml" />
+    <Content Include="Views\BL_KFS_kerala\BL_DocEsign_First.cshtml" />
+    <Content Include="Views\Shared\_BL_DocEsign_First.cshtml" />
+    <Content Include="Views\NCD_Oversubscription_Form\NCD_Oversubscription_Form.cshtml" />
+    <Content Include="Views\Shared\_BL_KFS_Malayalam.cshtml" />
+    <Content Include="Views\Shared\_BL_DocEsign_Second.cshtml" />
+    <Content Include="Views\BL_DocEsign_Second\BL_DocEsign_Second.cshtml" />
+    <Content Include="Views\BOND_Settlment_Sanction\BOND_Settlment_Sanction_View.cshtml" />
+    <Content Include="Views\NCD_schedule\NCD_schedule.cshtml" />
+    <Content Include="Views\Bond_ApplicationFormDownload\Bond_ApplicationFormDownload.cshtml" />
+    <Content Include="Views\Bond_ApplicationForm\Bond_ApplicationForm.cshtml" />
+    <Content Include="Views\Lien\Lien_mark_view.cshtml" />
+    <Content Include="Views\NCD_Interest_block_release\NCD_Interest_block_release.cshtml" />
+    <Content Include="Views\BOND_Approve_Settlment\BOND_Approve_Settlment_View.cshtml" />
+    <Content Include="Views\NCD_monthly_interest_approval\NCD_monthly_interest_approval.cshtml" />
+    <Content Include="Views\NCD_interest_block_release_Approve\NCD_interest_block_release_Approve.cshtml" />
+    <Content Include="Views\NCD_indemnity\NCD_Indemnity_View.cshtml" />
+    <Content Include="Views\NCD_Settlment_Request\NCD_Settlment_Request_View.cshtml" />
+    <Content Include="Views\Bond_monthly_interest_approval\Bond_monthly_interest_approval.cshtml" />
+    <Content Include="Views\NCD_StatementofAccount\NCD_StatementofAccount.cshtml" />
+    <Content Include="Views\NCD_Settlment_Sanction\NCD_Settlment_Sanction_View.cshtml" />
+    <Content Include="Views\NCD_StatementofAccountsearch\NCD_StatementofAccountsearch.cshtml" />
+    <Content Include="Views\NCD_issueUpdation\NCD_issueUpdation.cshtml" />
+    <Content Include="Views\NCD_BOND_Download_Upload\NCD_BOND_Download_Upload_View.cshtml" />
+    <Content Include="Views\NCD_Approve_Settlment\NCD_Approve_Settlment_View.cshtml" />
+    <Content Include="Views\Bond_Cirtificate\Bond_Cirtificate_view.cshtml" />
+    <Content Include="Views\Bond_StatementofAccountsearch\Bond_StatementofAccountsearch.cshtml" />
+    <Content Include="Views\Bond_StatementofAccount\Bond_StatementofAccount.cshtml" />
+    <Content Include="Views\BOND_Cirtificate_blankPrint\BOND_Cirtificate_blankPrint_View.cshtml" />
+    <Content Include="Views\Bond_cheque_realisation_dishonour\Bond_cheque_realisation_dishonour.cshtml" />
+    <None Include="Views\Shared\_ModuleMenuSubMenu.cshtml" />
+    <Content Include="Views\UPI_LinkGenerate\UPI_LinkGenerate_View.cshtml" />
+    <Content Include="Views\View.cshtml" />
+    <Content Include="Views\UPI_LinkGenerate\PaymentView.cshtml" />
+    <Content Include="Views\Yog\Yog_ncd_Index.cshtml" />
+    <Content Include="Views\Yog\Yog_equifax_Index.cshtml" />
+    <Content Include="Views\Yog\Yog_vehicle_Index.cshtml" />
+    <Content Include="Views\Yog\Yog_bond_Index.cshtml" />
+    <Content Include="Views\Yog\Yog_business_Index.cshtml" />
+    <Content Include="Views\UPI\UPI_View.cshtml" />
+    <Content Include="Views\Transfer_form\Transfer_form_View.cshtml" />
+    <Content Include="Views\Yog\Yog_miscellaneous_Index.cshtml" />
+    <Content Include="Views\UPI_Link_Report\UPI_Link_ReportView.cshtml" />
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>49963</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>https://localhost:44398/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

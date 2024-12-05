@@ -1,0 +1,97 @@
+﻿
+<div style="width: 100%; overflow-y: auto;">
+    @if (ViewBag.Col_Data != null && ViewBag.Col_Data.Count > 0)
+    {
+        <table id="dataGrid" class="table table-hover table-striped table-bordered" style="overflow-y: auto; font-size:14px;width:100%;font-weight:500;">
+            <thead style="color:white; font-size:15px;font-weight:900;">
+                <tr>
+                    <th></th> <!-- New column with empty header -->
+                    @for (int i = 0; i < ViewBag.Col_Head.Count - 1; i++)
+                    {
+                        <th style="background-color: #4D759A;">@ViewBag.Col_Head[i]</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @if (ViewBag.Col_Data != null && ViewBag.Col_Data.Count > 0)
+                {
+                    foreach (var item in ViewBag.Col_Data)
+                    {
+                        var columnCount = ViewBag.Col_Head.Count;
+
+                        <tr>
+                            <td>
+                                @*<a href="@Url.Action("customer_modification", "Customer_modification", new { id = item.CustomerID })">View</a>
+                                    @{
+                                        Session["cust_slno"] = "";
+                                    }*@
+
+                                <a href="#" class="continue-link">View</a>
+
+                            </td>
+                            @for (int i = 0; i < ViewBag.Col_Head.Count - 1; i++)
+                            {
+                                var column = ViewBag.Col_Head[i];
+                                var propertyValue = item.GetType().GetProperty(column)?.GetValue(item);
+                                var columnIndex = ViewBag.Col_Head.IndexOf(column);
+
+                                <td>
+                                    @(propertyValue != null ? propertyValue.ToString() : "")
+                                </td>
+                            }
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="@ViewBag.Col_Head.Count - 1">The Entered Data does not exist. For creating New Customer, Enter Phone Number And Click on Send OTP button.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <tr>
+            <td colspan="@ViewBag.Col_Head.Count - 1">
+                <div>
+                    <h6 style="color:red">The Entered Data does not exist. For creating New Customer, Enter Phone Number And Click on Send OTP button.</h6>
+                    @Html.Partial("otp_partialview")
+                </div>
+            </td>
+        </tr>
+
+    }
+</div>
+
+
+<script>
+    $(document).ready(function () {
+       // alert("search");
+    $(".continue-link").on("click", function (e) {
+        e.preventDefault();
+
+        var row = $(this).closest('tr');
+        var id = parseInt(row.find('td:eq(1)').text()); // Assuming ID is in the first column and converting to integer
+        //var sl_no = parseInt(row.find('td:eq(7)').text()); // Assuming sl_no is in the second column and converting to integer
+       // alert(id);
+        //alert(sl_no);
+        $.ajax({
+            url: '@Url.Action("search_view", "CustomerCreate")',
+            type: 'POST',
+            data: { id: id },
+            success: function (result) {
+           // alert("search_view");
+            if (result.success === true) {
+            window.location.href = '@Url.Action("customer_modification", "Customer_modification")';
+            }
+            },
+            error: function (error) {
+            // Handle the error if needed
+            }
+            });
+            });
+ });
+
+</script>

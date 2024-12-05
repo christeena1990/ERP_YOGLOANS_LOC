@@ -1,0 +1,214 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .card {
+            width: 80%; /* Adjust the width of the card */
+            margin: 0 auto; /* Center align the card */
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+            .card-title h3,
+            .card-title p {
+                margin: 5px 0; /* Adjust the margin as needed */
+            }
+
+        .table-wrapper {
+            width: 100%; /* Adjust the width of the table wrapper */
+            overflow-x: auto; /* Enable horizontal scrolling if necessary */
+            margin-top: 20px;
+            padding: 0 20px; /* Add padding to increase the size on both sides */
+        }
+
+        table {
+            width: 100%; /* Adjust the width of the table */
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .column1 {
+            width: 30%; /* Adjust the width of the first column */
+        }
+
+        .column2 {
+            width: 30%; /* Adjust the width of the second column */
+        }
+
+        .column3 {
+            width: 20%; /* Adjust the width of the third column */
+        }
+
+
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    @*<form id="assignForm" action="@Url.Action("AssignCashiers", "HR_Cashier_Assign")" method="post">*@
+        <div class="main-panel">
+            <div class="content">
+                <div class="page-inner">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <br /><br /><br />
+                            <div class="card-title">
+                                <img src="~/Smart_Login/images/yogloans_icon.jpg" style="height:70px; width:275px; margin-left:auto ; margin-right: 0;" />
+                                <h3 style="color: maroon; margin-bottom: 5px;">Yogakshemam Loans Limited</h3>
+                                <p style="color: black; margin-top: 0;">Cashier Assign</p>
+                            </div>
+
+                            @if (ViewBag.CashierLabel != null)
+                            {
+                                <div class="card-title">
+                                    <h3 style="color: red; margin-bottom: 5px;">@ViewBag.CashierLabel</h3>
+                                </div>
+                            }
+
+
+
+
+
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Select</th> <!-- Add a new header for checkboxes -->
+                                        <th>employ_code</th>
+                                        <th>employ_name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var dataTable = ViewBag.GridData as System.Data.DataTable;
+                                        if (dataTable != null)
+                                        {
+                                            for (int i = 0; i < dataTable.Rows.Count; i++)
+                                            {
+                                                var row = dataTable.Rows[i];
+                                                <tr>
+                                                                                        <td>
+                                                                                            <input type="checkbox" name="assignCheckbox" value="@row["employ_code"]"/>
+                                                                                            @*<input type="radio" name="assignRadio" value="@row["employ_code"]"/>*@
+
+                                                                                        </td>
+                                                    <td>@row["employ_code"]</td>
+                                                    <td>@row["employ_name"]</td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+
+
+
+
+                            <div style="display: flex; align-items: center;">
+                                <p style="display: none;">h_msg:</p>
+                                <p style="display: none;">h_id:</p>
+                            </div>
+                           
+                            <div class="button-container">
+                                <button type="submit" style="background-color:green;height:40px;width:100px;border-radius:8px;color:white;border-color:white;" onclick="assignCashiers(event)">Assign</button>
+                                <button style="background-color:red;height:40px;width:100px;border-radius:8px;color:white;border-color:white;" onclick="logout()">Log out</button>
+                                <button style="background-color:#007FFF; height: 40px; width: 100px; border-radius: 8px; color: white; border-color: white;" onclick="refreshPage()">Refresh</button>
+                            </div>
+
+
+                              
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @*</form>*@
+</body>
+</html>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+   
+    function assignCashiers(e) {
+        // Collect selected employee codes
+        e.preventDefault();
+    var selectedEmployees = "";
+    var checkboxes = document.getElementsByName("assignCheckbox");
+    checkboxes.forEach(function (checkbox) {
+        if (checkbox.checked) {
+            selectedEmployees=checkbox.value;
+        }
+    });
+
+    // Check if any employees are selected
+    if (selectedEmployees!="") {
+        // Send selected employee codes to the server
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("AssignCashiers", "HR_Cashier_Assign")",
+            data: { selectedEmploye:selectedEmployees }, // Remove JSON.stringify
+            //traditional: true, // Ensure proper serialization of the array
+            success: function (response) {
+                // Handle success response, if needed
+                alert("Cashiers assigned successfully.");
+                // Reload the page or perform any other action
+                refreshPage();
+            },
+            error: function (xhr, status, error) {
+                // Handle error response
+                console.error("An error occurred while assigning cashiers:");
+                console.error(xhr);
+                alert("An error occurred while assigning cashiers.");
+            }
+        });
+    } else {
+        // No employees selected
+        alert("Please select at least one employee to assign.");
+    }
+}
+
+
+    function logout() {
+        // Redirect to the logout action
+        window.location.href = '@Url.Action("Logout", "HR_Cashier_Assign")'; // Replace "HR_Cashier_approvalassign" with your controller name
+    }
+
+   
+    function refreshPage() {
+        // Reload the current page
+        location.reload();
+    }
+</script>
+
+
+
+

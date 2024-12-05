@@ -1,0 +1,524 @@
+﻿
+@using System.Data
+@{
+    Layout = "~/Views/Shared/_Layout_reports.cshtml";
+
+}
+
+@{
+    var stage_list_type = ViewData["StageList"] as DataTable;
+
+    if (stage_list_type == null)
+    {
+        // Handle the null case, e.g., return an empty list or show a message
+        <p>No stages available.</p>
+        return;
+    }
+
+    var Stages = stage_list_type.AsEnumerable().Select(row => new
+    {
+        stage_val = row["status_table"],
+        stage = row["stage"] // Adjust based on your DataTable columns
+    }).ToList();
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equifax Enquiry</title>
+
+
+    <style>
+        .input-container {
+            position: relative;
+            margin: 8px 0; /* Adjust this value to increase/decrease spacing between rows */
+            height: auto; /* Adjust based on content height */
+        }
+
+            .input-container input[type="text"],
+            .input-container input[type="date"],
+            .input-container select,
+            .input-container textarea {
+                /*border: 1px solid #03002e;*/ /* Change color to match your design */
+                border: 1px solid darkblue;
+                border-radius: 4px;
+                padding: 3px 6px; /* Adjust padding as needed */
+                font-size: 16px;
+                outline: none;
+                width: 100%;
+                box-sizing: border-box;
+                height: 35px; /* Set fixed height to match input fields */
+                /*  background-color: #F3F3F3;*/
+                background-color: #F9F9F9;
+                resize: vertical; /* Allows vertical resizing of textarea */
+            }
+
+            .input-container textarea {
+                overflow-y: auto; /* Adds vertical scrollbar if content overflows */
+            }
+
+            .input-container label {
+                position: absolute;
+                top: 60%;
+                left: 10px;
+                transform: translateY(-50%);
+                color: darkblue; /* Change color to match your design */
+                /*                background-color: #fff;*/
+                background-color: #F9F9F9;
+                padding: 0 6px;
+                transition: 0.3s ease;
+                pointer-events: none;
+                /* font-style: oblique;*/
+            }
+
+            .input-container input[type="text"]:focus + label,
+            .input-container textarea:focus + label,
+            .input-container input[type="date"]:focus + label,
+            .input-container select:focus + label,
+            .input-container input[type="text"]:not(:placeholder-shown) + label,
+            .input-container textarea:not(:placeholder-shown) + label,
+            .input-container input[type="date"]:not(:placeholder-shown) + label,
+            .input-container select:not(:placeholder-shown) + label {
+                top: -3px;
+                font-size: 12px;
+                color: darkblue; /* Change color to match your design */
+                font-weight: bold;
+            }
+
+
+        .fixed-width-card {
+            flex: 1 1 300px; /* Flex-grow: 1, Flex-shrink: 1, Flex-basis: 300px */
+            min-width: 250px; /* Ensure a minimum width */
+            word-wrap: break-word;
+            word-break: break-word;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        table {
+            table-layout: fixed;
+            width: 100%;
+        }
+
+            table th, table td {
+                word-wrap: break-word;
+                white-space: normal;
+                max-width: 180px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                font-size: 12px;
+                max-height: 50px;
+            }
+    </style>
+
+
+</head>
+<body>
+
+
+
+
+    <script>
+        $(document).ready(function () {
+            $('#exportButton').hide();
+        // Hide table and sum div on input change
+        $('#pl_disbursement_report_form input, #pl_disbursement_report_form select').on('change', function () {
+            //alert("input changed");
+            $('#table_div').hide();   // Hide the table div
+            $('#sum_div').hide();     // Hide the sum div
+            $('#exportButton').hide(); // Hide excel export button
+        });
+
+        // Form submission via AJAX
+        $('#pl_disbursement_report_form').on('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Serialize form data
+            var formData = $(this).serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("btn_report_Click", "PL_Report_DisbursementTracker")',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        // Clear existing table rows
+                        $('#customerTableBody').empty();
+
+                        // Initialize totals
+                        let totalCount = 0;
+                        let totalAmount = 0;
+
+                        // Populate the table with the data
+                        if (response.data && response.data.length > 0) {
+                            $.each(response.data, function(index, item) {
+                                // Parse numbers as floats
+                                let loanAmount = parseFloat(item.loan_amount || 0);  // Handle null or undefined values
+                                let docCharge = parseFloat(item.doc_charge || 0);    // Same for doc_charge
+                                let intRate = parseFloat(item.int_rate || 0);
+
+
+
+                                $('#customerTableBody').append(
+                                    '<tr>' +
+                                    '<td>' + (index + 1) + '</td>' +
+                                    '<td>' + item.Region + '</td>' +
+                                    '<td>' + item.Branch + '</td>' +
+                                    '<td>' + item.Loan + '</td>' + // Use the alias
+                                    '<td>' + item.GlNo + '</td>' +
+                                    '<td>' + item.CustomerID + '</td>' +
+                                    '<td>' + item.Name + '</td>' +
+                                    '<td>' + (item.IntRate ? item.IntRate.toFixed(2) : '0.00') + '</td>' +
+                                    '<td>' + (item.LoanAmt ? item.LoanAmt.toFixed(2) : '0.00') + '</td>' +
+                                    '<td>' + (item.Outstanding_Amt ? item.Outstanding_Amt.toFixed(2) : '0.00') + '</td>' +
+                                    '<td>' + item.LoanDt + '</td>' +
+                                    '<td>' + item.MaturityDt + '</td>' +
+                                    '<td>' + item.Status + '</td>' +
+                                    '<td>' + (item.CloseDt || 'N/A') + '</td>' +
+                                    '</tr>'
+                                );
+
+
+
+
+                                // Update totals
+                                totalCount++;
+                                totalAmount += item.LoanAmt;
+                            });
+
+                            // Show the summary and table
+                            $('#sum_div').show();
+                            $('#table_div').show();
+                            $('#exportButton').show();
+
+                            // Display totals
+
+
+                            $('#totalCount').text(totalCount);
+                            $('#totalAmount').text(totalAmount.toFixed(2));
+
+                        } else {
+                            alert('No data found for the selected criteria.');
+                            $('#table_div').hide();    // Hide table
+                            $('#sum_div').hide();      // Hide sum div
+                            $('#exportButton').hide(); // Hide excel export button
+                        }
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                    alert('An error occurred while generating the report.');
+                }
+            });
+        });
+
+            // Handle layout checkbox changes - after button click -  -oct 7
+            $('#tree_report input[type="checkbox"]').on('change', function () {
+                /* alert("after button click");*/
+                // Hide the divs when a checkbox state changes after button click
+                $('#table_div').hide();   // Hide the table div
+                $('#sum_div').hide();     // Hide the sum div
+                $('#exportButton').hide(); // Hide the Excel export button
+            });
+
+    });
+
+
+
+
+
+
+
+
+    ////////////////////////////// export table to excel  //////////////////////////////////////////////////
+
+    function exportTableToExcel() {
+    // Create an array to hold the data
+    let tableData = [];
+
+    // Get table headers
+    let headers = [];
+    $('#cus_detailsDataGrid thead th').each(function () {
+    headers.push($(this).text().trim());
+    });
+    tableData.push(headers); // Add headers to the data array
+
+    // Alert headers
+    //alert("Headers: " + headers.join(", "));
+
+    // Get table rows
+    $('#customerTableBody tr').each(function () {
+    let rowData = [];
+    $(this).find('td').each(function () {
+    rowData.push($(this).text().trim());
+    });
+    if (rowData.length > 0) {
+    tableData.push(rowData);
+    }
+    });
+
+    // Alert data
+    //alert("Data:\n" + tableData.map(row => row.join(", ")).join("\n"));
+
+    // Check if tableData has valid data
+    if (tableData.length <= 1 || tableData[1].length === 0) {
+    alert("No data to export!");
+    return;
+    }
+
+    // Convert the table data to CSV format
+    let csvContent = tableData.map(row => row.join(",")).join("\n");
+
+    // Create a link to download the CSV
+    let encodedUri = "data:text/csv;charset=utf-8," + encodeURIComponent(csvContent);
+    let link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "DisbursementTrackerData.csv");
+    document.body.appendChild(link); // Required for Firefox
+    link.click(); // Trigger the download
+    document.body.removeChild(link); // Cleanup
+    }
+
+    </script>
+
+
+
+
+
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+                <br />
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Disbursement Tracker</h6>
+            </div>
+        </div>
+        <br />
+        <div class="card-body">
+
+            <div id="form-container">
+                <form method="post" id="pl_disbursement_report_form" enctype="multipart/form-data" @*onsubmit="return validateForm()*@
+                      autocomplete="off">
+                    <div class="row">
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+
+                                </div>
+                                <div class="input-container fixed-width-card">
+                                    <input type="date" id="fromDate" name="fromDate" required />
+                                    <label for="fromDate" id="fromDate-label">From Date</label>
+                                    <span id="dob-error" style="color: red; font-size:small;"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+
+                                </div>
+                                <div class="input-container fixed-width-card">
+                                    <input type="date" id="toDate" name="toDate" required />
+                                    <label for="toDate" id="toDate-label">To Date </label>
+                                    <span id="dob-error" style="color: red; font-size:small;"></span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+
+                                </div>
+
+                                <div class="input-container fixed-width-card">
+
+                                    <select name="StageType" id="StageType" class="form-control" required>
+
+                                        @foreach (var loan in Stages)
+                                        {
+                                            <option value="@loan.stage_val" @(Model != null && Model.LoanType != null && loan.stage_val.ToString() == Model.LoanType.ToString() ? "selected" : "")>@loan.stage</option>
+
+                                        }
+
+                                    </select>
+
+
+
+                                    <label for="loan-type">Stage</label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+
+
+                        <div class="col-md-6 col-lg-4">
+                        </div>
+                        <div class="col-md-6 col-lg-4">
+
+                            <button class="btn-pill btn-shadow btn-wide fsize-1 btn btn-primary btn-lg" id="btn_report" type="submit">
+                                <span class="mr-2 opacity-7">
+                                    <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+                                </span>
+                                <span class="mr-1">Generate Report</span>
+                            </button>
+                        </div>
+
+
+                        <div class="col-md-6 col-lg-1">
+                            <button id="exportButton" title="Download Excel Report" style="border: none;  background-color: transparent; padding: 0;" onclick="exportTableToExcel()">
+                                <img src="~/images/excel-icon1.png" alt="Excel Button" style="height: 50px; width: 55px; " />
+                            </button>
+                        </div>
+
+
+
+
+
+
+
+
+                        <div class="col-md-6 col-lg-3">
+                        </div>
+
+
+
+
+                    </div>
+
+
+                </form>
+
+                @*///////////////////////////////// total, count,amount/////////////////////////////////////////////////////////////////////////////////*@
+
+                <div class="card no-shadow bg-transparent no-border rm-borders mb-3" id="sum_div" style="display: none;">
+                    @*<div class="card">*@
+                    <div class="no-gutters row">
+
+                        <div class="col-md-12 col-lg-4">
+                            <ul class="list-group list-group-flush">
+                                <li class="bg-transparent list-group-item">
+                                    <div class="widget-content p-0">
+                                        <div class="widget-content-outer">
+                                            <div class="widget-content-wrapper">
+                                                <div class="widget-content-left">
+                                                    <div class="widget-heading">Count</div>
+
+                                                </div>
+                                                <div class="widget-content-outer">
+                                                    <div class="widget-numbers text-danger" id="totalCount" style="padding-left:50px;">0</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+
+
+
+                        <div class="col-md-12 col-lg-4">
+                            <ul class="list-group list-group-flush">
+                                <li class="bg-transparent list-group-item">
+                                    <div class="widget-content p-0">
+                                        <div class="widget-content-outer">
+                                            <div class="widget-content-wrapper">
+                                                <div class="widget-content-left">
+                                                    <div class="widget-heading">Amount</div>
+
+                                                </div>
+                                                <div class="widget-content-outer">
+                                                    <div class="widget-numbers text-warning" id="totalAmount" style="padding-left:50px;">0</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                    @*</div>*@
+
+                </div>
+
+                @*///////////////////////////////// table /////////////////////////////////////////////////////////////////////////////////*@
+
+                <div id="table_div" style="display: none;">
+                    <table id="cus_detailsDataGrid" class="table table-hover table-striped table-bordered" style="font-size:14px;">
+                        <thead style="background-color: #4D759A; color: white;">
+
+
+                            <tr>
+                                <th>#</th>
+                                <th>Region</th>
+                                <th>Branch</th>
+                                <th>Loan</th>
+                                <th>GlNo</th>
+                                <th>CustomerID</th>
+                                <th>Name</th>
+                                <th>IntRate</th>
+                                <th>LoanAmt</th>
+                                <th>Outstanding_Amt</th>
+                                <th>LoanDt</th>
+                                <th>MaturityDt</th>
+                                <th>Status</th>
+                                <th>CloseDt</th>
+                            </tr>
+
+
+
+                        </thead>
+                        <tbody id="customerTableBody"></tbody>
+                    </table>
+                </div>
+
+
+
+
+
+                @*/////////////////////////////////////////////////////////////////////////////////////////*@
+
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+    @*</form>*@
+
+
+</body>
+</html>
+
+
+
+
+
+
+

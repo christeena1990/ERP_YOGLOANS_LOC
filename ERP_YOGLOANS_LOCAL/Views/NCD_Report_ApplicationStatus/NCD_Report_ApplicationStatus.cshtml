@@ -1,0 +1,553 @@
+﻿
+@{
+    ViewBag.Title = "NCD_Report_ApplicationStatus";
+}
+
+
+@using System.Data
+
+@{
+    Layout = "~/Views/Shared/_Layout_reports.cshtml";
+
+}
+
+
+
+@{
+    var stage_list_type = ViewData["StageList"] as DataTable;
+
+    if (stage_list_type == null)
+    {
+        // Handle the null case, e.g., return an empty list or show a message
+        <p>No stages available.</p>
+        return;
+    }
+
+    var Stages = stage_list_type.AsEnumerable().Select(row => new
+    {
+        stage_val = row["status"],
+        stage = row["description"] // Adjust based on your DataTable columns
+    }).ToList();
+}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equifax Enquiry</title>
+
+
+    <style>
+       
+
+
+        .fixed-width-card {
+            flex: 1 1 300px; /* Flex-grow: 1, Flex-shrink: 1, Flex-basis: 300px */
+            min-width: 250px; /* Ensure a minimum width */
+            word-wrap: break-word;
+            word-break: break-word;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+      
+    </style>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+    <link rel="stylesheet" href="~/Content/table_styles.css" />
+
+</head>
+<body>
+    <script>
+        $(document).ready(function () {
+            $('#exportButton').hide();
+            $('#generatePdf').hide();
+
+        // Hide table and sum div on input change
+            $('#ncd_application_status_report_form input, #ncd_application_status_report_form select').on('change', function () {
+            //alert("input changed");
+            $('#table_div').hide();   // Hide the table div
+            $('#sum_div').hide();     // Hide the sum div
+            $('#exportButton').hide(); // Hide excel export button
+            $('#generatePdf').hide();
+        });
+
+        // Form submission via AJAX
+        $('#ncd_application_status_report_form').on('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Serialize form data
+            var formData = $(this).serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("btn_report_Click", "NCD_Report_ApplicationStatus")',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        // Clear existing table rows
+                        $('#customerTableBody').empty();
+
+                        // Initialize totals
+                        let totalCount = 0;
+                        let totalAmount = 0;
+
+                        // Populate the table with the data
+                        if (response.data && response.data.length > 0) {
+                            $.each(response.data, function(index, item) {
+                                $('#customerTableBody').append(
+                                    '<tr>' +
+                                    '<td>' + (index + 1) + '</td>' +
+                                    '<td>' + item.branch_name + '</td>' +
+                                    '<td>' + item.application_id + '</td>' +
+                                    '<td>' + item.appmoney_no + '</td>' +
+                                    '<td>' + item.customer_name + '</td>' +
+                                    '<td>' + item.customer_id + '</td>' +
+                                    '<td>' + item.deb_amount + '</td>' +
+                                    '<td>' + item.issue_no + '</td>' +
+                                    '<td>' + item.Interest_type + '</td>' +
+                                    '<td>' + item.STATUS + '</td>' +
+
+                                    '</tr>'
+                                );
+
+                                // Update totals
+                                totalCount++;
+                                //    totalAmount += item.deb_amount; // Assuming Amount is a number
+                                totalAmount += parseFloat(item.deb_amount) || 0; // Convert to number or use 0 if conversion fails
+
+                            });
+
+                            // Show the summary and table
+                            $('#sum_div').show();
+                            $('#table_div').show();
+                            $('#exportButton').show();
+                            $('#generatePdf').show();
+                            // Display totals
+
+                            $('#totalCount').text(totalCount);
+                            $('#totalAmount').text(totalAmount.toFixed(2));
+
+                        } else {
+                            alert('No data found for the selected criteria.');
+                            $('#table_div').hide();    // Hide table
+                            $('#sum_div').hide();      // Hide sum div
+                            $('#exportButton').hide(); // Hide excel export button
+                            $('#generatePdf').hide();
+
+                        }
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                    alert('An error occurred while generating the report.');
+                }
+            });
+        });
+
+            // Handle layout checkbox changes - after button click -  -oct 7
+            $('#tree_report input[type="checkbox"]').on('change', function () {
+                /* alert("after button click");*/
+                // Hide the divs when a checkbox state changes after button click
+                $('#table_div').hide();   // Hide the table div
+                $('#sum_div').hide();     // Hide the sum div
+                $('#exportButton').hide(); // Hide the Excel export button
+                $('#generatePdf').hide();
+
+            });
+
+
+    });
+
+
+    ////////////////////////////// export table to excel  //////////////////////////////////////////////////
+
+    function exportTableToExcel() {
+    // Create an array to hold the data
+    let tableData = [];
+
+    // Get table headers
+    let headers = [];
+    $('#cus_detailsDataGrid thead th').each(function () {
+    headers.push($(this).text().trim());
+    });
+    tableData.push(headers); // Add headers to the data array
+
+    // Alert headers
+    //alert("Headers: " + headers.join(", "));
+
+    // Get table rows
+    $('#customerTableBody tr').each(function () {
+    let rowData = [];
+    $(this).find('td').each(function () {
+    rowData.push($(this).text().trim());
+    });
+    if (rowData.length > 0) {
+    tableData.push(rowData);
+    }
+    });
+
+    // Alert data
+    //alert("Data:\n" + tableData.map(row => row.join(", ")).join("\n"));
+
+    // Check if tableData has valid data
+    if (tableData.length <= 1 || tableData[1].length === 0) {
+    alert("No data to export!");
+    return;
+    }
+
+    // Convert the table data to CSV format
+    let csvContent = tableData.map(row => row.join(",")).join("\n");
+
+    // Create a link to download the CSV
+    let encodedUri = "data:text/csv;charset=utf-8," + encodeURIComponent(csvContent);
+    let link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "ApplicationStatus_Report.csv");
+
+    document.body.appendChild(link); // Required for Firefox
+    link.click(); // Trigger the download
+    document.body.removeChild(link); // Cleanup
+    }
+
+    </script>
+
+
+
+
+
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+                <br />
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Application Status Report</h6>
+            </div>
+        </div>
+        <br />
+        <div class="card-body">
+
+            <div id="form-container">
+                <form method="post" id="ncd_application_status_report_form" enctype="multipart/form-data" autocomplete="off">
+
+                    <div class="row">
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+
+                                </div>
+                                <div class="input-container fixed-width-card">
+                                    <input type="date" id="fromDate" name="fromDate" required />
+                                    <label for="fromDate" id="fromDate-label">From Date</label>
+                                    <span id="dob-error" style="color: red; font-size:small;"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+
+                                </div>
+                                <div class="input-container fixed-width-card ">
+                                    <input type="date" id="toDate" name="toDate" required />
+                                    <label for="toDate" id="toDate-label">To Date </label>
+                                    <span id="dob-error" style="color: red; font-size:small;"></span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+
+                                </div>
+
+                                <div class="input-container fixed-width-card">
+
+                                    <select name="StageType" id="StageType" class="form-control" required>
+
+                                        @foreach (var loan in Stages)
+                                        {
+                                            <option value="@loan.stage_val" @(Model != null && Model.LoanType != null && loan.stage_val.ToString() == Model.LoanType.ToString() ? "selected" : "")>@loan.stage</option>
+
+                                        }
+
+                                    </select>
+
+
+
+                                    <label for="loan-type">Stage</label>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="row">
+
+
+                        <div class="col-md-6 col-lg-4">
+                        </div>
+                        <div class="col-md-6 col-lg-5">
+
+                            <button class="btn-pill btn-shadow btn-wide fsize-1 btn btn-primary btn-lg " id="btn_report" type="submit">
+                                <span class="mr-2 opacity-7">
+                                    <i class="icon icon-anim-pulse ion-ios-analytics-outline"></i>
+                                </span>
+                                <span class="mr-1">Generate Report</span>
+                            </button>
+                        </div>
+
+
+                        <div class="col-md-6 col-lg-1">
+                            <button id="exportButton" title="Download Excel Report" style="border: none;  background-color: transparent; padding: 0;" onclick="exportTableToExcel()">
+                                <img src="~/images/excel-icon1.png" alt="excel Button" style="height: 60px; width: 65px; " />
+                            </button>
+                        </div>
+
+                        @*<div class="col-md-6 col-lg-2">
+                            <button id="generatePdf" type="button" title="Download Pdf Report" style="border: none; background-color: transparent;">
+                                <img src="~/images/pdf_icon.png" alt="pdf Button" style="height: 45px; width: 43px;padding-top:10px; " />
+                            </button>
+                        </div>*@
+                    </div>
+                </form>
+
+                @*///////////////////////////////// total, count,amount/////////////////////////////////////////////////////////////////////////////////*@
+
+                <div class="card no-shadow bg-transparent no-border rm-borders mb-3" id="sum_div" style="display: none;">
+                    @*<div class="card">*@
+                    <div class="no-gutters row">
+
+                        <div class="col-md-12 col-lg-4">
+                            <ul class="list-group list-group-flush">
+                                <li class="bg-transparent list-group-item">
+                                    <div class="widget-content p-0">
+                                        <div class="widget-content-outer">
+                                            <div class="widget-content-wrapper">
+                                                <div class="widget-content-left">
+                                                    <div class="widget-heading">Count</div>
+
+                                                </div>
+                                                <div class="widget-content-outer">
+                                                    <div class="widget-numbers text-danger" id="totalCount" style="padding-left:50px;">0</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                            </ul>
+                        </div>
+
+                        <div class="col-md-12 col-lg-4">
+                            <ul class="list-group list-group-flush">
+                                <li class="bg-transparent list-group-item">
+                                    <div class="widget-content p-0">
+                                        <div class="widget-content-outer">
+                                            <div class="widget-content-wrapper">
+                                                <div class="widget-content-left">
+                                                    <div class="widget-heading">Amount</div>
+
+                                                </div>
+                                                <div class="widget-content-outer">
+                                                    <div class="widget-numbers text-warning" id="totalAmount" style="padding-left:50px;">0</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                    @*</div>*@
+
+                </div>
+
+                @*///////////////////////////////// table /////////////////////////////////////////////////////////////////////////////////*@
+
+
+
+                <div id="table_div" style="width: 100%; overflow-y: auto; max-height: 180px; display: none;">
+                    <table id="cus_detailsDataGrid" class="table table-hover table-striped table-bordered" style="width: 100%; font-size: 13px; font-weight: 500;">
+                        <thead>
+
+                            <tr>
+                                <th>#</th>
+                                <th>Branch Name</th>
+                                <th>App ID</th>
+                                <th>Appmoney No</th>
+                                <th> Customer Name</th>
+                                <th>Customer ID</th>
+                                <th>Deb Amount</th>
+                                <th>Issue No</th>
+                                <th>Interest Type</th>
+                                <th>Status</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="customerTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+        </div>
+    </div>
+   
+
+    @*</form>*@
+
+
+
+
+
+
+    @*<script>
+        $(document).ready(function () {
+            $('#generatePdf').click(function (event) {
+
+                // Temporarily remove scroll limit
+                const tableDiv = document.getElementById('table_div');
+                tableDiv.style.maxHeight = 'none';
+                tableDiv.style.overflowY = 'visible';
+
+
+
+
+        event.preventDefault();
+
+        var fromDate = $('#fromDate').val();
+        var toDate = $('#toDate').val();
+        var stageType = $('#StageType').val();
+        var totalAmount = $('#totalAmount').text();
+        var totalCount = $('#totalCount').text();
+        var tableHtml = encodeURIComponent($("#table_div").html());
+
+        $.ajax({
+        url: '@Url.Action("GeneratePdfClick", "NCD_Report_ApplicationStatus")',
+        type: 'POST',
+        data: {
+        fromDate: fromDate,
+        toDate: toDate,
+        StageType: stageType,
+        totalAmount: totalAmount,
+        totalCount: totalCount,
+        htmlString: tableHtml
+        },
+        success: function (response) {
+            if (response.success) {
+
+
+
+        window.location.href = '@Url.Action("NCD_Applicationstatusreport_pdf", "NCD_Report_ApplicationStatus")';
+        }
+        },
+        error: function (xhr, status, error) {
+        console.error('AJAX error:', status, error);
+        console.log('Response Text:', xhr.responseText);
+        alert('Error generating PDF preview: ' + error);
+        }
+        });
+        });
+        });
+
+        </script>*@
+
+    @*////////////  correct code  /////////////////////////////////////////////*@
+
+
+    <script>
+        $(document).ready(function () {
+            $('#generatePdf').click(function (event) {
+                event.preventDefault();
+
+                // Temporarily remove scroll limit
+                const tableDiv = document.getElementById('table_div');
+                tableDiv.style.maxHeight = 'none';
+                tableDiv.style.overflowY = 'visible';
+
+                var fromDate = $('#fromDate').val();
+                var toDate = $('#toDate').val();
+                var stageType = $('#StageType').val();
+                var totalAmount = $('#totalAmount').text();
+                var totalCount = $('#totalCount').text();
+                var tableHtml = encodeURIComponent($("#table_div").html());
+
+                $.ajax({
+                    url: '@Url.Action("GeneratePdfClick", "NCD_Report_ApplicationStatus")',
+                    type: 'POST',
+                    data: {
+                        fromDate: fromDate,
+                        toDate: toDate,
+                        StageType: stageType,
+                        totalAmount: totalAmount,
+                        totalCount: totalCount,
+                        htmlString: tableHtml
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = '@Url.Action("NCD_Applicationstatusreport_pdf", "NCD_Report_ApplicationStatus")';
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX error:', status, error);
+                        console.log('Response Text:', xhr.responseText);
+                        alert('Error generating PDF preview: ' + error);
+                    },
+                    complete: function() {
+                        // Restore original scroll settings after AJAX call completes
+                        tableDiv.style.maxHeight = '180px';
+                        tableDiv.style.overflowY = 'auto';
+                    }
+                });
+            });
+        });
+            </script>
+
+    @*///////////////////////////////////////////////////////////////////////////////////*@
+
+ 
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+

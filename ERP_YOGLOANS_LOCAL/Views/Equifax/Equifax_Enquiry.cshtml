@@ -1,0 +1,605 @@
+﻿@using System.Data
+
+@model ERP_YOGLOANS_LOCAL.Models.Equifax_Model.Equifax_Enquiry_Model
+
+
+
+@{
+    var Loan_list_type = ViewData["LoanList"] as DataTable;
+    var Loanes = Loan_list_type.AsEnumerable().Select(row => new
+    {
+        loan_val = row["loan_val"],
+        loan = row["loan"]
+    });
+
+
+    var vehicle_list_type = ViewData["VehicleList"] as DataTable;
+    var Vehicles = vehicle_list_type.AsEnumerable().Select(row => new
+    {
+        type_name = row["type_name"],
+        type_id = row["type_id"]
+    });
+
+
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equifax Enquiry</title>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+
+
+
+    @*<style>
+            .input-container {
+                position: relative;
+                margin: 8px 0; /* Adjust this value to increase/decrease spacing between rows */
+                height: auto; /* Adjust based on content height */
+            }
+
+                .input-container input[type="text"],
+                .input-container input[type="date"],
+                .input-container select,
+                .input-container textarea {
+                    /*border: 1px solid #03002e;*/ /* Change color to match your design */
+                    border: 1px solid lightblue;
+                    border-radius: 4px;
+                    padding: 3px 6px; /* Adjust padding as needed */
+                    font-size: 16px;
+                    outline: none;
+                    width: 100%;
+                    box-sizing: border-box;
+                    height: 35px; /* Set fixed height to match input fields */
+                    /*  background-color: #F3F3F3;*/
+                    background-color: #F9F9F9;
+                    resize: vertical; /* Allows vertical resizing of textarea */
+                }
+
+                .input-container textarea {
+                    overflow-y: auto; /* Adds vertical scrollbar if content overflows */
+                }
+
+                .input-container label {
+                    position: absolute;
+                    top: 60%;
+                    left: 10px;
+                    transform: translateY(-50%);
+                    color: darkblue; /* Change color to match your design */
+                    /*                background-color: #fff;*/
+                    background-color: #F9F9F9;
+                    padding: 0 6px;
+                    transition: 0.3s ease;
+                    pointer-events: none;
+                    font-style: oblique;
+                }
+
+                .input-container input[type="text"]:focus + label,
+                .input-container textarea:focus + label,
+                .input-container input[type="date"]:focus + label,
+                .input-container select:focus + label,
+                .input-container input[type="text"]:not(:placeholder-shown) + label,
+                .input-container textarea:not(:placeholder-shown) + label,
+                .input-container input[type="date"]:not(:placeholder-shown) + label,
+                .input-container select:not(:placeholder-shown) + label {
+                    top: -3px;
+                    font-size: 12px;
+                    color: darkblue; /* Change color to match your design */
+                    font-weight: bold;
+                }
+        </style>*@
+
+
+
+
+
+
+</head>
+<body>
+    <form action="@Url.Action("btn_submit_Click", "Equifax")" method="post" id="equifax_enquiry_form" onsubmit="return validateForm()" enctype="multipart/form-data" autocomplete="off" style="width:100%;">
+        <br />
+        <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+            <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+                <div class="card-title">
+                    <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Equifax Enquiry</h6>
+                </div>
+            </div>
+            <br />
+
+            <div class="row" style="padding-bottom: 20px;">
+                <div id="form-container" style="width:100%;">
+                    <div class="row">
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+
+                                <select name="LoanType" id="LoanType" class="form-control" required>
+                                    @*<option value="">----- Select -----</option>*@
+
+                                    @foreach (var loan in Loanes)
+                                    {
+                                        <option value="@loan.loan_val" @(Model != null && Model.LoanType != null && loan.loan_val.ToString() == Model.LoanType.ToString() ? "selected" : "")>@loan.loan</option>
+
+                                    }
+
+                                </select>
+
+
+
+                                <label for="loan-type">Loan Type</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <textarea id="CustomerName" name="CustomerName" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" required></textarea>
+                                <label for="customer-name">Name</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <textarea id="CustomerAddress" name="CustomerAddress" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" required></textarea>
+                                @*<input type="text" id="CustomerAddress" name="CustomerAddress" oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ]/g, '').toUpperCase()" required />*@
+                                <label for="customer-address">Address</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="date" id="DateOfBirth" name="DateOfBirth" oninput="validateDOB(this.value)" required />
+                                <label for="dob" id="dob-label">Date of Birth</label>
+                                <span id="dob-error" style="color: red; font-size:small;"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="ContactNo1" name="ContactNo1" minlength="10" maxlength="10" pattern="\d{10}" oninput="this.value = this.value.replace(/\D/g, '');" required />
+                                <label for="contactno1">Contact No.1</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="ContactNo2" name="ContactNo2" minlength="10" maxlength="10" pattern="\d{10}" oninput="this.value = this.value.replace(/\D/g, '');"  />
+                                <label for="contactno2">Contact No.2</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="padding-bottom: 10px;">
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="txt_cust_pincode" name="txt_cust_pincode" required />
+                                <label for="pincode">Pin Code</label>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <select id="PostOffice" class="form-control" name="PostOffice" required>
+                                    <!-- This option will be dynamically populated using the fillDropdown function -->
+                                </select>
+                                <label for="loan-type"> Post Office</label>
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="state_name" name="state_name" required />
+                                <label for="state">State</label>
+                            </div>
+                        </div>
+
+                        @*<div class="col-md-6 col-lg-2">
+                                <div class="input-container">
+                                    <input type="text" id="LoanAmount" name="LoanAmount" pattern="\d{10}" oninput="this.value = this.value.replace(/\D/g, '');" required />
+                                    <label for="loan-amount">Loan Amount</label>
+                                </div>
+                            </div>*@
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="LoanAmount" name="LoanAmount" required oninput="this.value = this.value.replace(/[^0-9]/g, '') " />
+                                <label for="remarks">Loan Amount</label>
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="Remarks" name="Remarks" required />
+                                <label for="remarks">Remarks</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <select name="VehicleType" id="VehicleType" class="form-control">
+
+
+                                    @foreach (var vehicle in Vehicles)
+                                    {
+                                        <option value="@vehicle.type_id" @(Model != null && Model.VehicleType != null && vehicle.type_id.ToString() == Model.VehicleType.ToString() ? "selected" : "")>@vehicle.type_name</option>
+
+                                    }
+
+                                </select>
+                                <label for="vehicle-type">Vehicle Type</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="PANNumber" name="PANNumber" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase()" onchange="validatePANNumber()" />
+                                <label for="pan-number">PAN Number</label>
+                                <span class="error-message" id="PANNumberError" style="color: red; font-size:small;"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="AadharNo" name="AadharNo" maxlength="12" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 12)" onchange="validateAadharNo()" />
+                                <label for="aadhar-no">Aadhar No.</label>
+                                <span class="error-message" id="AadharNoError" style="color: red; font-size:small;"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="VotersID" name="VotersID" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase()" onchange="validateVotersID()" />
+                                <label for="voters-id">Voters ID</label>
+                                <span class="error-message" id="VotersIDError" style="color: red; font-size:small;"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="Passport" name="Passport" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase()" onchange="validatePassport()" />
+                                <label for="passport">Passport</label>
+                                <span class="error-message" id="PassportError" style="color: red; font-size:small;"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="DrivingLicence" name="DrivingLicence" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase()" onchange="validateDrivingLicence()" />
+                                <label for="driving-licence">Driving Licence</label>
+                                <span class="error-message" id="DrivingLicenceError" style="color: red; font-size:small;"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-2">
+                            <div class="input-container">
+                                <input type="text" id="RationCard" name="RationCard" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase()" onchange="validateRationCard()" />
+                                <label for="ration-card">Ration Card</label>
+                                <span class="error-message" id="RationCardError" style="color: red; font-size:small;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <br />
+
+                    <div class="d-block text-center ">
+
+                        <button type="submit" id="submit_btn_eqfx" name="submit_btn_eqfx" class="btn btn-lg btn-primary">Submit</button>
+                        <a href="" class="btn btn-lg btn-danger">Close</a>
+                        <button class="btn btn-lg btn-gradient-secondary" type="button" id="resetButton">Reset</button>
+
+                    </div>
+
+
+
+                  
+                </div>
+
+
+
+
+
+            </div>
+        </div>
+    </form>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    @*///////////////////////////// --------- DATE OF BIRTH --------- ////////////////////////////////////*@
+
+
+    <script>
+
+
+        function validateDOB(enteredDate) {
+            //alert("validateDOB");
+            var errorSpan = document.getElementById('dob-error');
+            var dobInput = document.getElementById('DateOfBirth');
+            errorSpan.textContent = '';  // Clear previous error message
+            dobInput.setCustomValidity('');  // Clear previous custom validity
+
+            if (enteredDate.trim() === '') {
+                errorSpan.textContent = 'Please enter your DOB';
+                dobInput.setCustomValidity('Please enter your DOB');
+                return;
+            }
+
+            // Extract the year part from the entered date
+            var enteredYear = enteredDate.split('-')[0];
+
+            // Check if the entered year has exactly 4 digits
+            if (enteredYear.length !== 4) {
+                errorSpan.textContent = 'Enter 4-digit year.';
+                dobInput.setCustomValidity('Enter valid 4-digit year.');
+                return;
+            }
+
+            var currentDate = new Date();
+            var selectedDate = new Date(enteredDate);
+
+            // Calculate age
+            var age = currentDate.getFullYear() - selectedDate.getFullYear();
+
+            // Check if the age is between 18 and 90
+            if (age < 18 || age > 90) {
+                errorSpan.textContent = 'Age between 18 & 90 ';
+                dobInput.setCustomValidity('Age between 18 & 90 ');
+                return;
+            }
+
+            // Set dynamic min value based on current year - 91
+            var minYear = currentDate.getFullYear() - 91;
+            dobInput.setAttribute('min', minYear + '-01-01');
+
+            // If no issues, clear the error message
+            dobInput.setCustomValidity('');  // Reset custom validity
+        }
+
+
+    </script>
+
+
+
+
+    @*///////////////////////////// --------- PIN CODE, POST OFFICE AND   STATE FILLING --------- ////////////////////////////////////*@
+
+    <script>
+      $(document).ready(function () {
+        // Function to handle pincode focus out event
+          $("#txt_cust_pincode").on("focusout", function () {
+              //alert("txt_cust_pincode  changed");
+            var pincode = $(this).val();
+            $.ajax({
+                url: '@Url.Action("PincodeChanged", "Equifax")',
+                type: 'POST',
+                data: { pincode: pincode },
+                dataType: 'json',
+                success: function (result) {
+                    if ($.isEmptyObject(result)) {
+                        $('#txt_cust_pincode').val('');
+                        clearDropdowns();
+                        return;
+                    }
+
+                    clearDropdowns();
+
+                    // Add new options for Post Office dropdown
+                    $.each(result.PostOffices, function (index, item) {
+                        $("#PostOffice").append($('<option>', {
+                            value: item.Value,
+                            text: item.Text
+                        }));
+                    });
+
+                    // Set values for District and State
+                   /* $("#district_name").val(result.Districts[0]?.Text || '');*/
+                    /* $("#state_name").val(result.States[0]?.Text || '');*/
+                    $("#state_name").val(result.States[1]?.Text || '');
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.error("Error:", jqXHR.responseText);
+                    console.error("Status:", textStatus);
+                    console.error("Error Thrown:", errorThrown);
+                }
+            });
+        });
+
+        function clearDropdowns() {
+            $("#PostOffice").empty();
+            $("#district_name").val('');
+            $("#state_name").val('');
+        }
+
+        // Function to populate form values on page load
+        function populateFormValues(model) {
+            var pincodeFromTable = model ? model.Pincode : null;
+            var selectedValueFromTable = model ? model.PostOffice : null;
+
+            // Populate the dropdown based on the provided values
+            fillDropdown(pincodeFromTable, selectedValueFromTable);
+        }
+
+        // Populate form values on page load if model is available
+        populateFormValues(@Html.Raw(Json.Encode(Model)));
+
+        @*// Trigger focusout event if PostOffice is null
+        //if (@Model?.PostOffice == null) {
+          //  $("#txt_cust_pincode").trigger("focusout");
+        //}*@
+    });
+
+    </script>
+
+    @*///////////////////// ----------  KYC ID AND ADDRESS PROOF VALIDATION  ----------     /////////////////////*@
+
+
+    <script>
+        function validatePANNumber() {
+            var panNumber = document.getElementById("PANNumber").value;
+            if (panNumber === "") {
+                document.getElementById("PANNumberError").textContent = "";
+                return;
+            }
+            var panRegex = /^[a-zA-Z]{3}P[a-zA-Z][0-9]{4}[a-zA-Z]$/;
+            if (!panRegex.test(panNumber)) {
+                document.getElementById("PANNumberError").textContent = "Invalid PAN No!";
+            } else {
+                document.getElementById("PANNumberError").textContent = "";
+            }
+        }
+
+        function validateAadharNo() {
+            var aadharNo = document.getElementById("AadharNo").value;
+            if (aadharNo === "") {
+                document.getElementById("AadharNoError").textContent = "";
+                return;
+            }
+            var aadharRegex = /^(?!0000)[0-9]{4}[0-9]{4}[0-9]{4}$/;
+            if (!aadharRegex.test(aadharNo)) {
+                document.getElementById("AadharNoError").textContent = "Invalid Aadhar No!";
+            } else {
+                document.getElementById("AadharNoError").textContent = "";
+            }
+        }
+
+        function validateVotersID() {
+            var votersID = document.getElementById("VotersID").value;
+            if (votersID === "") {
+                document.getElementById("VotersIDError").textContent = "";
+                return;
+            }
+            var votersRegex = /^(?:[A-Z]{2}(?:[0-9]{8}|[0-9]{11,12})|[A-Z]{3}[0-9]{7})$/;
+            if (!votersRegex.test(votersID)) {
+                document.getElementById("VotersIDError").textContent = "Invalid Voters ID No!";
+            } else {
+                document.getElementById("VotersIDError").textContent = "";
+            }
+        }
+
+        function validatePassport() {
+            var passport = document.getElementById("Passport").value;
+            if (passport === "") {
+                document.getElementById("PassportError").textContent = "";
+                return;
+            }
+            var passportRegex = /([a-zA-Z]{1})([0-9]{7})$/;
+            if (!passportRegex.test(passport)) {
+                document.getElementById("PassportError").textContent = "Invalid Passport No!";
+            } else {
+                document.getElementById("PassportError").textContent = "";
+            }
+        }
+
+        function validateDrivingLicence() {
+            var drivingLicence = document.getElementById("DrivingLicence").value;
+            if (drivingLicence === "") {
+                document.getElementById("DrivingLicenceError").textContent = "";
+                return;
+            }
+            var drivingLicenceRegex = /^[a-zA-Z0-9]{1,20}$/;
+            if (!drivingLicenceRegex.test(drivingLicence)) {
+                document.getElementById("DrivingLicenceError").textContent = "Invalid Driving Licence No!";
+            } else {
+                document.getElementById("DrivingLicenceError").textContent = "";
+            }
+        }
+
+        function validateRationCard() {
+            var rationCard = document.getElementById("RationCard").value;
+            if (rationCard === "") {
+                document.getElementById("RationCardError").textContent = "";
+                return;
+            }
+            var rationCardRegex = /^[a-zA-Z0-9]{1,20}$/;
+            if (!rationCardRegex.test(rationCard)) {
+                document.getElementById("RationCardError").textContent = "Invalid Ration Card No!";
+            } else {
+                document.getElementById("RationCardError").textContent = "";
+            }
+        }
+    </script>
+
+    <script>
+        // Function to validate the entire form before submission
+        function validateForm() {
+            // Call each validation function
+            validatePANNumber();
+            validateAadharNo();
+            validateVotersID();
+            validatePassport();
+            validateDrivingLicence();
+            validateRationCard();
+
+            // Check if there are any error messages
+            var hasErrors = false;
+
+            // Check if any error messages are present
+            var errorElements = document.querySelectorAll(".error-message");
+            for (var i = 0; i < errorElements.length; i++) {
+                if (errorElements[i].textContent.trim() !== "") {
+                    hasErrors = true;
+                    break;
+                }
+            }
+
+            // If there are any errors, prevent form submission
+            if (hasErrors) {
+                return false;
+            }
+
+            // If all validations pass, allow form submission
+            return true;
+        }
+    </script>
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

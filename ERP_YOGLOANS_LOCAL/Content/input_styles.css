@@ -1,0 +1,243 @@
+﻿
+
+.input-container {
+    position: relative;
+    margin: 8px 0;
+    height: auto;
+}
+
+    .input-container input[type="text"],
+    .input-container input[type="date"],
+    .input-container select,
+    .input-container textarea {
+        border: 1px solid darkblue;
+        border-radius: 4px;
+        padding: 3px 6px;
+        font-size: 14px;
+        outline: none;
+        width: 100%;
+        box-sizing: border-box;
+        height: 35px;
+        /*        background-color: #F9F9F9;*/
+        background-color: white;
+        resize: vertical;
+    }
+
+    .input-container textarea {
+        overflow-y: auto;
+    }
+
+    .input-container label {
+        position: absolute;
+        top: 60%;
+        left: 10px;
+        transform: translateY(-50%);
+        color: darkblue;
+        /* background-color: #F9F9F9;*/
+        background-color: #F9F9F9;
+        padding: 0 6px;
+        transition: 0.3s ease;
+        pointer-events: none;
+        font-style: oblique;
+        /*font-style:inherit;*/
+    }
+
+    .input-container input[type="text"]:focus + label,
+    .input-container textarea:focus + label,
+    .input-container input[type="date"]:focus + label,
+    .input-container select:focus + label,
+    .input-container input[type="text"]:not(:placeholder-shown) + label,
+    .input-container textarea:not(:placeholder-shown) + label,
+    .input-container input[type="date"]:not(:placeholder-shown) + label,
+    .input-container select:not(:placeholder-shown) + label {
+        top: -3px;
+        font-size: 12px;
+        color: darkblue;
+        font-weight: bold;
+    }
+
+/*  //////-------   radio button -------  */
+
+.radio-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid darkblue;
+    border-radius: 4px;
+    /* background-color: #F9F9F9;*/
+    background-color: white;
+    padding-left: 10px;
+    height: 35px;
+    padding-left: 0;
+}
+
+
+
+    .radio-container label {
+        position: relative;
+        top: 0;
+        left: 0;
+        transform: none;
+        margin-left: 2px;
+        background-color: transparent;
+        font-size: 14px;
+        color: black;
+        font-style: normal;
+       
+    }
+
+
+.radio-option {
+    color: black;
+   /* padding-left: 0;*/
+    padding-left: 2px;
+}
+
+
+    /* Style for radio button inputs */
+    .radio-option input[type="radio"] {
+        /*margin-right: 5px;*/ /* Space between radio button and label */
+        padding-left: 0; /* Ensure padding-left is 0 for the radio button input */
+    }
+
+
+/*//////////////   input focus css///////////////////////////////*/
+
+
+.input-container input[type="text"]:focus,
+.input-container input[type="date"]:focus,
+.input-container select:focus,
+.input-container textarea:focus,
+.radio-container:focus-within {
+    outline: 2px solid #6497b1; /* Add solid outline on focus */
+    border-color: #6497b1; /* Optional: change the border color to match */
+}
+
+
+
+/* Styling readonly inputs */
+.input-container input[type="text"]:read-only,
+.input-container input[type="date"]:read-only,
+/*.input-container select:read-only,*/
+.input-container textarea:read-only {
+    /*    background-color: #ffe6e6; #f0f0f0 ,#E4E4E4 Light red background*/
+    background-color: #f0f0f0;
+    color: black;
+    border-color: darkblue;
+    cursor: not-allowed;
+}
+
+
+
+    /*/////////////////////////// input form design ////////////////////////////////////////////////
+
+<body >
+<form method="post" id="equifax_enquiry_form" enctype="multipart/form-data" autocomplete="off" style="width:100%;" >
+<br / >
+<div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;" >
+<div style="height: 50px; display: flex; align-items: center; justify-content: center;" >
+<div class="card-title" >
+<h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon" > Registration</h6 >
+</div >
+</div >
+<br / >
+
+<div class="row" style="padding-bottom: 20px;" >
+<div id="form-container" style="width:100%;" >
+<div class="row" >
+<div class="col-md-6 col-lg-2" >
+<div class="input-container" >
+<select name="LoanType" id="LoanType" class="form-control" required >
+<option value="" > ----- Select -----</option >
+<option value="" > ----- abc -----</option >
+<option value="" > ----- efg -----</option >
+</select >
+<label for="loan-type" > Loan Type</label >
+</div >
+</div >
+
+<div class="col-md-6 col-lg-2" >
+<div class="input-container" >
+<textarea id="CustomerName" name="CustomerName" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" required > </textarea >
+<label for="customer-name" > Name</label >
+</div >
+</div >
+
+<div class="col-md-6 col-lg-2" >
+<div class="input-container" >
+<textarea id="CustomerAddress" name="CustomerAddress" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" required > </textarea >
+<label for="customer-address" > Address</label >
+</div >
+</div >
+
+<div class="col-md-6 col-lg-2" >
+<div class="input-container" >
+<input type="date" id="DateOfBirth" name="DateOfBirth" oninput="validateDOB(this.value)" required / >
+<label for="dob" id="dob-label" > Date of Birth</label >
+<span id="dob-error" style="color: red; font-size:small;" > </span >
+</div >
+</div >
+
+<div class="col-md-6 col-lg-2" >
+<div class="input-container" >
+<input type="text" id="ContactNo1" name="ContactNo1" minlength="10" maxlength="10" pattern="\d{10}" oninput="this.value = this.value.replace(/\D/g, '');" required / >
+<label for="contactno1" > Contact No.1</label >
+</div >
+</div >
+
+<div class="col-md-6 col-lg-2" >
+<div class="input-container" >
+<input type="text" id="ContactNo2" name="ContactNo2" minlength="10" maxlength="10" pattern="\d{10}" oninput="this.value = this.value.replace(/\D/g, '');" / >
+<label for="contactno2" > Contact No.2</label >
+</div >
+</div >
+</div >
+
+<div class="row" style="padding-bottom: 10px;" >
+<div class="col-md-6 col-lg-2" >
+<div class="input-container" >
+<input type="text" id="txt_cust_pincode" name="txt_cust_pincode" required / >
+<label for="pincode" > Pin Code</label >
+</div >
+</div >
+
+@*Radio Button Field*@
+<div class="col-md-6 col-lg-3" >
+<div class="input-container" >
+<label for="options" style="top: -3px; font-size: 12px;  font-weight: bold;" > Options</label >
+<div class="radio-container" >
+<div class="radio-option" >
+<input type="radio" id="option1" name="options" value="option1" required / >
+<label for="option1" > Option 1</label >
+</div >
+&nbsp; &nbsp; &nbsp;
+<div class="radio-option" >
+<input type="radio" id="option2" name="options" value="option2" required / >
+<label for="option2" > Option 2 </label >
+</div >
+</div >
+</div >
+</div >
+
+<div class="col-md-6 col-lg-4" >
+<div class="input-container" >
+<input type="text" id="txt_cust_pincode" name="txt_cust_pincode" required / >
+<label for="pincode" > Pin Code</label >
+</div >
+</div >
+
+
+
+</div >
+
+
+
+
+
+
+</div >
+</div >
+</div >
+</form >
+</body >
+
+/////////////////////////////////////////////////////////////////////////////////////////*/

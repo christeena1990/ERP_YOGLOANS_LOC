@@ -1,0 +1,692 @@
+﻿
+
+@model System.Data.DataTable
+@using System.Data
+
+<html>
+<head>
+
+    <style>
+
+        .hidden-column {
+            display: none;
+        }
+
+        button {
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: #f5f5f5;
+            color: #333;
+            border-radius: 5px;
+        }
+
+            button.selected {
+                background-color: lightblue;
+                color: #007FFF;
+            }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+        }
+
+            .search-container input[type="text"] {
+                width: 250px;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 14px;
+            }
+
+            .search-container .search-btn {
+                background-color: #6cb2eb;
+                color: #fff;
+                border: none;
+                padding: 10px;
+                margin-left: 5px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 14px;
+            }
+
+                .search-container .search-btn:hover {
+                    background-color: #4e96d8;
+                }
+
+        .scrollable-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .scrollable-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .input-container {
+            position: relative;
+            margin: 20px 0;
+            height: 40px;
+        }
+
+            .input-container input[type="text"] {
+                border: 1px solid darkblue;
+                border-radius: 4px;
+                padding: 5px 10px;
+                font-size: 16px;
+                outline: none;
+                width: 100%;
+                box-sizing: border-box;
+                height: 100%;
+            }
+
+            .input-container label {
+                position: absolute;
+                top: 50%;
+                left: 10px;
+                transform: translateY(-50%);
+                color: darkblue;
+                background-color: #fff;
+                padding: 0 5px;
+                transition: 0.3s ease;
+                pointer-events: none;
+            }
+
+            .input-container input[type="text"]:focus + label,
+            .input-container input[type="text"]:not(:placeholder-shown) + label {
+                top: -5px;
+                font-size: 12px;
+                color: darkblue;
+                font-weight: bold;
+            }
+
+        #bank-details-table th {
+            font-size: 12px;
+        }
+
+        /* Reduce font size for the table data */
+        #bank-details-table td {
+            font-size: 11px;
+        }
+    </style>
+
+
+
+    <style>
+        .scrollable-container {
+            max-height: 500px; /* Adjust the height as needed */
+            overflow-y: auto;
+        }
+
+        .input-container {
+            position: relative;
+            margin: 20px 0;
+            height: 40px; /* Adjust the height as needed */
+        }
+
+            .input-container input[type="text"] {
+                border: 1px solid darkblue; /* Change color to match your design #6200EA */
+                border-radius: 4px;
+                padding: 5px 10px; /* Adjust padding to reduce height */
+                font-size: 16px;
+                outline: none;
+                width: 100%;
+                box-sizing: border-box;
+                height: 100%; /* Ensure input height matches the container */
+            }
+
+            .input-container label {
+                position: absolute;
+                top: 50%;
+                left: 10px;
+                transform: translateY(-50%);
+                color: darkblue; /* Change color to match your design */
+                background-color: #fff;
+                padding: 0 5px;
+                transition: 0.3s ease;
+                pointer-events: none;
+            }
+
+            .input-container input[type="text"]:focus + label,
+            .input-container input[type="text"]:not(:placeholder-shown) + label {
+                top: -5px;
+                font-size: 12px;
+                color: darkblue; /* Change color to match your design */
+                font-weight: bold;
+            }
+    </style>
+
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="~/Scripts/jquery-3.6.4.min.js"></script>
+    <script src="~/Scripts/spin.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+</head>
+
+<body>
+    <div class="app-main__inner" style="margin-top: -30px;padding:10px;">
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+
+                <h6 style="font-weight: bold; font-size: 25px; margin:0;color:maroon">Personal Loan Settlement HO Approve</h6>
+            </div>
+        </div>
+
+        @if (ViewBag.IsEmpty)
+        {
+
+            <div>
+                <center> No records available...</center> 
+
+            </div>
+        }
+        else
+        {
+            @*@if (!string.IsNullOrEmpty(ViewBag.Message))*@
+            if (!string.IsNullOrEmpty(ViewBag.Message))
+            {
+                <div>@ViewBag.Message</div>
+            }
+            else
+            {
+
+                <div class="card-body" style="width:100%;">
+                    <div class="tab-content">
+                        <div class="tab-pane tabs-animation fade show active" id="tab-content-0" role="tabpanel">
+                            <div class="row">
+                                <div class="col-md-12 col-lg-4">
+                                    <div class="main-card mb-3 card">
+                                        <!-- Search Region -->
+
+                                        <div class="search-container">
+                                            <div class="region-dropdown" style="width:300px">
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                @*///////////////////////////////////////////////////////////////////////*@
+
+                                <div class="col-lg-8 col-md-12">
+                                    <div class="main-card mb-3 card">
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+                    <div class="card-body" style="width:100%;">
+                        <div class="tab-content">
+                            <div class="tab-pane tabs-animation fade show active" id="tab-content-0" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-12 col-lg-4">
+                                        <div class="main-card mb-3 card">
+                                            <div class="card-header">Customer Details</div>
+
+                                            <div id="scrollable-container" class="scrollable-container">
+                                                <ul class="todo-list-wrapper list-group list-group-flush">
+                                                    @foreach (DataRow row in Model.Rows)
+                                                    {
+                                                        var Loan_no = row["loan_no"];
+
+                                                        <li class="list-group-item">
+                                                            <div class="todo-indicator bg-primary"></div>
+                                                            <div class="widget-content p-0">
+                                                                <div class="widget-content-wrapper">
+                                                                    <div class="widget-content-left mr-2">
+                                                                        <div class="custom-checkbox custom-control">
+                                                                            <input type="checkbox" name="option" class="custom-control-input checkbox-option" data-customer-id="@Loan_no" id="checkbox-@Loan_no">
+                                                                            <label class="custom-control-label" for="checkbox-@Loan_no">&nbsp;</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="widget-content-left">
+                                                                        <div class="widget-heading" style="font-size:small">
+                                                                            @row["customer_name"]
+                                                                        </div>
+                                                                        <div class="widget-subheading" style="font-size:small">
+                                                                            Loan No: @row["loan_no"]
+                                                                        </div>
+                                                                        <div class="widget-subheading" style="font-size:small">
+                                                                          <input type="hidden" id="h_slno" class="form-control" value="@row["slno"]" readonly />
+
+
+                                                                        </div>
+
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @*///////////////////////////////////////////////////////////////////////*@
+
+                                    <div class="col-lg-8 col-md-12">
+                                        <div class="main-card mb-3 card">
+                                            <div class="card-body">
+                                                <div id="smartwizard">
+                                                    <ul class="forms-wizard">
+                                                        <li>
+                                                            <a href="#step-1">
+
+                                                                <span></span>
+                                                            </a>
+                                                        </li>
+
+                                                    </ul>
+
+                                                    @*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+                                                    <div class="form-wizard-content">
+
+                                                        <div id="step-1">
+
+                                                            @*<form id="loan-form" method="post" enctype="multipart/form-data" action="/Personal_Loan_Approve/ApproveApplication">*@
+                                                            <form id="loan-form" method="post" enctype="multipart/form-data">
+
+                                                                <input type="hidden" id="branchId" name="branchId" value="@Session["branch_id"]" />
+                                                                <input type="hidden" id="userId" name="userId" value="@Session["login_user"]" />
+
+                                                                <p style="color: maroon; font-weight: 500; font-size: medium ">LOAN DETAILS</p>
+
+
+                                                                <div class="form-row">
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="loan-no" name="loan-no" readonly />
+                                                                            <label for="loan-no">Loan No</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="cust-id" name="cust-id" readonly />
+                                                                            <label for="cust-id">Customer ID</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="cust-name" name="cust-name" readonly />
+                                                                            <label for="cust-name">Customer Name</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                @*-- second row --*@
+
+                                                                <div class="form-row">
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="loan-amt" name="loan-amt" readonly />
+                                                                            <label for="loan-amt">Loan Amount</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="loan-dt" name="loan-dt" readonly />
+                                                                            <label for="loan-dt">Loan Date</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="maturity-dt" name="maturity-dt" readonly />
+                                                                            <label for="maturity-dt">Maturity Date</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                @*-- Third Row --*@
+
+                                                                <div class="form-row">
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="last-int-dt" name="last-int-dt" readonly />
+                                                                            <label for="last-int-dt">Last Int Date</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="int-rate" name="int-rate" readonly />
+                                                                            <label for="int-rate">Interest Rate</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="hidden" id="sl-no" placeholder="sl-no" class="form-control" style="width:150px;" readonly />
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                @*<div class="divider"></div>*@
+
+                                                                <p style="color: maroon; font-weight: 500; font-size: medium ">LIEN DETAILS</p>
+
+                                                                @*--first row--*@
+                                                                <div class="form-row">
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="gl-no" name="gl-no" readonly />
+                                                                            <label for="gl-no">GL No</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="inventory-id" name="inventory-id" readonly />
+                                                                            <label for="inventory-id">Inventory ID</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="net-wt" name="net-wt" readonly />
+                                                                            <label for="net-wt">Net Weight</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                @*--second row--*@
+
+                                                                <div class="form-row">
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="gl-amt" name="gl-amt" readonly />
+                                                                            <label for="gl-amt">GL Amount</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="scheme-name" name="scheme-name" readonly />
+                                                                            <label for="scheme-name">Scheme Name</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="status" name="status" readonly />
+                                                                            <label for="status">Status</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+
+                                                                <p style="color: maroon; font-weight: 500; font-size: medium ">SETTLEMENT DETAILS</p>
+
+
+                                                                @*--first row--*@
+                                                                <div class="form-row">
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="outstanding" name="outstanding" readonly />
+                                                                            <label for="outstanding">Oustanding </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="settle-int-amt" name="settle-int-amt" readonly />
+                                                                            <label for="settle-int-amt">Interest </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="suspense" name="suspense" readonly />
+                                                                            <label for="suspense">Suspense</label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                @*--second row--*@
+
+                                                                <div class="form-row">
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="fore-charge" name="fore-charge" readonly />
+                                                                            <label for="fore-charge">Fore Closure</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="other-deduction" name="other-deduction" readonly />
+                                                                            <label for="other-deduction">Other</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="discount" name="discount" readonly />
+                                                                            <label for="discount">Discount</label>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                                @*--third row--*@
+
+                                                                <div class="form-row">
+
+
+
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="settle-amt" name="settle-amt" readonly />
+                                                                            <label for="settle-amt">Settlement Amount</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="paymode" name="paymode'" readonly />
+                                                                            <label for="paymode'">Payment Mode</label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-md-4">
+                                                                        <div class="input-container">
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+
+
+                                                                <div class="divider"></div>
+                                                                <div class="clearfix">
+                                                                    <button type="button" id="reject-button" name="actionType" value="Reject" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Reject</button>
+                                                                    <button type="button" id="approve-button" name="actionType" value="Approve" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary" OnClientClick="this.disabled = true; this.value = 'please wait ..';" UseSubmitBehavior="false">Approve</button>
+                                                                </div>
+
+                                                            </form>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="divider"></div>
+                                                <div class="clearfix">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <script>
+
+                $(document).on('change', '.checkbox-option', function () {
+                    if ($(this).is(':checked')) {
+
+                        // Hide other checkboxes
+                        $('.checkbox-option').not(this).prop('checked', false);
+                        var Loanno = $(this).data('customer-id');
+
+                        var slno = $('#h_slno').val();
+
+                        $.ajax({
+                            url: '@Url.Action("PL_HO_settle_details", "PL_settlement_HO_Approve")',
+                            type: 'POST',
+                            data: { Loanno: Loanno, slno: slno },
+                            success: function (response) {
+                              if (response) {
+
+                                  /*loan Details*/
+                                  $('#loan-no').val(response.LoanNo);
+                                  $('#cust-id').val(response.CustomerID);
+                                  $('#cust-name').val(response.CustomerName);
+                                  $('#loan-amt').val(response.LoanAmt);
+                                  $('#loan-dt').val(response.LoanDt);
+                                  $('#maturity-dt').val(response.MaturityDt);
+                                  $('#int-rate').val(response.IntRate);
+                                  $('#last-int-dt').val(response.LastIntDt);
+                                  /*  Lien Details*/
+                                  $('#gl-no').val(response.GLNo);
+                                  $('#inventory-id').val(response.InventoryID);
+                                  $('#scheme-name').val(response.Scheme);
+                                  $('#net-wt').val(response.NetWt);
+                                  $('#gl-amt').val(response.GLAmt);
+                                  $('#status').val(response.Status);
+                                  /* settlement Details*/
+
+                                  $('#outstanding').val(response.Outstanding);
+                                  $('#settle-int-amt').val(response.Suspense);
+                                  $('#suspense').val(response.Settle_Int);
+                                  $('#fore-charge').val(response.Fore_chrg);
+                                  $('#other-deduction').val(response.Other_chrg);
+
+                                  $('#discount').val(response.Discount);
+                                  $('#settle-amt').val(response.Settle_Amt);
+                                  $('#paymode').val(response.Paymode);
+
+
+
+
+                              }
+                              else
+                              {
+                                     console.log('No data found for ApplicationID: ' + ApplicationID);
+                              }
+                            },
+                            error: function (xhr, status, error)
+                            {
+                              console.error('AJAX Error: ' + status + ' ' + error);
+                            }
+                        });
+                    }
+                    else
+                    {
+
+                        clearFormFields();
+                    }
+                });
+
+                function clearFormFields() {
+
+                        $('#customername').val('');
+                        $('#customerid').val('');
+                        $('#loan-number').val('');
+                        $('#applicationid').val('');
+                        $('#loan-amount').val('');
+                        $('#branch-id').val('');
+                        $('#receivables').val('');
+                        $('#disburse-amt').val('');
+                }
+
+
+                function submitForm(actionType)
+                {
+                    //alert(1);
+                    //if (actionType === "Reset") {
+
+                    //    // ResetForm();
+                    //    window.location.reload();
+                    //    return;
+                    //}
+
+
+                    $.ajax({
+                        url: '@Url.Action("Settlement_HO_Approve")',
+                        type: 'POST',
+                        // data: { appId: appId, loanAmt: loanAmt, disAmt: disAmt, actionType: actionType },
+                         data: { actionType: actionType },
+                        success: function(result) {
+                          if (result.success) {
+
+                            Swal.fire({
+                                title: "",
+                                text: result.message,
+                                icon: "success",
+                                confirmButtonText: "OK"
+                            }).then(() => {
+                             window.location.reload();
+                            });
+                          }
+                          else
+                          {
+                            // Failure case (success: false)
+                            Swal.fire({
+                                title: "",
+                                text: result.message,
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                          }
+                        },
+                        error: function (xhr, status, error)
+                        {
+                            // Handle general AJAX error
+                            Swal.fire({
+                                title: "An error occurred",
+                                text: "Error: " + error,
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            });
+                        }
+                    });
+
+                }
+
+                function ResetForm() {
+                    clearFormFields();
+                    resetDropdowns();
+                }
+
+
+
+
+
+                $(document).ready(function() {
+                  
+                    $('#approve-button').click(function(e) {
+                        e.preventDefault(); 
+                        submitForm('Approve');
+                    });
+
+                    $('#reject-button').click(function(e) {
+                        e.preventDefault(); 
+                        submitForm('Reject');
+                    });
+                });
+
+
+                </script>
+
+            }
+        }
+    </div>
+</body>
+</html>

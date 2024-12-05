@@ -1,0 +1,163 @@
+﻿
+
+@{
+    Layout = null;
+
+    // Helper method to base64-encode a string
+    string EncodeToBase64(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return string.Empty;
+
+        var bytes = System.Text.Encoding.UTF8.GetBytes(text);
+        return Convert.ToBase64String(bytes);
+    }
+}
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* Centering images */
+        img {
+            display: block;
+            margin: 0 auto;
+            max-width: 80%; /* Adjust as needed */
+            max-height: 80vh; /* Adjust as needed */
+        }
+
+        /* Styling for PDFs */
+        .pdf-container {
+            width: 100%;
+            height: 80vh; /* Adjust the height as needed */
+            overflow: auto; /* Enable scrolling */
+            position: relative;
+            border: 1px solid #ddd; /* Optional: Add a border */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add shadow */
+        }
+
+        .pdf-canvas {
+            width: 100%;
+            margin-bottom: 20px; /* Space between pages */
+        }
+    </style>
+
+    <script>
+        // Check if the page was loaded directly (not via navigation within the site)
+        if (document.referrer === '') {
+            // If there is no referrer, redirect to the login page
+            window.location.href = '/Smart_Login/Login'; // Change to your login page URL
+        }
+
+        // Function to render PDF using PDF.js
+        function renderPDF(base64Data, containerId) {
+            var loadingTask = pdfjsLib.getDocument({ data: atob(base64Data) });
+            loadingTask.promise.then(function (pdf) {
+                var container = document.getElementById(containerId);
+                container.innerHTML = ''; // Clear previous content
+
+                var totalPages = pdf.numPages;
+
+                // Render each page
+                for (var pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
+                    pdf.getPage(pageNumber).then(function (page) {
+                        var scale = 1.5;
+                        var viewport = page.getViewport({ scale: scale });
+
+                        // Prepare canvas for page rendering
+                        var canvas = document.createElement('canvas');
+                        canvas.className = 'pdf-canvas';
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        var context = canvas.getContext('2d');
+
+                        // Append canvas to container
+                        container.appendChild(canvas);
+
+                        // Render page into canvas
+                        var renderContext = {
+                            canvasContext: context,
+                            viewport: viewport
+                        };
+                        page.render(renderContext);
+                    });
+                }
+            });
+        }
+
+        // Function to handle PDF rendering with fallback to iframe
+        function handlePDFDisplay(pdfData, containerId) {
+            if (pdfData) {
+                // Check if PDF.js is loaded
+                if (window.pdfjsLib) {
+                    renderPDF(pdfData, containerId);
+                } else {
+                    // Fallback to iframe
+                    var iframe = document.createElement('iframe');
+                    iframe.className = 'pdf-iframe';
+                    iframe.src = pdfData;
+                    var container = document.getElementById(containerId);
+                    container.innerHTML = ''; // Clear any existing content
+                    container.appendChild(iframe);
+                }
+            }
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+</head>
+
+<body>
+
+    <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+        <div class="card-title">
+            <br />
+
+            <h6 style="font-weight: bold; font-size: 25px; margin:0;color:maroon">BANK DOCUMENT</h6>
+        </div>
+    </div>
+
+
+    @if (Model.HasData)
+    {
+        <!-- Display each document and its name -->
+        foreach (var document in Model.Data)
+        {
+            string docName = document.ContainsKey("Doc_name") ? document["Doc_name"]?.ToString() : string.Empty;
+            var encodedDocName = EncodeToBase64(docName);
+
+            <h2>@docName</h2>
+
+            if (document.ContainsKey("pdf"))
+            {
+                <div class="pdf-container" id="pdf-container-@encodedDocName"></div>
+                <script>
+                    var pdfData = '@document["pdf"]'.split(',')[1];
+                    handlePDFDisplay(pdfData, 'pdf-container-@encodedDocName');
+                </script>
+            }
+            else if (document.ContainsKey("image"))
+            {
+                <img src="@document["image"]" alt="@docName">
+            }
+            else
+            {
+                <p>No PDF or image found for @docName</p>
+            }
+        }
+    }
+    else
+    {
+
+
+
+        <p style="font-weight: bold; font-size: 25px; margin:0;color:maroon">No documents are available</p>
+    }
+</body>
+
+
+</html>
+
+

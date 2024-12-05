@@ -1,0 +1,573 @@
+﻿
+
+@model ERP_YOGLOANS_LOCAL.Models.form_60_model
+
+
+
+@{
+
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+
+    <style type="text/css" media="print">
+    </style>
+
+    <style type="text/css">
+        body {
+            -webkit-user-select: none; /* Safari */
+            -moz-user-select: none; /* Firefox */
+            -ms-user-select: none; /* Internet Explorer */
+            user-select: none; /* Standard syntax */
+        }
+
+        /* Disable mouse events for all elements */
+        * {
+            pointer-events: none;
+        }
+
+        /* Additional styles if needed */
+    </style>
+
+
+
+    <style type="text/css">
+        .auto-style3 {
+            width: 40%;
+            height: 25px;
+        }
+
+        .auto-style4 {
+            height: 25px;
+        }
+
+        .auto-style6 {
+            width: 4%;
+        }
+
+        .auto-style7 {
+            width: 4%;
+            height: 25px;
+        }
+
+        .auto-style8 {
+            width: 24%;
+        }
+
+        .auto-style9 {
+            width: 24%;
+            height: 25px;
+        }
+
+        .auto-style10 {
+            width: 5%;
+            height: 25px;
+        }
+
+        .auto-style11 {
+            width: 4%;
+            height: 26px;
+        }
+
+        .auto-style12 {
+            height: 26px;
+        }
+
+        .auto-style13 {
+            width: 5%;
+        }
+    </style>
+
+    <script>
+         // Check if the page was loaded directly (not via navigation within the site)
+         if (document.referrer === '') {
+             // If there is no referrer, redirect to the login page
+             window.location.href = '/Smart_Login/Login'; // Change to your login page URL
+         }
+    </script>
+
+
+
+</head>
+<body>
+
+
+    @*<form method="post" action="./cold_form60_print.aspx" id="form1">*@
+    <div class="aspNetHidden">
+        <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="" />
+
+        <div class="aspNetHidden">
+
+            <input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="F3108C39" />
+            <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEdAAc4oR1NgselkY431hB71TPNoRCr7j10BNyMBx5ZdwO4h6ZjaI7GfrUUpG0b4t2bCmf4vElbkdB7t4B02gMxPPnAdO8S87QKw7+kfXGxKO96Lr2vwk7DhOrBhc7qvqcMflc6I2Qy2pCDkfSwQVMcob18Qw8137x7iOCrozn5cJxnLpskuXUfbIpCUlMLMnekTyg=" />
+        </div>
+        <div id="Panel2">
+
+            <table width="100%" height="90%" style="font-size:9pt;">
+                <tr>
+                    <td width="1%"></td>
+                    <td align="center" width="99%"><font size=2><b>Income-tax Rules, 1962</font></b></td>
+                </tr>
+                <tr>
+                    <td width="1%"></td>
+                    <td align="center" width="99%"><font size=2><b>FORM NO. 60</font></b></td>
+                </tr>
+                <tr>
+                    <td width="1%"></td>
+                    <td align="center" width="99%">[See second proviso to rule 114B]</td>
+                </tr>
+                <tr>
+                    <td width="1%"></td>
+                    <td align="center" width="99%">Form for declaration to be filed by an individual or a person (not being a company or firm) who does not have a permanent account number and who enters into any transaction specified in rule 114B</td>
+                </tr>
+            </table>
+        </div>
+        <center>
+            <div id="div1">
+
+
+
+                @*<form id="form1" runat="server">
+                    <asp:Panel ID="Panel2" runat="server">
+                    </asp:Panel>*@
+                <center>
+                    <div id="div1" runat="server">
+
+                        <table style="width:95%; border-color:black ;border-collapse:collapse" border="1">
+                            <tr>
+                                <td rowspan="3">1</td>
+                                <td colspan="2" style="font-size:12px">First Name</td>
+                                <td style="width:45%" colspan="10">
+                                    <span>@Model.first_name</span>
+
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="font-size:12px">Middle Name</td>
+                                <td style="width:45%" colspan="10">
+                                    <span>@Model.second_name</span>
+
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="font-size:12px">SurName</td>
+                                <td style="width:45%" colspan="10">
+                                    <span>@Model.last_name</span>
+
+                                </td>
+
+                            </tr>
+
+
+
+
+                            <tr>
+                                <td class="auto-style6">2</td>
+                                <td colspan="3" style="font-size:12px">Date of Birth/Incorporation of declarantDD</td>
+
+                                <!-- Day -->
+                                <td style="width:5%;font-size:11px">
+                                    D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="Label7" runat="server">@Model.Day1</span>
+                                </td>
+                                <td style="width:5%;font-size:11px">
+                                    D&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="Label8" runat="server">@Model.Day2</span>
+                                </td>
+
+                                <!-- Month -->
+                                <td style="width:5%;font-size:11px" colspan="2">
+                                    M&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="Label5" runat="server">@Model.Month1</span>
+                                </td>
+
+                                <td style="width:5%;font-size:11px">
+                                    M&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="Label6" runat="server">@Model.Month2</span>
+                                </td>
+                                <!-- Year -->
+                                <td style="width:5%;font-size:11px">
+                                    Y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="Label1" runat="server">@Model.Year1</span>
+                                </td>
+
+                                <td style="width:5%;font-size:11px">
+                                    Y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="Label2" runat="server">@Model.Year2</span>
+                                </td>
+
+
+                                <td style="width:5%;font-size:11px">
+                                    Y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="Label3" runat="server">@Model.Year3</span>
+                                </td>
+
+                                <td style="width:5%;font-size:11px">
+                                    Y&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="Label4" runat="server">@Model.Year4</span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style6">3</td>
+                                <td colspan="12" style="font-size:12px">Father&#39;s Name&nbsp; ( in case of individual )</td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style6">&nbsp;</td>
+                                <td colspan="2" style="font-size:12px">First Name</td>
+                                <td colspan="10">
+                                    <span>@Model.fathers_name</span>
+                                    @*<Label ID="l_ffname" runat="server" Text="" Font-Size="12px"></Label>*@
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style6">&nbsp;</td>
+                                <td colspan="2" style="font-size:12px">Middle Name</td>
+                                <td colspan="10">
+                                    <Label ID="l_fmname" runat="server" Text="" Font-Size="12px"></Label>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style6"></td>
+                                <td colspan="2" class="auto-style3" style="font-size:12px">SurName</td>
+                                <td colspan="10" class="auto-style4">
+                                    <Label ID="l_fsname" runat="server" Text="" Font-Size="12px"></Label>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td rowspan="2" class="auto-style6">4</td>
+                                <td class="auto-style9" style="font-size:12px">Flat/Room No.</td>
+                                <span></span>
+                                <td class="auto-style6" rowspan="2">5</td>
+                                <td colspan="10" class="auto-style4" style="font-size:12px">Floor No.</td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style8">
+                                    @*<Label ID="l_roomno" runat="server" Text="" Font-Size="12px"></Label>*@
+                                    <span> &nbsp;@Model.address</span>
+
+                                </td>
+                                <td colspan="10">
+                                    <Label ID="Label9" runat="server" Text="*" ForeColor="White"></Label>
+                                    <Label ID="l_flatno" runat="server" Text="" Font-Size="12px"></Label>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td rowspan="2" class="auto-style6">6</td>
+                                <td class="auto-style8" style="font-size:12px">Name of premises</td>
+
+                                <Label ID="Label9" runat="server" Text="*" ForeColor="White"></Label>
+                                <td class="auto-style6" rowspan="2">7</td>
+                                <td colspan="10" style="font-size:12px">Block Name/No.</td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style8">
+                                    <Label ID="l_premise" runat="server" Text="gtf" Font-Size="12px"></Label>
+                                    <span>&nbsp;</span>
+                                </td>
+                                <td colspan="10">
+                                    <Label ID="Label10" runat="server" Text="*" ForeColor="White"></Label>
+                                    <Label ID="l_blockno" runat="server" Text="" Font-Size="12px"></Label>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style6" rowspan="2">8</td>
+                                <td class="auto-style8" style="font-size:12px">Road/Street/Lane</td>
+                                <td class="auto-style6" rowspan="2">9</td>
+                                <td colspan="10" style="font-size:12px">Area/Locality</td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style8">
+                                    <Label ID="l_street" runat="server" Text=""></Label>
+                                    <span>&nbsp;</span>
+                                </td>
+                                <td colspan="10">
+                                    <span>@Model.land_mark</span>
+                                    <Label ID="Label11" runat="server" Text="*" ForeColor="White"></Label>
+                                    <Label ID="l_locality" runat="server" Text="" Font-Size="12px"></Label>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style6" rowspan="2">10</td>
+                                <td class="auto-style9" style="font-size:12px">Town/City</td>
+                                <td class="auto-style6" rowspan="2">11</td>
+                                <td colspan="4" class="auto-style4" style="font-size:12px">District</td>
+
+                                <td rowspan="2">12</td>
+
+                                <td colspan="5" class="auto-style4" style="font-size:12px">State</td>
+
+                            </tr>
+
+
+                            <tr>
+                                <td class="auto-style9">
+                                    <Label ID="l_city" runat="server" Text="" Font-Size="12px"></Label>
+                                    <span>@Model.city</span>
+                                </td>
+                                <td colspan="4" class="auto-style4">
+                                    <Label ID="l_district" runat="server" Text="" Font-Size="12px"></Label>
+                                    <span>@Model.district_name</span>
+                                </td>
+
+                                <td colspan="5" class="auto-style4">
+                                    <Label ID="l_state" runat="server" Text="" Font-Size="12px"></Label>
+                                    <span>@Model.state_name</span>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style6" rowspan="2">13</td>
+                                <td class="auto-style9" style="font-size:12px">Pin code</td>
+                                <td class="auto-style6" rowspan="2">14</td>
+                                <td colspan="4" class="auto-style4" style="font-size:12px">Telephone No (With STD code)</td>
+
+                                <td rowspan="2">15</td>
+
+                                <td colspan="5" class="auto-style4" style="font-size:12px">Mobile Number</td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style8">
+                                    <Label ID="l_pin" runat="server" Text="" Font-Size="12px"></Label>
+                                    <span>@Model.pin_code&nbsp;</span>
+                                </td>
+                                <td colspan="4">
+                                    <Label ID="_l_tel" runat="server" Text="" Font-Size="12px"></Label>
+                                </td>
+
+                                <td colspan="5">
+                                    <Label ID="l_mob" runat="server" Text="" Font-Size="12px"></Label>
+                                    <span>@Model.mobile_no</span>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style6">16</td>
+                                <td class="auto-style8" style="font-size:12px">Amount of transaction ( Rs )</td>
+                                <td colspan="11">
+                                    <Label ID="l_tamt" runat="server" Text="" Font-Size="12px"></Label>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style7">17</td>
+                                <td colspan="3" class="auto-style4" style="font-size:12px">Date of Transaction</td>
+
+                                <td style="width:5%;font-size:11px">D&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+
+                                <td style="width:5%;font-size:11px">D&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+
+                                <td style="width:5%;font-size:11px">M&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+
+                                <td style="width:5%;font-size:11px">M&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+
+                                <td style="width:5%;font-size:11px" colspan="2">Y&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+
+                                <td style="width:5%;font-size:11px">Y&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+
+                                <td style="width:5%;font-size:11px">Y&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                                <td style="width:5%;font-size:11px">Y&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style6">18</td>
+                                <td colspan="11" style="font-size:12px">In case of transaction in joint names,number of persons involved in the transaction</td>
+
+                                <td style="width:5%">
+                                    <Label ID="l_no_premis" runat="server" Text="" Font-Size="12px"></Label>
+                                </td>
+
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style6">19</td>
+                                <td colspan="12" style="font-size:12px">
+                                    Mode od transaction :<asp:CheckBox ID="CheckBox1" runat="server" Text="Cash" />
+                                    <CheckBox ID="CheckBox2" runat="server" Text="Cheque" />
+                                    <CheckBox ID="CheckBox3" runat="server" Text="Card" />
+                                    <CheckBox ID="CheckBox4" runat="server" Text="Draft/Banker's Cheque" />
+                                    <CheckBox ID="CheckBox5" runat="server" Text="Online transfer" />
+                                    <CheckBox ID="CheckBox6" runat="server" Text="Other" />
+                                </td>
+
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style7">20</td>
+                                <td colspan="7" class="auto-style4" style="font-size:12px">Aadhaar Number issued by UIDAI (If available )</td>
+
+                                <td class="auto-style4" colspan="5">
+                                    <Label ID="l_adhar" runat="server" Text="" Font-Size="12px"></Label>
+                                    <span>@Model.aadhar</span>
+                                </td>
+
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style6">21</td>
+                                <td colspan="3" style="font-size:12px">If applied for PAN and it is not yet generated enter date of application&nbsp; and acknowledgement number</td>
+
+                                <td style="width:5%;font-size:11px">D&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+
+                                <td style="width:5%;font-size:11px">D&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+
+                                <td style="width:5%;font-size:11px">M&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+
+                                <td style="width:5%;font-size:11px">M&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+
+                                <td style="width:5%;font-size:11px" colspan="2">Y&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+
+                                <td style="width:5%;font-size:11px">Y&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+
+                                <td style="width:5%;font-size:11px">Y&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+                                <td style="width:5%;font-size:11px">Y&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>
+
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style7">22</td>
+                                <td colspan="12" class="auto-style4" style="font-size:12px">If PAN not applied,fill estimated&nbsp; total income (including income od spouse,minor child etc.as persection 64 of Income -tax ,1961) for the financial year in which the above transaction is held.</td>
+
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style11"></td>
+                                <td colspan="4" class="auto-style12" style="font-size:12px">a) Agricultural income ( Rs )</td>
+
+                                <td colspan="8" class="auto-style12" style="font-size:12px">
+                                    <Label ID="l_agri_income" runat="server" Text="" Font-Size="12px"></Label>
+                                </td>
+
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style6">&nbsp;</td>
+                                <td colspan="4" style="font-size:12px">b) Other than agricultural income ( Rs )</td>
+
+                                <td colspan="8">
+                                    <Label ID="l_other_agri_incom" runat="server" Text="" Font-Size="12px"></Label>
+                                </td>
+
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style7">23</td>
+                                <td colspan="2" class="auto-style4" style="font-size:12px">
+                                    Details of document being produced in support of identify in Column 1 ( Refer instruction overleaf)<br />
+                                </td>
+
+                                <td colspan="2" class="auto-style4" style="font-size:12px">
+                                    Document code<br />
+                                    <br />
+                                </td>
+
+                                <td colspan="4" class="auto-style4" style="font-size:12px">
+                                    Document identification number<br />
+                                    <br />
+                                </td>
+
+                                <td colspan="4" class="auto-style4" style="font-size:12px">
+                                    Name and address of the authority issuing the document<br />
+                                </td>
+
+
+                            </tr>
+
+                            <tr>
+                                <td class="auto-style6">24</td>
+                                <td colspan="2" style="font-size:12px">
+                                    Detail of document being produced in support of address in Column 4 to 13(Refer instruction overleaf)<br />
+                                </td>
+
+                                <td colspan="2" style="font-size:12px">
+                                    Document code<br />
+                                    <br />
+                                </td>
+
+                                <td colspan="4" style="font-size:12px">
+                                    Document identification number<br />
+                                    <br />
+                                </td>
+
+                                <td colspan="4" style="font-size:12px">
+                                    Name and address of the authority issuing the document<br />
+                                </td>
+
+
+                            </tr>
+
+                        </table>
+                    </div>
+                </center>
+
+                @*<asp:Panel ID="Panel3" runat="server">
+                    </asp:Panel>*@
+
+                <div id="Panel3">
+
+                    <table width="100%" height="90%" style="font-size:9pt;">
+                        <tr>
+                            <td width="1%"></td>
+                            <td align="center" width="99%"><br /><b>Verification</b></td>
+                        </tr>
+                        <tr>
+                            <td width="1%"></td>
+                            <td align="justify" width="99%">I ,@Model.first_name @Model.second_name @Model.last_name do hereby declare that what is stated above is true to the best of my knowledge and belief. I further declare that I do not have a Permanent Account Number and my/ our estimated total income (including income of spouse, minor child etc. as per section 64 of Income-tax Act, 1961) computed in accordance with the provisions of Income-tax Act, 1961 for the financial year in which the above transaction is held will be less than maximum amount not chargeable to tax.</td>
+                        </tr>
+                        <tr>
+                            <td width="1%"></td>
+                            @*<td align="justify" width="99%">Verified today, the 23 day of  Jan , 2024.</td>*@
+                        <td align="justify" width="99%">Verified today,@Model.todaydate </td>
+                        </tr>
+                        <tr>
+                            <td width="1%"></td>
+                            <td align="left" width="99%">Place: </td>
+                        </tr>
+                        <tr>
+                            <td width="1%"></td>
+                            <td align="right" width="99%"> (Signature of declarant)</td>
+                        </tr>
+                    </table>
+                </div>
+
+
+
+                </form>
+</body>
+</html>
+
+
+

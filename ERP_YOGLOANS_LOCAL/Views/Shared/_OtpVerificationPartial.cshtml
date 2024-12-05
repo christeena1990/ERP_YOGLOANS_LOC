@@ -1,0 +1,250 @@
+﻿@*&nbsp;&nbsp;&nbsp;*@
+<div class="row" style="padding-left:40px;" id="otpbuttons">
+
+    <div class="col-md-6 col-lg-4" id="div_otpBtn">
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="sendOTPButton">Send OTP</button>
+            &nbsp;&nbsp;
+
+
+            <div class="overlay" id="loadingOverlaySend">
+                <!-- Timer display -->
+                <div id="timerDisplaySend" style="color: red; font-weight: bold;font-size:13px;padding:4px;"></div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <div class="col-md-6 col-lg-4" id="div_resendotpBtn" style="display:none;">
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="button" id="resendOTPButton">Resend OTP</button>
+            &nbsp;&nbsp;
+
+            <div class="overlay" id="loadingOverlayResend">
+                <!-- Timer display -->
+                <div id="timerDisplayResend" style="color: red; font-weight: bold;font-size:13px;padding:4px;"></div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+
+    <div class="col-md-6 col-lg-8" style="padding-left:40px;">
+        <div id="otpSection" @*style="display:none;*@>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" style="width:60px;">OTP</span>
+                </div>
+                <input type="text" class="form-control" id="otpInput" pattern="\d{10}" oninput="this.value = this.value.replace(/\D/g, '');">
+                <input type="hidden" id="verificationStatus" value="">
+                &nbsp; &nbsp; &nbsp;
+                <div class="col-md-6 col-lg-auto">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" id="verifyOTPButton">Verify</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+
+        $('#sendOTPButton').click(function (e) {
+            e.preventDefault();
+            var mobileNo = $('#mob_no').val().trim();
+            var savedMobileNo = localStorage.getItem('savedMobileNo');
+
+            if (mobileNo === savedMobileNo) {
+                alert('Mobile number has not been updated.');
+                return;
+            }
+
+            function validateMobileNumber(mobileNumber) {
+                if (mobileNumber === '' || mobileNumber === '0' || mobileNumber === '(null)' || mobileNumber.length < 10) {
+                    alert("Please enter a 10 digit mobile number and verify OTP...");
+                    $('#mob_no').focus();
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+
+            if (!validateMobileNumber(mobileNo)) {
+                return;
+            }
+
+            $(this).prop('disabled', true);
+            $('#mob_no').prop('readonly', true);
+
+            $.ajax({
+                url: '@Url.Action("sendOTP", "Otp")',
+                type: 'POST',
+                data: { mobNum: mobileNo },
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success) {
+                        alert('OTP sent successfully. Please Enter the OTP and click on Verify.');
+                        startTimer('send');
+                    } else {
+                        alert(response.message);
+                        /*//alert('Mobile number already exists.');*/
+                        $('#mob_no').focus();
+                        $('#sendOTPButton').prop('disabled', false);
+                        $('#mob_no').prop('readonly', false);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Error sending OTP: ' + error);
+                }
+            });
+        });
+
+        //////////////////    verifyOTPButton  click function ////////////////////////////
+
+        $('#verifyOTPButton').click(function (e) {
+            e.preventDefault();
+            var enteredOtp = $('#otpInput').val();
+            if (enteredOtp === "") {
+                alert("Please enter OTP!..");
+                $('#otpInput').focus();
+                return false;
+            }
+
+            $.ajax({
+                url: '@Url.Action("VerifyOtp", "Otp")',
+                type: 'POST',
+                data: { enteredOtp: enteredOtp },
+                success: function (verificationResult) {
+                    if (verificationResult.success) {                        
+                        alert(verificationResult.message);
+                        $('#otpbuttons').hide();
+                        $('#div_resendotpBtn').hide();                       
+                        $('#verificationStatus').val('OTP Verified');
+                    } else {                        
+                        alert(verificationResult.message);
+                        $('#div_resendotpBtn').show();
+                        $('#resendOTPButton').prop('disabled', false);
+                        //$('#sendOTPButton').prop('disabled', false);
+                        $('#div_otpBtn').hide();
+
+                        $('#otpInput').val('');
+
+                        $('#timerDisplaySend').hide();
+                        $('#timerDisplayResend').hide();
+                        $('#verificationStatus').val('OTP Invalid');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("Error verifying OTP: " + error);
+                }
+            });
+        });
+
+        //////////////////    resendOTPButton  click function ////////////////////////////
+
+         $('#resendOTPButton').click(function (e) {
+     e.preventDefault();
+
+     var mobileNo = $('#mob_no').val().trim();
+     var application_id = $('#h_appliId').val().trim();
+     alert(application_id);
+
+     function validateMobileNumber(mobileNumber) {
+         if (mobileNumber === '' || mobileNumber === '0' || mobileNumber === '(null)' || mobileNumber.length < 10) {
+             alert("Please enter a 10 digit mobile number and verify OTP...");
+             $('#mob_no').focus();
+             return false;
+         } else {
+             return true;
+         }
+     }
+
+     if (!validateMobileNumber(mobileNo)) {
+         return;
+     }
+
+     $(this).prop('disabled', true);
+     $('#mob_no').prop('readonly', true);
+
+     $.ajax({
+         url: '@Url.Action("resendOTP", "Otp")',
+         type: 'POST',
+         data: { mobNum: mobileNo, appli_id: application_id },
+         dataType: 'json',
+         success: function (response) {
+             if (response.success) {
+                 alert('OTP resent successfully. Please Enter the OTP and click on Verify.');
+                 $('#div_otpBtn').hide();
+
+                 startTimer('resend');
+             } else {
+                 alert('Mobile number already exists.');
+                 $('#mob_no').focus();
+                 $('#resendOTPButton').prop('disabled', false);
+                 $('#mob_no').prop('readonly', false);
+             }
+         },
+         error: function (xhr, status, error) {
+             alert('Error resending OTP: ' + error);
+         }
+     });
+ });
+
+        var countdown;
+        var timerInterval;
+
+        function updateTimerDisplay(type) {
+            var displayId = type === 'send' ? '#timerDisplaySend' : '#timerDisplayResend';
+            $(displayId).text(countdown + ' secs');
+        }
+
+        function startTimer(type) {
+            var displayId = type === 'send' ? '#timerDisplaySend' : '#timerDisplayResend';
+            $(displayId).show();
+            countdown = 30;
+            updateTimerDisplay(type);
+            clearInterval(timerInterval);
+            timerInterval = setInterval(function () {
+                countdown--;
+                updateTimerDisplay(type);
+                if (countdown <= 0) {
+                    clearInterval(timerInterval);
+                    $(displayId).text('Timeout');
+                    setTimeout(function () {
+                        $(displayId).hide();
+                        $('#div_otpBtn').hide();
+                        $('#div_resendotpBtn').show();
+                        if (type === 'send') {
+                            $('#sendOTPButton').prop('disabled', false);
+                        } else {
+                            $('#resendOTPButton').prop('disabled', false);
+                        }
+                    }, 3000);
+                }
+            }, 1000);
+        }
+    });
+</script>
+
+
+
+
+
+
+

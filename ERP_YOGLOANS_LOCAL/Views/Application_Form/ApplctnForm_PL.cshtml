@@ -1,0 +1,1360 @@
+﻿
+
+@model ERP_YOGLOANS_LOCAL.Models.personal_loan_models.PLForms_Model.LoanApplicationViewModel
+
+
+@{
+    Layout = null;
+}
+
+<style>
+    html {
+        zoom: 85%; /* Adjust this percentage to scale down the content */
+    }
+
+    /* Ensure a new page starts here */
+    .page-break {
+        page-break-before: always; /* Start on a new page */
+        break-before: page; /* For better compatibility */
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        text-align: left; /* Align text to the left for better readability */
+        font-size: 12px; /* Smaller font size for better fitting */
+    }
+
+    .heading-container {
+        margin: 10px 0;
+    }
+
+        .heading-container h1 {
+            font-size: 18px; /* Adjust font size */
+            margin: 5px 0;
+        }
+
+        .heading-container h2 {
+            font-size: 14px; /* Adjust font size */
+            margin: 3px 0;
+        }
+
+    table {
+        border-collapse: collapse;
+        border: 1px solid #ddd;
+        width: 100%; /* Adjust width to 100% */
+        margin: 5px auto; /* Reduce margin */
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px; /* Reduced padding */
+        text-align: left;
+    }
+
+    .small-column {
+        width: 20px; /* Adjusted width */
+        text-align: center;
+    }
+
+    .large-column {
+        width: 150px; /* Adjusted width */
+    }
+
+    .largest-column {
+        width: 300px; /* Adjusted width */
+    }
+
+    .pdf-button {
+        margin: 10px;
+        padding: 5px 10px;
+        font-size: 12px;
+        color: white;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .large-column, .largest-column {
+        word-wrap: break-word; /* Allows long words to break */
+        white-space: normal; /* Allows text to wrap onto the next line */
+        overflow-wrap: break-word; /* Ensures long words break as necessary */
+    }
+
+    .no-space {
+        border-collapse: collapse; /* Optional: removes space between cells */
+    }
+
+    td {
+        padding: 8px; /* Adds some padding for better readability */
+        vertical-align: top; /* Aligns text to the top of the cell */
+    }
+
+    .outline-container {
+        border: 2px solid #000; /* Outline color */
+        padding: 10px; /* Space between outline and content */
+        border-radius: 5px; /* Rounded corners */
+        border-color: black;
+        min-height: 1170px; /* Minimum height for the outline */
+        position: relative; /* Keep position relative if you add absolute elements */
+        margin: 20px 0; /* Margin between outlines */
+    }
+
+    hr {
+        border: 0;
+        height: 1px;
+        background-color: #ADB1B1;
+        margin: 20px 0; /* Adjust margin for spacing */
+    }
+</style>
+
+<div class="application-id">
+    <h2 style="font-size: 11px; margin: 0; text-align:right;">Application ID: &nbsp;@Session["application_id"]</h2>
+</div>
+<div class="outline-container">
+    @*<div style="text-align: left; margin: 10px; border: 1px solid #000; padding: 15px; border-radius: 5px;">*@
+    <br />
+    <div class="logo-src" style="height: 42px; vertical-align: top; text-align: center; margin-top: -5px; margin-bottom: 3px;">
+        <img style="width:170px;" src="~/images/logowithtext.png" />
+    </div><br />
+    <h3 style="color: #95999A; text-align: center; margin-top: -2px; margin-bottom: 10px; font-weight: normal;">
+        Address: Yogakshemam Loans Ltd, Door No.28/315-D2, 3rd Floor, Ottappath Tower, Aswini Junction, Thiruvambady P.O, Thrissur 680 022
+    </h3>
+    <hr style="border: 0; height: 1px; background-color: #ADB1B1" />
+    <div style="text-align: left; margin: 20px; font-size: 14px;">
+        @*Adjusted font size here*@
+        <p style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 8px; font-size: 16px;">
+            Application Form for Personal Loan on the security of the Existing Gold Loans
+        </p>
+        <br />
+        <div style="display: flex; justify-content: space-between; margin-bottom: -7px; font-size: 12px;">
+            <span>Branch Name:&nbsp;@Model.BranchName</span>
+            <span style="margin-right: 35px;">Branch Code:&nbsp;@Model.BranchCode </span>
+        </div>
+
+        <p style="margin-bottom: -5px; font-size: 12px;">Customer ID:&nbsp;@Model.CustomerId</p>
+        <p style="margin-bottom: -5px; font-size: 12px; ">Applicant's Name:&nbsp;@Model.CustomerName</p>
+        @*<p style="margin-bottom: -5px; font-size: 12px; ">Father's/Husband's Name:&nbsp;@Model.FathersName</p>*@
+
+        <p style="margin-bottom: -5px; font-size: 12px;">
+            Father's/Husband's Name:&nbsp;@(string.IsNullOrEmpty(Model.FathersName) ? Model.SpousesName : Model.FathersName)
+        </p>
+
+
+        <p style="margin-bottom: -5px; font-size: 12px; ">Address:&nbsp;@Model.Address</p>
+        <p style="margin-bottom: -5px; font-size: 12px; ">PAN:&nbsp;@Model.PAN</p>
+        <p style="margin-bottom: -5px; font-size: 12px; ">Contact Number:&nbsp;@Model.MobileNo</p>
+        <p style="margin-bottom: -2px; font-size: 12px; ">Email ID (if any):&nbsp;@Model.EmailId</p>
+
+        <p style="margin-top: 5px; font-size: 12px;">Details of the Existing Gold Loans</p>
+        <table style="width: 100%; border-collapse: collapse; margin-top: -3px; font-size: 12px;">
+            <thead>
+                <tr>
+                    <th style="border: .5px solid #000; padding: 5px; text-align: center;">SL</th>
+                    <th style="border: .5px solid #000; padding: 5px; text-align: center;">Gold Loan Account ID</th>
+                    <th style="border: .5px solid #000; padding: 5px; text-align: center;">Inventory ID</th>
+                    <th style="border: .5px solid #000; padding: 5px; text-align: center;">Net Wt</th>
+                    <th style="border: .5px solid #000; padding: 5px; text-align: center;">Gold Loan Amt</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="border: .5px solid #000; padding: 5px; text-align: center;">1</td>
+                    <td style="border: .5px solid #000; padding: 5px; text-align: center;">@Model.GLLoanNo</td>
+                    <td style="border: .5px solid #000; padding: 5px; text-align: center;">@Model.InventoryId</td>
+                    <td style="border: .5px solid #000; padding: 5px; text-align: center;">@Model.NetWeight</td>
+                    <td style="border: .5px solid #000; padding: 5px; text-align: center;">@Model.GLLoanAmount</td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <p style="margin-bottom: -5px; font-size: 12px;">Personal Loan Amount Applied: ₹ @Model.PLLoanAmount</p>
+        <p style="margin-bottom: -5px; font-size: 12px; ">Purpose of the Additional Loan:&nbsp;@Model.Purpose</p>
+        <p style="margin-bottom: -5px; font-size: 12px; ">Proposed Repayment Schedule:&nbsp;NA </p>
+        <p style="margin-bottom: -5px; font-size: 12px; ">Tenure:&nbsp;@Model.Duration months</p>
+        <p style="margin-bottom: -5px; font-size: 12px;">Repayment Mode:</p>
+        <p style="margin-bottom: -5px; font-size: 12px;">Repayment Mode:</p>
+       
+        <p style="margin-bottom: -5px; font-size: 12px;">Repayment Mode:</p>
+        <div style="margin-top: 5px; margin-bottom: -5px; font-size: 12px;">
+            <label>
+                <input type="checkbox" name="payment-option" value="monthly"
+                       @(Model.RepaymentMode.Contains("Monthly") ? "checked" : "")
+                       @(Model.RepaymentMode.Contains("Monthly") ? "" : "disabled") /> Monthly
+            </label>
+            <label style="margin-left: 5px;">
+                <input type="checkbox" name="payment-option" value="quarterly"
+                       @(Model.RepaymentMode.Contains("Quarterly") ? "checked" : "")
+                       @(Model.RepaymentMode.Contains("Quarterly") ? "" : "disabled") /> Quarterly
+            </label>
+            <label style="margin-left: 5px;">
+                <input type="checkbox" name="payment-option" value="lump-sum"
+                       @(Model.RepaymentMode.Contains("Lump Sum") ? "checked" : "checked")
+                       disabled /> Lump Sum
+            </label>
+        </div><br />
+
+        <script>
+    // Disable all checkboxes except the checked one
+    const checkboxes = document.querySelectorAll('input[name="payment-option"]');
+    let checkedCount = 0;
+
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            checkedCount++;
+        } else {
+            checkbox.disabled = true; // Disable unchecked checkboxes
+        }
+    });
+
+    // If there's more than one checkbox checked, re-enable them
+    if (checkedCount <= 1) {
+        checkboxes.forEach(checkbox => {
+            if (!checkbox.checked) {
+                checkbox.disabled = true; // Disable unchecked checkboxes
+            }
+        });
+    }
+        </script>
+
+
+
+
+        <p style="margin-top: 5px; margin-bottom: -2px; font-size: 13px; font-weight: bold ">Terms & Conditions: </p>
+        <ul style="list-style-type: disc; margin-left: 20px; margin-top: 6px; margin-bottom: -1px; ">
+            <li>The personal loan amount will be secured by the gold already pledged under the existing gold loan accounts.</li>
+            <li>Underlying gold loan accounts can be closed and pledged gold ornaments can be released only after full repayment and closure of this personal loan also.</li>
+            <li>In the event of auction recovery of gold loan dues, the dues under this personal loan also have to be cleared with the proceeds of gold auction.</li>
+        </ul>
+        <p style=" margin-top: 1px; margin-bottom: 2px; font-size: 13px; font-weight: bold ">Declaration: </p>
+        I hereby declare that all the information provided in this application form is true and accurate to the best of my knowledge. I agree to abide by the terms and conditions of Yogloans regarding the sanction of the personal  loan amount. I  authorize Yogloans to verify any information provided by me  and to seek references as necessary. I  also confirm that I  have read and understood the terms and conditions governing the loan.</li>
+        <br />
+        <p style="margin-bottom: -5px; font-size: 12px;">Signature of Applicant: ______________________</p>
+        <p style="margin-bottom: -9px; font-size: 12px; "> Date:&nbsp;@Model.Date</p>
+        <p style="margin-bottom: -7px; font-size: 13px; font-weight: bold; text-align: center ">For Office Use Only </p>
+        <p style="margin-bottom: -5px; font-size: 12px;">Received By:  _____________________</p>
+        <p style="margin-bottom: -7px; font-size: 12px;">Date of Application Received:   </p>
+        <p style="margin-bottom: 2px; font-size: 12px;">
+            Recommended for Sanction:&nbsp; <label style="margin-right: 10px;"></label>
+
+        </p>
+        <div style="margin-top: -2px; margin-bottom:5px; font-size: 12px; display: flex; align-items: center;">
+            <label style="margin-right: 10px;">
+                <input type="checkbox" name="payment-option" value="monthly" disabled> Yes
+            </label>
+            <label>
+                <input type="checkbox" name="payment-option" value="quarterly" disabled> No
+            </label>
+        </div>
+
+        <p style="margin-top: -5px; margin-bottom: -7px; font-size: 12px;">Amount Recommended:₹_____________________</p>
+        <p style="margin-bottom: -7px; font-size: 12px;">Sanctioned By:   _____________________</p>
+        <p style="margin-bottom: -7px; font-size: 12px;"> Date of Sanction:  --/ -- / ----</p>
+        <br />
+        <br />
+    </div>
+    @*</div>*@
+</div>
+
+
+
+
+
+
+@*---------------------------------------2nd Page---------------------------------------------------*@
+<div class="application-id page-break">
+    <h2 style="font-size: 11px; margin: 0; text-align: right;">Application ID: &nbsp;@Session["application_id"]</h2>
+
+    @*<div class="outline-container">*@
+    <div style="text-align: left; margin: 10px; border-block-color:black; border: 1px solid black; padding: 15px; border-radius: 5px; border: 2px solid #000; /* Outline color */ padding: 10px; /* Space between outline and content */ border-radius: 5px; /* Rounded corners */ border-color: black; min-height: 1170px; /* Minimum height for the outline */ position: relative; /* Keep position relative if you add absolute elements */ margin: 20px 0; ">
+
+
+        <div class="logo-src" style="height: 42px; vertical-align: top; text-align: center; margin-top: 2px; margin-bottom: 3px;">
+            <img style="width:170px;" src="~/images/logowithtext.png" />
+        </div><br />
+        <h3 style="color: #95999A; text-align: center; margin-top: -2px; margin-bottom: 10px; font-weight: normal;">
+            Address: Yogakshemam Loans Ltd, Door No.28/315-D2, 3rd Floor, Ottappath Tower, Aswini Junction, Thiruvambady P.O, Thrissur 680 022
+        </h3>
+
+        <hr style="border: 0; height: 1px; background-color: #ADB1B1" />
+        <div style="font-size: 14px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                <span>Branch Name:&nbsp;@Model.BranchName </span>
+                <span style="margin-right: 105px;">Branch Code:&nbsp;@Model.BranchCode</span> <!-- Adjusted margin -->
+            </div>
+            <div style="margin-right: 1px;" margin-top: 2px;">
+                <span>&nbsp; </span>
+                <span style="margin-left: 595px;">Date:&nbsp;@Model.Date</span>
+            </div>
+        </div>
+
+
+        <hr style="border: 0; height: 1px; background-color: #ADB1B1;" />
+        <p style="margin-bottom: -5px; font-size: 14px; font-weight:bold;">To,</p>
+        <br />
+        <p style="margin-bottom: 0px; font-size: 14px; font-weight: bold;">@Model.CustomerName</p>
+        <p style="margin-bottom: 2px; font-size: 14px; font-weight: bold;">@Model.Address</p><br />
+        <hr style="border: 0; height: 1px; background-color: #ADB1B1;" /><br />
+        <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px; font-weight: bold;">Subject: Sanction of Personal Loan on Existing Gold Loan Security </p>
+        <br />
+        <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px; ">Dear Mr./Ms.&nbsp; @Model.CustomerName,</p>
+        <br />
+        <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px; ">
+            We are pleased to inform you that based on your
+            request for a personal loan against the gold security already pledged with us under, we have sanctioned the
+            personal loan amount as per the details provided below:
+        </p>
+        <hr style="border: 0; height: 1px; background-color: #ADB1B1;" /><br />
+        <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px; ">Sanction Details</p><br />
+
+        <table style="width: 100%; border-collapse: collapse; margin-top: -3px; font-size: 12px;">
+            <thead>
+                <tr>
+                    <th style="border: .5px solid #000; padding: 5px; width: 25%;">&nbsp;</th>
+                    <th style="border: .5px solid #000; padding: 5px; width: 75%;">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td style="border: .5px solid #000; padding: 5px;  width: 25%;">Existing Gold Loan account No</td>
+                    <td style="border: .5px solid #000; padding: 5px; width: 75%;">@Model.GLLoanNo</td>
+                </tr>
+                <tr>
+                    <td style="border: .5px solid #000; padding: 5px;  width: 25%;">Inventory ID of existing accounts</td>
+                    <td style="border: .5px solid #000; padding: 5px; width: 75%;">@Model.InventoryId</td>
+                </tr>
+                <tr>
+                    <td style="border: .5px solid #000; padding: 5px;  width: 25%;">Net Weight</td>
+                    <td style="border: .5px solid #000; padding: 5px; width: 75%;">@Model.NetWeight</td>
+                </tr>
+                <tr>
+                    <td style="border: .5px solid #000; padding: 5px;  width: 25%;">Existing Loan Amount ₹</td>
+                    <td style="border: .5px solid #000; padding: 5px; width: 75%;">@Model.GLLoanAmount</td>
+                </tr>
+                <tr>
+                    <td style="border: .5px solid #000; padding: 5px;  width: 25%;">
+                        Date of Original Gold Loan sanction
+                    </td>
+                    <td style="border: .5px solid #000; padding: 5px; width: 75%;">@Model.GLdate</td>
+                </tr>
+                <tr>
+                    <td style="border: .5px solid #000; padding: 5px; width: 25%;">Current outstanding ₹</td>
+                    <td style="border: .5px solid #000; padding: 5px; width: 75%;">@Model.GLoutstanding</td>
+                </tr>
+                <tr>
+                    <td style="border: .5px solid #000; padding: 5px; width: 25%;">Maturity Date of Original Gold loan</td>
+                    <td style="border: .5px solid #000; padding: 5px; width: 75%;">@Model.GLMaturitydate</td>
+                </tr>
+                <tr>
+                    <td style="border: .5px solid #000; padding: 5px; width: 25%;">Personal Loan Amount sanctioned  ₹</td>
+                    <td style="border: .5px solid #000; padding: 5px; width: 75%;">@Model.PLLoanAmount</td>
+                </tr>
+                <tr>
+                    <td style="border: .5px solid #000; padding: 5px; width: 25%;">Total Loan Amount (Gold loan  + personal): ₹</td>
+                    <td style="border: .5px solid #000; padding: 5px; width: 75%;">@Model.TotalLoan</td>
+                </tr>
+                <tr>
+                    <td style="border: .5px solid #000; padding: 5px; width: 25%;">Rate of Interest of Personal Loan</td>
+                    <td style="border: .5px solid #000; padding: 5px; width: 75%;">20% p.a </td>
+                </tr>
+                <tr>
+                    <td style="border: .5px solid #000; padding: 5px;  width: 25%;">Tenure of Personal  Loan</td>
+                    <td style="border: .5px solid #000; padding: 5px; width: 75%;">@Model.Duration2</td>
+                </tr>
+                <tr>
+                    <td style="border: .5px solid #000; padding: 5px; width: 25%;">
+                        Maturity Date of Personal loan*
+                    </td>
+                    <td style="border: .5px solid #000; padding: 5px; width: 75%;">@Model.PLMaturitydate</td>
+                </tr>
+                <tr>
+                    <td style="border: .5px solid #000; padding: 5px;  width: 25%;">Loa to Value (LTV) on Gold loan</td>
+                    <td style="border: .5px solid #000; padding: 5px; width: 75%;">@Model.GL_ltv
+                </tr>
+                <tr>
+                    <td style="border: .5px solid #000; padding: 5px; width: 25%;">Total LTV ( Gold loan + Personal Loan)</td>
+                    <td style="border: .5px solid #000; padding: 5px; width: 75%;">75%</td>
+                </tr>
+            </tbody>
+        </table>
+        <br />
+
+        <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px; ">
+            *The Personal  loan  amount, including principal and interest,
+            shall be due and payable on the maturity date mentioned above.
+        </p>
+        <br />
+        <hr style="border: 0; height: 1px; background-color: #ADB1B1;" />
+        <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px; font-weight: bold;">Repayment Terms</p>
+        <br />
+        <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px;">
+            You are required to repay the entire loan amount along with interest as per the schedule mentioned above.
+        </p>
+        <br />
+        <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px;">
+            Failure to comply with the repayment terms may result in the auction of the gold security, as per the policy of Yogloans and applicable laws.
+        </p>
+        <br />
+
+        <div class="application-id ">
+
+
+
+            <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px; font-weight: bold;">Terms & Conditions</p>
+            <ul style="list-style-type: decimal; margin-left: 20px; margin-top: 6px; margin-bottom: -1px; ">
+                <li>The personal loan amount is sanctioned against the gold security already pledged and will be subject to the same terms and conditions as the original loan unless otherwise specified.</li>
+                <li>Any default in the repayment of the loan amount or interest will be dealt with as per the standard practices of Yogloans, including the possibility of the gold being auctioned to recover dues.</li>
+                <li>The interest rate applicable to the additional loan will remain fixed.  </li>
+                <li>LTV of gold loan and personal loan together will be restricted at 75%. Any excess which may arise in future has to be deposited immediately on intimation.</li>
+            </ul>
+            <br />
+            <hr style="border: 0; height: 1px; background-color: #ADB1B1;" />
+            <br />
+            <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px;">
+                We request you to visit our branch at the earliest to complete the necessary formalities and execute the loan agreement.
+            </p>
+            <br />
+            <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px;">
+                Should you have any queries or require further assistance, please feel free to contact us at our Branch Office.
+            </p>
+            <br />
+            <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px;">
+                We look forward to continuing to serve you.
+            </p>
+            <br />
+            <hr style="border: 0; height: 1px; background-color: #ADB1B1;" />
+            <br />
+            <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px; font-weight: bold;">For YOGAKSHEMAM LOANS LTD</p>
+            <br />
+            <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px;">
+                Branch Manager
+            </p>
+            <br />
+            <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px;">
+                Signature & Seal
+            </p>
+            <br />
+            <br />
+            <br />
+            <br />
+            <hr style="border: 0; height: 1px; background-color: #ADB1B1;" />
+            <br />
+            <br />
+            <br />
+            <br />
+
+        </div>
+
+
+    </div>
+    <h2 style="font-size: 11px; margin: 0; text-align: right;">Application ID: &nbsp;@Session["application_id"]</h2>
+
+</div>
+@*---------------------------------------3rd Page Key Fact Sheets------------------------------------------------------*@
+<div class="application-id  page-break">
+    <h2 style="font-size: 11px; margin: 0; text-align: left;">Application ID: &nbsp;@Session["application_id"]</h2>
+</div>
+@*<div class="outline-container">*@
+
+@*<div style="text-align: left; margin: 10px; border: 1px solid #000; padding: 15px; border-radius: 5px;">*@
+
+
+<div id="annex_a">
+    <h1 style="text-align:right;">Annex A</h1><br />
+    <div class="heading-container" style="text-align:center;">
+        <h1>Key Facts Statement</h1><br />
+        <h1>Part 1 (Interest rate and fees/charges)</h1>
+    </div>
+
+    <!-- Container for centered tables -->
+    @*<div class="table-container">*@
+    <!-- Main Table -->
+    <table id="content1" class="no-space">
+        <tr>
+            <td class="small-column">1</td>
+            <td class="large-column">Loan proposal/ account No:&nbsp; </td>
+            <td style="width:200px;"></td>
+            <td class="large-column">Type of Loan:&nbsp;</td>
+            <td style="width:200px;"></td>
+        </tr>
+        <tr>
+            <td class="small-column">2</td>
+            <td colspan="2" class="large-column">Sanctioned Loan amount (in Rupees)</td>
+            <td colspan="2" class="large-column"></td>
+        </tr>
+        <tr>
+            <td class="small-column">3</td>
+            <td class="large-column" colspan="2">
+                <span class="disbursal-schedule">Disbursal schedule</span><br>
+                <span class="disbursal-details">
+                    (i) &nbsp;Disbursement in stages or 100% upfront.<br>
+                    (ii) &nbsp; If it is stage wise, mention the clause of loan<br /> agreement having relevant details
+                </span>
+            </td>
+            <td colspan="2" class="large-column"></td>
+        </tr>
+        <tr>
+            <td class="small-column">4</td>
+            <td colspan="2" class="large-column">Loan term (year/months/days)</td>
+            <td colspan="2" class="large-column"></td>
+        </tr>
+        <tr>
+            <td class="small-column">5</td>
+            <td class="largest-column" colspan="2">Instalment details</td>
+
+        </tr>
+    </table>
+
+    <!-- Nested Table -->
+    <table id="content2" class="no-space">
+        <thead>
+            <tr>
+                <th style="width:50px; font-weight:normal">Type of instalments</th>
+                <th style="width: 50px; font-weight:normal">Number of EPIs</th>
+                <th style="width: 50px; font-weight:normal">EPI (₹)</th>
+                <th style="width: 50px; font-weight: normal">Commencement of repayment, post sanction</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <!-- Add more rows as needed -->
+        </tbody>
+    </table>
+
+    <table id="content3" class="no-space">
+        <tr>
+            <td class="small-column">6</td>
+            <td class="largest-column" colspan="3">Interest rate (%) and type (fixed or floating or hybrid)</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="small-column">7</td>
+            <td class="largest-column" colspan="2">Additional Information in case of Floating rate of interest</td>
+        </tr>
+    </table>
+
+    <table id="content4" class="no-space">
+        <tr>
+            <th rowspan="2" style="font-weight: normal">Reference<br>Benchmark</th>
+            <th rowspan="2" style="font-weight: normal">Benchmark<br>rate (%) (B)</th>
+            <th rowspan="2" style="font-weight: normal">Spread (%) (S)</th>
+            <th rowspan="2" style="font-weight: normal">Final rate (%)<br>R = (B) + (S)</th>
+            <td colspan="2" style="font-weight: normal">Reset<br>periodicity 2(Months)</td>
+            <th colspan="2" style="font-weight: normal">Impact of change in the reference<br>benchmark<br>(for 25 bps change in ‘R’, change in:3)</th>
+        </tr>
+        <tr>
+            <td>B</td>
+            <td>S</td>
+            <td>EPI (₹)</td>
+            <td>No. of EPIs</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+
+    <table id="content5" class="no-space">
+        <tr>
+            <td class="small-column">8</td>
+            <td class="largest-column" colspan="2">Fee/ Charges</td>
+        </tr>
+    </table>
+
+    <table id="combined-table" class="no-space">
+        <tr>
+            <th colspan="2"></th>
+            <th colspan="2" style="font-weight: normal">Payable to the RE (A)</th>
+            <th colspan="2" style="font-weight: normal">Payable to a third party through RE (B)</th>
+        </tr>
+        <tr>
+            <td class="small-column"></td>
+            <td></td>
+            <td>One-time/Recurring</td>
+            <td>Amount (in ₹) or Percentage (%) as applicable</td>
+            <td>One-time/Recurring</td>
+            <td>Amount (in ₹) or Percentage (%) as applicable</td>
+        </tr>
+        <tr>
+            <td>i)</td>
+            <td>Processing fees&nbsp;<span style="font-size:10px">(Including GST)</span></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>ii)</td>
+            <td>Insurance charges&nbsp;<span style="font-size:10px">(Including GST)</span></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>iii)</td>
+            <td>Valuation fees</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>iv)</td>
+            <td>Any other (please specify)</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        @*<tr>
+                <td class="small-column" style="font-weight:bold">9</td>
+                <td class="largest-column" colspan="3" style="font-weight:bold; width:200px;">Annual Percentage Rate (APR) (%)</td>
+            </tr>*@
+    </table>
+    <table id="content11" class="no-space">
+        <tr>
+            <td class="small-column">9</td>
+            <td class="largest-column" colspan="3">Annual Percentage Rate (APR) (%)</td>
+            <td></td>
+        </tr>
+
+    </table>
+
+    <table id="content6" class="no-space">
+        <tr>
+            <td class="small-column">10</td>
+            <td class="largest-column" colspan="2">Details of Contingent Charges (in ₹ or %, as applicable)</td>
+        </tr>
+    </table>
+
+    <table id="content7" class="no-space">
+        <tr>
+            <td class="small-column">i)</td>
+            <td class="largest-column">Penal charges, if any, in case of delayed payment</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="small-column">ii)</td>
+            <td class="largest-column">Other penal charges, if any</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="small-column">iii)</td>
+            <td class="largest-column">Foreclosure charges, if applicable</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="small-column">iv)</td>
+            <td class="largest-column">Charges for switching of loans from floating to fixed rate and vice versa</td>
+            <td></tr>
+        <tr>
+            <td class="small-column">v)</td>
+            <td class="largest-column">Any other charges (please specify)</td>
+            <td></td>
+        </tr>
+    </table>
+
+
+    @*</div>*@
+
+    @*<div class="heading-container">*@
+
+<h2 style="font-size: 11px; margin: 0; text-align: left;">Application ID: &nbsp;@Session["application_id"]</h2>
+
+    <h1 style="text-align:center;">Part 2 (Other qualitative information)</h1>
+
+    <table id="content8" class="no-space">
+        <tr>
+            <td class="small-column">1</td>
+            <td class="largest-column">
+                Clause of Loan agreement relating to
+                engagement of recovery agents
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="small-column">2</td>
+            <td class="largest-column">
+                Clause of Loan agreement which details
+                grievance redressal mechanism
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="small-column">3</td>
+            <td class="largest-column">
+                Phone number and email id of the nodal
+                grievance redressal officer
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td class="small-column">4</td>
+            <td class="largest-column">
+                Whether the loan is, or in future maybe, subject
+                to transfer to other REs or securitisation (Yes/ No)
+            </td>
+            <td></td>
+        </tr>
+        @*<tr>
+                <td class="small-column">5</td>
+                <td class="largest-column">
+                    In case of lending under collaborative lending arrangements (e.g., co-lending/ outsourcing),
+                    following additional details may be furnished:
+                </td>
+                <td></td>
+            </tr>*@
+    </table>
+    <table id="content9" class="no-space">
+        <tr>
+            <td class="small-column">10</td>
+            <td class="largest-column" colspan="2">
+                In case of lending under collaborative lending arrangements (e.g., co-lending/ outsourcing),<br />
+                following additional details may be furnished:
+            </td>
+        </tr>
+    </table>
+    <table id="content10" class="no-space">
+        <tr>
+            <th style="font-weight: normal">
+                Name of the originating RE, along<br />
+                with its funding proportion
+            </th>
+            <th style="font-weight: normal">
+                Name of the partner RE along with its<br />
+                proportion of funding
+            </th>
+            <th style="font-weight: normal">Blended rate of interest </th>
+        </tr>
+        <tr>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+        </tr>
+    </table>
+    <table id="content11" class="no-space">
+        <tr>
+            <td class="small-column">6</td>
+            <td class="largest-column" colspan="2">
+                In case of digital loans, following specific disclosures may be furnished:
+            </td>
+        </tr>
+    </table>
+    <table id="content12" class="no-space">
+
+        <tr>
+            <td class="largest-column">
+                <span class="numbered-item">(i)</span>
+                <span class="description">
+                    Cooling off/look-up period, in terms of RE’s
+                    board approved
+                    <span class="multiline">
+                        policy, during which borrower
+                        shall not be charged any penalty on
+                        prepayment of loan
+                    </span>
+                </span>
+            </td>
+            <td></td>
+        </tr>
+
+        <tr>
+
+            <td class="largest-column">
+                <span class="numbered-item">(ii)</span>
+                <span class="description">
+                    Details of LSP acting as recovery agent and
+                    authorized to
+                    <span class="multiline">
+                        approach the borrower
+                    </span>
+                </span>
+            </td>
+            <td></td>
+        </tr>
+
+    </table>
+</div>
+
+@*----------------------AnnexB------------------------*@
+
+
+<div class="application-id  page-break">
+    <h2 style="font-size: 11px; margin: 0;">Application ID: &nbsp;@Session["application_id"]</h2>
+
+
+
+    <br />
+    <br />
+    <br />
+    <h1 style="text-align:right;">Annex B</h1><br />
+    <h1 style="text-align: center;">Illustration for computation of APR for Retail and MSME loans </h1>
+
+
+
+    <table id="content1">
+
+        <thead>
+            <tr>
+                <th style="text-align: center; font-weight: normal">Sl.No</th>
+                <th style="text-align:center ; font-weight: normal ">Parameter</th>
+                <th style="text-align:center;font-weight: normal">Details</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td class="small-column">1</td>
+                <td class="largest-column">
+                    Sanctioned Loan amount (in Rupees) (Sl no. 2 of the KFS
+                    template – Part 1)
+                </td>
+                <td class="medium-column"></td>
+            </tr>
+            <tr>
+                <td class="small-column">2</td>
+                <td class="largest-column">
+                    Loan Term (in years/ months/ days) (Sl No.4  of the KFS
+                    template – Part 1)
+                </td>
+                <td class="medium-column"></td>
+            </tr>
+            <tr>
+                <td class="small-column">a)</td>
+                <td class="largest-column">
+                    No. of instalments for payment of principal, in case of non
+                    equated periodic loans
+                </td>
+                <td class="medium-column"></td>
+            </tr>
+
+            <tr>
+                <td class="small-column">b)</td>
+                <td class="largest-column">
+                    Type of EPI
+                    Amount of each EPI (in Rupees) and
+                    nos. of EPIs (e.g., no. of EMIs in case of monthly
+                    instalments)
+                    (Sl No. 5 of the KFS template – Part 1)
+                </td>
+                <td class="medium-column">
+                </td>
+            </tr>
+
+            <tr>
+                <td class="small-column">c)</td>
+                <td class="largest-column">
+                    No. of instalments for payment of capitalised interest, if any
+                </td>
+                <td class="medium-column"></td>
+            </tr>
+
+            <tr>
+                <td class="small-column">d)</td>
+                <td class="largest-column">
+                    Commencement of repayments, post sanction (Sl No. 5 of
+                    the KFS template – Part 1)
+                </td>
+                <td class="medium-column">  </td>
+            </tr>
+
+
+            <tr>
+                <td class="small-column">3</td>
+                <td class="largest-column">
+                    Interest rate type (fixed or floating or hybrid) (Sl No. 6 of the
+                    KFS template – Part 1)
+                </td>
+                <td class="medium-column"></td>
+            </tr>
+            <tr>
+                <td class="small-column">4</td>
+                <td class="largest-column">
+                    Rate of Interest (Sl No. 6 of the KFS template – Part 1)
+                </td>
+                <td class="medium-column"></td>
+            </tr>
+            <tr>
+                <td class="small-column">5</td>
+                <td class="largest-column">
+                    Total Interest Amount to be charged during the entire tenor
+                    of the loan as per the rate prevailing on sanction date (in
+                    Rupees)
+                </td>
+                <td class="medium-column"></td>
+            </tr>
+            <tr>
+                <td class="small-column">6</td>
+                <td class="largest-column">
+                    Fee/ Charges payable8 (in Rupees)
+                </td>
+                <td class="medium-column"></td>
+            </tr>
+
+            <tr>
+                <td class="small-column">A</td>
+                <td class="largest-column">
+                    Payable to the RE (Sl No.8A of the KFS template-Part 1)
+                </td>
+                <td class="medium-column"></td>
+            </tr>
+
+            <tr>
+                <td class="small-column">B</td>
+                <td class="largest-column">
+                    Payable to third-party routed through RE (Sl No.8B of the
+                    KFS template – Part 1)
+                </td>
+                <td class="medium-column"></td>
+            </tr>
+
+            <tr>
+                <td class="small-column">7</td>
+                <td class="largest-column">
+                    Net disbursed amount (1-6) (in Rupees)
+                </td>
+                <td class="medium-column"></td>
+            </tr>
+
+            <tr>
+                <td class="small-column">8</td>
+                <td class="largest-column">
+                    Total amount to be paid by the borrower (sum of 1 and 5)
+                    (in Rupees)
+                </td>
+                <td class="medium-column"></td>
+            </tr>
+            <tr>
+                <td class="small-column">9</td>
+                <td class="largest-column">
+                    Annual Percentage rate- Effective annualized interest rate
+                    (in percentage)10  (Sl No.9 of the KFS template-Part 1)
+                </td>
+                <td class="medium-column"></td>
+            </tr>
+            <tr>
+                <td class="small-column">10</td>
+                <td class="largest-column">
+                    Schedule of disbursement as per terms and conditions
+                </td>
+                <td class="medium-column">
+                </td>
+            </tr>
+            <tr>
+                <td class="small-column">8</td>
+                <td class="largest-column">
+                    Due date of payment of instalment and interest
+                </td>
+                <td class="medium-column"></td>
+            </tr>
+
+        </tbody>
+    </table>
+</div>
+
+@*------------------------------AnnexC------------------------*@
+<div class="application-id page-break">
+    <h2 style="font-size: 11px; margin: 0;">Application ID: &nbsp;@Session["application_id"]</h2>
+
+
+    <br />
+    <br />
+    <br />
+    <h1 style="text-align:right;">Annex C</h1><br />
+    <h1 style="text-align: center">
+        Illustrative Repayment Schedule under Equated Periodic Instalment for the
+        hypothetical loan illustrated in Annex B
+    </h1>
+
+
+
+    <table id="content1">
+
+        <thead>
+            <tr>
+                <th style="text-align:center">
+                    Instalment
+                    No.
+                </th>
+                <th style="text-align:center">
+                    Outstanding
+                    Principal (in
+                    Rupees)
+                </th>
+                <th style="text-align:center">
+                    Principal (in
+                    Rupees)
+                </th>
+                <th style="text-align:center">
+                    Interest (in
+                    Rupees)
+                </th>
+                <th style="text-align:center">
+                    Instalment (in
+                    Rupees)
+                </th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td style="text-align:center" class="small-column">1</td>
+                <td style="text-align:center" class="medium-column">
+                </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+            </tr>
+            <tr>
+                <td style="text-align:center" class="small-column">2</td>
+                <td style="text-align:center" class="large-column">
+                </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+            </tr>
+
+
+            <tr>
+                <td style="text-align:center" class="small-column">3</td>
+                <td style="text-align:center" class="large-column">
+                </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+            </tr>
+            <tr>
+                <td style="text-align:center" class="small-column">4</td>
+                <td style="text-align:center" class="large-column">
+                </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+            </tr>
+            <tr>
+                <td style="text-align:center" class="small-column">5</td>
+                <td style="text-align:center" class="large-column">
+                </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+            </tr>
+            <tr>
+                <td style="text-align:center" class="small-column">6</td>
+                <td style="text-align:center" class="large-column">
+                </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+            </tr>
+
+
+            <tr>
+                <td style="text-align:center" class="small-column">7</td>
+                <td style="text-align:center" class="large-column">
+                </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"></td>
+                <td style="text-align:center" class="medium-column"></td>
+            </tr>
+
+            <tr>
+                <td style="text-align:center" class="small-column">8</td>
+                <td style="text-align:center" class="large-column">
+                </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+            </tr>
+            <tr>
+                <td style="text-align:center" class="small-column">9</td>
+                <td style="text-align:center" class="large-column">
+                </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+            </tr>
+            <tr>
+                <td style="text-align:center" class="small-column">10</td>
+                <td style="text-align:center" class="large-column">
+                </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+            </tr>
+            <tr>
+                <td style="text-align:center" class="small-column">11</td>
+                <td style="text-align:center" class="large-column">
+                </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+                <td style="text-align:center" class="medium-column"> </td>
+            </tr>
+
+        </tbody>
+    </table>
+
+
+</div>
+</div>
+
+
+
+
+@*</div>*@
+
+@*---------------------------------------4rd Page------------------------------------------------------*@
+<div class="application-id page-break">
+    <h2 style="font-size: 11px; margin: 0; text-align: right;">Application ID: &nbsp;@Session["application_id"]</h2>
+
+
+    <div style="text-align: left; margin: 10px; border: 1px solid #000; padding: 15px; border-radius: 5px;">
+
+        <div class="heading-container ">
+            <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px; font-weight: bold;">Acknowledgment by the Customer</p>
+            <br />
+            <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px;">
+                I,&nbsp;@Model.CustomerName, have received the sanction letter for a personal loan of  ₹&nbsp;@Model.PLLoanAmount on my existing gold loan(s) and agree to the terms and conditions mentioned above.
+            </p><br />
+            <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px; font-weight: bold;">Signature of Applicant:  </p>
+            <br />
+            <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px; font-weight: bold;">Date:&nbsp;@Model.Date</p>
+            <br />
+            <hr style="border: 0; height: 1px; background-color: #ADB1B1;" />
+            <br />
+            <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px; font-weight: bold;">Declaration of Acceptance by the Customer</p>
+            <br />
+            <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px;">
+                I fully understand and agree to the following:
+            </p> <br />
+            <ul style="list-style-type: decimal; margin-left: 20px; margin-top: 6px; margin-bottom: -1px; ">
+                <li>The personal loan amount is secured against the gold already pledged and will be governed by the same terms as the original loan, unless otherwise specified.</li>
+                <li>The interest rate and repayment schedule applicable to the personal loan amount have been clearly explained to me.</li>
+                <li>I undertake to repay the total loan amount (gold loan and personal loan) in accordance with the terms specified in the sanction letter.</li>
+                <li>I understand that any failure to meet the repayment obligations may result in the auction of the pledged gold as per the policy of Yogloans and applicable regulations.</li>
+            </ul>
+            <br />
+            <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px;">
+                I confirm my acceptance of the personal loan under the terms and conditions laid out in the sanction letter.
+            </p> <br />
+            <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px;">
+                Request to disburse the loan amount to my bank account as below:
+            </p> <br />
+            <table style="width: 100%; border-collapse: collapse; margin-top: -3px; font-size: 12px;">
+                @*<thead>
+                        <tr>
+                            <th style="border: .5px solid #000; padding: 5px; width: 25%;">(1)</th>
+                            <th style="border: .5px solid #000; padding: 5px; width: 75%;"></th>
+                        </tr>
+                    </thead>*@
+                <tbody>
+                    <tr>
+                        <td style="border: .5px solid #000; padding: 5px; text-align: center; width: 25%;">Bank Account Title / Payee’s Name </td>
+                        <td style="border: .5px solid #000; padding: 5px; text-align: center; width: 75%;">@Model.Payeename</td>
+                    </tr>
+                    <tr>
+                        <td style="border: .5px solid #000; padding: 5px; text-align: center; width: 25%;">Account Number</td>
+                        <td style="border: .5px solid #000; padding: 5px; text-align: center; width: 75%;">@Model.AcctNo</td>
+                    </tr>
+                    <tr>
+                        <td style="border: .5px solid #000; padding: 5px; text-align: center; width: 25%;">IFSC </td>
+                        <td style="border: .5px solid #000; padding: 5px; width: 75%; text-align: center;">@Model.IFSC</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <br />
+            <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px; font-weight: bold;">Signature of Applicant:  </p>
+            <br />
+            <p style="margin-bottom: 2px; margin-top: 2px; font-size: 14px; font-weight: bold;">Date:&nbsp;@Model.Date</p>
+            <br />
+
+            <br /> <br /><br />
+            <br />
+            <br /> <br />
+            <br />
+            <br />
+            <br /> <br />
+            <br />
+            <br />
+            <br /> <br />
+        </div>
+    </div>
+
+
+</div>
+@*------------------------------------------5th page LOAN AGREEMENT--------------------*@
+<div class="application-id page-break">
+    <h2 style="font-size: 11px; margin: 0; text-align: right;">Application ID: &nbsp;@Session["application_id"]</h2>
+
+
+    <div style="text-align: left; margin: 10px; border: 1px solid #000; padding: 15px; border-radius: 5px;">
+        <div class="heading-container ">
+            <p style="text-align: center; font-weight: bold; margin-bottom: 8px; font-size: 16px;">LOAN AGREEMENT</p>
+            <p style="margin-bottom: -5px; font-size: 12px;">This Personal Loan Agreement  made this &nbsp;@Model.ApplctnDate is between:</p>
+            <br />
+            <p style="margin-bottom: -5px; font-size: 12px; font-weight:bold;">Borrower: (“Borrower”)</p>
+            <p style="margin-bottom: -5px; font-size: 12px; ">Borrower’s Full Name: &nbsp;@Model.CustomerName</p>
+            <p style="margin-bottom: -5px; font-size: 12px; ">Address:</p>
+            <p style="margin-bottom: -5px; font-size: 12px;">
+                &nbsp;@Model.Address
+            </p>
+            <p style="margin-bottom: -5px; font-size: 12px;">and agrees to borrow money from:</p>
+            <p style="margin-bottom: -5px; font-size: 12px; font-weight:bold;">Lender: (“Lender”)</p>
+            <p style="margin-bottom: -5px; font-size: 12px; ">
+                Yogakshemam Loans Limited, a Non Banking Finance Company registered with the Reserve Bank of  India under the
+                provisions of Chapter III B of Reserve Bank of India Act 1934, having its Registered/Administrative
+                Office at 3rd Floor, Ottappath Tower, Aswini Junction, Thriruvambady P.O., Thrissur, Kerala - 680 022
+                and branch office at<br /><br />
+                @Model.BranchName<br />
+
+            </p>
+            <p style="margin-bottom: -5px; font-size: 12px; ">Branch Address:</p>
+            <p style="margin-bottom: -5px; font-size: 12px;">
+                &nbsp;@Model.BranchAddress
+            </p><br />
+            <p style="margin-bottom: -5px; font-size: 12px;">
+                <span style="font-weight: bold; font-size: 14px;">LOAN AMOUNT:</span> The amount of money being borrowed from the Lender to the Borrower is ₹ &nbsp;@Model.PLLoanAmount
+            </p>
+            <p style="margin-bottom: -5px; font-size: 12px; ">(Loan Amount)</p><br />
+            <p style="margin-bottom: -5px; font-size: 12px;">
+                <span style="font-weight: bold; font-size: 14px;">REPAYMENTS.</span>The Borrower agrees to repay the Borrowed Money along with interest to the Lender as lump sum on the due date. All payments made by the Borrower shall be first applied to any accrued interest and second to the principal balance.
+            </p><br />
+            <p style="margin-bottom: -5px; font-size: 12px;">
+                <span style="font-weight: bold; font-size: 14px;">INTEREST RATE.</span>The Borrowed Money shall bear interest at a rate of 20.00% compounded at monthly.
+            </p><br />
+            <p style="margin-bottom: -5px; font-size: 12px;">
+                <span style="font-weight: bold; font-size: 14px;">TERM.</span>The total amount of the Borrowed Money, including principal and interest, shall be due and payable on &nbsp;@Model.PLMaturitydate (“Due Date”).
+            </p><br />
+            <p style="margin-bottom: -5px; font-size: 12px;">
+                <span style="font-weight: bold; font-size: 14px;">LATE PAYMENT.</span>If the Borrower is late by more than 2 days for any payment due, it shall be considered late. If a payment is late, the Borrower shall be charged a late fee equal to ͅ3%  per month for the overdue amount during the overdue period.
+            </p><br />
+            <p style="margin-bottom: 5px; font-size: 12px;">
+                <span style="font-weight: bold; font-size: 14px;">SECURITY.</span>As part of this Agreement, the Borrower agrees to extend the pledged security of the following Gold Loan accounts to this facility’s security also;
+            </p><br />
+            <table style="width: 100%; border-collapse: collapse; margin-top: -3px; font-size: 12px;">
+                <thead>
+                    <tr>
+                        <th style="border: .5px solid #000; padding: 5px; width: 10%; text-align: center;">SL</th>
+                        <th style="border: .5px solid #000; padding: 5px; width: 25%; text-align: center;">Gold Loan Account ID</th>
+                        <th style="border: .5px solid #000; padding: 5px; width: 25%; text-align: center;">Inventory ID</th>
+                        <th style="border: .5px solid #000; padding: 5px; width: 25%; text-align: center;">Net Wt</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border: .5px solid #000; padding: 5px; text-align: center; width: 10%;">1</td>
+                        <td style="border: .5px solid #000; padding: 5px; width: 25%; text-align: center;">@Model.GLLoanNo</td>
+                        <td style="border: .5px solid #000; padding: 5px; text-align: center; width: 25%;">@Model.InventoryId</td>
+                        <td style="border: .5px solid #000; padding: 5px; width: 25%; text-align: center;">@Model.NetWeight</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            <br />
+
+            <p style="margin-bottom: 5px; font-size: 12px;">
+                <span style="font-weight: bold; font-size: 14px;">ACCELERATION.</span>The Lender shall have the right to declare the Borrowed Money to be immediately due and payable, including interest owed, if any of the events are to occur:
+            </p><br />
+            <ul style="list-style-type: decimal; font-size: 12px; margin-left: 20px; margin-top: 6px; margin-bottom: -1px;">
+                <li>If the ornaments that are pledged as Security as part of this Agreement are transferred, sold or auctioned.</li>
+                <li>If the ornaments that are pledged as Security as part of this Agreement found to be of inferior quality based on technical examination.</li>
+                <li>The Company shall be entitled to recall the entire outstanding amount of the loan disbursed at any time at its own discretion, without prejudice to any other rights, if it has reason to believe that the loan was procured by improper declaration/information or the security offered is inadequate.</li>
+                <li>
+                    Failure to deposit the amount  exceeding 75% of the LTV as a result of change in the market valuation of the pledged ornaments.
+                </li>
+            </ul><br />
+            <p style="margin-bottom:-3px; margin-top: 2px; font-size: 14px; font-weight: bold;">CROSS DEFAULT</p>
+            <p style="margin-bottom: -5px; font-size: 12px;">
+                The Borrower  unconditionally and irrevocably, agrees, confirms and
+                acknowledges that any default by the Borrower  under any other Credit Facility Agreement / gold loan agreement,
+                shall be deemed to be a default under this Agreement for this present loan and vice versa entitling the Company to
+                recall this facility and/or all other facilities advanced to the Borrower. The Company shall, in the event of such
+                default, be entitled to exercise any or all its rights under this Agreement and/or other Agreements entered into by
+                the Borrower  with Company.
+            </p><br />
+            <p style="margin-bottom:-3px; margin-top: 2px; font-size: 14px; font-weight: bold;">CROSS COLLATERALISATION</p>
+            <p style="margin-bottom: -5px; font-size: 12px;">
+                Any security(ies) furnished by the Borrower, under any other
+                Agreement entered into/to be entered into with the Company, shall be deemed to be the security(ies) under this
+                Agreement. The Borrower  hereby agrees and accepts that in the event of default in respect of any credit facilities
+                /gold loan granted by the Company to the Borrower, all the securities provided under this Agreement or under any
+                other Agreement entered into/to be entered into with the Company shall operate as a continuing security for all the
+                obligations/facilities extended to and availed by the Borrower  from the Company or and that the same shall continue
+                to vest in the Company till the time any of the said obligations/facilities are open and have not been closed/liquidated
+                or confirmed by the Company as closed notwithstanding the existence of a credit balance in the said account/s or partial
+                payment or fluctuation of accounts.
+            </p><br />
+            <p style="margin-bottom:-3px; margin-top: 2px; font-size: 14px; font-weight: bold;">LIEN AND SET OFF</p>
+            <p style="margin-bottom: -5px; font-size: 12px;">
+                Notwithstanding anything herein contained, the Company shall have
+                an overriding lien over all the security(ies)/monies of the Borrower which are in the control/possession of the
+                Company. This right of lien shall not be affected by any reason whatsoever. The Borrower hereby authorises the
+                Company to apply any credit balance to which the Borrower may be entitled under any loan/facility(ies), in
+                satisfaction of any sum due and payable herein but remaining unpaid. The Company shall also have the right of set
+                off in respect of any amount standing to the credit of Borrower(s) in any/all of the loan/ facility(ies) availed/to
+                be availed from the Company.
+            </p><br />
+        </div>
+
+
+        <p style="margin-bottom:-3px; margin-top: 2px; font-size: 14px; font-weight: bold;">GOVERNING LAW AND JURISDICTION</p>
+        <p style="margin-bottom: -5px; font-size: 12px;">
+            This Agreement shall be governed by and construed in all respects
+            with the Laws in India and any matter or issues arising or any dispute hereunder shall, at the option/discretion of
+            the Company, be subject to the exclusive jurisdiction of the Thrissur (Kerala) Courts. This shall not however limit
+            the rights of the Company to file/initiate proceedings in any other Court of Law or Tribunal of Competent
+            Jurisdiction.
+        </p>
+
+        <p style="margin-bottom: -5px; font-size: 12px;">IN WITNESS WHEREOF, Borrower and Lender have executed this Agreement as of the day and year first above written.</p>
+        <br /><br /><br /><br /><br />
+        @*<p style="margin-bottom: -5px; font-size: 12px; display: inline; margin-right: 270px;">BORROWER</p>
+            <span style="font-size: 12px;">For </span><span style="font-size: 12px; font-weight: bold;">Yogakshemam Loans Limited</span> <span style="font-size: 12px;">(Authorised Signatory)</span><br /><br /><br /><br />*@
+
+        <div style="font-size: 14px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                <span>BORROWER</span>
+                <span style="margin-right: 55px;">For Yogakshemam Loans Limited</span> <!-- Adjusted margin -->
+            </div>
+            <div style="margin-left: 540px; margin-top: 2px;">
+                <span>(Authorised Signatory) </span>
+            </div>
+        </div><br /><br />
+        <div style="font-size: 14px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
+                <span>(Signature & Name)</span>
+                <span style="margin-right: 145px;">
+                    (Signature & Name)
+
+                </span> <!-- Adjusted margin -->
+            </div>
+
+        </div>
+        <br />
+        <br /><br />
+
+
+    </div><br />
+          <h2 style="font-size: 11px; margin: 0; text-align: right;">Application ID: &nbsp;@Session["application_id"]</h2>
+
+</div>

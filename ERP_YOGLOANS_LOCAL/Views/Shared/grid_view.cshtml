@@ -1,0 +1,425 @@
+﻿<style>
+
+    /* The Modal (background) */
+    /*.modal {
+        display: none;*/ /* Hidden by default */
+    /*position: fixed;*/ /* Stay in place */
+    /*z-index: 1;*/ /* Sit on top */
+    /*padding-top: 100px;*/ /* Location of the box */
+    /*left: 0;
+        top: 0;
+        width: 100%;*/ /* Full width */
+    /*height: 100%;*/ /* Full height */
+    /*overflow: auto;*/ /* Enable scroll if needed */
+    /*background-color: rgb(0,0,0);*/ /* Fallback color */
+    /*background-color: rgba(0,0,0,0.9);*/ /* Black w/ opacity */
+    /*}*/
+
+    /* Modal Content (image) */
+    /*   .model_content {
+        margin: auto;
+        display: block;
+        width: 80%;
+        max-width: 700px;
+    }*/
+
+    content {
+        overflow: auto;
+        height: 50%; /* or another value depending on the layout */
+    }
+
+
+    /* Caption of Modal Image */
+    /*#caption {
+        margin: auto;
+        display: block;
+        width: 60%;*/
+    /*max-width: 700px;*/
+    /*text-align: center;
+        color: #ccc;
+        padding: 10px 0;*/
+    /*height: 150px;*/
+    /*height: 100%;
+    }*/
+    /* The Close Button */
+    .close {
+        position: absolute;
+        top: 15px;
+        right: 35px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        transition: 0.3s;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: #bbb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+</style>
+
+@model List<ERP_YOGLOANS_LOCAL.Models.kyc_upload>
+
+@if (Model != null)
+{
+    <table id="dataGrid1" class="table table-hover table-striped table-bordered" style="overflow-y: auto; font-size:14px;width:100%;font-weight:500;">
+        <thead style="color:black; font-size:15px;font-weight:900;">
+            <tr>
+
+                <th>SNo</th>
+                <th>KYC</th>
+                @*<th>KYC ID</th>*@
+                <th>ID No</th>
+                <th>Proof Type</th>
+                @*<th>CID</th>*@
+                <th>From Date</th>
+                <th>To Date</th>
+                <th>Name</th>
+                <th>Father</th>
+                <th>DOB</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr data-sno="@item.sno">
+
+
+                    <td>@item.sno</td>
+                    <td>@item.KYC</td>
+                    @*<td>@item.kyc_id</td>*@
+                    <td>@item.id_no</td>
+                    <td>@item.Proof_Type</td>
+                    @*//<td>@item.cid</td>*@
+                    <td>
+                        @if (@item.FromDate == "01-Jan-1900")
+                        {
+                            <div style="text-align: center;">
+                                <text>-</text>
+                            </div>
+
+                        }
+                        else
+                        {
+                            @item.FromDate
+                        }
+                    </td>
+                    <td>
+                        @if (@item.FromDate == "01-Jan-1900")
+                        {
+                            <div style="text-align: center;">
+                                <text>-</text>
+                            </div>
+                        }
+                        else
+                        {
+                            @item.ToDate
+                        }
+
+
+                    </td>
+
+                    <td>@item.pan_customer_name</td>
+
+                    <td>@item.pan_father_name</td>
+                    <td>@item.pan_dob</td>
+
+
+
+
+                    <td>
+                        @if (item.ImageUrl != null && item.ImageUrl.StartsWith("data:image"))
+                        {
+                            <a href="#" onclick="displayPhoto('@item.ImageUrl', 'image')">
+                                <span>&#128065;</span>
+                            </a>
+                        }
+                        else if (item.ImageUrl != null && item.ImageUrl.StartsWith("data:application/pdf"))
+                        {
+                            <a href="#" onclick="displayPhoto('@item.ImageUrl', 'pdf')">
+                                <span>&#128065;</span>
+                            </a>
+
+                            @*<a href="#" onclick="displayPhoto('@item.ImageUrl', 'pdf')">
+                                    <span>&#128065;</span>
+                                </a>*@
+                        }
+
+                        &nbsp;&nbsp;
+                        <a href="javascript:void(0)" class="delete-icon" onclick="deleteRow(event, @item.sno,@item.kyc_id)">
+                            <i class="fas fa-trash-alt" style="color: red;"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+
+
+
+<div id="mediaModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; padding-top: 50px; background-color: rgba(0,0,0,0); z-index: 1000;">
+    <div id="mediaModalContent" style="position: relative; cursor: move; margin: auto; padding: 40px; width: 60%; height: 90%; ">
+        <div id="pdfViewer" style="width: 100%; cursor: move; height: calc(100% - 40px);"></div>
+
+      
+        <div id="zoomControls" style="text-align:center;">
+
+            <button id="zoomIn" style="margin-right: 10px; background:transparent; border:none; font-size:24px; cursor:pointer;">
+                <i class="fas fa-search-plus"></i>
+            </button>
+
+           
+            <button id="zoomOut" style="background:transparent; border:none; font-size:24px; cursor:pointer;">
+                <i class="fas fa-search-minus"></i>
+            </button>
+           
+            <button id="rotateImage" style="background:transparent; border:none; font-size:24px; cursor:pointer;">
+                <i class="fas fa-sync-alt"></i>
+            </button>
+        </div>
+
+
+      
+    </div>
+</div>
+
+
+
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.0.0/pdf.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+@*<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>*@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+
+
+<script src="~/Scripts/jquery-3.6.0.min.js"></script>
+<script>
+    function deleteRow(event, sno, kyc_id) {
+
+
+        event.preventDefault();
+
+
+        var confirmation = confirm("you may have to upload a new form60 Are you sure you want to delete this row?");
+        if (confirmation) {
+
+            $.ajax({
+
+                url: '/Customer_KYC/kyc_attach_delet',
+                type: 'POST',
+                data: { kyc_id: kyc_id },
+
+                success: function (response) {
+
+                    if (response.success) {
+                        $("#dataGrid1 tbody tr[data-sno='" + sno + "']").remove();
+                        window.location.href = "/Customer_KYC/kyc_approval";
+
+                    } else {
+                        console.error("Failed to delete KYC record.");
+                    }
+                },
+                error: function () {
+                    alert("error");
+                    console.error("An error occurred during the AJAX request.");
+                }
+            });
+        }
+    }
+
+
+
+</script>
+
+@*---------------------------KYC & Other details: For customer and document photo-------------------*@
+
+<script>
+
+   
+    function displayPhoto(dataUrl, type) {
+        var modal = document.getElementById('mediaModal');
+        var content = document.getElementById('pdfViewer'); // Use pdfViewer as content
+
+        if (type === 'pdf') {
+            // Convert base64 to Blob
+            var base64Data = dataUrl.split(',')[1];
+            var binaryString = atob(base64Data);
+            var len = binaryString.length;
+            var bytes = new Uint8Array(len);
+            for (var i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            var blob = new Blob([bytes], { type: 'application/pdf' });
+            var blobUrl = URL.createObjectURL(blob);
+
+            // Embed PDF in an iframe
+            content.innerHTML = `
+          <iframe id="pdfFrame" src="${blobUrl}" style="width:100%; height:400px; border:none; border: 7px solid #ddd;" frameborder="0"></iframe>`;
+
+            //        content.innerHTML = `
+            ////          <div style="padding-top:25px; padding-left:120px;">
+            ////            <iframe src="${blobUrl}" style="width:100%; height:600px; border:none;" frameborder="0"></iframe>
+            ////          </div>`;
+
+            // Hide zoom controls for PDFs
+            document.getElementById('zoomControls').style.display = 'none';
+
+        } else if (type === 'image') {
+            content.innerHTML = `
+        <div id="imageWrapper" style="width:700px; height:350px; overflow:auto; background-color:white; border: 7px solid #ddd;">
+            <img id="modalImage" src="${dataUrl}" style="width:600px; padding-left:120px; padding-top:35px; transform: scale(1);" />
+        </div>`;
+
+            // Show zoom controls for images
+            document.getElementById('zoomControls').style.display = 'block';
+
+            // Add zoom functionality for image
+            let scale = 1;
+            const zoomStep = 0.1;
+            const modalImage = document.getElementById('modalImage');
+
+            document.getElementById('zoomIn').addEventListener('click', () => {
+                scale += zoomStep;
+                modalImage.style.transform = `scale(${scale})`;
+            });
+
+            document.getElementById('zoomOut').addEventListener('click', () => {
+                if (scale > zoomStep) {
+                    scale -= zoomStep;
+                    modalImage.style.transform = `scale(${scale})`;
+                }
+            });
+        }
+
+        modal.style.display = 'block';
+    }
+
+
+    function makeDraggable(element) {
+        var isDragging = false;
+        var offsetX, offsetY;
+
+        element.onmousedown = function (event) {
+            isDragging = true;
+            offsetX = event.clientX - element.getBoundingClientRect().left;
+            offsetY = event.clientY - element.getBoundingClientRect().top;
+
+            document.onmousemove = function (event) {
+                if (isDragging) {
+                    var modal = document.getElementById('mediaModal');
+                    modal.style.left = (event.clientX - offsetX) + 'px';
+                    modal.style.top = (event.clientY - offsetY) + 'px';
+                }
+            };
+
+            document.onmouseup = function () {
+                isDragging = false;
+                document.onmousemove = null;
+            };
+        };
+    }
+
+    // Apply dragging functionality to the header
+    document.getElementById('mediaModalContent').addEventListener('mousedown', function (event) {
+        makeDraggable(document.getElementById('mediaModal'));
+    });
+
+
+
+    // Apply dragging functionality to the header
+    document.getElementById('pdfViewer').addEventListener('mousedown', function (event) {
+        makeDraggable(document.getElementById('mediaModal'));
+    });
+
+
+    window.onclick = function (event) {
+        //  alert("mediaModal click");
+        var modal = document.getElementById("mediaModal");
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    function closeModal() {
+        // alert("close");
+        var modal = document.getElementById("mediaModal");
+        modal.style.display = "none";
+    }
+
+    let rotationAngle = 0;
+
+    document.getElementById('rotateImage').addEventListener('click', function () {
+        rotationAngle += 90; // Rotate by 90 degrees each time the button is clicked
+        document.getElementById('modalImage').style.transform = 'rotate(' + rotationAngle + 'deg)';
+    });
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+@*<script>
+        function displayPhoto(fileUrl, fileType) {
+            // Get the modal
+            var modal = document.getElementById("photoModal");
+            var modalImg = document.getElementById("customerPhoto");
+            var caption = document.getElementById("caption");
+
+            // Display the modal
+            modal.style.display = "block";
+
+            // Set the source attribute based on file type
+            if (fileType === "image") {
+                modalImg.src = fileUrl;
+                caption.innerHTML = "Image Caption"; // You can set the image caption here
+            } else if (fileType === "pdf") {
+                // For PDF, you may want to use an embed or object tag instead of an image
+                modalImg.src = ""; // Clear the image source
+                caption.innerHTML = '<object data="' + fileUrl + '" type="application/pdf" width="100%" height="100%"><p>PDF viewer required. Download it <a href="' + fileUrl + '">here</a>.</p></object>';
+            }
+
+
+            // Close the modal when clicked on 'x' close button
+            var span = document.getElementsByClassName("close")[0];
+            span.onclick = function () {
+                modal.style.display = "none";
+            }
+        }
+
+        // Close the modal when clicked outside the image
+        window.onclick = function (event) {
+            var modal = document.getElementById("photoModal");
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Additional function to close modal
+        function closeModal() {
+            var modal = document.getElementById("photoModal");
+            modal.style.display = "none";
+        }
+    </script>*@
+
+

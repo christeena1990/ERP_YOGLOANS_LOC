@@ -1,0 +1,96 @@
+
+
+
+<div style="width: 100%; overflow-y: auto;">
+    @*<p>Data Count: @ViewBag.Col_Data1.Count</p>
+        <pre>@Html.Raw(JsonConvert.SerializeObject(ViewBag.Col_Data1))</pre>*@
+
+    @if (ViewBag.Col_Data1 != null && ViewBag.Col_Data1.Count > 0)
+    {
+        <table id="dataGrid_incomplete" class="table table-hover table-striped table-bordered" style="overflow-y: auto; font-size:14px; width:100%; font-weight:500;">
+            <thead style="color:white; font-size:15px; font-weight:900;">
+                <tr>
+                    @foreach (var header in ViewBag.Col_Head1)
+                    {
+                        <th style="background-color: #4D759A;">@header</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in ViewBag.Col_Data1)
+                {
+                    <tr>
+                        @foreach (var header in ViewBag.Col_Head1)
+                        {
+                            var propertyValue = item.GetType().GetProperty(header)?.GetValue(item, null);
+
+                            <td>
+                                @{
+                                    var valueString = propertyValue != null ? propertyValue.ToString() : "";
+                                }
+                                @if (valueString == "Continue")
+                                {
+                                    <a href="@Url.Action("incomplete_continue", "CustomerCreate", new { id = item.ID })">Continue</a>
+                                }
+                                else
+                                {
+                                    @valueString
+                                }
+                            </td>
+                        }
+                    </tr>
+                }
+
+
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <table class="table table-bordered" style="width:100%;">
+            <tr>
+                <td colspan="@ViewBag.Col_Head1?.Count ?? 1">
+                    <div>
+                        <h6 style="color:red">The Entered Data does not exist. For creating a New Customer, enter Phone Number and click on Send OTP button.</h6>
+                        @Html.Partial("otp_partialview")
+                    </div>
+                </td>
+            </tr>
+        </table>
+    }
+</div>
+
+
+
+
+<script>
+        $(document).ready(function () {
+           // alert("search");
+        $(".continue-link").on("click", function (e) {
+            e.preventDefault();
+
+            var row = $(this).closest('tr');
+            var id = parseInt(row.find('td:eq(1)').text()); // Assuming ID is in the first column and converting to integer
+            //var sl_no = parseInt(row.find('td:eq(7)').text()); // Assuming sl_no is in the second column and converting to integer
+           // alert(id);
+            //alert(sl_no);
+            $.ajax({
+                url: '@Url.Action("search_view", "CustomerCreate")',
+                type: 'POST',
+                data: { id: id },
+                success: function (result) {
+               // alert("search_view");
+                if (result.success === true) {
+                window.location.href = '@Url.Action("customer_modification", "Customer_modification")';
+                }
+                },
+                error: function (error) {
+                // Handle the error if needed
+                }
+                });
+                });
+     });
+
+    </script>
+
+

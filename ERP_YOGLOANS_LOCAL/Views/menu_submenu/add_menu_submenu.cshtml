@@ -1,0 +1,453 @@
+﻿@using System.Data
+@using System.Web.Mvc
+@model ERP_YOGLOANS_LOCAL.Models.menu_submenu_model
+@{
+
+    var role_typeList = ViewData["role_typeList"] as DataTable;
+    var roletypes = role_typeList.AsEnumerable().Select(row => new
+    {
+        role_type = row["role_name"],
+        role_id = row["role_id"]
+    });
+
+    var module_typeList = ViewData["module_typeList"] as DataTable;
+    var moduletypes = module_typeList.AsEnumerable().Select(row => new
+    {
+        module_type = row["module_name"],
+        module_id = row["module_id"]
+    });
+
+    //var menu_typeList = ViewData["menu_typeList"] as DataTable;
+    //var menutypes = menu_typeList.AsEnumerable().Select(row => new
+    //{
+    //    menu_type = row["menu_name"],
+    //    menu_id = row["menu_id"]
+    //});
+
+
+
+
+}
+
+
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            function hideAllFields() {
+                console.log("Hiding all fields");
+                $('#secondRow, #menu_name, #submenu_yesno, #submenu_new_exists, #submenu_ddl, #submenu_name, #Menu_Url, #menulst_ddl').hide();
+            }
+
+            function showFieldsForNewMenu() {
+                console.log("Showing fields for new menu");
+                $('#secondRow, #menu_name, #submenu_yesno').show();
+            }
+
+            function showFieldsForExistingMenu() {
+                console.log("Showing fields for existing menu");
+                $(' #menulst_ddl,#secondRow, #submenu_yesno').show();
+            }
+
+            function showFieldsForNoSubmenu() {
+                console.log("Showing fields for no submenu");
+                $('#submenu_yesno, #Menu_Url').show();
+            }
+
+            function showFieldsForYesSubmenu() {
+                console.log("Showing fields for yes submenu");
+                $('#submenu_new_exists').show();
+            }
+
+            function showFieldsForNewSubmenu() {
+                console.log("Showing fields for new submenu");
+                $('#submenu_name, #Menu_Url').show();
+            }
+
+            function showFieldsForExistingSubmenu() {
+                console.log("Showing fields for existing submenu");
+                $('#submenu_ddl').show();
+            }
+
+            hideAllFields(); // Hide all fields initially
+
+            $('input[name="menu_type"]').change(function () {
+                console.log("Menu type changed");
+                hideAllFields();
+                if ($('#menu_type_new').is(':checked')) {
+                    showFieldsForNewMenu();
+                } else if ($('#menu_type_existing').is(':checked')) {
+                    showFieldsForExistingMenu();
+                }
+            });
+
+            $('input[name="submenu_yesno"]').change(function () {
+                console.log("Submenu yes/no changed");
+                if ($('#submenu_no').is(':checked')) {
+                    hideAllFields();
+                    if ($('#menu_type_new').is(':checked')) {
+                        showFieldsForNewMenu();
+                        $('#Menu_Url').show();
+                    } else if ($('#menu_type_existing').is(':checked')) {
+                        showFieldsForExistingMenu();
+                        // $('#Menu_Url').show();
+                    }
+                } else if ($('#submenu_yes').is(':checked')) {
+                    hideAllFields();
+                    if ($('#menu_type_new').is(':checked')) {
+                        showFieldsForNewMenu();
+                        $('#submenu_new_exists').show();
+                    } else if ($('#menu_type_existing').is(':checked')) {
+                        showFieldsForExistingMenu();
+                        $('#submenu_new_exists').show();
+                    }
+                }
+            });
+
+            $('input[name="submenu_new_exists"]').change(function () {
+                console.log("Submenu new/exist changed");
+                if ($('#submenu_new').is(':checked')) {
+                    hideAllFields();
+                    if ($('#menu_type_new').is(':checked')) {
+                        showFieldsForNewMenu();
+                        $('#submenu_new_exists, #submenu_name, #Menu_Url').show();
+                    } else if ($('#menu_type_existing').is(':checked')) {
+                        showFieldsForExistingMenu();
+                        $('#submenu_new_exists, #submenu_name, #Menu_Url').show();
+                    }
+                } else if ($('#submenu_exists').is(':checked')) {
+                    hideAllFields();
+                    if ($('#menu_type_new').is(':checked')) {
+                        showFieldsForNewMenu();
+                        $('#submenu_new_exists, #submenu_ddl').show();
+                    } else if ($('#menu_type_existing').is(':checked')) {
+                        showFieldsForExistingMenu();
+                        $('#submenu_new_exists, #submenu_ddl').show();
+                    }
+                }
+            });
+        });
+
+
+        $(document).ready(function () {
+            $('#module_id_drop').change(function () {
+                var module_id = $(this).val(); // Get the selected module_id
+                // alert(module_id);
+                // Perform AJAX request or call your function here
+                callFunctionBasedOnModuleId(module_id);
+            });
+
+            function callFunctionBasedOnModuleId(module_id) {
+                // Example AJAX request
+                $.ajax({
+                    url: '/menu_submenu/menu_id_type', // Replace with your controller and action route
+                    type: 'POST',
+                    data: { module_id: module_id },
+                    success: function (data) {
+                        // alert("success");
+                        var menuTypes = JSON.parse(data); // Parse JSON string to JavaScript object
+
+                        // Convert menuTypes to a string for alert
+                        var menuTypesString = JSON.stringify(menuTypes);
+
+                        // Alert menuTypes as a string
+                        // alert(menuTypesString);
+
+
+                        // Clear existing dropdown options
+                        $('#menu_id_drop').empty();
+                        //alert("empty");
+                        // Populate dropdown with new options
+                        $.each(menuTypes, function (index, item) {
+                            $('#menu_id_drop').append($('<option>', {
+                                value: item.menu_id, // Adjust based on your JSON structure
+                                text: item.menu_name // Adjust based on your JSON structure
+                            }));
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        alert("error");
+                        // console.error('Error fetching menu types:', error);
+                    }
+                });
+            }
+        });
+
+
+        $(document).ready(function () {
+            $('#menu_id_drop').change(function () {
+                var menu_id = $(this).val(); // Get the selected module_id
+                // alert(menu_id);
+                // Perform AJAX request or call your function here
+                callFunctionBasedOnModuleId(menu_id);
+            });
+
+            function callFunctionBasedOnModuleId(menu_id) {
+                // Example AJAX request
+                $.ajax({
+                    url: '/menu_submenu/submenu_id_type', // Replace with your controller and action route
+                    type: 'POST',
+                    data: { menu_id: menu_id },
+                    success: function (data) {
+                        // alert("success");
+                        var submenuTypes = JSON.parse(data); // Parse JSON string to JavaScript object
+
+                        // Convert menuTypes to a string for alert
+                        var menuTypesString = JSON.stringify(submenuTypes);
+
+                        // Alert menuTypes as a string
+                        //  alert(menuTypesString);
+
+
+                        // Clear existing dropdown options
+                        $('#submenu_id_drop').empty();
+                        // alert("empty");
+                        // Populate dropdown with new options
+                        $.each(submenuTypes, function (index, item) {
+                            $('#submenu_id_drop').append($('<option>', {
+                                value: item.submenu_id, // Adjust based on your JSON structure
+                                text: item.submenu_name // Adjust based on your JSON structure
+                            }));
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        alert("error");
+                        // console.error('Error fetching menu types:', error);
+                    }
+                });
+            }
+        });
+
+         $(document).ready(function() {
+        $('#menu_submenuform').on('submit', function(e) {
+            e.preventDefault(); 
+
+            $.ajax({
+                url: '@Url.Action("add_menu_submenu_submit", "menu_submenu")', 
+                type: 'POST',
+                data: new FormData(this),
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    if (response.success) {
+                        alert(response.message);
+                        // $('#menu_submenuform')[0].reset();
+                        location.reload();
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('An error occurred: ' + error);
+                }
+            });
+        });
+         });
+
+  
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('resetButton').addEventListener('click', function (event) {
+              //  alert("reset"); 
+            
+                location.reload();
+                event.preventDefault();
+            });
+        });
+
+
+    </script>
+</head>
+
+<body>
+    <form action="@Url.Action("add_menu_submenu_submit", "menu_submenu")" method="post" id="menu_submenuform" enctype="multipart/form-data" autocomplete="off">
+        <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+            <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+                <div class="card-title">
+                    <br />
+                    <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon"> Add Menu / Submenu </h6>
+                </div>
+            </div>
+            <br />
+
+            <div class="card-body" style="width:100%;">
+
+                <div id="form-container">
+
+                    @* First row *@
+
+                    <div class="row">
+                        <div class="col-md-6 col-lg-4" id="role_id">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" id="role_name" class="input-group-text">Role</span>
+                                </div>
+                                <select name="role_id_drop" id="role_id_drop" class="form-control" required>
+                                    <option value="" disabled selected>---Select---</option>
+                                    @foreach (var role in roletypes)
+                                    {
+                                        <option value="@role.role_id">@role.role_type</option>
+                                    }
+
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4" id="module_id_div">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" id="Module_name" class="input-group-text">Module</span>
+                                </div>
+                                <select name="module_id_drop" id="module_id_drop" class="form-control" required>
+
+                                    <option value="" disabled selected>---Select---</option>
+
+                                    @foreach (var module in moduletypes)
+                                    {
+                                        <option value="@module.module_id">@module.module_type</option>
+                                    }
+
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4" id="menu_type">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Menu</span>
+                                </div>
+                                &nbsp; &nbsp;
+                                <div>
+                                    <label>
+                                        <input class="form-radio-input" type="radio" name="menu_type" id="menu_type_new" value="N">
+                                        <span class="form-radio-sign" style="font-size:14px;">New </span>
+                                    </label> &nbsp;
+                                    <label>
+                                        <input class="form-radio-input" type="radio" name="menu_type" id="menu_type_existing" value="E">
+                                        <span class="form-radio-sign" style="font-size: 14px;">Exist</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @* Second row *@
+
+                    <div class="row" id="secondRow">
+                        <div class="col-md-6 col-lg-4" id="menu_name">
+                            <div class="input-group mb.3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Menu Name</span>
+                                </div>
+                                @*<input type="text" class="form-control" placeholder="" id="customer_id" name="Customer_id" aria-label="" aria-describedby="basic-addon1" autocomplete="off" style="text-transform: uppercase" onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g, '')" onPaste="javascript: return false;" value="@Session["TempCID"]" @if (Session["TempCID"] != null) { <text> readonly</text> } oncut="return false" oncopy="return false" onselectstart="return false" onmousedown="return false;" />*@
+                            
+                            <input type="text" class="form-control"  id="menu_name" name="menu_name" />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4" id="menulst_ddl">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" id="Menu" class="input-group-text">Menu</span>
+                                </div>
+                                <select name="menu_id_drop" id="menu_id_drop" class="form-control" >
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4" id="submenu_yesno">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Submenu Required?</span>
+                                </div>
+                                &nbsp; &nbsp;
+                                <div>
+                                    <label>
+                                        <input class="form-radio-input" type="radio" name="submenu_yesno" id="submenu_yes" value='Y'>
+                                        <span class="form-radio-sign" style="font-size:14px;">Yes </span>
+                                    </label> &nbsp; &nbsp;
+                                    <label>
+                                        <input class="form-radio-input" type="radio" name="submenu_yesno" id="submenu_no" value='N'>
+                                        <span class="form-radio-sign" style="font-size: 14px;">No</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4" id="submenu_new_exists">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Submenu Type </span>
+                                </div>
+                                &nbsp; &nbsp;
+                                <div>
+                                    <label>
+                                        <input class="form-radio-input" type="radio" name="submenu_new_exists" id="submenu_new" value="N">
+                                        <span class="form-radio-sign" style="font-size:14px;">New</span>
+                                    </label> &nbsp; &nbsp;
+                                    <label>
+                                        <input class="form-radio-input" type="radio" name="submenu_new_exists" id="submenu_exists" value="E">
+                                        <span class="form-radio-sign" style="font-size: 14px;">Exist</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4" id="submenu_name">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Submenu Name</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="" id="submenu_name" name="submenu_name"  />
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4" id="submenu_ddl">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Submenu</span>
+                                </div>
+                                <select name="submenu_id_drop" id="submenu_id_drop" class="form-control" >
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4" id="Menu_Url">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">URL</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="" id="url" name="url"  />
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+
+
+                    <br />
+
+                    <div class="d-block text-center ">
+
+                        <button type="submit" class="btn btn-lg btn-primary">Submit</button>
+                        <a href="" class="btn btn-lg btn-danger">Close</a>
+                        <button class="btn btn-lg btn-gradient-secondary" type="button" id="resetButton">Reset</button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
+
+
+

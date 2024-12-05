@@ -1,0 +1,321 @@
+﻿@model ERP_YOGLOANS_LOCAL.Models.Customer_Approval_ViewModel
+
+
+
+
+<html>
+<head>
+    <style>
+        .hidden-column {
+            display: none;
+        }
+    </style>
+    <style>
+        button {
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            background-color: #f5f5f5;
+            color: #333;
+            border-radius: 5px;
+        }
+
+            button.selected {
+                background-color: lightblue;
+                color: #007FFF; /* Add this line if you want to change text color when selected */
+            }
+
+        /*------------------------------search----------------------------------------*/
+
+        .search-container {
+            display: flex;
+            align-items: center;
+        }
+
+            .search-container input[type="text"] {
+                width: 200px;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                font-size: 14px;
+            }
+
+            .search-container .search-btn {
+                background-color: #6cb2eb;
+                color: #fff;
+                border: none;
+                padding: 10px;
+                margin-left: 5px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 14px;
+            }
+
+                .search-container .search-btn:hover {
+                    background-color: #4e96d8;
+                }
+    </style>
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    @*<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>*@
+
+    <script src="~/Scripts/jquery-3.6.4.min.js"></script>
+
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>*@
+
+    <script src="~/Scripts/spin.min.js"></script>
+
+</head>
+
+
+<body>
+
+    <div class="app-main__inner" style="margin-top: -30px;padding:10px;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Modified Approval List</h6>
+            </div><br />
+        </div>
+
+
+
+        @if (!string.IsNullOrEmpty(ViewBag.Message))
+        {
+            <div>@ViewBag.Message</div>
+        }
+        else
+        {
+
+            <!-- Search input and button -->
+            <div class="search-container">
+                <div class="region-dropdown">
+                    <select id="regionSelect" class="form-control">
+                        @*<option value="">Select Region...</option>*@
+
+                    </select>
+                </div>
+                @*<button id="searchListBtn" class="btn search-btn"><i class="fa fa-search"></i></button>*@
+            </div>
+
+            <div class="card-body">
+                <div style="width: 100%;  overflow-y: auto;">
+                    <form id="approve_form" action="@Url.Action("Select", "Customer_approvelist")" method="post">
+                        <div id="modificationTable">
+                            <table id="modifiedDataGrid" class="table table-hover table-striped table-bordered" style="overflow-y: auto; font-size:14px;width:100%;font-weight:500;">
+
+                                @if (Model.Data != null && Model.Data.Count > 0)
+                                {
+
+
+                                    <thead>
+                                        <tr>
+                                            <th style="background-color: #4D759A; color: white;">#</th>
+                                            @{
+                                                var fieldDisplayNames = new Dictionary<string, string>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     {
+                                          {"customer_id", "Customer ID"},
+                                           {"customer_name", "Customer Name"},
+                                           {"address", "Address"},
+                                           {"city", "City"},
+                                           {"mobile_no", "Mobile Number"},
+                                           {"branch_id", "Branch ID"},
+                                           {"branch_name", "Branch Name"},
+                                           {"modify_by", "Modify by"},
+
+                                           {"sl_no", "Sl.No"},
+                                           {"region_id","Region ID" },
+                                           {"modify_date_time", "Modify Date"},
+                                           {"Modify_Status", "Modify Status"}
+                                     };
+                                                foreach (var column in Model.Columns)
+                                                {
+                                                    var isHidden = column == "branch_id" || column == "city" || column == "sl_no" || column == "region_id";
+                                                    <th class="@(isHidden ? "hidden-column" : "")" style="background-color: #4D759A; color: white;">
+                                                        @(fieldDisplayNames.ContainsKey(column) ? fieldDisplayNames[column] : column)
+                                                    </th>
+
+
+
+                                                    // Remove the condition to hide columns
+                                                    @*<th>
+                                                        @(fieldDisplayNames.ContainsKey(column) ? fieldDisplayNames[column] : column)
+                                                    </th>*@
+
+
+                                                }
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.Data != null && Model.Data.Count > 0)
+                                        {
+                                            foreach (var item in Model.Data)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @{
+                                                            var customerId = item.ContainsKey("customer_id") ? item["customer_id"] : null;
+                                                            var cust_slno = item.ContainsKey("sl_no") ? item["sl_no"] : null;
+                                                        }
+                                                        <a href="#" onclick="submitForm('@customerId',2,@cust_slno);">
+                                                            <span>&#128065;</span>
+                                                        </a>
+                                                    </td>
+                                                    @foreach (var column in Model.Columns)
+                                                    {
+                                                        var isHidden = column == "branch_id" || column == "city" || column == "sl_no" || column == "region_id";
+                                                        <td class="@(isHidden ? "hidden-column" : "")">
+                                                            @(item.ContainsKey(column) ? item[column] : "")
+                                                        </td>
+
+                                                        // Remove the condition to hide columns
+                                                        @*<td>
+                                                            @(item.ContainsKey(column) ? item[column] : "")
+                                                        </td>*@
+
+
+
+                                                    }
+                                                </tr>
+                                                                }
+                                                            }
+                                    </tbody>
+                                                            }
+                                                            else
+                                                            {
+                                    @*<h3>No approvals...</h3>*@
+
+                                    <tr>
+                                        <td colspan="@(Model.Columns.Count + 1)">No modified approvals...</td>
+                                    </tr>
+                                                            }
+                            </table>
+
+                        </div>
+
+
+
+                    </form>
+                </div>
+            </div>
+                                                         
+        }
+    </div>
+
+
+    <script>
+
+        function submitForm(customerId, app_type, sl_no) {
+            var hiden_cust_type = document.createElement("input");
+            hiden_cust_type.type = "hidden";
+            hiden_cust_type.name = "appr_type";
+            hiden_cust_type.id = "appr_type";
+
+            var hiden_slno = document.createElement("input");
+            hiden_slno.type = "hidden";
+            hiden_slno.name = "sl_no";
+            hiden_slno.id = "sl_no";
+            hiden_slno.value = sl_no;
+
+            if (app_type === 1) {
+                hiden_cust_type.value = 1;
+            } else {
+                hiden_cust_type.value = 2;
+            }
+
+            var input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "customer_id";
+            input.id = "customer_id";
+            input.value = customerId;
+
+            document.getElementById("approve_form").appendChild(input);
+            document.getElementById("approve_form").appendChild(hiden_cust_type);
+            document.getElementById("approve_form").appendChild(hiden_slno);
+
+            document.getElementById("approve_form").submit();
+        }
+
+        /* ---------------------------------search script----------------*/
+
+
+      $(document).ready(function () {
+    // Function to fetch and display data based on selected region ID
+    function fetchAndDisplayData(regionId) {
+        $.ajax({
+            url: '@Url.Action("SearchByRegion", "Customer_approvelistModify")',
+            type: 'POST',
+            data: { regionId: regionId },
+            success: function (data) {
+                // Clear previous data
+                $('#modifiedDataGrid tbody').empty();
+
+                // Populate table rows with received data
+                $.each(data.Data, function (index, item) {
+                    var row = '<tr>';
+
+                    // Add view icon in the first column
+                    row += '<td><a href="#" onclick="submitForm(\'' + item["customer_id"] + '\', 2, ' + item["sl_no"] + ');"><span>&#128065;</span></a></td>';
+
+                    // Populate columns in the specified order
+                    row += '<td>' + item["customer_id"] + '</td>';          // Customer ID
+                    row += '<td>' + item["customer_name"] + '</td>';        // Customer Name
+                    row += '<td>' + item["address"] + '</td>';              // Address
+                   /* row += '<td>' + item["city"] + '</td>'; */                // City
+                    row += '<td>' + item["mobile_no"] + '</td>';            // Mobile Number
+                   /* row += '<td>' + item["branch_id"] + '</td>'; */           // Branch ID
+                    row += '<td>' + item["branch_name"] + '</td>';          // Branch Name
+                    row += '<td>' + item["modify_by"] + '</td>';            // Modify By
+                   /* row += '<td>' + item["employ_name"] + '</td>'; */         // Employee Name
+                    //row += '<td>' + item["sl_no"] + '</td>';                // Sl.No
+                    //row += '<td>' + item["region_id"] + '</td>';            // Region ID
+                    row += '<td>' + item["modify_date_time"] + '</td>';     // Modify Date
+                    row += '<td>' + item["Modify_Status"] + '</td>';        // Modify Status
+
+                    row += '</tr>';
+                    $('#modifiedDataGrid tbody').append(row);
+                });
+            },
+            error: function (error) {
+                console.error('Error searching by region:', error);
+            }
+        });
+    }
+
+    // Populate region dropdown options on page load
+    $.ajax({
+        url: '@Url.Action("GetRegions", "Customer_approvelistModify")',
+        type: 'GET',
+        success: function (data) {
+            $.each(data, function (key, value) {
+                $('#regionSelect').append('<option value="' + value.Value + '">' + value.Text + '</option>');
+            });
+        },
+        error: function (error) {
+            console.error('Error fetching regions:', error);
+        }
+    });
+
+    // Handle dropdown change event (for search functionality)
+    $('#regionSelect').change(function () {
+        var regionId = $(this).val();
+        if (regionId !== '') {
+            fetchAndDisplayData(regionId);
+        } else {
+            // Clear the table if no region selected
+            $('#modifiedDataGrid tbody').empty();
+        }
+    });
+});
+
+
+
+    </script>
+
+</body>
+</html>
+
+

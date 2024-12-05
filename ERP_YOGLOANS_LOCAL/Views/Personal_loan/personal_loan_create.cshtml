@@ -1,0 +1,1107 @@
+﻿
+@model System.Data.DataTable
+@using System.Data
+
+
+<style>
+    .scrollable-container {
+        max-height: 500px; /* Adjust the height as needed */
+        overflow-y: auto;
+    }
+
+    .input-container {
+        position: relative;
+        margin: 20px 0;
+        height: 40px; /* Adjust the height as needed */
+    }
+
+        .input-container input[type="text"] {
+            border: 1px solid darkblue; /* Change color to match your design #6200EA */
+            border-radius: 4px;
+            padding: 5px 10px; /* Adjust padding to reduce height */
+            font-size: 16px;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+            height: 100%; /* Ensure input height matches the container */
+        }
+
+        .input-container label {
+            position: absolute;
+            top: 50%;
+            left: 10px;
+            transform: translateY(-50%);
+            color: darkblue; /* Change color to match your design */
+            background-color: #fff;
+            padding: 0 5px;
+            transition: 0.3s ease;
+            pointer-events: none;
+        }
+
+        .input-container input[type="text"]:focus + label,
+        .input-container input[type="text"]:not(:placeholder-shown) + label {
+            top: -5px;
+            font-size: 12px;
+            color: darkblue; /* Change color to match your design */
+            font-weight: bold;
+        }
+</style>
+
+
+<div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+    <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+        <div class="card-title">
+            <br />
+            <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Personal Loan</h6>
+        </div>
+    </div>
+
+    <div class="card-body" style="width:100%;">
+
+        <div class="tab-content">
+            <div class="tab-pane tabs-animation fade show active" id="tab-content-0" role="tabpanel">
+                <div class="row">
+                    <div class="col-md-12 col-lg-4">
+                        <div class="main-card mb-3 card">
+                            <div class="card-header">Eligible Customers</div>
+
+                            <div class="scrollable-container">
+                                <ul class="todo-list-wrapper list-group list-group-flush">
+                                    <!-- The customer list will be dynamically populated here by the JavaScript function -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    @*///////////////////////////////////////////////////////////////////////*@
+
+                    @*<div id="personal_details_div" style="display:none"></div>*@
+
+                    <div class="col-lg-8 col-md-12">
+                        <div class="main-card mb-3 card">
+                            <div class="card-body">
+                                <div id="smartwizard">
+                                    <ul class="forms-wizard">
+                                        <li>
+                                            <a href="#step-1">
+                                                <em>1</em><span>Application</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#step-2">
+                                                <em>2</em><span>Download Agreement</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#step-3">
+                                                <em>3</em><span>Submit to CPC</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+
+                                    @*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*@
+
+                                    <div class="form-wizard-content">
+
+                                        <div id="step-1">
+                                            @*<input type="hidden" id="mob_no" />*@
+                                            <div class="form-row">
+                                                <div class="col-md-6">
+                                                    <div class="input-container">
+                                                        <input type="text" id="customername" name="customername" readonly class="form-control" />
+                                                        <label for="input-text">Customer Name </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="input-container">
+                                                        <input type="text" id="customerid" name="customerid" readonly class="form-control" />
+                                                        <label for="input-text">Customer ID </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="form-row">
+
+                                                <div class="col-md-6">
+                                                    <div class="input-container">
+                                                        <input type="text" id="scheme-name" name="scheme-name" readonly class="form-control" />
+                                                        <label for="input-text">Scheme Name </label>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-md-6">
+                                                    <div class="input-container">
+                                                        <input type="text" id="loan-number" name="loan-number" readonly class="form-control" />
+                                                        <label for="input-text">Loan Number </label>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+
+                                            <div class="form-row">
+                                                <div class="col-md-4">
+                                                    <div class="input-container">
+                                                        <input type="text" id="loan-date" name="loan-date" readonly class="form-control" />
+                                                        <label for="input-text">Loan Date </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="position-relative form-group">
+                                                        <div class="input-container">
+                                                            <input type="text" id="maturity_dt" name="maturity_dt" readonly class="form-control" />
+                                                            <label for="input-text">Maturity Date </label>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="position-relative form-group">
+                                                        <div class="input-container">
+                                                            <input type="text" id="interest-rate" name="interest-rate" readonly class="form-control" />
+                                                            <label for="input-text">Interest Rate </label>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row">
+                                                <div class="col-md-4">
+                                                    <div class="position-relative form-group">
+                                                        <div class="input-container">
+                                                            <input type="text" id="min-amount" name="min-amount" readonly class="form-control" />
+                                                            <label for="input-text">Min. Amount </label>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    <div class="position-relative form-group">
+                                                        <div class="input-container">
+                                                            <input type="text" id="loan_amt" name="loan_amt" required class="form-control" autocomplete="off"
+                                                                    oninput="this.value=this.value.replace(/[^0-9]/g, '')" onkeyup="validateLoanAmount()"/>
+                                                            <label for="input-text">Loan Amount </label>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="input-container">
+                                                        <input type="text" id="max-amount" name="max-amount" readonly class="form-control" />
+                                                        <label for="input-text">Max. Amount </label>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        @*////////////////////////////////////////////////////// second step starts  //////////////////////////////////////////////////////*@
+
+                                        <div id="step-2">
+                                            <div id="accordion" class="accordion-wrapper mb-3">
+                                                <div class="card">
+
+                                                    <div data-parent="#accordion" id="collapseOne" aria-labelledby="headingOne" class="collapse show">
+                                                        <div class="card-body">
+                                                            <div class="form-row">
+                                                                <div class="col-md-6">
+                                                                    <div class="input-container">
+                                                                        <input type="text" id="txt_name" class="form-control" readonly />
+                                                                        <label for="input-text">Customer Name </label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="input-container">
+                                                                        <input type="text" id="txt_gl_loan_no" class="form-control" readonly />
+                                                                        <label for="input-text">GL Loan Number </label>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+
+                                                            <div class="form-row">
+                                                                <div class="col-md-6">
+                                                                    <div class="position-relative form-group">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="txt_max_amt" class="form-control" readonly />
+                                                                            <label for="input-text">Maximum Amount </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="position-relative form-group">
+                                                                        <div class="input-container">
+                                                                            <input type="text" id="txt_loan_amt" class="form-control" readonly />
+                                                                            <label for="input-text">Loan Amount </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                            <div class="form-row">
+                                                                <div class="row" id="div_otp" style="display:none;width:100%">
+                                                                   
+                                                                        @Html.Partial("_OtpVerificationPartial")                                                                    
+
+                                                                </div>
+                                                                <input type="text" id="mob_no" style="display:none;" />
+                                                                <input type="hidden" id="h_appliId" />
+                                                            </div>
+                                                            <div class="form-row">
+
+                                                                <button class="ladda-button mb-2 mr-2 btn-pill btn btn-warning" data-style="expand-left" onclick="openInNewTab('@Url.Action("ApplctnForm_PL", "Application_Form")')"> View Documents</button>
+                                                                @*<button class="ladda-button mb-2 mr-2 btn-pill btn btn-warning" data-style="expand-left"><i class="lnr-download btn-icon-wrapper"> </i> &nbsp;APPLICATION</button>
+                                                                <button class="ladda-button mb-2 mr-2 btn-pill btn btn-warning" data-style="expand-left"><i class="lnr-download btn-icon-wrapper"> </i> &nbsp;DPN</button>*@
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        @*////////////////////////////////////////////////////// third step starts  //////////////////////////////////////////////////////*@
+
+                                        <div id="step-3">
+                                            <div class="no-results">
+                                                <div class="card-body" id="div_upload_docs">
+                                                    <div class="form-row" style="font-size:small">
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label for="fl_application" style="color:blue">Upload Agreement</label>
+                                                                <input type="file" id="fl_agreement" name="fl_agreement" class="form-control-file" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label for="fl_application" style="color: blue">Upload Application</label>
+                                                                <input type="file" id="fl_application" name="fl_application" class="form-control-file" />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <div class="form-group">
+                                                                <label for="fl_application" style="color: blue">Upload DPN</label>
+                                                                <input type="file" id="fl_dpn" name="fl_dpn" class="form-control-file" />
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    @* paymode *@
+                                                    <div class="form-row">
+                                                        <div class="col-md-6">
+                                                            <div class="position-relative form-group">
+                                                                <div class="input-container">
+                                                                    <select id="ddl_paymode" class="form-control" style="font-size:small">
+                                                                    </select>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="input-container" style="display:none" id="div_balance">
+                                                                <input type="text" id="controlBalance" name="controlBalance" readonly class="form-control" />
+                                                                <label for="controlBalance">Control Account Balance</label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @* paymode *@
+                                                    <div class="form-row">
+                                                        @*<table id="bank-details-table" class="table table-bordered">*@
+                                                        <table id="tbl_bank_details" class="table table-bordered" style="display: none;font-size:small;width:100%">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Acc No</th>
+                                                                    <th>IFSC</th>
+                                                                    <th>Bank</th>
+                                                                    <th>Branch</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <!-- Rows will be dynamically populated here -->
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                    <div class="form-row">
+                                                        <div class="col-md-12 d-flex justify-content-center">
+                                                            <button type="button" id="btn_attachment_save" class="btn-shadow btn-wide btn-pill btn-hover-shine btn btn-primary">Submit</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div id="div_finish">
+
+                                                    <div class="swal2-icon swal2-success swal2-animate-success-icon">
+                                                        <div class="swal2-success-circular-line-left" style="background-color: rgb(255, 255, 255);"></div>
+                                                        <span class="swal2-success-line-tip"></span>
+                                                        <span class="swal2-success-line-long"></span>
+                                                        <div class="swal2-success-ring"></div>
+                                                        <div class="swal2-success-fix" style="background-color: rgb(255, 255, 255);"></div>
+                                                        <div class="swal2-success-circular-line-right" style="background-color: rgb(255, 255, 255);"></div>
+                                                    </div>
+                                                    <div class="results-subtitle mt-4">Finished!</div>
+                                                </div>
+
+
+                                            </div>
+                                            </div>
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="clearfix">
+                                    @*<button type="button" id="reset-btn" class="btn-shadow float-left btn btn-link">Reset</button>*@
+
+                                    <button type="button" id="next-btn_1" onclick="goToStep2();" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Next</button>
+                                    <button type="button" id="next-btn_2" onclick="goToStep3();" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Next</button>
+                                    <button type="button" id="btn_download_complete" onclick="downloadComplete();" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Download Complete</button>
+
+                                    @*<button type="button" id="next-btn" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Next</button>*@
+                                    <button type="button" id="first_save" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Save</button>
+                                    @*<button type="button" id="second_save" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Save</button>*@
+                                    <button type="button" id="prev-btn_1" onclick="first_previous_click();" class="btn-shadow float-right btn-wide btn-pill mr-3 btn btn-outline-secondary">Previous</button>
+                                    <button type="button" id="prev-btn_2" onclick="second_previous_click();" class="btn-shadow float-right btn-wide btn-pill mr-3 btn btn-outline-secondary">Previous</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+
+    $(document).ready(function () {
+        localStorage.setItem('checkedLoanNo', '');
+        reloadCustomerDetails();
+    });
+
+    $(document).ready(function () {       
+
+        // Use event delegation to handle dynamically loaded elements
+        $(document).on('change', '.checkbox-option', function () {
+            //alert("checked");
+            if ($(this).is(':checked')) {
+                $('.checkbox-option').not(this).prop('checked', false);
+
+                var loanNo = $(this).data('customer-id');
+                var hiddenInputId = 'customer_id_' + loanNo; // Construct the full id
+                var customer_id = document.getElementById(hiddenInputId).value;
+
+                localStorage.setItem('checkedLoanNo', loanNo);
+                localStorage.setItem('customer_id', customer_id);
+                localStorage.setItem('loan_no', loanNo);
+
+                var hiddenInputId = 'pl-status-' + loanNo;
+                var plStatus = $('#' + hiddenInputId).val();
+                plStatus = parseInt(plStatus, 10);
+
+                if (plStatus === 0) {
+                    if ($(this).is(':checked')) {
+                        goToStep1();
+                        firstLevel();
+                    }
+                } else if (plStatus === 1) {
+                    if ($(this).is(':checked')) {
+                        goToStep2();
+                        SecondLevel();
+                    }
+                } else if (plStatus === 5) {
+                    if ($(this).is(':checked')) {
+                        goToStep3();
+                    }
+                }
+            } else {
+                location.reload();
+            }
+        });
+    });
+
+    function reloadCustomerDetails() {
+    $.ajax({
+        url: '/Personal_loan/GetCustomerDetailsJson', // Replace 'YourController' with the actual controller name
+        type: 'GET',
+        success: function (data) {
+            let htmlContent = ''; // Variable to hold the dynamically generated HTML
+
+            // Iterate through each customer and generate the HTML content
+            $.each(data, function (index, item) {
+                let plStatus = '';
+                if (item.PlStatus == 0) { plStatus = '1st'; }
+                if (item.PlStatus == 1) { plStatus = '2nd'; }
+                if (item.PlStatus == 5) { plStatus = '3rd'; }
+
+                // Construct HTML for each customer
+                htmlContent += `
+                    <li class="list-group-item">
+                        <div class="todo-indicator bg-primary"></div>
+                        <div class="widget-content p-0">
+                            <div class="widget-content-wrapper">
+                                <div class="widget-content-left mr-2">
+                                    <div class="custom-checkbox custom-control">
+                                        <input type="checkbox" name="option" class="custom-control-input checkbox-option" data-customer-id="${item.LoanNo}" id="checkbox-${item.LoanNo}">
+                                        <label class="custom-control-label" for="checkbox-${item.LoanNo}">&nbsp;</label>
+                                    </div>
+                                </div>
+                                <div class="widget-content-left">
+                                    <div class="widget-heading" style="font-size:small">
+                                        ${item.CustomerName}
+                                        <div class="badge badge-danger ml-1">${plStatus}</div>
+                                        <input type="hidden" class="pl-status-hidden" id="pl-status-${item.LoanNo}" value="${item.PlStatus}" />
+                                    </div>
+                                    <div class="widget-subheading" style="font-size:small">
+                                        <i>${item.LoanNo}</i>
+                                    </div>
+                                    <input type="hidden" value="${item.CustomerId}" id="customer_id_${item.LoanNo}" />
+                                </div>
+                            </div>
+                        </div>
+                    </li>`;
+            });
+
+            // Update the div with the new content
+            $('.scrollable-container ul').html(htmlContent);
+
+            // After reloading content, check if there was a previously checked checkbox
+            var checkedLoanNo = localStorage.getItem('checkedLoanNo');
+            if (checkedLoanNo) {
+                $('#checkbox-' + checkedLoanNo).prop('checked', true);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error while reloading customer details: " + error);
+        }
+    });
+}
+
+
+
+    $(document).ready(function () {
+        /*$("#next-btn").css("display", "none");*/
+        $("#first_save").css("display", "none");
+        $("#next-btn_1").css("display", "none");
+        $("#next-btn_2").css("display", "none");
+        $("#btn_download_complete").css("display", "none");
+        $("#sendOTPButton").css("display", "none");
+        $("#prev-btn_1").css("display", "none");
+        $("#prev-btn_2").css("display", "none");
+        goToStep1();
+    });
+
+    function validateLoanAmount() {
+        var loanAmount = parseInt(document.getElementById('loan_amt').value, 10);
+        var maxAmount = parseInt(document.getElementById('max-amount').value, 10);
+        var minAmount = parseInt(document.getElementById('min-amount').value, 10);
+
+        // Check if loan amount is between minimum and maximum
+        if (loanAmount < minAmount || loanAmount > maxAmount) {
+            alert("The loan amount must be between " + minAmount + " and " + maxAmount + ".");
+            document.getElementById('loan_amt').style.borderColor = 'red'; // Add red border for invalid input
+            document.getElementById('loan_amt').value = "";
+            document.getElementById('loan_amt').focus();
+        } else {
+            document.getElementById('loan_amt').style.borderColor = ''; // Remove border if valid
+        }
+    }
+
+    
+
+    function first_previous_click(){
+        //$("#prev-btn_2").css("display", "none");
+        goToStep1();
+        firstLevel();
+    }
+
+    function second_previous_click(){
+
+       goToStep2();
+       SecondLevel();
+    }
+
+    function firstLevel() {
+        $("#next-btn_1").css("display", "none");
+        $("#first_save").css("display", "block");
+        /*$("#next-btn").css("display", "none");*/
+        $("#btn_download_complete").css("display", "none");
+        $("#next-btn_2").css("display", "none");
+
+        var loanNo = localStorage.getItem('loan_no');
+
+         var hiddenInputId = 'pl-status-' + loanNo;
+         var plStatus = $('#' + hiddenInputId).val();
+         plStatus = parseInt(plStatus, 10);
+         //alert(plStatus);
+
+             $.ajax({
+                    url: '@Url.Action("personal_loan_details", "Personal_loan")',
+                    type: 'POST',
+                    data: { loan_no: loanNo },
+                    success: function(response) {
+                        // Process and display the response data
+                        if (response) {
+                            $('#customername').val(response.CustomerName);
+                            $('#customerid').val(response.CustomerId);
+                            $('#loan-number').val(loanNo); // Assuming you want to show the loan number itself
+                            $('#loan-date').val(response.LoanDt); // Adjust if needed
+                            $('#scheme-name').val(response.SchemeName);
+                            $('#interest-rate').val(response.InterestRt);
+                            $('#max-amount').val(response.MaxLoan);
+                            $('#min-amount').val(response.MinLoan);
+                            $('#maturity_dt').val(response.MaturityDt);
+
+                            if(plStatus !=0){
+                                $('#loan_amt').val(response.loan_amount);
+                                $('#loan_amt').prop('readonly', true);
+                            }
+                            else{
+                                 $('#loan_amt').val('');
+                                 $('#loan_amt').prop('readonly', false);
+                            }
+
+                            // Populate other fields as necessary
+                        } else {
+                            console.log('No data found for loan_no: ' + loanNo);
+                        }
+
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('AJAX Error: ' + status + error);
+                    }
+                });
+
+
+
+
+    }
+
+    function SecondLevel(callback){
+        //alert("second level");
+        var customer_id = localStorage.getItem('customer_id');
+        var loanNo = localStorage.getItem('loan_no');
+
+        var hiddenInputId = 'pl-status-' + loanNo;
+        var plStatus = $('#' + hiddenInputId).val();
+        plStatus = parseInt(plStatus, 10);
+        
+        
+            if (plStatus === 1){
+                  $("#btn_download_complete").css("display", "block");
+                  $("#next-btn_2").css("display", "none");
+              }
+               else{
+                    $("#btn_download_complete").css("display", "none");
+                    $("#next-btn_2").css("display", "block");
+               }
+            $("#first_save").css("display", "none");
+            $("#next-btn_1").css("display", "none");
+
+            
+
+            $.ajax({
+                      url: '@Url.Action("Fill_downloadAgreement", "Personal_loan")',
+                      type: 'POST',
+                      data: { loan_no: loanNo, customerID: customer_id },
+                      success: function(response) {
+                          
+                          if (response) {
+
+                              if (plStatus === 1 || plStatus === 0){
+                                    $("#btn_download_complete").css("display", "block");
+                                    $("#next-btn_2").css("display", "none");
+                                }
+                                 else{
+                                      $("#btn_download_complete").css("display", "none");
+                                      $("#next-btn_2").css("display", "block");
+                                 }
+
+                              $('#txt_name').val(response.Name);
+                              $('#txt_gl_loan_no').val(response.GlLoanNo);
+                              $('#txt_max_amt').val(response.MaxLoanAmt); // Assuming you want to show the loan number itself
+                              $('#txt_loan_amt').val(response.RequestAmt); // Adjust if needed
+                              $('#mob_no').val(response.MobNo);
+                              $('#h_appliId').val(response.application_id);
+
+                              //alert("otpStatus:"+response.otp_status);
+                              localStorage.setItem('otpStatus', response.otp_status);
+                              
+
+                              if(response.otp_status == 0){                                 
+                                  $('#otpInput').val('');
+                                  $('#div_otp').css("display", "block");
+                                  $('#otpbuttons').show();
+                                  $('#div_resendotpBtn').hide();       
+                                 // $('#otpSection').css("display", "block");
+                              }
+                              else{
+                                   $('#div_otp').css("display", "none");
+                              }
+
+                              // Populate other fields as necessary
+                          } else {
+                              console.log('No data found for loan_no: ' + loanNo);
+                          }
+                          // Execute the callback after the AJAX call has completed
+                          if (callback) {
+                              callback();  // Run the callback function passed from downloadComplete()
+                          }
+
+                      },
+                      error: function (xhr, status, error) {
+                          console.error('AJAX Error: ' + status + error);
+                      }
+                  });      
+
+
+
+    }
+
+    function downloadComplete() {
+        
+        SecondLevel(function () {
+            var otp_status = localStorage.getItem('otpStatus');
+            //alert("otpStatus in downloadcomplete: " + otp_status);
+            if (otp_status == 0) {
+                alert("Please verify OTP!..");
+                return;  // Prevent further actions if OTP is not verified
+            }
+       
+
+
+            var appli_id = $('#h_appliId').val();
+            //alert(appli_id);
+
+           $.ajax({
+                url: "@Url.Action("Download_Complete", "Personal_loan")",
+                type: 'POST',
+                data: { appli_id: appli_id },
+                success: function (response) {
+                    alert(response.message);
+                    if (response.success) {
+                        $("#btn_download_complete").css("display", "none");
+                        $("#next-btn_2").css("display", "block");
+                        reloadCustomerDetails();
+
+                    } else {
+                        alert("Error Occured!");
+                    }
+                },
+                error: function (error) {
+                    alert("error");
+                }
+           });
+        });
+
+    }
+
+
+    $(document).ready(function () {
+        $('#first_save').click(function (event) {
+            firstButtonclick(event);
+        });
+    });
+
+
+    function firstButtonclick(event) {
+
+        event.preventDefault();
+        var glLoan = $('#loan-number').val();
+
+        var hiddenInputId = 'pl-status-' + glLoan;
+        var plStatus = $('#' + hiddenInputId).val();
+        plStatus = parseInt(plStatus, 10);
+
+        if(plStatus == 0){
+
+            var customerId = $('#customerid').val();
+            var maxLoanAmount = $('#max-amount').val();
+            var requestAmount = $('#loan_amt').val();
+            var interestRate = $('#interest-rate').val();
+            var maturityDate = $('#maturity_dt').val();
+
+            if (requestAmount === "") {
+                alert("Please enter the loan amount!..");
+                $('#loan_amt').focus();
+                return false; // Prevent further execution and wizard step change
+            }
+
+            var formData = new FormData();
+            formData.append('CustomerId', customerId);
+            formData.append('MaxLoanAmt', maxLoanAmount);
+            formData.append('RequestAmt', requestAmount);
+            formData.append('IntRate', interestRate);
+            formData.append('MaturityDate', maturityDate);
+            formData.append('LoanNo', glLoan);
+
+            $.ajax({
+                url: "@Url.Action("SubmitPersonalLoanApplication", "Personal_loan")",
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+
+                    alert(response.message);
+                    //alert(response.applicationId);
+
+                    if (response.applicationId != "") {   
+                        reloadCustomerDetails();
+                        SecondLevel();
+                        goToStep2();
+                        //reloadCustomerDetails(function () {
+                        //    SecondLevel(function () {
+                        //        goToStep2();
+                        //    });
+                        //});
+
+                    }
+
+                    //console.log('Data sent successfully:', response);
+                },
+                error: function (error) {
+                    alert("error");
+                    console.error('Error sending data:', error);
+                }
+            });
+        }
+        else{
+            //alert("previous button test");
+            goToStep2();
+            SecondLevel();
+        }
+
+    }
+
+    // Attach the event listener to the button
+    $(document).ready(function () {
+        $('#btn_attachment_save').click(function (event) {
+            attachment_save(event);
+        });
+    });
+
+        function attachment_save(event) {
+
+            event.preventDefault();
+
+            var gl_loanNumber=localStorage.getItem('loan_no');
+            //alert(gl_loanNumber);
+            var appli_id = $('#h_appliId').val();
+           // alert(appli_id);
+            var dpn_doc = document.getElementById('fl_dpn').files[0];
+            var application_doc = document.getElementById('fl_application').files[0];
+            var agreement_doc = document.getElementById('fl_agreement').files[0];
+            var controlAcBal = $('#controlBalance').val();
+
+            var paymodeSelect = document.getElementById("ddl_paymode");
+
+            // Get the selected value
+            var selectedValue = paymodeSelect.value;
+            //alert(selectedValue);
+             if (selectedValue=="0") { 
+                 alert("Please Select Payment mode..!");
+                 //document.getElementById('fl_agreement').focus();
+                 return false;
+             }
+
+            if (controlAcBal == "0" && selectedValue=="5") { 
+                alert("You cannot submit through Control Account..! Please change the payment mode through HO.");
+                //document.getElementById('fl_agreement').focus();
+                return false;
+            }
+
+            if (selectedValue == "1" && $('#tbl_bank_details tbody tr').length == 0) { 
+                alert("You cannot proceed with the payment mode through HO. Please add Customer Bank Details..!");
+                //document.getElementById('fl_agreement').focus();
+                return false;
+            }
+
+
+        if (!agreement_doc) { //Empty validation of Agreement
+            alert("Please upload the Agreement!");
+            document.getElementById('fl_agreement').focus();
+            return false;
+        }
+        if (!application_doc) { //Empty validation of Application
+            alert("Please upload the Application!");
+            document.getElementById('fl_application').focus();
+            return false;
+        }
+        if (!dpn_doc) { //Empty validation of DPN
+            alert("Please upload the DPN!");
+            document.getElementById('fl_dpn').focus();
+            return false;
+        }
+        if (agreement_doc && agreement_doc.size > 1 * 1024 * 1024) { // Check if the first file exceeds 1 MB
+            alert("The file size of Agreement exceeds 1 MB limit.");
+            return false; // Prevent form submission
+        }
+        if (application_doc && application_doc.size > 1 * 1024 * 1024) { // Check if the first file exceeds 1 MB
+            alert("The file size of Application exceeds 1 MB limit.");
+            return false; // Prevent form submission
+        }
+        if (dpn_doc && dpn_doc.size > 1 * 1024 * 1024) { // Check if the first file exceeds 1 MB
+            alert("The file size of DPN exceeds 1 MB limit.");
+            return false; // Prevent form submission
+        }
+
+            var formData = new FormData();
+            formData.append('AppId', appli_id);
+            formData.append('Doc_DPN', dpn_doc);
+            formData.append('Doc_agreement', agreement_doc);
+            formData.append('Doc_application', application_doc);
+            formData.append('paymode', selectedValue);
+            formData.append('gl_loanNumber', gl_loanNumber);
+
+
+            $.ajax({
+                url: "@Url.Action("Upload_attachments", "Personal_loan")",
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+
+                    alert(response.message);
+                    $("#div_upload_docs").css("display", "none");
+                    $("#div_finish").css("display", "block");
+                    $("#prev-btn_2").css("display", "none");
+                    reloadCustomerDetails();
+
+                },
+                error: function (error) {
+                    alert("error");
+                    console.error('Error sending data:', error);
+                }
+            });
+
+
+}
+
+    $(document).ready(function () {
+        // Bind the change event to the dropdown
+        $('#ddl_paymode').on('change', function () {
+            // Get the selected value
+            var selectedValue = $(this).val();
+            var selectedText = $(this).find('option:selected').text();
+
+            // Call a custom function when the selection changes
+            onPaymodeChange(selectedValue, selectedText);
+        });
+
+
+        function onPaymodeChange(value, text) {
+            var customer_id = localStorage.getItem('customer_id');
+            //alert(customer_id);
+            //alert(value);
+            if (value == "1") {
+               $.ajax({
+                    url: "@Url.Action("GetBankDetails", "Personal_loan")",
+                    type: 'POST',
+                   data: { cust_id: customer_id },
+
+                   success: function (response) {
+
+                       if (response.success) {
+                           $("#div_balance").css("display", "none");
+                           $("#tbl_bank_details").css("display", "block");
+                            fillGrid(response.data); // Populate the grid with the single row of data
+                        } else {
+                            alert(response.message);
+                            $("#div_balance").css("display", "none");
+                        }
+
+
+                        //console.log('Data sent successfully:', response);
+                    },
+                    error: function (error) {
+                        alert("error");
+                        console.error('Error sending data:', error);
+                    }
+                });
+            }
+            else if (value == "5") {
+                //$("#div_balance").css("display", "block");
+
+                 $.ajax({
+                      url: "@Url.Action("GetControlBalance", "Personal_loan")",
+                      type: 'POST',
+                     data: { cust_id: customer_id },
+
+                     success: function (response) {
+
+                         if (response.success) {
+                             $("#tbl_bank_details").css("display", "none");
+                             $("#div_balance").css("display", "block");
+                             $('#controlBalance').val(response.data);
+                          } else {
+                              alert(response.message);
+                          }
+
+
+                          //console.log('Data sent successfully:', response);
+                      },
+                      error: function (error) {
+                          alert("error");
+                          console.error('Error sending data:', error);
+                      }
+                  });
+
+            }
+            else {
+                //alert(2);
+            }
+        }
+    });
+
+    function fillGrid(data) {
+        var tableBody = $('#tbl_bank_details tbody');
+        tableBody.empty(); // Clear any existing rows
+
+        // Create a new row with the data
+        var tr = $('<tr>');
+        $.each(data, function (key, value) {
+
+                tr.append($('<td>').text(value)); // Create a table cell for each column
+
+        });
+        tableBody.append(tr); // Append the single row to the table body
+    }
+
+
+    function fillPaymodeDropdown() {
+        $.ajax({
+            url: "@Url.Action("FillDropdown", "Personal_loan")",
+            type: 'POST',
+
+            success: function (response) {
+                if (response.success) {
+                    // Get the dropdown element
+                    var dropdown = $('#ddl_paymode');
+
+                    // Clear any existing options
+                    dropdown.empty();
+
+                    // Loop through the data and append options to the dropdown
+                    $.each(response.data, function (index, item) {
+                        dropdown.append($('<option>', {
+                            value: item.Value,
+                            text: item.Text
+                        }));
+                    });
+                } else {
+                    alert('Error: ' + response.message);
+                }
+
+
+            },
+            error: function (error) {
+                alert("error");
+                console.error('Error sending data:', error);
+            }
+        });
+    }
+
+
+
+
+    function goToStep1() {
+        // Hide step-1 content
+        //alert(" new next click function");
+         $("#prev-btn_1").css("display", "none");
+         $("#prev-btn_2").css("display", "none");
+        document.getElementById('step-1').style.display = 'block';
+        document.getElementById('step-2').style.display = 'none';
+        document.getElementById('step-3').style.display = 'none';
+        // Remove 'active' class from other steps
+        document.querySelectorAll('li a').forEach(function (step) {
+            step.parentNode.classList.remove('active');
+        });
+
+        // Add 'active' class to step-2
+        document.querySelector('a[href="#step-1"]').parentNode.classList.add('active');
+    }
+
+    function goToStep2() {
+        // Hide step-1 content
+        //alert(" new next click function");
+        $("#prev-btn_1").css("display", "block");
+        $("#prev-btn_2").css("display", "none");
+        document.getElementById('step-1').style.display = 'none';
+        document.getElementById('step-2').style.display = 'block';
+        document.getElementById('step-3').style.display = 'none';
+        // Remove 'active' class from other steps
+        document.querySelectorAll('li a').forEach(function (step) {
+            step.parentNode.classList.remove('active');
+        });
+
+        // Add 'active' class to step-2
+        document.querySelector('a[href="#step-2"]').parentNode.classList.add('active');
+    }
+
+    function goToStep3() {
+        // Hide step-2 content
+        //alert("Navigating to step 3");
+        resetFileInputs();
+        $("#div_upload_docs").css("display", "block");
+        
+        $("#div_balance").css("display", "none");
+        $("#tbl_bank_details").css("display", "none");
+        $("#prev-btn_1").css("display", "none");
+        $("#prev-btn_2").css("display", "block");
+        $("#next-btn_2").css("display", "none");
+        $("#div_finish").css("display", "none");
+        document.getElementById('step-1').style.display = 'none';
+        document.getElementById('step-2').style.display = 'none';
+        document.getElementById('step-3').style.display = 'block';
+        fillPaymodeDropdown();
+        // Remove 'active' class from all steps
+        document.querySelectorAll('li a').forEach(function (step) {
+            step.parentNode.classList.remove('active');
+        });
+
+        // Add 'active' class to step-3
+        document.querySelector('a[href="#step-3"]').parentNode.classList.add('active');
+
+
+    }
+    function resetFileInputs() {
+        document.getElementById('fl_agreement').value = "";
+        document.getElementById('fl_application').value = "";
+        document.getElementById('fl_dpn').value = "";
+    }
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

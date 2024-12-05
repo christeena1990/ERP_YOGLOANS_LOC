@@ -1,0 +1,369 @@
+﻿
+@{
+    ViewBag.Title = "PL_StatementofAccount";
+}
+@using System.Data
+
+@model ERP_YOGLOANS_LOCAL.Models.personal_loan_models.pl_statement_model
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statement Of Account</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+
+    <script>
+    function initSearch(searchBoxId, suggestionsId) {
+        const searchBox = document.getElementById(searchBoxId);
+        const suggestions = document.getElementById(suggestionsId);
+
+        // Event handler for input changes in the search box
+        searchBox.addEventListener("input", function () {
+            const search_txt = searchBox.value;
+            if (search_txt.length >= 2) {
+                fetch(`@Url.Action("GetSearchSuggestions", "PL_Report_StatementofAccount")?search_txt=${search_txt}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        suggestions.innerHTML = ""; // Clear old suggestions
+                        data.forEach(item => {
+                            const li = document.createElement("li");
+                            li.textContent = item; // Display suggestion text
+                            li.style.cursor = 'pointer'; // Change cursor for clickable items
+
+                            // Click event for the suggestion item
+                            li.addEventListener("click", function () {
+                                //alert("Selected Item: " + item);
+                                // Extract the value inside the parentheses
+                                const selectedValue = item.match(/\(([^)]+)\)/)[1];
+
+                                // Get the loan number from the item
+                                const loanNo = item.split('~')[0]; // Extract loan number
+                                document.getElementById("loanNumber").value = loanNo; // Store loan number in hidden field
+                                //alert(loanNo);
+
+
+                                // Fill the search box with the selected item
+                                searchBox.value = item;
+                                selectedCustomerId.value = selectedValue;
+                                suggestions.innerHTML = ""; // Clear suggestions after selection
+                            });
+
+                            suggestions.appendChild(li);
+                        });
+                    });
+            } else {
+                suggestions.innerHTML = ""; // Clear suggestions if input length is less than 2
+            }
+        });
+
+        // Hide suggestions when clicking outside the input or suggestion list
+        document.addEventListener("click", function (event) {
+            if (!suggestions.contains(event.target) && event.target !== searchBox) {
+                suggestions.innerHTML = ""; // Hide suggestions list
+            }
+        });
+    }
+
+    // Initialize the search box functionality on page load
+    $(document).ready(function () {
+        initSearch('searchBox', 'suggestions');
+    });
+
+    </script>
+
+
+
+
+
+
+
+    <style>
+        .suggestionsclass {
+            font-size: 14px; /* Adjust this value to your desired font size */
+            background-color: ghostwhite;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+            .suggestionsclass li {
+                padding: 5px;
+            }
+
+                .suggestionsclass li:hover {
+                    background-color: darkgray;
+                    cursor: pointer;
+                    color: blue;
+                }
+    </style>
+
+
+</head>
+<body>
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br />
+                <br />
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Statement Of Account</h6>
+            </div>
+        </div>
+        <br />
+        <div class="card-body">
+
+            <div id="form-container">
+                <form id="statementForm" method="post" @*action="@Url.Action("btn_Stmntofaccnt_Click","PL_Report_StatementofAccount")"*@>
+
+
+                    <div class="row">
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+
+                                </div>
+                                <input  id="searchBox" placeholder="Customer ID/Name/Phone" type="text" class="form-control" autocomplete="off">
+                                <div class="input-group-text" style="height:39px;">
+                                    <i class="fa fa-search"></i>
+                                </div>
+                                <ul id="suggestions" class="suggestionsclass"></ul>
+                            </div>
+                            <!-- Hidden field to store loan number -->
+                            <input type="hidden" id="loanNumber" name="loanNumber" />
+
+                        </div>
+
+
+                        <div class="col-md-6 col-lg-4">
+                            <button class="mb-2 mr-2 btn-icon btn-pill btn btn-primary" type="button" onclick="GetLoanStatementData()" id="btnStatementOfAccount" name="btnStatementOfAccount">Statement Of Account</button>
+                        </div>
+
+
+                        @*<div class="col-md-6 col-lg-3">
+                    <button class="mb-2 mr-2 btn-icon btn-pill btn btn-success" id="RepaymentSchedule" name="RepaymentSchedule">Repayment Schedule</button>
+                </div>*@
+
+                        <div class="col-md-6 col-lg-2">
+                            <button id="printstatementButton" title="Click to Print" style="border: none;  background-color: transparent; padding: 0;">
+                                <img src="~/images/printer.png" alt="printer Button" style="height: 40px; width: 50px; " />
+                            </button>
+                        </div>
+
+                        <div class="col-md-6 col-lg-1">
+
+                            <input type="text" id="selectedCustomerId" placeholder="ID" class="form-control" style="width:120px;" readonly />
+
+                        </div>
+
+
+                    </div>
+
+
+                </form>
+
+
+
+                <div class="row" id="loanStatementContainer" style="display: none;width:100%">
+                    <div class="col-md-6 col-lg-12">
+                        <div style="background-color:white; padding: 15px;" class="table-responsive">
+                            <center>
+                                <table class="mb-0 table table-borderless" style="width: 100%; border-collapse: collapse; font-size:12px; font-family: 'Times New Roman', Times, serif;color:black;">
+                                    <!-- Your existing table structure -->
+                                    @*1st Row: Logo*@
+                                    <tr>
+                                        <td colspan="3" style="text-align: center; font-size: 18px; color: maroon;">
+                                            <img src="~/images/yog.jpg" alt="Logo" height="30" width="30" />
+                                            @*<img src="~/Smart_Login/images/yogloans_icon.jpg" alt="Logo" height="30" width="90" />*@
+
+
+                                            &nbsp;&nbsp;<b>Yogakshemam Loans LTD.</b>
+                                        </td>
+                                    </tr>
+
+                                    @*Horizontal Line after the Company Name*@
+                                    <tr style="height: 2px;">
+                                        <td colspan="3" style="padding: 0;">
+                                            <hr style="margin: 0; border: 1px solid black;" />
+                                        </td>
+                                    </tr>
+
+                                    <!-- 3rd Row: Statement of Account -->
+                                    <tr>
+                                        <td><b>STATEMENT OF ACCOUNT</b></td>
+                                        <td>Date: <b id="statementDate"></b></td>
+                                        <td>Loan No: <b id="loan_no"></b></td>
+                                    </tr>
+
+                                    <tr style="height: 1px;">
+                                        <td colspan="3" style="padding: 0;">
+                                            <hr />
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>Customer Name: <b id="customerName"></b></td>
+                                        <td>Branch: <b id="branchName"></b></td>
+                                        <td>Address: <b id="address"></b></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Post Office: <b id="postOffice"></b></td>
+                                        <td>Landmark: <b id="landmark"></b></td>
+                                        <td>City/Town/Village: <b id="city"></b></td>
+                                    </tr>
+                                    <tr>
+                                        <td>State: <b id="state"></b></td>
+                                        <td>District: <b id="district"></b></td>
+                                        <td>Pin Code: <b id="pinCode"></b></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Residence No.: <b id="residenceNo"></b></td>
+                                        <td>Office No.: <b id="officeNo"></b></td>
+                                        <td>Mobile No.: <b id="mobileNo"></b></td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Loan Date: <b id="loanDate"></b></td>
+                                        <td>Current Status: <b id="loanStatus"></b></td>
+                                        @*<td>Due Days: <b id="dueDays"></b></td>*@
+                                        <td>Interest Rate: <b id="interestRate"></b></td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Maturity Date: <b id="maturityDate"></b></td>
+                                        <td>Install Frequency: <b id="installFrequency"></b></td>
+                                        <td>SMA/NPA Dues: <b id="smaNpaDues"></b></td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>First Install Date: <b id="firstInstallDate"></b></td>
+                                        <td>Last Install Date: <b id="lastInstallDate"></b></td>
+                                        <td>Agreement Value: <b id="agreementValue"></b></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Financial Charges: <b id="financialCharges"></b></td>
+                                        <td>Finance Amount: <b id="financeAmount"></b></td>
+                                        <td>Collection Book No: <b id="collectionBookNo"></b></td>
+                                    </tr>
+                                </table>
+                            </center>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+              
+
+
+
+
+            </div>
+
+
+
+
+
+        </div>
+
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+            $('#loanStatementContainer').hide();
+
+            $('#btnStatementOfAccount').click(function () {
+               
+       // alert("btn clicked");
+      /*  var loanId = $(this).data('loan-id');*/
+        var loanId = $('#loanNumber').val(); 
+       // alert(loanId);
+
+        $.ajax({
+            url: '@Url.Action("GetLoanStatementData", "PL_Report_StatementofAccount")', // Replace with your controller name
+            type: 'POST',
+            data: { loanId: loanId },
+            success: function (data) {
+                // Assuming the first record is the required data
+               // alert(data);
+                if (data.length > 0) {
+                    var item = data[0];
+
+               
+
+
+                    $('#statementDate').text(new Date().toLocaleDateString()); // Set the current date
+                    $('#loan_no').text(item.LoanNumber); // Assuming loanId holds the relevant loan number or ID
+                    $('#customerName').text(item.CustomerName); // Assuming item holds the data for a specific loan
+                    $('#branchName').text(item.BranchName);
+                    $('#address').text(item.Address);
+                    $('#postOffice').text(item.PostOffice);
+                    $('#landmark').text(item.Landmark);
+                    $('#city').text(item.City);
+                    $('#state').text(item.State);
+                    $('#district').text(item.District);
+                    $('#pinCode').text(item.PinCode);
+                    $('#residenceNo').text(item.ResidenceNo);
+                    $('#officeNo').text(item.OfficeNo);
+                    $('#mobileNo').text(item.MobileNo);
+
+                  
+                    // Assuming 'item' is the data returned from your AJAX call
+                    $('#loanDate').text(item.LoanDate ? new Date(item.LoanDate).toLocaleDateString() : "N/A"); // Check if LoanDate is valid
+                    $('#loanStatus').text(item.Status || "N/A"); // Default to "N/A" if Status is undefined
+                    $('#dueDays').text(item.DueDays || "N/A"); // Default to "N/A" if DueDays is undefined
+                    $('#maturityDate').text(item.MaturityDate ? new Date(item.MaturityDate).toLocaleDateString() : "N/A"); // Check if MaturityDate is valid
+                
+                    $('#interestRate').text(item.InterestRate); // Ensure InstallFrequency is available
+                    //$('#smaNpaDues').text(item.SmaNpaDues.toFixed(2)); // Ensure SmaNpaDues is a decimal
+                    //$('#firstInstallDate').text(item.FirstInstallDate.toLocaleDateString()); // Ensure FirstInstallDate is a Date object
+                    //$('#lastInstallDate').text(item.LastInstallDate.toLocaleDateString()); // Ensure LastInstallDate is a Date object
+                    //$('#agreementValue').text(item.AgreementValue.toFixed(2)); // Ensure AgreementValue is a decimal
+                    //$('#financialCharges').text(item.FinancialCharges.toFixed(2)); // Ensure FinancialCharges is a decimal
+                    //$('#financeAmount').text(item.FinanceAmount.toFixed(2)); // Ensure FinanceAmount is a decimal
+                    //$('#collectionBookNo').text(item.CollectionBookNo); // Ensure CollectionBookNo is available
+
+
+
+
+                    // Make the loan statement container visible
+                    //$('#loanStatementContainer').show();
+
+                    $('#loanStatementContainer').css('display', 'block'); // Instead of show()
+
+
+                }
+                else {
+                    alert("No data found for the specified loan ID.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert("An error occurred while fetching loan statement data.");
+            }
+        });
+    });
+});
+    </script>
+
+   
+
+
+
+
+
+</body>
+</html>

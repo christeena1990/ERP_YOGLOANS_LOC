@@ -1,0 +1,231 @@
+﻿@{
+    Layout = null;
+}
+
+<html>
+<head>
+    <style>
+        .card {
+            width: 80%; /* Adjust the width of the card */
+            margin: 0 auto; /* Center align the card */
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+            .card-title h3,
+            .card-title p {
+                margin: 5px 0; /* Adjust the margin as needed */
+            }
+
+        .table-wrapper {
+            width: 100%; /* Adjust the width of the table wrapper */
+            overflow-x: auto; /* Enable horizontal scrolling if necessary */
+            margin-top: 20px;
+            padding: 0 20px; /* Add padding to increase the size on both sides */
+        }
+
+        table {
+            width: 100%; /* Adjust the width of the table */
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .column1 {
+            width: 15%; /* Adjust the width of the first column */
+        }
+
+        .column2 {
+            width: 25%; /* Adjust the width of the second column */
+        }
+
+        .column3 {
+            width: 25%; /* Adjust the width of the third column */
+        }
+
+        .column4 {
+            width: 25%; /* Adjust the width of the fourth column */
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-panel">
+        <div class="content">
+            <div class="page-inner">
+                <div class="col-md-12">
+                    <div class="card" style="height: auto; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <br /><br /><br />
+                        <div class="card-title">
+                            <img src="~/Smart_Login/images/yogloans_icon.jpg" style="height:70px; width:275px; margin-left:auto ; margin-right: 0;" />
+                            <h3 style="color: maroon; margin-bottom: 5px;">Yogakshemam Loans Limited</h3>
+                            <p style="color: black; margin-top: 0;">Cashier Approve</p>
+                        </div>
+
+                        @{
+                            var dt = ViewBag.CashierData as System.Data.DataTable;
+                        }
+
+                        <div class="table-wrapper">
+                            @if (dt != null && dt.Rows.Count > 0)
+                            {
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Cashier</th>
+                                            <th>Date</th>
+                                            <th>Request By</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (System.Data.DataRow row in dt.Rows)
+                                        {
+                                            <tr>
+                                                <td>@row["Cashier"]</td>
+                                                <td>@Convert.ToDateTime(row["Date"]).ToString("dd-MMM-yyyy")</td>
+                                                <td>@row["Request By"]</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <p>No data available.</p>
+                            }
+                        </div>
+
+                        <div style="display: flex; align-items: center;">
+                            <p style="color: black; margin-top: 0; margin-right: 10px;">Cashier Date:</p>
+                            <input type="date" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly>
+                        </div>
+                      
+
+                        <div class="col-md-6 col-lg-4">
+                            <button id="approveButton" style="background-color:green;height:40px;width:100px;border-radius:8px;color:white;border-color:white;">Approve</button>
+                            <button id="rejectButton" style="background-color: #007FFF; height: 40px; width: 100px; border-radius: 8px; color: white; border-color: white;">Return</button>
+                            <button style="background-color:red;height:40px;width:100px;border-radius:8px;color:white;border-color:white;" onclick="logout()">Log out</button>
+
+                        </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+</html>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get the approve button element
+        var approveButton = document.getElementById('approveButton');
+
+        // Add click event listener to the approve button
+        approveButton.addEventListener('click', function (event) {
+            // Prevent default form submission behavior
+            event.preventDefault();
+
+            // Create a new XMLHttpRequest object
+            var xhr = new XMLHttpRequest();
+
+            // Configure the request
+            xhr.open('POST', '@Url.Action("Approve", "HR_Cashier_Approve")');
+
+            // Define the callback function for when the request completes
+            xhr.onload = function () {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    // Request was successful, show success message
+                    alert('Approval successful!');
+                } else {
+                    // Request failed, show error message
+                    alert('An error occurred while processing the approval.');
+                }
+            };
+
+            // Define the callback function for handling errors
+            xhr.onerror = function () {
+                // Request failed, show error message
+                alert('An error occurred while processing the approval.');
+            };
+
+            // Send the request
+            xhr.send();
+        });
+    });
+
+
+       function logout() {
+       // Redirect to the logout action
+       window.location.href = '@Url.Action("Logout", "HR_Cashier_Approve")'; // Replace "HR_Cashier_approvalassign" with your controller name
+       }
+
+    document.addEventListener('DOMContentLoaded', function () {
+    // Get the reject button element
+    var rejectButton = document.getElementById('rejectButton');
+
+    // Add click event listener to the reject button
+    rejectButton.addEventListener('click', function (event) {
+        // Prevent default form submission behavior
+        event.preventDefault();
+
+        // Create a new XMLHttpRequest object
+        var xhr = new XMLHttpRequest();
+
+        // Configure the request
+        xhr.open('POST', '@Url.Action("Reject", "HR_Cashier_Approve")');
+
+        // Define the callback function for when the request completes
+        xhr.onload = function () {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                // Request was successful, show success message
+                var response = JSON.parse(xhr.responseText);
+                alert(response.message); // Show the response message
+                // Redirect to the logout action
+                window.location.href = '@Url.Action("Logout", "HR_Cashier_Approve")';
+            } else {
+                // Request failed, show error message
+                alert('An error occurred while processing the rejection.');
+            }
+        };
+
+        // Define the callback function for handling errors
+        xhr.onerror = function () {
+            // Request failed, show error message
+            alert('An error occurred while processing the rejection.');
+        };
+
+        // Send the request
+        xhr.send();
+    });
+});
+
+
+</script>

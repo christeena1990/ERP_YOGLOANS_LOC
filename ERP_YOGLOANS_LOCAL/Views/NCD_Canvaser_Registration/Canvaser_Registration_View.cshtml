@@ -1,0 +1,1488 @@
+﻿
+@model ERP_YOGLOANS_LOCAL.Models.canvasser_model
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>canvasser registration</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+
+
+    <style>
+        /* Your existing CSS styles */
+        .app-main__inner {
+            margin-top: -30px;
+            padding: 10px;
+            font-family: Arial, sans-serif; /* Example font family */
+        }
+
+        .card-title h6 {
+            font-weight: bold;
+            font-size: 25px;
+            margin: 0;
+            color: maroon;
+        }
+
+
+        /* Style for radio button labels */
+        .radio-label {
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 14px;
+            color: black; /* Default color */
+        }
+
+            /* Style for selected radio button labels */
+            .radio-label.selected {
+                color: red; /* Maroon color for selected label */
+            }
+
+
+        .search-container {
+            margin-top: 8px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%; /* Set width to 100% to occupy full container width */
+        }
+
+            /* Style for labels inside the search container */
+            .search-container label {
+                font-weight: bold;
+                margin-right: 10px;
+                font-size: 14px;
+            }
+
+            /* Style for radio buttons inside the search container */
+            .search-container input[type="radio"] {
+                margin-right: 8px;
+                transform: scale(0.9); /* Adjusted scale for radio button size */
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                border: 2px solid #007bff;
+                border-radius: 50%;
+                width: 18px;
+                height: 18px;
+                outline: none;
+            }
+
+                .search-container input[type="radio"]:checked {
+                    background-color: #007bff;
+                }
+
+            /* Style for text input field */
+            .search-container input[type="text"] {
+                padding: 10px; /* Adjust padding as needed */
+                margin-right: 8px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                font-size: 14px;
+                width: 300px; /* Increased width for input text */
+            }
+
+            /* Style for buttons inside the search container */
+            .search-container button {
+                padding: 8px 12px; /* Increased padding for button */
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 3px;
+                cursor: pointer;
+                font-size: 14px;
+                margin-left: 10px; /* Added space between buttons */
+            }
+
+                .search-container button:hover {
+                    background-color: #0056b3;
+                }
+
+        /* Style for the dropdown container */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Style for the suggestions dropdown */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            max-height: 200px; /* Set a maximum height for scrolling */
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Hide horizontal scrolling */
+            width: 100%; /* Ensure it occupies the same width as the input */
+        }
+
+            /* Style for individual suggestion items */
+            .dropdown-content div {
+                color: black;
+                padding: 12px 16px;
+                text-decoration: none;
+                display: block;
+                cursor: pointer;
+            }
+
+                .dropdown-content div:hover {
+                    background-color: #f1f1f1;
+                }
+
+        /* New CSS styles for the cus_detailsTable box */
+        #cus_detailsTable {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        #cus_detailsDataGrid, #cus_bankdetailsDataGrid, #cus_bankdetailsDataGrid_Modify {
+            overflow-y: auto;
+            font-size: 14px;
+            width: 100%;
+            font-weight: 500;
+            border-collapse: collapse; /* Ensures table borders are collapsed */
+        }
+
+            #cus_detailsDataGrid th,
+            #cus_detailsDataGrid td, #cus_bankdetailsDataGrid th,
+            #cus_bankdetailsDataGrid td, #cus_bankdetailsDataGrid_Modify th,
+            #cus_bankdetailsDataGrid_Modify td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: center; /* Adjust alignment as needed */
+            }
+
+            /* Styling for table header */
+            #cus_detailsDataGrid th, #cus_bankdetailsDataGrid th, #cus_bankdetailsDataGrid_Modify th {
+                background-color: #4D759A; /* Light blue background color for headers */
+                color: white; /* Dark text color for headers */
+            }
+
+
+        /* Adjusted styles for input fields */
+        .input-group {
+            width: 100%; /* Ensures inputs take full width of parent container */
+        }
+
+        .input-group-text {
+            width: 140px; /* Adjusted width for the label spans */
+            text-align: left; /* Left-align text in labels */
+        }
+
+        .form-control {
+            width: calc(100% - 150px); /* Adjusted width for input fields */
+        }
+
+        .ui-menu-item-custom {
+            font-size: 8px; /* Adjust this value as needed */
+            padding: 10px;
+        }
+
+        /* Ensure the autocomplete dropdown has scrolling */
+        .ui-autocomplete {
+            max-height: 200px; /* Height before scrolling starts */
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden; /* Hide horizontal scrolling */
+            /* Optional: add padding and border to make it more visible */
+            padding: 0;
+            border: 1px solid #ccc;
+        }
+
+        /* Additional styles for better appearance */
+        .ui-menu-item-custom {
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
+        }
+
+            .ui-menu-item-custom:hover {
+                background-color: #f1f1f1;
+            }
+
+
+        .modify-bank-details-container {
+            border: 1px solid #ccc; /* Border style */
+            padding: 10px; /* Padding inside the container */
+            border-radius: 5px; /* Rounded corners */
+            display: inline-block; /* Display as inline block */
+            min-width: fit-content; /* Adjust width based on content */
+            margin: 0 auto; /* Center the container horizontally */
+        }
+
+        .modify-bank-details {
+            color: blue; /* Text color */
+            font-size: 16px; /* Font size */
+        }
+
+        /* ----------------------------------------------------------------------*/
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .popup {
+            display: none;
+            position: absolute;
+            width: 600px; /* Fixed width */
+            height: 500px; /* Fixed height */
+            background-color: white;
+            border: 1px solid #888;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+            cursor: move;
+            overflow: hidden; /* Ensure content doesn't overflow */
+        }
+
+
+        .popup-content {
+            width: 100%;
+            height: 100%;
+            /* overflow: auto;*/ /* Enable scrolling */
+        }
+
+            .popup-content img {
+                max-width: 100%;
+                max-height: 100%;
+                display: block;
+                margin: auto;
+            }
+
+            .popup-content object {
+                width: 100%;
+                height: 100%;
+            }
+
+        .popup-header {
+            background-color: #f1f1f1;
+            padding: 10px;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .popup-title {
+            margin: 0;
+        }
+
+        .close {
+            color: #000;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+            .close:hover {
+                color: red;
+            }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 999;
+        }
+    </style>
+
+    <script>
+
+
+
+
+            function validateInput() {
+                $('#div_content').hide();
+
+    $('#searchInput').val('');
+    $("#suggestionsList").empty();
+
+    var radioButtons = document.getElementsByName("searchType");
+    var searchInput = $("#searchInput");
+    $(".radio-label").removeClass("selected");
+
+    var selectedValue;
+    for (var i = 0; i < radioButtons.length; i++) {
+        if (radioButtons[i].checked) {
+            selectedValue = radioButtons[i].value;
+            $(`label[for=${radioButtons[i].id}]`).addClass("selected");
+            break;
+        }
+    }
+
+    clearControls();
+    searchInput.off("input keypress");
+
+    if (selectedValue === "cname") {
+        searchInput.attr("pattern", "[a-zA-Z ]+");
+        searchInput.attr("title", "Only alphabetic characters are allowed");
+        $("#searchButton").show();
+
+        searchInput.on("input", function () {
+            this.value = this.value.replace(/[^a-zA-Z ]+/g, '');
+        });
+    } else if (selectedValue === "ccode" || selectedValue === "mobileNo") {
+        var pattern = selectedValue === "ccode" ? "[0-9]*" : "[0-9]*";
+        searchInput.attr("pattern", pattern);
+        searchInput.attr("title", "Only numbers are allowed");
+        localStorage.setItem(selectedValue === "ccode" ? 'code' : 'mob_phone', '0');
+        $("#searchButton").show();
+
+        searchInput.on("input", function () {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        searchInput.on("keypress", function (event) {
+            return event.charCode >= 48 && event.charCode <= 57;
+        });
+
+    } else if (selectedValue === "pancard") {
+        searchInput.attr("pattern", "[a-zA-Z0-9]+");
+        searchInput.attr("title", "Only alphanumeric characters are allowed");
+        $("#searchButton2").hide();
+        $("#searchButton").show();
+
+        searchInput.on("input", function () {
+            this.value = this.value.replace(/[^a-zA-Z0-9]/g, '');
+        });
+
+        searchInput.on("keypress", function (event) {
+            return (event.charCode >= 48 && event.charCode <= 57) ||
+                   (event.charCode >= 65 && event.charCode <= 90) ||
+                   (event.charCode >= 97 && event.charCode <= 122);
+        });
+    }
+
+    searchInput.focus();
+}
+
+//------------------------------------------------
+
+var selectedCanCode;
+
+function fetchSuggestions() {
+    selectedCanCode = "0";
+   /* alert(selectedCanCode);*/
+    $('#div_content').hide();
+
+    var searchType = $('input[name="searchType"]:checked').val();
+    var keyword = $('#searchInput').val();
+
+    if (searchType && keyword.length > 0) {
+        $.ajax({
+            url: '@Url.Action("GetSuggestions", "NCD_Canvaser_Registration")',
+            type: 'GET',
+            data: { searchType: searchType, keyword: keyword },
+            success: function (data) {
+                var suggestionsList = $('#suggestionsList');
+                suggestionsList.empty();
+                if (data.length > 0) {
+                    suggestionsList.show();
+                    data.forEach(function(item) {
+                        suggestionsList.append('<div class="suggestion-item" onclick="selectSuggestion(\'' + item.can_list + '\', ' + item.can_code + ')">' + item.can_list + '</div>');
+                    });
+                } else {
+                    alert("No data");
+                    suggestionsList.hide();
+                }
+            }
+        });
+    } else {
+        $('#suggestionsList').hide();
+    }
+}
+
+//-------------------------------------------------
+$(document).click(function(e) {
+    if (!$(e.target).closest('.dropdown').length) {
+        $('#suggestionsList').hide();
+    }
+});
+
+//---------------------------------------------------
+
+function selectSuggestion(canList, canCode) {
+    $('#searchInput').val(canList);
+    $('#CanvasserCode').val(canCode);
+
+    selectedCanCode = canCode; // Store the canCode directly
+    /* alert("CanvasserCode: " + selectedCanCode);*/
+    $('#suggestionsList').hide();
+}
+
+
+          function search()
+          {
+             $('#confirm-button').prop('disabled', false);
+            clearControls();
+             $('#div_content').show();
+             Bind_category(0);
+
+
+            if (selectedCanCode)
+            {
+                $.ajax({
+                    url: '@Url.Action("GetDataByCanCode", "NCD_Canvaser_Registration")',
+                    type: 'POST',
+                    data: { canCode: selectedCanCode },
+                    success: function (data)
+                    {
+                        if (data) {
+
+
+                            $("#div_canvas_code").show();
+
+                            $('#Canvasser_Code').val(data.can_code);
+                            $('#CanvasserName').val(data.canvasser);
+                            $('#Mobile').val(data.mobile);
+                            $('#PanCard').val(data.pancard);
+
+                            $('#c_housename').val(data.c_house);
+                            $('#c_landmark').val(data.c_street);
+                            $('#c_city').val(data.c_city);
+                            $('#c_pin').val(data.c_pin);
+                            $('#c_post').val(data.c_post);
+
+                            bindPostOffices_c(data.c_pin, data.c_post);
+
+
+
+                            $('#permanentAddressCheckbox').prop('checked', data.p_post === "0");
+
+                            if ($('#permanentAddressCheckbox').is(':checked')) {
+
+                                $('#div_p_add').hide();
+
+                                $('#p_housename').val('');
+                                $('#p_landmark').val('');
+                                $('#p_city').val('');
+                                $('#p_pin').val('');
+                                $('#p_post').val('0');
+                            } else {
+
+                                $('#div_p_add').show();
+
+                                $('#p_housename').val(data.p_house);
+                                $('#p_landmark').val(data.p_street);
+                                $('#p_city').val(data.p_city);
+                                $('#p_pin').val(data.p_pin);
+                                $('#p_post').val(data.p_post);
+                            }
+
+
+
+
+                            bindPostOffices_p(data.p_pin, data.p_post);
+
+                            $('#NomineeAddress').val(data.nomin_add);
+                            $('#NomineeName').val(data.nomin_name);
+                            $('#NomineeRelation').val(data.realtion);
+
+                            $('#ifsc').val(data.ifsc_code);
+                            $('#bank_name').val(data.bank_name);
+                            $('#bank_branch').val(data.branch_name);
+                            $('#payee').val(data.payeename);
+                            $('#acc_no').val(data.bank_accno);
+                            $('#bank_id').val(data.bank_id);
+
+
+
+                            $('#canvasser_type').val(data.caregoryid).change();
+                            $('#c_post').val(data.c_post).change();
+                            $('#p_post').val(data.p_post).change();
+                            Bind_category(data.caregoryid);
+
+
+                        }
+                        else
+                        {
+                            Bind_category(0);
+
+                            $("#div_canvas_code").hide();
+                            clearControls();
+                            alert('No data found for the selected canvasser code.');
+                        }
+
+
+                    },
+                    error: function (xhr, status, error)
+                    {
+                        console.error('Error fetching data: ' + error);
+                    }
+                });
+
+
+            }
+            else
+            {
+                clearControls();
+                alert('Please select Canvasser from the suggestion before searching./ Create New Canvasser.');
+              }
+        }
+
+
+
+             function Bind_category(selectedValue) {
+    $.ajax({
+        url: '@Url.Action("GetCategories", "NCD_Canvaser_Registration")',
+        type: 'GET',
+        success: function (data) {
+            // Clear existing options
+            $('#canvasser_type').empty();
+
+            // Add a placeholder option
+           
+
+            // Populate dropdown with new options
+            $.each(data, function (index, item) {
+                $('#canvasser_type').append($('<option>', {
+                    value: item.Value,
+                    text: item.Text
+                }));
+            });
+
+            // Set the selected value if provided
+            if (selectedValue) {
+                $('#canvasser_type').val(selectedValue);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Error fetching categories: ' + error);
+        }
+    });
+}
+
+
+
+
+   function bindPostOffices_c(pincode, selectedValue)
+        {
+
+            if (pincode)
+            {
+                $.ajax({
+                url: '@Url.Action("c_PincodeChanged", "NCD_Canvaser_Registration")',
+                type: 'GET',
+                data: { pincode: pincode },
+
+                    success: function (data) {
+
+                        $('#c_post').empty();
+
+                        $.each(data, function (index, item) {
+                            $('#c_post').append($('<option>', {
+                                value: item.Value,
+                                text: item.Text
+                            }));
+                        });
+
+                        $('#c_post').val(selectedValue).change();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error fetching categories: ' + error);
+                    }
+
+
+                });
+            }
+            else
+            {
+                $('#c_post').empty().append('<option value="">Select Post Office</option>');
+            }
+            }
+
+   function bindPostOffices_p(pincode, selectedValue)
+        {
+             if (pincode)
+             {
+                 $.ajax({
+                 url: '@Url.Action("p_PincodeChanged", "NCD_Canvaser_Registration")',
+                 data: { pincode: pincode },
+                     success: function (data)
+                     {
+                         $('#p_post').empty();
+                         $.each(data, function (index, item)
+                         {
+                             $('#p_post').append($('<option>',
+                             {
+                                 value: item.Value,
+                                 text: item.Text
+                             }));
+                         });
+                         $('#p_post').val(selectedValue).change();
+                     },
+                     error: function (xhr, status, error) {
+                         console.error('Error fetching categories: ' + error);
+                     }
+                 });
+             }
+             else
+             {
+                 $('#p_post').empty().append('<option value="">Select Post Office</option>');
+             }
+            }
+
+
+  $(document).ready(function() {
+    // Event listener for when the c_pin input value changes
+    $('#c_pin').on('input', function() {
+        var pincode = $(this).val().trim(); // Get the current value of the input
+
+        if (pincode.length === 6 && $.isNumeric(pincode)) {
+            // Call the server-side action for c_pin
+            $.ajax({
+                url: '@Url.Action("c_PincodeChanged", "NCD_Canvaser_Registration")',
+                type: 'GET',
+                data: { pincode: pincode },
+                success: function(data) {
+                    $('#c_post').empty();
+                    $.each(data, function(index, item) {
+                        $('#c_post').append($('<option>', {
+                            value: item.Value,
+                            text: item.Text
+                        }));
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching post offices: ' + error);
+                }
+            });
+        } else {
+            $('#c_post').empty().append('<option value="">Select Post Office</option>');
+            console.log("Invalid pincode");
+        }
+    });
+
+    // Event listener for when the p_pin input value changes
+    $('#p_pin').on('input', function() {
+        var pincode = $(this).val().trim(); // Get the current value of the input
+
+        if (pincode.length === 6 && $.isNumeric(pincode)) {
+            // Call the server-side action for p_pin
+            $.ajax({
+                url: '@Url.Action("p_PincodeChanged", "NCD_Canvaser_Registration")',
+                type: 'GET',
+                data: { pincode: pincode },
+                success: function(data) {
+                    $('#p_post').empty();
+                    $.each(data, function(index, item) {
+                        $('#p_post').append($('<option>', {
+                            value: item.Value,
+                            text: item.Text
+                        }));
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching post offices: ' + error);
+                }
+            });
+        } else {
+            $('#p_post').empty().append('<option value="">Select Post Office</option>');
+            console.log("Invalid pincode");
+        }
+    });
+
+    $('#canvasser_type').on('change', function () {
+         var selectedValue = $(this).val();
+         if (selectedValue === '111') {
+             alert('No need of canvasser creation for staffs.');
+             clearControls();
+             $('#confirm-button').prop('disabled', true);
+
+         }
+         else {
+             $('#confirm-button').prop('disabled', false);
+
+         }
+    });
+
+    $('#ifsc').on('input', function ()
+ {
+     var ifscValue = $(this).val().trim();
+     if (ifscValue) {
+         $.ajax({
+             url: '@Url.Action("ProcessIfsc", "NCD_Canvaser_Registration")',
+             type: 'GET',
+             data: { ifsc: ifscValue },
+             success: function(data) {
+
+                   $('#bank_name').val(data.bank_name);
+                   $('#bank_branch').val(data.branch_name);
+                   $('#bank_id').val(data.bank_id);
+
+
+             },
+             error: function(xhr, status, error) {
+                 console.error('Invalid IFSC.: ' + error);
+             }
+         });
+     }
+    });
+
+     $('#permanentAddressCheckbox').on('change', function () {
+         if ($(this).is(':checked')) {
+
+             $('#div_p_add').hide();
+
+             $('#p_housename').val('');
+             $('#p_landmark').val('');
+             $('#p_city').val('');
+             $('#p_pin').val('0');
+             $('#p_post').val('0');
+
+
+
+         } else {
+
+             $('#div_p_add').show();
+
+             $('#p_housename').val('');
+             $('#p_landmark').val('');
+             $('#p_city').val('');
+             $('#p_pin').val('0');
+             $('#p_post').val('0');
+         }
+     });
+
+      $('#confirm-button').on('click', function (event)
+      {
+          var code = selectedCanCode;
+
+          var checkbox = document.getElementById("permanentAddressCheckbox");
+
+          var isChecked = "true";
+
+          var isChecked = checkbox.checked;
+
+         /* alert(isChecked); */
+
+         event.preventDefault();
+
+          var formData =
+          {
+
+             CanvasserName: $('#CanvasserName').val(),
+             canvasser_type: $('#canvasser_type').val(),
+             Mobile: $('#Mobile').val(),
+             LandNo: $('#LandNo').val(),
+             PanCard: $('#PanCard').val(),
+             NomineeName: $('#NomineeName').val(),
+             NomineeRelation: $('#NomineeRelation').val(),
+             NomineeAddress: $('#NomineeAddress').val(),
+             c_housename: $('#c_housename').val(),
+             c_landmark: $('#c_landmark').val(),
+             c_pin: $('#c_pin').val(),
+             c_post: $('#c_post').val(),
+             c_city: $('#c_city').val(),
+             p_housename: $('#p_housename').val(),
+             p_landmark: $('#p_landmark').val(),
+             p_pin: $('#p_pin').val(),
+             p_post: $('#p_post').val(),
+             p_city: $('#p_city').val(),
+             ifsc: $('#ifsc').val(),
+             bank_name: $('#bank_name').val(),
+             bank_branch: $('#bank_branch').val(),
+             payee: $('#payee').val(),
+             acc_no: $('#acc_no').val(),
+             bank_id: $('#bank_id').val(),
+             cancassercode: code,
+             checkbox:isChecked
+             };
+
+         const isValid = validateForm();
+         if (!isValid) return;
+
+             $.ajax({
+                 url: '@Url.Action("NCD_Canvaser_Create_Edit", "NCD_Canvaser_Registration")',
+                 type: 'POST',
+
+                 data: formData,
+                 success: function (response) {
+
+                     if (response.success)
+                     {
+                        /* alert(response.message);*/
+
+                         Swal.fire({
+                             title: "",
+                             text: response.message,
+                             icon: "success",
+                             confirmButtonText: "OK"
+                         }).then(() => {
+                             window.location.reload();
+                         });
+                     }
+                     else {
+                            Swal.fire({
+                             title: "",
+                             text: response.message,
+                             icon: "error",
+                             confirmButtonText: "OK"
+                         });
+                     }
+
+
+                 },
+
+                 error: function (xhr, status, error) {
+                     Swal.fire({
+                         title: "An error occurred while saving the data. Please try again.",
+                         text: "Error: " + error,
+                         icon: "error",
+                         confirmButtonText: "OK"
+                     });
+                 }
+             });
+
+      });
+
+      $('#reset-button').on('click', function (event) {
+          location.reload();
+      });
+  });
+
+            function clearControls() {
+
+                $('#c_housename').val('');
+                $('#c_landmark').val('');
+                $('#c_city').val('');
+                $('#c_pin').val('');
+                $('#c_post').val('');
+                $('#p_housename').val('');
+                $('#p_landmark').val('');
+                $('#p_city').val('');
+                $('#p_pin').val('');
+                $('#p_post').val('');
+                $('#NomineeAddress').val('');
+                $('#NomineeName').val('');
+                $('#NomineeRelation').val('');
+                $('#ifsc').val('');
+                $('#bank_name').val('');
+                $('#bank_branch').val('');
+                $('#payee').val('');
+                $('#acc_no').val('');
+                $('#Canvasser_Code').val('');
+                $('#CanvasserName').val('');
+                $('#Mobile').val('');
+                $('#PanCard').val('');
+                $('#canvasser_type').val('0');
+
+                $('#c_post').val('');
+
+                $('#p_post').val('');
+            }
+            //--PanCard Validation-----------------------------------------------------------
+
+            function validatePanCard() {
+                const panCardInput = document.getElementById("PanCard");
+                const panCardValue = panCardInput.value;
+                const panCardPattern = /^[A-Z]{3}[P][A-Z]{1}[0-9]{4}[A-Z]{1}$/;
+
+                if (panCardValue && !panCardPattern.test(panCardValue)) {
+                    alert("Invalid PAN");
+                    panCardInput.focus(); // Set focus back to the input field
+                }
+            }
+            //---Form Full Validation----------------------------------------------------------------------------
+
+            function validateForm() {
+                let isValid = true;
+                const canvasserName = document.getElementById("CanvasserName");
+                const canvasserType = document.getElementById("canvasser_type");
+                const mobile = document.getElementById("Mobile");
+                const panCard = document.getElementById("PanCard");
+                const nomineeName = document.getElementById("NomineeName");
+                const nomineeRelation = document.getElementById("NomineeRelation");
+                const nomineeAddress = document.getElementById("NomineeAddress");
+                const cHousename = document.getElementById("c_housename");
+                const cLandmark = document.getElementById("c_landmark");
+                const cPin = document.getElementById("c_pin");
+                const cPost = document.getElementById("c_post");
+                const cCity = document.getElementById("c_city");
+                const pHousename = document.getElementById("p_housename");
+                const pLandmark = document.getElementById("p_landmark");
+                const pPin = document.getElementById("p_pin");
+                const pPost = document.getElementById("p_post");
+                const pCity = document.getElementById("p_city");
+                const ifsc = document.getElementById("ifsc");
+                const payee = document.getElementById("payee");
+                const accNo = document.getElementById("acc_no");
+
+                if (!canvasserName.value.trim()) {
+                    alert("Please fill in the Canvasser Name.");
+                    canvasserName.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (canvasserType.value==0) {
+                    alert("Please select the Canvasser Type.");
+                    canvasserType.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (!mobile.value.trim()) {
+                    alert("Please fill in the Mobile No.");
+                    mobile.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (!panCard.value.trim()) {
+                    alert("Please fill in the Pan Number.");
+                    panCard.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (!nomineeName.value.trim()) {
+                    alert("Please fill in the Nominee Name.");
+                    nomineeName.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (!nomineeRelation.value.trim()) {
+                    alert("Please fill in the Relation.");
+                    nomineeRelation.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (!nomineeAddress.value.trim()) {
+                    alert("Please fill in the Nominee Address.");
+                    nomineeAddress.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (!cHousename.value.trim()) {
+                    alert("Please fill in the Communication -House Name.");
+                    cHousename.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (!cLandmark.value.trim()) {
+                    alert("Please fill in the Communication -Street/Landmark.");
+                    cLandmark.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (!cPin.value.trim()) {
+                    alert("Please fill in the Communication -PinCode.");
+                    cPin.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (!cPost.value) {
+                    alert("Please select the Communication -PostOffice.");
+                    cPost.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (!cCity.value.trim()) {
+                    alert("Please fill in the Communication -City.");
+                    cCity.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (permanentAddressCheckbox.checked == false && !pHousename.value.trim()) {
+                    alert("Please fill in the Permanent -House Name.");
+                    pHousename.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (permanentAddressCheckbox.checked == false && !pLandmark.value.trim()) {
+                    alert("Please fill in the Permanent -Street/Landmark.");
+                    pLandmark.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (permanentAddressCheckbox.checked == false && !pPin.value.trim()) {
+                    alert("Please fill in the Permanent -PinCode.");
+                    pPin.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (permanentAddressCheckbox.checked == false && !pPost.value) {
+                    alert("Please select the Permanent Post.");
+                    pPost.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (permanentAddressCheckbox.checked == false && !pCity.value.trim()) {
+                    alert("Please fill in the Permanent City.");
+                    pCity.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (!ifsc.value.trim()) {
+                    alert("Please fill in the IFSC.");
+                    ifsc.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (!payee.value.trim()) {
+                    alert("Please fill in the Payee Name.");
+                    payee.focus();
+                    //isValid = false;
+                    return false
+                }
+                else if (!accNo.value.trim() || accNo.value == "0") {
+                    alert("Please fill in the Account No.");
+                    accNo.focus();
+                    //isValid = false;
+                    return false
+                }
+                return true;
+            }
+
+
+    </script>
+
+</head>
+<body>
+    <div class="app-main__inner">
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6>Canvasser Registration</h6>
+            </div>
+        </div>
+
+        <div class="search-container">
+            <div style="padding: 5px;">
+                <input type="radio" id="ccodeRadio" name="searchType" value="ccode" onclick="validateInput()">
+                <label for="ccodeRadio" class="radio-label">Canvasser Code</label>
+
+                <input type="radio" id="cnameRadio" name="searchType" value="cname" onclick="validateInput()">
+                <label for="cnameRadio" class="radio-label">Canvasser Name</label>
+
+                <input type="radio" id="mobileNoRadio" name="searchType" value="mobileNo" onclick="validateInput()">
+                <label for="mobileNoRadio" class="radio-label">Mobile</label>
+
+                <input type="radio" id="pancardRadio" name="searchType" value="pancard" onclick="validateInput()">
+                <label for="pancardRadio" class="radio-label">PanNo</label>
+
+                @Html.HiddenFor(m => m.CanvasserCode, new { id = "CanvasserCode" })
+
+                <div class="dropdown">
+                    @Html.TextBoxFor(m => m.SearchInput, new { id = "searchInput", @class = "form-control", placeholder = "Enter search keyword...", onkeyup = "fetchSuggestions()" })
+                    <div class="dropdown-content" id="suggestionsList" style="font-size:small"></div>
+                </div>
+                <button type="button" id="searchButton" onclick="search()">Search</button>
+                <button type="button" id="create_new" onclick="Create()" style="display: none;">Create New</button>
+            </div>
+        </div>
+
+
+        <div class="card-body" id="div_content" style="display: none;">
+
+
+            <form action="@Url.Action("NCD_Canvaser_Registration", "GetDataByCanCode")" method="post" id="register_form" enctype="multipart/form-data" @*onsubmit="return validateForm()"*@ autocomplete="off">
+                @*Zero row*@
+                <div class="row"  id="div_canvas_code" style="display:none">
+
+
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="text" id="Canvasser_Code" name="Canvasser_Code" class="form-control" style="color:brown;font-weight:700" readonly/>
+                            @*<label for="input-text" hidden="hidden">Canvasser Code</label>*@
+                        <label for="input-text">Canvasser Code </label>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+                @*first row*@
+                <div class="row">
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="text" id="CanvasserName" name="CanvasserName" class="form-control" required onkeyup="this.value=this.value.replace(/[^a-zA-Z ]/g, '').toUpperCase()" />
+                            <label for="input-text">Canvasser Name </label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+
+
+                            <select id="canvasser_type" name="canvasser_type" class="form-control" style="text-align:left" required>
+                                @if (ViewBag.categoryList != null)
+                                {
+                                    foreach (SelectListItem item in ViewBag.categoryList)
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                }
+                                else
+                                {
+                                    <option value="0">-- No  Details Available --</option>
+                                }
+                            </select>
+                            <label for="canvasser_type">Category Type</label>
+
+
+
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="text" id="Mobile" name="Mobile" class="form-control" onkeyup="if(/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')" maxlength="10" />
+                            <label for="input-text">Mobile No</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="text" id="LandNo" name="LandNo" class="form-control" onkeyup="if(/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'')" maxlength="15" />
+                            <label for="input-text">Land No</label>
+                        </div>
+                    </div>
+
+                </div>
+
+                @*second row*@
+                <div class="row">
+
+
+
+
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="text" id="PanCard" name="PanCard" class="form-control" onchange="validatePanCard()" oninput="this.value = this.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase()" />
+                            <label for="input-text">Pan Number</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="text" id="NomineeName" name="NomineeName" class="form-control" onkeyup="this.value=this.value.replace(/[^a-zA-Z ]/g, '').toUpperCase()" />
+                            <label for="input-text">Nominee Name</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <input type="text" id="NomineeRelation" name="NomineeRelation" class="form-control" onkeyup="this.value=this.value.replace(/[^a-zA-Z ]/g, '').toUpperCase()" />
+                            <label for="input-text">Relation</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="input-container">
+                            <textarea id="NomineeAddress" name="NomineeAddress" class="form-control" rows="2" onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9 ]/g, '').toUpperCase()"></textarea>
+                            <label for="input-text">Nominee Addess </label>
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+                @*third row*@
+
+
+
+                @*fourth row*@
+
+                <div class="row">
+                    <div class="col-6">
+                        <div class="input-container">
+                            <div><p style="color: maroon; font-weight: 700; font-size: small; font-style: italic; ">Communication Address</p></div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="input-container">
+                            <div class="divider"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                @*fifth row*@
+                <div class="row">
+
+                    <div class="col-md-4">
+                        <div class="input-container">
+                            <input type="text" id="c_housename" name="c_housename" class="form-control" onkeyup="this.value=this.value.replace(/[^a-zA-Z ]/g, '').toUpperCase()" />
+                            <label for="input-text">House Name</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="input-container">
+                            <input type="text" id="c_landmark" name="c_landmark" class="form-control" onkeyup="this.value=this.value.replace(/[^a-zA-Z ]/g, '').toUpperCase()" />
+                            <label for="input-text">Street/LandMark</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="input-container">
+                            <input type="text" id="c_pin" name="c_pin" class="form-control" MaxLength="6" onkeyup="if(/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'').toUpperCase()" />
+                            <label for="input-text">PinCode </label>
+
+
+
+                        </div>
+                    </div>
+
+
+
+                </div>
+
+
+                @*sixth row*@
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="input-container">
+
+                            <select id="c_post" name="c_post" class="form-control" style="text-align:left">
+                                @if (ViewBag.c_postOfficeList != null)
+                                {
+                                    foreach (SelectListItem item in ViewBag.c_postOfficeList)
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                }
+                                else
+                                {
+                                    <option value="0">-- No  Details Available --</option>
+                                }
+                            </select>
+
+                            <label for="c_post">Post Office</label>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="input-container">
+                            <input type="text" id="c_city" name="c_city" class="form-control" onkeyup="this.value=this.value.replace(/[^a-zA-Z ]/g, '').toUpperCase()" />
+                            <label for="input-text">City</label>
+                        </div>
+                    </div>
+
+                </div>
+                @*seventh row*@
+                <div class="row">
+
+                    <div class="col-md-12">
+
+                        <label for="permanentAddressCheckbox" style="font-weight: 600; font-size: small; font-style: italic;">
+                            <input type="checkbox" id="permanentAddressCheckbox" name="permanentAddressCheckbox" />
+                            Permanent Address same as Communication Address
+                        </label>
+
+                    </div>
+
+                </div>
+
+                <div id="div_p_add">
+                    @*eight row*@
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="input-container">
+                                <div><p style="color: maroon; font-weight: 700; font-size: small; font-style: italic; ">Permanent Address</p></div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="input-container">
+                                <div class="divider"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    @*ninth row*@
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="text" id="p_housename" name="p_housename" class="form-control" onkeyup="this.value=this.value.replace(/[^a-zA-Z ]/g, '').toUpperCase()" />
+                                <label for="input-text">House Name</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="text" id="p_landmark" name="p_landmark" class="form-control" onkeyup="this.value=this.value.replace(/[^a-zA-Z ]/g, '').toUpperCase()" />
+                                <label for="input-text">Street/LandMark</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="text" id="p_pin" name="p_pin" class="form-control" MaxLength="6" onkeyup="if(/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'').toUpperCase()" />
+                                <label for="input-text">PinCode </label>
+
+
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                    @*tenth row*@
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="input-container">
+
+                                <select id="p_post" name="p_post" class="form-control" style="text-align:left">
+                                    @if (ViewBag.p_postOfficeList != null)
+                                    {
+                                        foreach (SelectListItem item in ViewBag.p_postOfficeList)
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <option value="0">-- No  Details Available --</option>
+                                    }
+                                </select>
+                                <label for="p_post">Post Office</label>
+
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="text" id="p_city" name="p_city" class="form-control" onkeyup="this.value=this.value.replace(/[^a-zA-Z ]/g, '').toUpperCase()" />
+                                <label for="input-text">City</label>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div id="div_bank_dt">
+
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="input-container">
+                                <div><p style="color: maroon; font-weight: 700; font-size: small; font-style: italic; ">Bank Details</p></div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="input-container">
+                                <div class="divider"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="text" id="ifsc" name="ifsc" class="form-control" onkeyup="this.value=this.value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase()" />
+                                <label for="input-text">IFSC</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="text" id="bank_name" name="bank_name" readonly class="form-control" />
+                                <label for="input-text">Bank Name</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="text" id="bank_branch" name="bank_branch" readonly class="form-control" />
+                                <label for="input-text">Bank Branch </label>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                    <div class="row">
+
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="text" id="payee" name="payee" class="form-control" onchange="checkfname(this)" onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g, '').toUpperCase()" />
+                                <label for="input-text">Payee Name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="text" id="acc_no" name="acc_no" class="form-control" onkeyup="if(/\D/g.test(this.value)) this.value = this.value.replace(/\D/g,'').toUpperCase()" maxlength="20" />
+                                <label for="input-text">Account No</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="input-container">
+                                <input type="hidden" id="bank_id" name="bank_id" />
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+
+
+
+                <div class="divider"></div>
+
+                <div class="row" style="width:100%;">
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <button type="submit" id="confirm-button" name="actionType" value="Confirm" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary" OnClientClick="this.disabled = true; this.value = 'Please wait ..';" UseSubmitBehavior="false">Confirm</button>
+                            &nbsp;&nbsp;&nbsp;
+                            <button type="button" id="reset-button" name="actionType" value="Reset" class="btn-shadow btn-wide float-right btn-pill btn-hover-shine btn btn-primary">Reset</button>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="divider"></div>
+            </form>
+
+        </div>
+
+
+        
+    </div>
+</body>
+</html>

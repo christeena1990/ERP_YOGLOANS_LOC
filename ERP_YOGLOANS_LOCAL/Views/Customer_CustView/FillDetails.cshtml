@@ -1,0 +1,542 @@
+﻿
+@model ERP_YOGLOANS_LOCAL.Models.Customer_Approval_Model
+
+@{
+
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html @*xmlns="http://www.w3.org/1999/xhtml*@>
+<head runat="server">
+    <title></title>
+
+    <style type="text/css" media="print">
+        @*@page*@ {
+            size: auto;
+            margin: 50px;
+        }
+    </style>
+
+
+
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 7px;
+            border: 1px solid #ddd;
+        }
+
+        .detail {
+            font-size: medium; /* Increased size for details */
+        }
+
+        .photo {
+            width: 20%; /* Decreased space for photo */
+        }
+
+        .photo-container {
+            text-align: right;
+        }
+        /* -------------------*/
+
+        .table {
+            display: table;
+            width: 100%;
+        }
+
+        .row {
+            display: table-row;
+        }
+
+        .cell {
+            display: table-cell;
+            padding: 5px;
+        }
+
+        .detail {
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+
+        .table {
+            display: table;
+            width: 100%;
+        }
+
+        .row {
+            display: table-row;
+        }
+
+        .cell {
+            display: table-cell;
+            padding: 5px;
+        }
+
+        .detail {
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+
+        .data-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        /* ------------------------------------*/
+
+        .detail {
+            width: 30%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        .detail1 {
+           
+            width: 33.3%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        .detail1 {
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+            .detail1 .bold-text {
+                font-weight: bold;
+            }
+    </style>
+
+
+    <script>
+        // Check if the page was loaded directly (not via navigation within the site)
+        if (document.referrer === '') {
+            // If there is no referrer, redirect to the login page
+            window.location.href = '/Smart_Login/Login'; // Change to your login page URL
+        }
+    </script>
+
+
+
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div id="div_dec" runat="server">
+            <table style="width:100%; border: 1px solid black; border-collapse: collapse;">
+                <tr>
+                    <td style="text-align:center;background-color:white;color:black;" colspan="2">
+                        <div class="logo-src" style="height:42px;vertical-align:top">
+                            <img style="width:170px;" src="~/images/logowithtext.png" />
+
+                        </div>
+                        Branch Name:@Model.cust_branch
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; background-color: #064e9c; color: white;" colspan="2">
+                        EXISTING CUSTOMER DETAILS
+
+                    </td>
+                </tr>
+
+
+
+                <tr>
+                    <td style="width: 448.42px; text-align: left; font-weight: bold;">
+                        CKYC:
+                    </td>
+                    <td style="width: 90px; text-align: left; font-weight: bold;">
+                        Customer ID:&nbsp;@Model.customer_id
+
+                    </td>
+                </tr>
+
+
+
+            </table>
+
+            <table id="myTable">
+                <table>
+                    <tr>
+                        <td style="width: 850px; text-align: left;">
+
+                            <table>
+                                <div class="data-container">
+
+
+
+                                    @if (!string.IsNullOrEmpty(@Model.customer_name))
+                                    {
+                                        <div class="detail1">
+                                            <strong>Customer Name:</strong> @Model.customer_name
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.dob))
+                                    {
+                                        <div class="detail1">
+                                            <strong>Date Of Birth:</strong> @Model.dob
+                                        </div>
+                                    }
+
+
+                                    @if (!string.IsNullOrEmpty(Model.gender))
+                                    {
+
+                                        <div class="detail1">
+                                            <strong>Gender:</strong> @Model.gender
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.marital_status))
+                                    {
+                                        <div class="detail1">
+
+                                            <strong>Marital Status:</strong> @Model.marital_status
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.spouse))
+                                    {
+                                        <div class="detail1">
+                                            <strong> Name of Spouse:</strong> @Model.spouse
+                                        </div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.father_name))
+                                    {
+                                        <div class="detail1"> <strong> Father name: </strong> @Model.father_name</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.mother_name))
+                                    {
+                                        <div class="detail1"> <strong>Mother name: </strong> @Model.mother_name</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.residence_type))
+                                    {
+                                        var residenceType = Model.residence_type == "O" ? "Own" : "Rent";
+                                        <div class="detail1"> <strong>Residential Status:</strong> @residenceType</div>
+                                    }
+
+
+                                    @if (!string.IsNullOrEmpty(Model.office_no))
+                                    {
+                                        <div class="detail1"> <strong>Re-KYC Reason:</strong> @Model.rekyc_reason</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.cust_status))
+                                    {
+                                        <div class="detail1"> <strong>Cust Status:</strong> @Model.cust_status</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.cust_create_date))
+                                    {
+                                        <div class="detail1"><strong>Create Date:</strong> @Model.cust_create_date</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.category))
+                                    {
+                                        <div class="detail1"><strong>Category:</strong> @Model.category</div>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.mobile_no))
+                                    {
+                                        <div class="detail1">
+                                            <strong>Mobile No:</strong> @Model.mobile_no
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.residence_no))
+                                    {
+                                        <div class="detail1">
+                                            <strong>Residence No:</strong> @Model.residence_no
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.office_no))
+                                    {
+                                        <div class="detail1">
+                                            <strong>Office No:</strong> @Model.office_no
+                                        </div>
+                                    }
+
+                                    @*<style>
+            .detail1 {
+                margin-bottom: 10px; /* Space between different details */
+            }
+
+                .detail1 strong {
+                    font-weight: bold; /* Make sure labels are bold */
+                }
+        </style>*@
+
+                                    @if (!string.IsNullOrEmpty(Model.email))
+                                    {
+                                        <div class="detail1">
+                                            <strong>Email:</strong> @Model.email
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.guardiantype))
+                                    {
+                                        <div class="detail1">
+                                            <strong>Guardian Type:</strong> @Model.guardiantype
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.guardian_name))
+                                    {
+                                        <div class="detail1">
+                                            <strong>Guardian Name:</strong> @Model.guardian_name
+                                        </div>
+                                    }
+                                    @if (Model.yearofstay != 0)
+                                    {
+                                        <div class="detail1">
+                                            <strong>Year of Stay:</strong> @Model.yearofstay
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.residence_type))
+                                    {
+                                        <div class="detail1">
+                                            <strong>Residence Type:</strong> @Model.residence_type
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.dist_from_branch))
+                                    {
+                                        <div class="detail1">
+                                            <strong>Distance from Branch:</strong> @Model.dist_from_branch
+                                        </div>
+                                    }
+
+                                    @if (Model.annual_income != "0")
+                                    {
+                                        <div class="detail1"><strong>Annual Income:</strong> @Model.annual_income</div>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.education))
+                                    {
+                                        <div class="detail1">
+                                            <strong>Education:</strong> @Model.education
+                                        </div>
+                                    }
+
+                                    @if (!string.IsNullOrEmpty(Model.occupation))
+                                    {
+                                        <div class="detail1">
+                                            <strong>Occupation:</strong> @Model.occupation
+                                        </div>
+                                    }
+
+
+                                </div>
+
+
+
+
+
+                            </table>
+
+
+
+
+                        </td>
+                        <td style="width: 105px; text-align: center;" class="photo-container">
+
+                            <div style="width:100px; height:130px; border:dashed;align-self:center">
+                                <img id="photo" src="@Model.ImageUrl1" style="width: 100%; height: 100%;" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <!-- Your existing rows here -->
+            </table>
+
+            <table style="width:100%; border: 1px solid black; border-collapse: collapse;">
+                <tr>
+                    <td style="width: 448.42px; text-align:left; font-weight: bold;font-size:16px;">
+                        KYC Details
+                    </td>
+
+                </tr>
+
+                @if (Model.Data != null && Model.Data.Any())
+                {
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Proof Type</th>
+                                <th>KYC</th>
+                                <th>ID No</th>
+                                <th>Valid From</th>
+                                <th>Valid To</th>
+                                <th>Name</th>
+                                <th>Father's Name</th>
+                                <th>Date of Birth</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Data)
+                            {
+                                <tr>
+                                    <td>@item["proof_type"]</td>
+                                    <td>@item["kyc"]</td>
+                                    <td>@item["id_no"]</td>
+                                    <td>@item["valid_from"]</td>
+                                    <td>@item["valid_to"]</td>
+                                    <td>@item["name"]</td>
+                                    <td>@item["father"]</td>
+                                    <td>@item["dob_kyc"]</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>No KYC data available.</p>
+                }
+
+              
+
+
+            </table>
+
+
+
+            <td colspan="2">
+                <table style="width:100%">
+                    <tr>
+                        <td style="width:50%">
+                            <table style="width:100%">
+                               
+                                <tr>
+                                    <td style="width: 448.42px; text-align:left; font-weight: bold; font-size: 16px; ">
+                                        Communication Address
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="detail">Address: @Model.commu_address</td>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="detail">Land Mark: @Model.land_mark</td>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="detail">PIN: @Model.c_pin</td>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="detail">Post: @Model.c_post</td>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="detail">District: @Model.c_district</td>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="detail">State: @Model.c_state</td>
+
+                                </tr>
+
+                            </table>
+
+                        </td>
+
+                        <td style="width:50%">
+                            @if (string.IsNullOrEmpty(Model.p_pin))
+                            {
+
+
+                                <table style="width:100%">
+
+                                    <tr>
+                                        <td style="width: 448.42px; text-align:left; font-weight: bold; font-size: 16px; ">
+                                            Permanent Address
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="4" class="detail">Address: @Model.commu_address</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">Land Mark: @Model.land_mark</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">PIN: @Model.c_pin</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">Post:@Model.c_post</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">District: @Model.c_district</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">State: @Model.c_state</td>
+
+                                    </tr>
+                                </table>
+                            }
+                            else
+                            {
+                                <table style="width:100%">
+
+                                    <tr>
+                                        <td style="width: 448.42px; text-align:left; font-weight: bold; font-size: 16px; ">
+                                            Permanent Address
+                                        </td>
+
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="4" class="detail">Address: @Model.p_address</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">Land Mark: @Model.land_mark</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">PIN: @Model.p_pin</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">Post: @Model.p_post</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">District: @Model.p_district</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4" class="detail">State: @Model.p_state</td>
+
+                                    </tr>
+                                </table>
+
+
+                            }
+
+
+                        </td>
+                    </tr>
+                </table>
+
+
+            </td>
+
+           
+        </div>
+
+    </form>
+
+</body>
+</html>
+
+

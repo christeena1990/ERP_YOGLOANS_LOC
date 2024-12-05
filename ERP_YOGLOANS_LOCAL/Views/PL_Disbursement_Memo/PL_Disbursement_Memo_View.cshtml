@@ -1,0 +1,338 @@
+﻿@model ERP_YOGLOANS_LOCAL.Models.personal_loan_models.PLForms_Model.LoanApplicationViewModel
+@{
+    Layout = null;
+
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOGAKSHEMAM LOANS LIMITED</title>
+    <style>
+        .auto-style8 {
+            width: 100px; /* Adjust the width as per your image size */
+            height: auto;
+        }
+
+
+        .container {
+            display: flex;
+            justify-content: space-between; /* Distribute divs in one row */
+            margin: 20px;
+        }
+
+        .box {
+            /*display: flex;*/
+            /* flex-direction: column;*/
+            /*border: 1px solid #ccc;*/
+            /* padding: 10px;*/
+            width: 45%; /* Adjust width as needed */
+        }
+
+        .box_portion {
+            /*display: flex;*/
+            /* flex-direction: column;*/
+            /*border: 1px solid #ccc;*/
+            /* padding: 10px;*/
+            width: 45%; /* Adjust width as needed */
+        }
+
+        .box_line {
+            /*display: flex;*/
+            /* flex-direction: column;*/
+            /*border: 1px solid #ccc;*/
+            /* padding: 10px;*/
+            width: 100%; /* Adjust width as needed */
+        }
+
+        .box_full {
+            /*display: flex;*/
+            /* flex-direction: column;*/
+            border: 1px solid #ccc;
+            /* padding: 10px;*/
+            width: 100%; /* Adjust width as needed */
+        }
+
+
+
+        .label {
+            margin-bottom: 5px;
+        }
+    </style>
+
+
+</head>
+<body>
+    <div style="text-align: left; margin: 10px; border-block-color:black; border: 1px solid black; padding: 15px; border-radius: 5px; border: 2px solid #000; /* Outline color */ padding: 10px; /* Space between outline and content */ border-radius: 5px; /* Rounded corners */ border-color: black; min-height: 1000px; /* Minimum height for the outline */ position: relative; /* Keep position relative if you add absolute elements */ margin: 20px 0; ">
+
+        <h4 style="text-align: center;">
+            <img src="~/images/logowithtext.png" class="auto-style8" alt="Yogakshemam Logo" style="width:170px;" /><br />
+            YOGAKSHEMAM LOANS LIMITED<br />
+            Regd Office : Ottappath Tower, Aswini Junction, Thiruvambady P.O, Thrissur 680022, Kerala.<br /><br />
+            <u>DISBURSEMENT MEMO</u>
+
+        </h4>
+
+        <div class="container">
+            <!-- First div -->
+            <div class="box_line">
+                <label class="label">The following loan has been sanctioned to Mr/Ms. </label>  <label class="label">@Model.CustomerName</label>
+            </div>
+        </div>
+        <div class="container">
+            <div class="box_line">
+                <label class="label">@Model.Address</label>
+            </div>
+
+        </div>
+        <div class="box_full">
+            <div class="container">
+                <!-- First div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">Application ID</label>
+                </div>
+
+                <!-- Second div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">:&nbsp;@Session["PL_application_id"]</label>
+                </div>
+            </div>
+            <div class="container">
+                <!-- First div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">Loan Amount Proposed</label>
+                </div>
+
+                <!-- Second div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">:&nbsp;@Model.LoanAmountProposed </label>
+                </div>
+            </div>
+            <div class="container">
+                <!-- First div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">Interest Rate</label>
+                </div>
+
+                <!-- Second div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">:&nbsp;@Model.PLinterestRate </label>
+                </div>
+            </div>
+
+
+
+
+            <div class="container">
+                <!-- First div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">Payee Name</label>
+                </div>
+
+                <!-- Second div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">:&nbsp;@Model.Payeename </label>
+                </div>
+            </div>
+            <div class="container">
+                <!-- First div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">Bank Name</label>
+                </div>
+
+                <!-- Second div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">:&nbsp;@Model.BankName </label>
+                </div>
+            </div>
+            <div class="container">
+                <!-- First div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">Branch</label>
+                </div>
+
+                <!-- Second div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">:&nbsp;@Model.BankBranch </label>
+                </div>
+            </div>
+            <div class="container">
+                <!-- First div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">IFSC Code</label>
+                </div>
+
+                <!-- Second div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">:&nbsp;@Model.IFSC </label>
+                </div>
+            </div>
+            <div class="container">
+                <!-- First div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">Account Number</label>
+                </div>
+
+                <!-- Second div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">:&nbsp;@Model.AcctNo</label>
+                </div>
+            </div>
+            <div class="container">
+            
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label"> Amount</label>
+                </div>
+              
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">:&nbsp;@Model.LoanAmountProposed </label>
+                </div>
+            </div>
+
+            <div class="container">
+                <!-- First div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">Charges</label>
+                </div>
+
+                <!-- Second div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">:&nbsp;@Model.receivables </label>
+                </div>
+            </div>
+            <div class="container">
+                <!-- First div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">Transfer Amount</label>
+                </div>
+
+                <!-- Second div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">:&nbsp;@Model.TransferAmount </label>
+                </div>
+            </div>
+            <div class="container">
+                <!-- First div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">Disbursement Amount</label>
+                </div>
+
+                <!-- Second div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">:&nbsp;@Model.DisbursementAmount </label>
+                </div>
+            </div>
+            <div class="container">
+                <!-- First div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">Penal Charges</label>
+                </div>
+
+                <!-- Second div -->
+                <div class="box_partion" style="flex: 1;">
+                    <label class="label">:&nbsp;@Model.PenalCharges </label>
+                </div>
+            </div>
+
+
+            @*<hr style="border: 1px solid #ccc; margin: 20px 0;">*@
+
+        </div>
+
+        <div class="container">
+            <!-- First div -->
+            <div class="box_partion" style="flex: 1;">
+                <label class="label">@Model.UserBranchName</label>
+            </div>
+            <!-- Second div -->
+            <div class="box_partion" style="text-align:right">
+                <label class="label">HO credit</label>
+            </div>
+        </div>
+
+
+        <div class="container">
+            <!-- First div -->
+            <div class="box_partion" style="flex: 1;">
+                <label class="label">@Model.Username</label>
+            </div>
+
+            <!-- Second div -->
+            <div class="box_partion" style="text-align:right">
+                <label class="label">@Model.HOUsername</label>
+            </div>
+        </div>
+        <div class="container">
+            <!-- First div -->
+            <div class="box_partion" style="flex: 1;">
+                <label class="label">@Model.usercode</label>
+            </div>
+
+            <!-- Second div -->
+            <div class="box_partion" style="text-align:right">
+                <label class="label">@Model.HOusercode</label>
+            </div>
+        </div>
+        <div class="container">
+            <!-- First div -->
+            <div class="box_partion" style="flex: 1;">
+                <label class="label">@Model.userDesignation</label>
+            </div>
+
+            <!-- Second div -->
+            <div class="box_partion" style="text-align:right">
+                <label class="label">@Model.HOuserDesignation</label>
+            </div>
+        </div>
+        <div class="container">
+            <!-- First div -->
+            <div class="box_partion" style="flex: 1;">
+                <label class="label">@Model.UserDate</label>
+            </div>
+
+            <!-- Second div -->
+            <div class="box_partion" style="text-align:right">
+                <label class="label">@Model.HOUserDate</label>
+            </div>
+        </div>
+
+
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        saveMemo();
+    });
+
+    function saveMemo() {
+        var appId = '@Session["PL_application_id"]'; // Assuming this is available in your Razor view
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveMemoAsImage", "PL_Disbursement_Memo")', // Adjust to your action method
+            data: {
+                appId: appId
+            },
+            success: function(response) {
+                alert(response.message);
+                if (response.success) {
+                    // Optionally refresh the page or perform other actions
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("An error occurred: " + error);
+            }
+        });
+    }
+    </script>
+
+
+
+</body>
+
+
+
+</html>

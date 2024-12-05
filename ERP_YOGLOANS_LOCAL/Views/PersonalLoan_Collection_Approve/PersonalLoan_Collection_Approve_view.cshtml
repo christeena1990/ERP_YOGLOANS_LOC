@@ -1,0 +1,709 @@
+﻿
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Add Bank Details</title>
+
+
+
+    <style>
+
+        /* Styling for dropdown container */
+        .dropdown-container {
+            width: 200px;
+            position: relative;
+            text-align: center;
+        }
+
+        /* Remove default dropdown arrow */
+        #styledDropdown {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            color: #333;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            background-image: none; /* Remove default arrow */
+            background-position: right 10px center;
+            background-repeat: no-repeat;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+            /* Add a custom arrow */
+            #styledDropdown::after {
+                content: "\25BC"; /* Unicode for downward arrow */
+                position: absolute;
+                right: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                pointer-events: none;
+            }
+
+            /* Change color on hover */
+            #styledDropdown:hover {
+                border-color: #007bff;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            }
+
+            /* Change style when focused */
+            #styledDropdown:focus {
+                outline: none;
+                border-color: #007bff;
+            }
+
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+
+        $(document).ready(function () {
+           // alert("ready function");
+
+            // Properly assign the session value as a JavaScript string
+            var sessionCustomerBranchID = '@(Session["branch_id"] != null ? Session["branch_id"].ToString() : "0")';
+
+            //alert(sessionCustomerBranchID);
+
+            if (sessionCustomerBranchID != '0') {
+                //alert("branch " + sessionCustomerBranchID);
+                $("#dropdownMenuButton_branch").hide(); // Hide the div for non-head office
+            } else {
+               // alert("head office " + sessionCustomerBranchID);
+                $("#dropdownMenuButton_branch").show();
+
+                loadBranchDropdown();// Show the div for head office
+
+
+                  $(document).ready(function () {
+            // Call the GetBankList action via AJAX to fill the dropdown
+            $.ajax({
+                url: '@Url.Action("GetBankList", "PersonalLoan_Collection_Approve")', // Replace with your actual controller name
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var dropdown = $('#styledDropdown');
+                    dropdown.empty(); // Clear existing options
+                    dropdown.append('<option value="" disabled selected>Payment Mode</option>'); // Default option
+
+                    // Loop through the JSON data to add options to the dropdown
+                    $.each(data, function (i, item) {
+                        dropdown.append($('<option></option>').attr('value', item.Value).text(item.Text));
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error: ' + error);
+                }
+            });
+        });
+
+            }
+
+
+        });
+
+
+        $(document).ready(function () {
+
+    // Fetch the customer list when the page loads
+    $.ajax({
+        url: '@Url.Action("GetCustomerList", "PersonalLoan_Collection_Approve")', // Update with your controller/action name
+        type: 'GET',
+        success: function (data) {
+            $("#customerDropdown").show();
+            var dropdownMenu = $('#customerDropdown');
+            dropdownMenu.empty(); // Clear existing options
+
+            // Populate the dropdown with customers
+            $.each(data, function(index, customer) {
+                dropdownMenu.append('<button type="button" tabindex="0" class="dropdown-item customer-item" value="' + customer.Value + '">' + customer.Text + '</button>');
+            });
+
+            // Attach click event to each customer item
+            $('.customer-item').on('click', function() {
+                var customerId = $(this).val(); // Get the customer ID from the clicked item
+                var customerName = $(this).text(); // Get the customer name
+
+                // Update the dropdown button text with selected customer name
+                $('#dropdownMenuButton').text(customerName);
+                // Fetch customer details using the selected customer ID
+                $.ajax({
+                    url: '@Url.Action("GetCustomerDetails_grid_fill", "PersonalLoan_Collection_Approve")', // Update to your actual controller/action
+                    type: 'POST',
+                    data: { customerId: customerId },
+                    success: function (response) {
+                      //  alert(response.data);
+                        if (response.data == null || response.data == "")
+                        {
+                            //alert("null");
+
+                            $("#total_div").hide();
+                            $("#customerDropdown").hide();
+                        }
+                        else
+                        {
+                            //alert("table not null");
+
+                            $("#customerDropdown").hide();
+                            $("#total_div").show();
+
+                            document.getElementById('totalAmountTextbox').textContent = "";
+                            renderTable(response.data);
+                        }
+                    },
+                    error: function() {
+                        alert("Error fetching customer details.");
+                    }
+                });
+            });
+
+            // Automatically trigger a click on '--All Customers--' on page load
+            var defaultCustomer = dropdownMenu.find('button[value="-1"]'); // Find the option with value -1 for '--All Customers--'
+            if (defaultCustomer.length > 0) {
+                defaultCustomer.click(); // Trigger a click programmatically
+            }
+        },
+        error: function() {
+            alert("Error fetching customer data.");
+        }
+    });
+});
+
+
+        @*$(document).ready(function () {
+
+            $('#dropdownMenuButton').on('click', function () {
+
+        $.ajax({
+            url: '@Url.Action("GetCustomerList", "PersonalLoan_Collection_Approve")', // Update with your controller name
+            type: 'GET',
+            success: function (data) {
+                $("#customerDropdown").show();
+                var dropdownMenu = $('#customerDropdown');
+                dropdownMenu.empty(); // Clear existing options
+
+                $.each(data, function(index, customer) {
+                    dropdownMenu.append('<button type="button" tabindex="0" class="dropdown-item customer-item" value="' + customer.Value + '">' + customer.Text + '</button>');
+                });
+
+
+                $('.customer-item').on('click', function() {
+                    var customerId = $(this).val(); // Get the customer ID from the clicked item
+
+
+
+                    $.ajax({
+                        url: '@Url.Action("GetCustomerDetails_grid_fill", "PersonalLoan_Collection_Approve")', // Update to your actual controller/action
+                        type: 'POST',
+                        data: { customerId: customerId },
+                        success: function(response) {
+                            // Handle the response (e.g., display customer details)
+                           // alert("success");
+                            $("#customerDropdown").hide();
+                            $("#total_div").show();
+
+                            document.getElementById('totalAmountTextbox').textContent = "";
+
+
+                            renderTable(response.data);
+                        },
+                        error: function() {
+                            alert("Error fetching customer details.");
+                        }
+                    });
+                });
+            },
+            error: function() {
+                alert("Error fetching data.");
+            }
+        });
+    });
+});*@
+
+         $(document).ready(function () {
+        $('#dropdownMenuButton').on('click', function () {
+            $.ajax({
+                url: '@Url.Action("GetCustomerList", "PersonalLoan_Collection_Approve")',
+                type: 'GET',
+                success: function (data) {
+                    $("#customerDropdown").show();
+                    var dropdownMenu = $('#customerDropdown');
+                    dropdownMenu.empty(); // Clear existing options
+
+                    $.each(data, function(index, customer) {
+                        dropdownMenu.append('<button type="button" tabindex="0" class="dropdown-item customer-item" value="' + customer.Value + '">' + customer.Text + '</button>');
+                    });
+
+                    // Handle customer selection
+                    $('.customer-item').on('click', function() {
+                        var customerId = $(this).val(); // Get the customer ID
+                        var customerName = $(this).text(); // Get the customer name
+
+                        // Update the dropdown button text with selected customer name
+                        $('#dropdownMenuButton').text(customerName);
+
+                        $.ajax({
+                            url: '@Url.Action("GetCustomerDetails_grid_fill", "PersonalLoan_Collection_Approve")',
+                            type: 'POST',
+                            data: { customerId: customerId },
+                            success: function(response) {
+                                // Handle the response (e.g., display customer details)
+                                $("#customerDropdown").hide();
+                                $("#total_div").show();
+                                document.getElementById('totalAmountTextbox').textContent = "";
+                                renderTable(response.data);
+                            },
+                            error: function() {
+                                alert("Error fetching customer details.");
+                            }
+                        });
+                    });
+                },
+                error: function() {
+                    alert("Error fetching data.");
+                }
+            });
+        });
+         });
+
+
+        function renderTable(data) {
+            var tableBody = document.getElementById('customerTableBody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            if (data && data.length > 0) {
+                data.forEach(function (row, index) {
+                    var tr = document.createElement('tr');
+
+                    // Add a checkbox in the first column
+                    var leftColumn = document.createElement('td');
+                    var checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.value = row['customerId'];
+                    checkbox.className = 'row-checkbox';
+                    checkbox.addEventListener('change', updateTotalAmount); // Add event listener to each checkbox
+                    leftColumn.appendChild(checkbox);
+                    tr.appendChild(leftColumn);
+
+                    // Add the rest of the data to the row
+                    for (var key in row) {
+                        if (row.hasOwnProperty(key)) {
+                            var td = document.createElement('td');
+                            td.textContent = row[key];
+                            tr.appendChild(td);
+                        }
+                    }
+
+                    tableBody.appendChild(tr);
+                    $("#table_div").show();
+                });
+            } else {
+                var tr = document.createElement('tr');
+                var td = document.createElement('td');
+                td.colSpan = 6;
+                td.textContent = "No customer details found.";
+                td.style.textAlign = 'center';
+                tr.appendChild(td);
+                tableBody.appendChild(tr);
+            }
+        }
+
+
+
+      // Global variable to store selected serial numbers
+let selectedSerialNumbers = [];
+
+// Update total amount and collect serial numbers
+function updateTotalAmount() {
+    var checkboxes = document.querySelectorAll('.row-checkbox');
+    var total = 0;
+    selectedSerialNumbers = []; // Reset the array
+
+    checkboxes.forEach(function (checkbox) {
+        if (checkbox.checked) {
+            // Get the corresponding row (parent of checkbox)
+            var row = checkbox.parentElement.parentElement;
+            // Get the 5th column's text (adjust index for 0-based index)
+            var amount = parseFloat(row.children[4].textContent);
+            if (!isNaN(amount)) {
+                total += amount;
+            }
+
+            // Add serial number (1st column text) to the array
+            selectedSerialNumbers.push(row.children[1].textContent);
+        }
+    });
+
+    // Set the total amount in the span element
+    document.getElementById('totalAmountTextbox').textContent = total.toFixed(2);
+}
+
+        // Select/Deselect all checkboxes
+        document.getElementById('selectAllCheckbox').addEventListener('change', function () {
+            var checkboxes = document.querySelectorAll('.row-checkbox');
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = this.checked;
+                updateTotalAmount(); // Recalculate the total when selecting/deselecting all
+            }, this);
+        });
+
+        // Approve function with concatenated serial numbers
+        function approveFunction() {
+            var totalAmount = document.getElementById("totalAmountTextbox").innerText.trim();
+
+            if (totalAmount === "" || totalAmount === "0.00") {
+                alert("Please select any check box.");
+            } else {
+                var concatenatedSerialNumbers = selectedSerialNumbers.join('&');
+               // alert(concatenatedSerialNumbers);
+                $.ajax({
+                    type: "POST",
+                    url: '/PersonalLoan_Collection_Approve/approve_click', // Change to your actual controller
+                    data: { slnos: concatenatedSerialNumbers },
+                    success: function (response) {
+                        if (response.success) {
+                            // Access part1 and part2 from the response
+                           // var part1 = response.part1;
+                            var part2 = response.part2;
+
+                           // alert("Approved successfully!");
+                           // alert("Part 1: " + part1);
+                            // alert("Part 2: " + part2);
+                            if (part2 != null) {
+                                alert(part2);
+                                location.reload();
+                                var url = '/print_voucher_general/print_voucher_general_blank_view';
+                                window.open(url, '_blank');
+
+                            }
+                            else
+                            {
+
+                            }
+
+                            // You can now use part1 and part2 in your script as needed
+                        } else {
+                            alert("An error occurred.");
+                        }
+                    },
+                    error: function () {
+                        alert("An error occurred while sending data.");
+                    }
+                });
+            }
+        }
+        function rejectFunction() {
+            var totalAmount = document.getElementById("totalAmountTextbox").innerText.trim();
+
+            if (totalAmount === "" || totalAmount==="0.00" ) {
+                alert("Please select any check box.");
+            } else {
+                var concatenatedSerialNumbers = selectedSerialNumbers.join('&');
+                alert(concatenatedSerialNumbers);
+                $.ajax({
+                    type: "POST",
+                    url: '/PersonalLoan_Collection_Approve/Reject_click',
+                    data: { slnos: concatenatedSerialNumbers },
+                    success: function (response) {
+                        if (response.success) {
+                            alert("Reject successfully!");
+                            location.reload();
+                        } else {
+                            alert("An error occurred.");
+                        }
+                    },
+                    error: function () {
+                        alert("An error occurred while sending data.");
+                    }
+                });
+            }
+        }
+
+
+
+        @*function loadBranchDropdown() {
+            alert("branch drop");
+    $.ajax({
+        url: '@Url.Action("GetBranchList", "PersonalLoan_Collection_Approve")', // Replace with your actual controller name
+        type: 'GET',
+        success: function (data) {
+            var dropdown = $('#customerDropdown_branch');
+            dropdown.empty(); // Clear existing options
+
+            // Add the default option with value -1
+           // dropdown.append('<a class="dropdown-item" data-value="-1">--All Branches--</a>');
+
+            // Populate the dropdown with the data received from the server
+            $.each(data, function (index, item) {
+                dropdown.append('<a class="dropdown-item" data-value="' + item.Value + '">' + item.Text + '</a>');
+            });
+
+            // Set up event handling for dropdown item selection
+            $('#customerDropdown_branch a').on('click', function () {
+                var selectedText = $(this).text();
+                var selectedValue = $(this).data('value');
+                $('#dropdownMenuButton_branch').text(selectedText);
+
+
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error('Error fetching branch data: ' + error);
+        }
+    });
+}*@
+
+
+        @*function loadBranchDropdown() {
+    $.ajax({
+        url: '@Url.Action("GetBranchList", "PersonalLoan_Collection_Approve")', // Replace with your actual controller name
+        type: 'GET',
+        success: function (data) {
+            var dropdown = $('#customerDropdown_branch');
+            dropdown.empty(); // Clear existing options
+
+            // Add the first value from the data as default
+            if (data.length > 0) {
+                var firstItem = data[0]; // Get the first item from the list
+
+                // Set the dropdown button text to the first item's text
+                $('#dropdownMenuButton_branch').text(firstItem.Text);
+
+                // Set the default value as the first item's value
+                dropdown.append('<a class="dropdown-item" data-value="' + firstItem.Value + '">' + firstItem.Text + '</a>');
+            }
+
+            // Populate the dropdown with the rest of the data
+            $.each(data, function (index, item) {
+                if (index !== 0) { // Skip the first item since it's already set as default
+                    dropdown.append('<a class="dropdown-item" data-value="' + item.Value + '">' + item.Text + '</a>');
+                }
+            });
+
+            // Set up event handling for dropdown item selection
+            $('#customerDropdown_branch a').on('click', function () {
+                var selectedText = $(this).text();
+                var selectedValue = $(this).data('value');
+
+                // Update the dropdown button text with the selected item
+                $('#dropdownMenuButton_branch').text(selectedText);
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error('Error fetching branch data: ' + error);
+        }
+    });
+}*@
+
+      function loadBranchDropdown() {
+    $.ajax({
+        url: '@Url.Action("GetBranchList", "PersonalLoan_Collection_Approve")', // Replace with your actual controller name
+        type: 'GET',
+        success: function (data) {
+            var dropdown = $('#customerDropdown_branch');
+            dropdown.empty(); // Clear existing options
+
+            // Add the first value from the data as default
+            if (data.length > 0) {
+                var firstItem = data[0]; // Get the first item from the list
+
+                // Set the dropdown button text to the first item's text
+                $('#dropdownMenuButton_branch').text(firstItem.Text);
+
+                // Set the default value as the first item's value
+                dropdown.append('<a class="dropdown-item" data-value="' + firstItem.Value + '">' + firstItem.Text + '</a>');
+            }
+
+            // Populate the dropdown with the rest of the data
+            $.each(data, function (index, item) {
+                if (index !== 0) { // Skip the first item since it's already set as default
+                    dropdown.append('<a class="dropdown-item" data-value="' + item.Value + '">' + item.Text + '</a>');
+                }
+            });
+
+            // Set up event handling for dropdown item selection
+            $('#customerDropdown_branch a').on('click', function () {
+                var selectedText = $(this).text();
+                var selectedValue = $(this).data('value');
+
+                // Update the dropdown button text with the selected item
+                $('#dropdownMenuButton_branch').text(selectedText);
+
+                // Assuming you set the customer ID in the dropdown items, set it to hidden input
+                //$('#customerId').val(selectedValue); // Store the selected customer ID
+
+                // Call the GetCustomerDetails_grid_fill method
+                getCustomerDetails(selectedValue, $('#customerId').val()); // Pass the selected branch_id and customerId
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error('Error fetching branch data: ' + error);
+        }
+    });
+}
+
+// Function to call GetCustomerDetails_grid_fill
+function getCustomerDetails(branchId, customerId) {
+   // alert("branch drop click");
+   // alert(branchId);
+  //  alert(customerId);
+    $.ajax({
+        url: '@Url.Action("GetCustomerDetails_grid_fill", "PersonalLoan_Collection_Approve")', // Replace with your actual controller name
+        type: 'POST',
+        data: {
+            customerId: customerId,
+            branch_id: branchId
+        },
+        success: function (response) {
+            if (response.success) {
+                alert("success");
+                // Handle the data returned from the server
+                $("#customerDropdown_branch").hide();
+                console.log('Customer details:', response.data);
+
+                // Update your UI with the customer details here
+            } else {
+                console.error('Error fetching customer details');
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Error fetching customer details: ' + error);
+        }
+    });
+}
+
+
+  
+
+    </script>
+</head>
+<body>
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+
+                <h6 style="font-weight: bold; font-size: 25px; margin: 350px;color:maroon">Cash Collection</h6>
+            </div>
+        </div>
+        <div class="card-body">
+
+            @*<div class="dropdown d-inline-block">
+            <button type="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="mb-2 mr-2 dropdown-toggle btn btn-primary">
+                Search on Customer
+            </button>
+            <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu-rounded dropdown-menu-lg dropdown-menu" style="">
+
+
+                <button type="button" tabindex="0" class="dropdown-item">Menus</button>
+                <button type="button" tabindex="0" class="dropdown-item">Settings</button>
+                <button type="button" tabindex="0" class="dropdown-item">Actions</button>
+
+
+            </div>
+        </div>*@
+
+            <div class="dropdown d-inline-block">
+                <button type="button" style="width:260px;" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="mb-2 mr-2 dropdown-toggle btn btn-primary" id="dropdownMenuButton">
+                    Select Customer
+                </button>
+                <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu-rounded dropdown-menu-lg dropdown-menu" id="customerDropdown">
+                </div>
+                <input type="hidden" id="customerId" value="" /> <!-- Hidden input to store customer ID -->
+
+            </div>
+            @*<div class="dropdown d-inline-block" >
+            <button type="button" style="width:260px;" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="mb-2 mr-2 dropdown-toggle btn btn-primary" id="dropdownMenuButton_branch">
+
+            </button>
+            <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu-rounded dropdown-menu-lg dropdown-menu" id="customerDropdown_branch">
+            </div>
+        </div>*@
+            <div class="dropdown d-inline-block">
+                <button type="button" style="width:260px;" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown" class="mb-2 mr-2 dropdown-toggle btn btn-primary" id="dropdownMenuButton_branch">
+                  select branch
+                </button>
+                <div tabindex="-1" role="menu" aria-hidden="true" class="dropdown-menu-rounded dropdown-menu-lg dropdown-menu" id="customerDropdown_branch">
+                    <!-- Branch options will be loaded here -->
+                </div>
+            </div>
+
+
+            <div style="overflow-x: auto; max-height: 400px; display:none;" id="table_div">
+
+                <table id="cus_detailsDataGrid" class="table table-hover table-striped table-bordered" style="font-size:14px;">
+                    <thead style="background-color: #4D759A; color: white; ">
+                        <tr>
+                            <th></th>
+                            <th>SL NO</th>
+                            <th>LOAN NO</th>
+                            <th>NAME</th>
+                            <th>COLLECTION AMOUNT</th>
+                            <th>PAYMENT AMOUNT</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customerTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      
+
+        <div class="card-body" style="display:none;" id="total_div">
+            <div class="row">
+                <div class="col-lg-6 col-xl-4" style="height:50px;" >
+                    <div class="card mb-3 widget-content" style="height:50px;">
+                        <div class="widget-content-wrapper" style="height:50px;">
+                            <div class="widget-content-left">
+                                <div style="font-size:14px;" class="widget-heading">Total Amount</div>
+                            </div>
+                            <div class="widget-content-right">
+                                <div class="widget-numbers text-primary">
+                                    <span id="totalAmountTextbox" style="font-size:20px;"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+            
+                <div class="col-lg-4">
+                    <div class="dropdown-container">
+                        <select id="styledDropdown">
+                            <option value="0" disabled selected></option>
+                
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <button style="height:50px;" class="mb-2 mr-2 border-0 btn-transition btn btn-shadow btn-outline-success" onclick="approveFunction()">
+
+                        Approve
+                    </button>
+                    <button style="height:50px;" class="mb-2 mr-2 border-0 btn-transition btn btn-shadow btn-outline-danger" onclick="rejectFunction()">
+                        Reject
+                    </button>
+                    <button style="height:50px;" onclick="location.reload();" class="mb-2 mr-2 border-0 btn-transition btn btn-shadow btn-outline-secondary">
+                        Reset
+                    </button>
+                </div>
+         
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

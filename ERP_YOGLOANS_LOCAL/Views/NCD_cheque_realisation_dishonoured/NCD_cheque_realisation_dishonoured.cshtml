@@ -1,0 +1,417 @@
+﻿@using ERP_YOGLOANS_LOCAL.Models.NCD_Models
+@model ERP_YOGLOANS_LOCAL.Models.NCD_Models.NCD_Debenture_Scheme_Model
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        .search-container {
+            width: 100%;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .radio-label {
+            margin-left: 10px;
+            margin-right: 15px;
+        }
+
+        .dropdown-label {
+            margin-left: 20px;
+            margin-right: 10px;
+            font-weight: bold;
+            color: lightseagreen;
+        }
+
+        .styled-dropdown {
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            background-color: #fff;
+            cursor: pointer;
+            transition: border 0.3s;
+        }
+
+            .styled-dropdown:hover {
+                border-color: #80bdff;
+            }
+
+        .search-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-main__inner" style="margin-top: -30px; padding: 4px; width: 100%;">
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; text-align: center; font-size: 25px; margin: 0; color: maroon"> Check Realization and Dishonored</h6>
+            </div>
+        </div><br />
+        <form id="searchForm" method="get" action="@Url.Action("NCD_cheque_realisation_dishonoured", "NCD_cheque_realisation_dishonoured")">
+            <label for="searchDropdown" class="dropdown-label">HO Bank:</label>
+
+            <select id="searchDropdown" name="selectedBankId" class="styled-dropdown" onchange="updateSelectedBank()">
+                <option value="">Select a bank</option> <!-- Placeholder option -->
+                @foreach (var bank in Model.Banks)
+                {
+                    <option value="@bank.SubAccNo"
+                            @if (bank.SubAccNo == (ViewBag.SelectedBankId?.ToString() ?? "")) { @: selected
+                            }>
+                        @bank.SubName
+                    </option>
+                }
+    </select>
+
+    <script>
+        function updateSelectedBank() {
+            const dropdown = document.getElementById("searchDropdown");
+            const selectedValue = dropdown.value;
+            const table = document.getElementById("ncd_schemetbl1");
+
+            // Show the table only when a bank is selected
+            if (selectedValue) {
+                table.style.display = 'block';  // Show the table
+                document.getElementById('searchForm').submit();  // Submit the form to fetch data
+            } else {
+                table.style.display = 'none';  // Hide the table if no bank is selected
+            }
+        }
+
+        // Make sure the table is visible if data exists on page load
+        document.addEventListener("DOMContentLoaded", function() {
+            const table = document.getElementById("ncd_schemetbl1");
+            const selectedValue = document.getElementById("searchDropdown").value;
+
+            // Show the table only if a bank is selected and there is data
+            if (selectedValue && '@(ViewBag.ChequeRealizations != null ? "true" : "false")' === "true") {
+                table.style.display = 'block';  // Show the table
+            } else {
+                table.style.display = 'none';  // Hide the table
+            }
+        });
+    </script>
+    </form>
+
+    <br />
+
+    <div id="ncd_schemetbl1" style="overflow-y: auto; display:none; max-height: 250px; position: relative;">
+        @if (ViewBag.ChequeRealizations != null && ViewBag.ChequeRealizations.Count > 0)
+        {
+            <table id="modifiedDataGrid" class="table table-hover table-striped table-bordered" style="width: 850px; font-size: 11px; font-weight: 500;">
+                <thead>
+                    <tr>
+                        <th style="background-color: #4D759A; color: white;">#
+                            @*<input type="checkbox" id="selectAll" onchange="toggleAll(this)">*@
+                        </th>
+                        <th style="background-color: #4D759A; color: white; width: 20px;">Branch Name</th>
+                        <th style="background-color: #4D759A; color: white;">Application ID</th>
+                        <th style="background-color: #4D759A; color: white;">App Money No</th>
+                        <th style="background-color: #4D759A; color: white;">Customer Name</th>
+                        <th style="background-color: #4D759A; color: white;">Bank Name</th>
+                        <th style="background-color: #4D759A; color: white;">IFSC Code</th>
+                        <th style="background-color: #4D759A; color: white;">Deb Amount</th>
+                        <th style="background-color: #4D759A; color: white;">Track ID</th>
+                        <th style="background-color: #4D759A; color: white; width: 25px;">Cheque Number</th>
+                        <th style="background-color: #4D759A; color: white;">Amount</th>
+                        <th style="background-color: #4D759A; color: white;">Sub Name</th>
+                        <th style="background-color: #4D759A; color: white;">Cheque Date</th>
+                        <th style="background-color: #4D759A; color: white;">Clearing Date</th> <!-- New Column -->
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.ChequeRealizations)
+                    {
+                        <tr style="cursor: pointer;" data-track-id="@item["TrackId"]" data-application-id="@item["ApplicationId"]">
+                            <td>
+                                <input type="checkbox" class="rowCheckbox" />
+                            </td>
+                            <td>@item["BranchName"]</td>
+                            <td>@item["ApplicationId"]</td>
+                            <td>@item["AppMoneyNo"]</td>
+                            <td>@item["CustomerName"]</td>
+                            <td>@item["BankName"]</td>
+                            <td>@item["IFSCCode"]</td>
+                            <td>@item["DebAmount"]</td>
+                            <td>@item["TrackId"]</td>
+                            <td>@item["ChequeNumber"]</td>
+                            <td>@item["Amount"]</td>
+                            <td>@item["SubName"]</td>
+                            <td>@((DateTime)item["ChequeDate"])</td>
+                            <td>
+                                <input type="date" class="clearingDateInput" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div style="text-align: center; font-weight: bold;">No records found for cheque realizations. Please select a bank.</div>
+        }
+    </div><br />
+
+
+          <div id="buttonsDiv" style="display: none;  justify-content: center; align-items: center; height: 100vh; flex-direction: column;">
+
+
+              <div  style="text-align:center; margin-bottom: 20px;">
+                  <label style="color: red;">Choose:&nbsp;</label>
+                  <input type="radio" id="customerNameRadio" name="searchType" value="customerName" onchange="toggleButtons()">
+                  <label for="customerNameRadio" style="color: red;" class="radio-label">Check Realized</label>
+
+                  <input type="radio" id="customerIdRadio" name="searchType" value="customerId" onchange="toggleButtons()">
+                  <label for="customerIdRadio" style="color: red;" class="radio-label">Cheque Dishonored</label>
+              </div>
+
+              <!-- Buttons -->
+              <div style="display: flex; justify-content: center; gap: 10px;">
+                  <div id="realizedButton" style="display: none;">
+                      <button style="height: 35px; width: 150px;" class="mb-2 mr-2 btn-hover-shine btn btn-shadow btn-success" onclick="showApprove('Approve')">Cheque Realized</button>
+
+                      <button style="height: 35px; width: 150px;" class="mb-2 mr-2 btn-hover-shine btn btn-shadow btn-secondary" onclick="location.reload();">Cancel</button>
+                  </div>
+                  <div id="dishonoredButton" style="display: none;">
+                      <button style="height: 35px; width: 150px;" class="mb-2 mr-2 btn-hover-shine btn btn-shadow btn-success" onclick="showReject('Reject')">Cheque Dishonour</button>
+
+                      <button style="height: 35px; width: 150px;" class="mb-2 mr-2 btn-hover-shine btn btn-shadow btn-secondary" onclick="location.reload();">Cancel</button>
+                  </div>
+              </div>
+
+          </div>
+    <script>
+        // Function to toggle visibility of button divs based on radio selection
+        function toggleButtons() {
+            const realizedButton = document.getElementById('realizedButton');
+            const dishonoredButton = document.getElementById('dishonoredButton');
+
+            if (document.getElementById('customerNameRadio').checked) {
+                realizedButton.style.display = 'flex';
+                dishonoredButton.style.display = 'none';
+            } else if (document.getElementById('customerIdRadio').checked) {
+                realizedButton.style.display = 'none';
+                dishonoredButton.style.display = 'flex';
+            }
+        }
+
+        // Function to check if any checkboxes in the table are ticked and show the buttons div
+        function toggleButtonVisibility() {
+            const checkboxes = document.querySelectorAll('.rowCheckbox');
+            const buttonsDiv = document.getElementById('buttonsDiv');
+
+            // Check if any checkbox is checked
+            const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+
+            // Show or hide the buttons div based on checkbox selection
+            if (anyChecked) {
+                buttonsDiv.style.display = 'block';  // Show the div when checkboxes are checked
+            } else {
+                buttonsDiv.style.display = 'none';  // Hide the div if no checkboxes are selected
+            }
+        }
+
+        // Function to handle "Select All" checkbox
+        function toggleAll(selectAllCheckbox) {
+            const checkboxes = document.querySelectorAll('.rowCheckbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;  // Set the state of all checkboxes based on Select All checkbox
+            });
+
+            toggleButtonVisibility();  // Call the function to show/hide the buttons div based on checkboxes
+        }
+
+        // Event listener for individual checkboxes in the table
+        document.addEventListener("DOMContentLoaded", function () {
+            const checkboxes = document.querySelectorAll('.rowCheckbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', toggleButtonVisibility);
+            });
+
+            // Initialize button visibility based on the current checkbox state
+            toggleButtonVisibility();
+        });
+    </script>
+
+    <script>
+        function toggleAll(selectAllCheckbox) {
+            const checkboxes = document.querySelectorAll('.rowCheckbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAllCheckbox.checked;
+            });
+        }
+    </script>
+    </div>
+</body>
+</html>
+<!-- Include SweetAlert2 CSS and JS -->
+<link rel="stylesheet" href="~/Content/cust_apprvlmsgbox1.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script src="~/Scripts/jquery-3.6.4.min.js"></script>
+<script>
+    function showApprove(action) {
+        const checkedRows = [];
+        const checkboxes = document.querySelectorAll('.rowCheckbox');
+        let allDatesFilled = true; // Flag to check if all dates are filled
+        let atLeastOneChecked = false; // Flag to check if at least one checkbox is checked
+
+        checkboxes.forEach((checkbox) => {
+            if (checkbox.checked) {
+                atLeastOneChecked = true; // Set flag to true if any checkbox is checked
+                const row = checkbox.closest('tr');
+                const trackId = row.getAttribute('data-track-id');
+                const applicationId = row.getAttribute('data-application-id');
+                const clearingDate = row.querySelector('.clearingDateInput').value; // Get the entered clearing date
+
+                // Check if clearing date is filled
+                if (!clearingDate) {
+                    allDatesFilled = false; // Set flag to false if any date is empty
+                }
+
+                checkedRows.push({
+                    trackId: trackId,
+                    applicationId: applicationId,
+                    clearingDate: clearingDate // Include the clearing date in the object
+                });
+            }
+        });
+
+        if (!atLeastOneChecked) {
+            Swal.fire("Error", "Please select at least one row to approve.", "error");
+            return; // Stop further execution
+        }
+
+        if (!allDatesFilled) {
+            Swal.fire("Error", "Please fill in the clearing date for all selected rows.", "error");
+            return; // Stop further execution
+        }
+
+        // Send the selected IDs to the server
+        Swal.fire({
+            title: "Approve?",
+            showDenyButton: true,
+            confirmButtonText: "Yes",
+            denyButtonText: "No",
+            customClass: 'custom-approve-button',
+            preConfirm: () => {
+                return $.ajax({
+                    url: '/NCD_cheque_realisation_dishonoured/RealizeCheque',
+                    type: 'POST',
+                    contentType: 'application/json', // Ensure JSON format
+                    data: JSON.stringify({ approvals: checkedRows }) // Send the array of approvals as JSON
+                });
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const message = result.value.result; // Access the message
+
+                if (message.startsWith("0")) {
+                    Swal.fire({
+                        title: message,
+                        icon: "error"
+                    }).then(() => {
+                        window.location.href = '/NCD_cheque_realisation_dishonoured/NCD_cheque_realisation_dishonoured';
+                    });
+                } else {
+                    Swal.fire({
+                        title: message,
+                        icon: "success"
+                    }).then(() => {
+                        window.location.href = '/NCD_cheque_realisation_dishonoured/NCD_cheque_realisation_dishonoured';
+                    });
+                }
+            }
+        }).catch((error) => {
+            Swal.fire("Error", "Failed to submit approval. Please try again.", "error");
+        });
+    }
+
+    function showReject(action) {
+        const checkedRows = [];
+        const checkboxes = document.querySelectorAll('.rowCheckbox');
+        let allDatesFilled = true; // Flag to check if all dates are filled
+        let atLeastOneChecked = false; // Flag to check if at least one checkbox is checked
+
+        checkboxes.forEach((checkbox) => {
+            if (checkbox.checked) {
+                atLeastOneChecked = true; // Set flag to true if any checkbox is checked
+                const row = checkbox.closest('tr');
+                const trackId = row.getAttribute('data-track-id');
+                const applicationId = row.getAttribute('data-application-id');
+                const clearingDate = row.querySelector('.clearingDateInput').value; // Get the entered clearing date
+
+                // Check if clearing date is filled
+                if (!clearingDate) {
+                    allDatesFilled = false; // Set flag to false if any date is empty
+                }
+
+                checkedRows.push({
+                    trackId: trackId,
+                    applicationId: applicationId,
+                    clearingDate: clearingDate // Include the clearing date in the object
+                });
+            }
+        });
+
+        if (!atLeastOneChecked) {
+            Swal.fire("Error", "Please select at least one row to reject.", "error");
+            return; // Stop further execution
+        }
+
+        if (!allDatesFilled) {
+            Swal.fire("Error", "Please fill in the clearing date for all selected rows.", "error");
+            return; // Stop further execution
+        }
+
+        Swal.fire({
+            title: "Do you want to Reject?",
+            showDenyButton: true,
+            confirmButtonText: "Yes",
+            denyButtonText: "No",
+            customClass: 'custom-approve-button',
+            preConfirm: () => {
+                return $.ajax({
+                    url: '/NCD_cheque_realisation_dishonoured/DishorCheque',
+                    type: 'POST',
+                    contentType: 'application/json', // Ensure JSON format
+                    data: JSON.stringify({ approvals: checkedRows }) // Send the array of approvals as JSON
+                });
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const message = result.value.result; // Access the message
+
+                if (message.startsWith("0")) {
+                    Swal.fire({
+                        title: message,
+                        icon: "error"
+                    }).then(() => {
+                        window.location.href = '/NCD_cheque_realisation_dishonoured/NCD_cheque_realisation_dishonoured';
+                    });
+                } else {
+                    Swal.fire({
+                        title: message,
+                        icon: "success"
+                    }).then(() => {
+                        window.location.href = '/NCD_cheque_realisation_dishonoured/NCD_cheque_realisation_dishonoured';
+                    });
+                }
+            }
+        }).catch((error) => {
+            Swal.fire("Error", "Failed to submit rejection. Please try again.", "error");
+        });
+    }
+
+
+
+</script>

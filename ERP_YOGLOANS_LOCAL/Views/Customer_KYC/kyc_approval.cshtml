@@ -1,0 +1,1719 @@
+﻿@using System.Data
+@using System.Web.Mvc
+
+
+@model ERP_YOGLOANS_LOCAL.Models.tbl_customer_photo
+@{
+    var kyc_typeList = ViewData["kyc_typeList"] as DataTable;
+    var kyctypes = kyc_typeList.AsEnumerable().Select(row => new
+    {
+        kyc_type = row["kyc_type"],
+        kyc = row["kyc"]
+    });
+}
+
+<html>
+<head>
+    <style>
+
+
+        .button_style {
+            background-color: #007FFF;
+            height: 40px;
+            width: 100px;
+            border-radius: 8px;
+            color: white;
+            border-color: white
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: auto auto auto auto;
+            grid-gap: 1px;
+            background-color: #2196F3;
+            padding: 5px;
+            border: thin;
+        }
+
+            .grid-container > div {
+                background-color: rgba(255, 255, 255, 0.8);
+                border: 1px thin;
+                text-align: center;
+                font-size: 10px;
+            }
+
+
+        /* The Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 100px; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+        }
+
+        /* Modal Content (image) */
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+        }
+
+        /* Caption of Modal Image */
+        #caption {
+            margin: auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+            text-align: center;
+            color: #ccc;
+            padding: 10px 0;
+            height: 150px;
+        }
+
+        /* The Close Button */
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: #bbb;
+                text-decoration: none;
+                cursor: pointer;
+            }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js"></script>
+    <script>
+
+
+        $(document).ready(function () {
+            hidediv();
+
+            // Show/hide divs based on radio button click
+            $('input[type="radio"][name="photoRadio"]').on('click', function () {
+                var image_div = $('#photodiv_bro');
+                image_div.toggle(this.value === '2');
+
+                if (this.value === '1') {
+                    webdata();
+                } else {
+                    webbro();
+                }
+            });
+
+            // Bind click events for buttons
+            $('#button_div').on('click', function () {
+                showdiv();
+            });
+
+            // Webcam configuration and capture
+            Webcam.set({
+                width: 160,
+                height: 120,
+                image_format: 'jpeg',
+                jpeg_quality: 90
+            });
+
+            // Initialize Webcam in a hidden container
+            initializeWebcam();
+
+
+            $("#btn_camera_Capture").click(function () {
+                Webcam.snap(function (data_uri) {
+                    $("#imgCapture1").attr("src", data_uri).show();
+                    $("#imgCapture1")[0].src = data_uri;
+                    $("#btn_camera_Upload").show().removeAttr("disabled");
+                });
+            });
+
+
+        });
+
+
+        function initializeWebcam() {
+            var webcamContainer = $('#webcamContainer');
+
+            if (webcamContainer.is(':visible')) {
+                Webcam.attach('#webcamPreview');
+            } else {
+                Webcam.reset();
+            }
+        }
+
+
+
+        function hidediv() {
+            $('#photodiv_bro').hide();
+        }
+
+
+
+        function webdata() {
+            $("#photodiv_bro").hide();
+            $("#webcamContainer").show();
+
+            Webcam.reset();
+            initializeWebcam();
+            $("#webcamPreview").show();  // Show the live camera
+
+        }
+
+        function webbro() {
+            $("#webcamContainer").hide();
+            $("#photodiv_bro").show();
+
+            // Disable the Upload button when switching to browse image option
+            $("#uploadButton").attr("disabled", "disabled");
+
+
+            $("#up_img").hide();
+        }
+
+
+
+    @*web browser here script*@
+
+
+
+
+        $(function () {
+            Webcam.set({
+                width: 160,
+                height: 120,
+                image_format: 'jpeg',
+                jpeg_quality: 90
+            });
+            Webcam.attach('#webcam');
+
+
+
+            $("#btn_camera_Upload").click(function () {
+
+                var imageData = $("#imgCapture1").attr("src");
+                uploadImageData(imageData);
+                btn_camera_Upload.disabled = false;
+                $('#photodiv').show();
+                $("#webcamContainer").hide();
+
+            });
+
+
+
+
+        });
+
+        //function uploadFile_add() {
+        //    var fileInput = document.getElementById('fileInput');
+        //    var file = fileInput.files[0];
+        //    if (file) {
+        //        var formData = new FormData();
+        //        formData.append('file', file);
+
+        //        $.ajax({
+        //            url: '/Customer_KYC/UploadImage_add',
+        //            type: 'POST',
+        //            data: formData,
+        //            processData: false,
+        //            contentType: false,
+        //            success: function (response) {
+                       
+        //                // Display uploaded image
+        //                $('#photodiv').show();
+
+        //                alert(response.message);
+
+                 
+        //            },
+        //            error: function () {
+        //                alert('Error uploading file.');
+        //            }
+        //        });
+        //    } else {
+        //        alert('Please select a file.');
+        //    }
+        //}
+
+        /*webcam savecaptured here*/
+
+        function uploadImageData(imageData) {
+            $.ajax({
+                type: "POST",
+                url: "/Customer_KYC/SaveCapturedImage",
+                data: { imageData: imageData },
+                success: function (response) {
+                    $("#photoDisplay").attr("src", imageData); // Display uploaded image
+
+                    document.getElementById("photodiv").style.display = "block";
+                    alert("Customer Photo uploaded successfully!");
+                  window.location.href = '@Url.Action("kyc_approval", "Customer_KYC")';
+
+                },
+                error: function (error) {
+                    console.error("Error occurred while uploading image!");
+                }
+            });
+        }
+
+        $(document).ready(function () {
+           
+            // Initial setup on page load
+            toggleSpanVisibility();
+         
+
+            // Show/hide spans based on KYC type dropdown selection
+            $('#kyc_id').on('change', function () {
+               
+              //  $('#id_no').val('');
+                toggleSpanVisibility();
+            });
+
+            // Function to toggle span visibility
+            function toggleSpanVisibility() {
+                var documentTypeDropdown = document.getElementById("kyc_id");
+                var selectedValue = documentTypeDropdown.value;
+
+                $('#id_no').val('');
+                $('#from_date').val('');
+                $('#to_date').val('');
+
+
+                // Check if the selected value is 'adhar'
+                if (selectedValue === "9") {
+                    $('#attach').hide(); // Hide Attachment span
+                    $('#masked').show(); // Show Masked span
+                } else {
+                    $('#attach').show(); // Show Attachment span
+                    $('#masked').hide(); // Hide Masked span
+                }
+            }
+        });
+
+
+
+
+
+
+        $(document).ready(function () {
+            // Initial setup on page load
+            toggleAttachmentDivs();
+            setPanFieldsRequired();
+
+            // Show/hide divs based on KYC type dropdown selection
+            $('#kyc_id').on('change', function () {
+                toggleAttachmentDivs();
+                setPanFieldsRequired();
+            });
+
+            function toggleAttachmentDivs() {
+                var documentTypeDropdown = document.getElementById("kyc_id");
+                var aadharAttachmentDiv = document.getElementById("aadharAttachmentDiv");
+                var attachmentDiv = document.getElementById("attachment");
+                var idNoDiv = document.getElementById("idno_div");
+                var viewForm16Div = document.getElementById("view_form16_div");
+                var frm_to_dat = document.getElementById("from_to_date");
+                var pancardData = document.getElementById("pan_data_div")
+
+
+                switch (documentTypeDropdown.value) {
+
+                    case "1": // PAN
+                        aadharAttachmentDiv.style.display = "none";
+                        attachmentDiv.style.display = "block";
+                        viewForm16Div.style.display = "none";
+                        idNoDiv.style.display = "block";
+                        frm_to_dat.style.display = "none";
+                        pancardData.style.display = "block";
+
+                        setRequiredAttributes(true, false, true, false);
+                        break;
+
+                    case "9": // Aadhar
+                        aadharAttachmentDiv.style.display = "block";
+                        attachmentDiv.style.display = "block";
+                        viewForm16Div.style.display = "none";
+                        idNoDiv.style.display = "block";
+                        frm_to_dat.style.display = "none";
+                        pancardData.style.display = "none";
+                        setRequiredAttributes(true, false, true, false);
+                        break;
+                    case "16": // Form 16
+                        aadharAttachmentDiv.style.display = "none";
+                        attachmentDiv.style.display = "block";
+                        idNoDiv.style.display = "none";
+                        frm_to_dat.style.display = "none";
+                        viewForm16Div.style.display = "block";
+                        pancardData.style.display = "none";
+                        setRequiredAttributes(false, false, false, false);
+                        break;
+                    case "2": // passport
+                        idNoDiv.style.display = "block";
+                        frm_to_dat.style.display = "block";
+                        viewForm16Div.style.display = "none";
+                        aadharAttachmentDiv.style.display = "none";
+                        attachmentDiv.style.display = "block";
+                        pancardData.style.display = "none";
+                        setRequiredAttributes(true, false, false, true);
+                        break;
+                    case "3": // driving licence
+                        idNoDiv.style.display = "block";
+                        frm_to_dat.style.display = "block";
+                        attachmentDiv.style.display = "block";
+                        aadharAttachmentDiv.style.display = "none";
+                        viewForm16Div.style.display = "none";
+                        pancardData.style.display = "none";
+                        setRequiredAttributes(true, false, true, true);
+                        break;
+
+                    default: // Other
+                        aadharAttachmentDiv.style.display = "none";
+                        attachmentDiv.style.display = "block";
+                        idNoDiv.style.display = "block";
+                        frm_to_dat.style.display = "none";
+                        viewForm16Div.style.display = "none";
+                        pancardData.style.display = "none";
+                        setRequiredAttributes(true, false, true, false);
+                        break;
+                }
+            }
+
+            function setRequiredAttributes(idNo, aadharAttachment, attachment, dateFields) {
+                document.getElementById('id_no').required = idNo;
+                document.getElementById('image1').required = aadharAttachment;
+                document.getElementById('image').required = attachment;
+                document.getElementById('from_date').required = dateFields;
+                document.getElementById('to_date').required = dateFields;
+            }
+
+            document.getElementById('kyc_form').addEventListener('submit', function (event) {
+                // Add any additional validation or processing here
+                console.log('Form submitted');
+            });
+        });
+
+
+        function setPanFieldsRequired() {
+            var kycId = document.getElementById("kyc_id").value;
+            var panNameField = document.getElementById("pan_customer_name");
+            var panDobField = document.getElementById("pan_dob");
+
+            if (kycId == "1") { // PAN
+                panNameField.required = true;
+                panDobField.required = true;
+            } else {
+                panNameField.required = false;
+                panDobField.required = false;
+            }
+        }
+
+
+
+
+        function validateAddressProofNo() {
+            var selectedValue = document.getElementById("kyc_id").value;
+            var addressProofNo = document.getElementById("id_no").value;
+            var regex;
+
+            if (!selectedValue || !addressProofNo) {
+                alert("Please select a KYC Type and enter the corresponding ID number.");
+                return;
+            }
+
+            switch (selectedValue) {
+                case "9": // Aadhar
+                   // regex = /^\d{12}$/;
+                    regex = /^(?!0000)[0-9]{4}[0-9]{4}[0-9]{4}$/;
+                    if (!regex.test(addressProofNo)) {
+                        alert("Invalid Aadhar No! Please enter a valid 12-digit number.");
+                        clearAndFocus("id_no");
+                    }
+                    break;
+                case "2": // Passport
+                    regex = /([a-zA-Z]{1})([0-9]{7})$/;
+                    if (!regex.test(addressProofNo)) {
+                        alert("Invalid Passport No! Please enter a valid combination.");
+                        clearAndFocus("id_no");
+                    }
+                    break;
+                case "4": // Indian Voters ID
+                    // regex = /([a-zA-Z]{3})([0-9]{7})$/;
+                    //eg IDs :TY1236547,ERT1452369,FG12365214587
+
+                    regex = /^(?:[A-Z]{2}(?:[0-9]{8}|[0-9]{11,12})|[A-Z]{3}[0-9]{7})$/;
+                    //regex = /^(?:[A-Z]{2}(?:[0-9]{8}|[0-9]{11})|[A-Z]{3}[0-9]{7})$/;
+                    if (!regex.test(addressProofNo)) {
+                        alert("Invalid Voters ID No! Please enter a valid combination.");
+                        clearAndFocus("id_no");
+                    }
+                    break;
+
+                case "1": // PAN
+                    regex = /^[a-zA-Z]{3}P[a-zA-Z][0-9]{4}[a-zA-Z]$/;
+                    if (!regex.test(addressProofNo)) {
+                        alert("Invalid PAN No! Please enter a valid PAN number.");
+                        clearAndFocus("id_no");
+                    }
+                    break;
+
+                case "16": // Form60
+                    // Add validation for Form60 if needed
+                    break;
+                case "5": // Driving License
+                    regex = /^[a-zA-Z0-9]{1,20}$/;
+                    if (!regex.test(addressProofNo)) {
+                        alert("Invalid Driving License No! Please enter a valid combination.");
+                        clearAndFocus("id_no");
+                    }
+                    break;
+                case "10": // Ration Card
+                    regex = /^[a-zA-Z0-9]{1,20}$/;
+                    if (!regex.test(addressProofNo)) {
+                        alert("Invalid Ration Card No! Please enter a valid combination.");
+                        clearAndFocus("id_no");
+                    }
+                    break;
+
+
+                default:
+                    return;
+            }
+        }
+
+        // Function to clear the input value and set focus
+        function clearAndFocus(elementId) {
+            document.getElementById(elementId).value = '';
+            document.getElementById(elementId).focus();
+        }
+
+
+
+
+        function opendeclarationInNewTab() {
+            // Add logic for opening Form60 in a new tab if needed
+            alert("Opening declaration in a new tab.");
+        }
+
+
+        //function validateAddressProofNo() {
+        //    ALERT("111");
+        //    var selectedValue = document.getElementById("kyc_id").value;
+        //    var addressProofNo = document.getElementById("id_no").value;
+        //    var regex;
+
+        //    if (!selectedValue || !addressProofNo) {
+        //        alert("Please select an Address Proof type and enter the corresponding number.");
+        //        return;
+        //    }
+
+        //    switch (selectedValue) {
+        //        case "9":
+        //            // regex = /^\d{12}$/; // Aadhar validation
+
+
+        //            regex = /^(?!0000)[0-9]{4}[0-9]{4}[0-9]{4}$/;
+
+        //            break;
+        //        case "1":
+        //            regex = /^[A-Z]{3}P[A-Z][0-9]{4}[A-Z]$/; // PAN card validation
+        //            break;
+        //        case "4":
+
+
+        //            //eg IDs :TY1236547,ERT1452369,FG12365214587
+
+        //            regex = /^(?:[A-Z]{2}(?:[0-9]{7}|[0-9]{11})|[A-Z]{3}[0-9]{7})$/;
+
+
+        //            break;
+        //        default:
+        //            return;
+        //    }
+
+        //    // Perform validation
+        //    if (!regex.test(addressProofNo)) {
+        //        //var message = (selectedValue === "9") ? "Invalid Aadhar Card No! Please enter a valid number." :
+        //        //    "Invalid PAN Card No! Please enter a valid number.";
+        //        var message;
+        //        if (selectedValue === "9")
+        //            message = "Invalid Aadhar Card No! Please enter a valid number.";
+
+        //        else if (selectedValue === "1")
+        //            message = "Invalid PAN Card No! Please enter a valid number.";
+
+        //        else if (selectedValue === "4")
+        //            message = "Invalid Voter's ID! Please enter a valid number.";
+
+        //        else
+
+        //            return;
+
+        //        alert(message);
+        //        document.getElementById("id_no").value = '';
+        //        document.getElementById("id_no").focus();
+        //    }
+        //}
+
+
+        function openForm60InNewTab(event) {
+           event.preventDefault();
+            var url = '@Url.Action("form_60", "Customer_Declaration")';
+            window.open(url, '_blank');
+        }
+
+    function opendeclarationInNewTab_create() {
+        @*var url = '@Url.Action("Declaration", "Customer_Declaration")';*@
+
+           var url = '@Url.Action("Declaration", "NewDeclaration")';
+        window.open(url, '_blank');
+    }
+
+
+
+        $(document).ready(function () {
+            $("#sendApprovalForm").submit(function (e) {
+                e.preventDefault(); // Prevent form from submitting
+
+                // AJAX call to the controller action
+                $.ajax({
+                    type: "POST",
+                    url: "/Customer_KYC/Send_Apprv", // Replace ControllerName with your actual controller name
+                    dataType: "json",
+                    success: function (response) {
+                        // Display alert with the message from the JSON response
+                        alert(response.message);
+                        // Check the message content and redirect accordingly
+                        if (response.message.startsWith("Successfully Send for Approval"))
+                        {
+                            window.location.href = "/Yog/Yog_customer_Index";
+                        }
+                        else
+                        {
+                           //window.location.href = "/Customer_KYC/kyc_approval"; // Redirect to error page if needed
+                           // alert("Not sent for approval: " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle errors, if any
+                        alert("An error occurred: " + error);
+                    }
+                });
+            });
+        });
+
+
+
+         // Display the alert message when the page loads
+         $(document).ready(function () {
+             var alertMessage = "@ViewBag.AlertMessage";
+             if (alertMessage) {
+                 alert(alertMessage);
+                 // Wait for the user to close the alert, then redirect to the KYC approval page
+                 $(window).on('beforeunload', function () {
+                     window.location.href = '@Url.Action("kyc_approval", "Customer_KYC")';
+                 });
+             }
+         });
+
+
+
+        function toggleFileInputVisibility() {
+
+            // AJAX call to fetch the message
+            $.ajax({
+                url: '@Url.Action("Declaration_check", "Customer_KYC")', // Replace 'ControllerName' with the actual name of your controller
+                type: 'POST',
+                success: function (response) {
+
+                    if (response.success) {
+                        var message = response.message;
+
+                        if (message === "Send for approval.!") {
+
+                            // Toggle visibility of file input container and upload button container
+                            var fileInputContainer = document.getElementById('fileInputContainer');
+                            var uploadButtonContainer = document.getElementById('uploadButtonContainer');
+
+                            if (fileInputContainer.style.display === 'none') {
+                                fileInputContainer.style.display = 'block';
+                                uploadButtonContainer.style.display = 'block'; // Show the upload button when the file input is visible
+                            } else {
+                                fileInputContainer.style.display = 'none';
+                                uploadButtonContainer.style.display = 'none'; // Hide the upload button when the file input is hidden
+                            }
+
+                            opendeclarationInNewTab_create();
+
+                        }
+                        else
+                        {
+
+                            alert(message);
+                            //if (message === "Please upload form60!")
+                            //{
+                            //    $('#view_form16_div_new').css('display', 'block');
+                            //    $('#viewDeclarationButton').css('display', 'none');
+
+                            //}
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("error");
+                    console.error(error);
+                    alert(response);
+
+                }
+            });
+
+        }
+
+
+
+
+
+        function form_60_check() {
+
+            // AJAX call to fetch the message
+            $.ajax({
+                url: '@Url.Action("form_60_check", "Customer_KYC")', // Replace 'ControllerName' with the actual name of your controller
+                type: 'POST',
+                success: function (response) {
+
+                    if (response.success) {
+                        var message = response.message;
+
+                        if (message === "Already PAN attached. No need of taking Form60.") {
+
+                            alert(message);
+                            $('#viewDeclarationButton_div').css('display', 'block');
+                           // $('#view_form16_div_new').css('display', 'none');
+                           // window.location.reload();
+                           //  window.location.href = '@Url.Action("kyc_approval", "Customer_KYC")';
+                        }
+                        else
+                        {
+
+                            openForm60InNewTab(event);
+                            $('#fileInputContainer_new').css('display', 'block');
+                            $('#uploadButtonContainer_new').css('display', 'block');
+                            $('#viewDeclarationButton_div').css('display', 'block');
+
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert("error");
+                    console.error(error);
+                    alert(response);
+
+                }
+            });
+
+        }
+
+
+
+        $(document).ready(function () {
+            $('#save1').click(function () {
+                var fileInput = $('#image3')[0].files[0];
+
+                if (fileInput && fileInput.size > 1 * 1024 * 1024) { // Check if the first file exceeds 3 MB
+                    alert("The file size exceeds 1 MB limit.");
+                    return false; // Prevent form submission
+                }
+                if (fileInput) {
+                    if (fileInput.type === "application/pdf") {
+                        // File is a PDF
+                        $('#uploadForm').submit(); // Submit the form when the button is clicked
+
+                    }
+
+                } else {
+                    // No file selected, handle accordingly
+                    alert("Please select a file to upload.");
+                    return false;
+                }
+            });
+        });
+
+        //$(document).ready(function () {
+        //    $('#save2').click(function () {
+        //        var fileInput = $('#image4')[0].files[0];
+        //        if (fileInput) {
+        //            if (fileInput.type === "application/pdf") {
+        //                // File is a PDF
+        //                $('#uploadForm_form60').submit(); // Submit the form when the button is clicked
+
+
+
+        //            }
+
+        //        } else {
+        //            // No file selected, handle accordingly
+        //            alert("Please select a file to upload.");
+        //            return false;
+        //        }
+        //        $('#viewDeclarationButton').css('display', 'block');
+        //    });
+        //});
+
+
+
+        $(document).ready(function () {
+
+
+
+            $('#save2').click(function () {
+                var fileInput = $('#image4')[0].files[0];
+
+                if (fileInput && fileInput.size > 1 * 1024 * 1024) { // Check if the first file exceeds 3 MB
+                    alert("The file size exceeds 1 MB limit.");
+                    return false; // Prevent form submission
+                }
+
+
+                if (fileInput) {
+                    if (fileInput.type === "application/pdf" || fileInput.type.startsWith("image/")) {
+                        // File is a PDF or image, perform AJAX submit
+                        var formData = new FormData($('#uploadForm_form60')[0]);
+
+                        $.ajax({
+                            url: '@Url.Action("form60_upload", "Customer_KYC")',
+                            type: 'POST',
+                            data: formData,
+                            contentType: false,
+                            processData: false,
+                            success: function (response) {
+                                if (response.success) {
+                                    alert(response.message);
+                                    // Redirect to the provided URL
+                                    window.location.href = response.redirectTo;
+
+
+
+                                } else {
+                                    alert(response.message);
+                                }
+                            },
+                            error: function (xhr, status, error) {
+                                alert("An error occurred: " + error);
+                            }
+                        });
+                    } else {
+                        alert("Please upload a PDF or image file.");
+                    }
+                } else {
+                    // No file selected, handle accordingly
+                    alert("Please select a file to upload.");
+                }
+            });
+        });
+
+
+
+
+    function redirectToRegistration() {
+        window.location.href = '@Url.Action("Cust_Registration", "Customer_Registration")';
+    }
+
+        $(document).ready(function () {
+            checkLocalStorageItem();
+        var alertMessage = "@ViewBag.AlertMessage";
+        if (alertMessage) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Alert',
+                text: alertMessage,
+                confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect to any desired page after the alert is closed
+                    window.location.href = '/Customer_KYC/  kyc_approval()';
+
+                }
+            });
+        }
+    });
+
+
+
+    </script>
+
+    <script>
+        function validateForm(event) {
+
+            var attachmentInput = document.getElementById('image');
+            var attachmentInput1 = document.getElementById('image1');
+            var dropdown = document.getElementById("kyc_id");
+            var selectedValue = dropdown.value;
+            var id_no = document.getElementById("id_no").value;
+            //var pan_name = document.getElementById("pan_customer_name").value;
+            //var pan_dob = document.getElementById("pan_customer_name").value;
+
+            if (selectedValue == -1) {
+                alert("Please Select Kyc Type");
+                document.getElementById("kyc_id").focus();
+                return false;
+
+            }
+
+
+
+            if (id_no == "") {
+
+                if (selectedValue != 16) {
+
+                    alert("Please fill the ID No.");
+                    document.getElementById("id_no").focus();
+                    event.preventDefault();
+                   // return false;
+
+
+                }
+
+
+            }
+
+            if (attachmentInput.files.length == 0) {
+                alert("Please Upload Attachment");
+                return false;
+            }
+
+
+            if (selectedValue == 9) {
+
+                if (attachmentInput.files.length == 0) {
+                    alert("Please Upload Both Attachments");
+                    return false;
+                }
+                if (attachmentInput1.files.length == 0) {
+                    alert("Please Upload Both Attachments");
+                    return false;
+                }
+            }
+
+
+           
+
+
+
+            return true;
+
+        }
+
+
+
+        $(document).ready(function () {
+            $('#kyc_form').submit(function (e) {
+               // alert("Form submission ");
+        e.preventDefault(); // Prevent default form submission
+
+
+             
+                //var image = document.getElementById('image').files[0]; // Assuming 'image' is the ID of the file input for the first file
+                //var image1 = document.getElementById('image1').files[0]; // Assuming 'image1' is the ID of the file input for the second file
+
+                //if (image && image.size > 1 * 1024 * 1024) { // Check if the first file exceeds 3 MB
+                //    alert("The file size exceeds 1 MB limit.");
+                //    return false; // Prevent form submission
+                //}
+
+                //if (image1 && image1.size > 1 * 1024 * 1024) { // Check if the second file exceeds 3 MB
+                //    alert("The file size exceeds 1 MB limit.");
+                //    return false; // Prevent form submission
+                //}
+
+        // Submit the form using AJAX
+        if (validateForm() === true) {
+          // alert("Form validation passed. kyc");
+            $.ajax({
+                url: "@Url.Action("document_upload", "Customer_KYC")",
+                type: $(this).attr('method'),
+                data: new FormData(this),
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    //alert("AJAX call successful.");
+                    if (response.message !== 'KYC Saved') {
+                        alert(response.message);
+                        // Prevent form submission
+                        e.preventDefault();
+                        window.location.reload();
+                    } else {
+                        alert("KYC Saved");
+                        window.location.href = response.redirectTo;
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log("AJAX call error:", error);
+                    // Handle error response
+                }
+            });
+        } else {
+            console.log("Form validation failed. AJAX call not made.");
+        }
+    });
+});
+
+
+        function validate_id_no(input) {
+            //alert("id_no_uppercase_validation");
+            // Convert any lowercase letters to uppercase
+            input.value = input.value.toUpperCase();
+
+            // Remove any characters that are not numbers or uppercase letters
+            input.value = input.value.replace(/[^0-9A-Z]/g, '');
+        }
+
+
+
+    </script>
+
+
+
+
+
+
+</head>
+
+
+<body>
+    @*<div class="main-panel">
+        <div class="content">
+            <div class="page-inner">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card" style="background-color:#fcfcfc">*@
+
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <br/>
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Photo and KYC Upload </h6>
+            </div>
+        </div>
+
+        <div class="card-body">
+           
+            <div class="row">
+                <div class="col-md-6 col-lg-4">
+
+                    <p style="color: darkblue; font-weight: 500;  font-size: 18px;">Customer Image &nbsp;</p>
+                </div>
+            </div>
+
+            @*<br />*@
+
+            <div class="row" style="width:100%;">
+                <div class="col-md-6 col-lg-4">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span style="width:140px;background-color:#eff9ff;" class="input-group-text" id="basic-addon1">Customer ID</span>
+                        </div>
+                        <input type="text" id="cid" name="cid" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" value="@Session["TempCID"]" readonly>
+                    </div>
+
+                </div>
+
+
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span style="width:140px;" class="input-group-text" id="basic-addon1">Customer Name</span>
+                        </div>
+
+                        <textarea class="form-control" readonly id="customer_name" name="customer_name" placeholder="" aria-label="" aria-describedby="basic-addon1" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" maxlength="50" style="width: 100px; height: 38px; resize: none; overflow-y: auto;">@Session["CustomerName"]
+
+                        </textarea>
+
+                    </div>
+                </div>
+
+
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6 col-lg-4" style="text-align: right;">
+
+                    <div class="input-group mb-3">
+                        <div id="div_gur" style="vertical-align:central; padding-top:10px; display: inline-block; text-align: left;">
+
+                            <label class="form-radio-label2">
+                                <input class="form-radio-input" style="font-size: 12px;" type="radio" id="radio_web" name="photoRadio" onclick="webdata()" value="1">
+                                <span style="font-size:15px;" class="form-radio-sign">Webcam </span>
+                            </label>
+                            <label class="form-radio-label2 ml-3">
+                                <input class="form-radio-input" style="font-size: 12px;" type="radio" id="radio_bro" onclick="webbro()" name="photoRadio" value="2">
+                                <span style="font-size:15px;" class="form-radio-sign">Browse Image</span>
+                            </label>
+                        </div>
+                    </div>
+                    @*--------------------------PARTIAL VIEW FOR PHOTO -------------------------*@
+
+                    <div id="photodiv_bro" style="width:100%; text-align: left;">
+                        @Html.Partial("KYC_partial")
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" style="text-align: right;">
+                    <div id="webcamContainer" style="display:none; text-align: left;">
+                        <table>
+                            <tr>
+                                <td style="font-size: 15px;"><u>Live Image</u></td>
+                                <td style="font-size: 15px;"><u>Captured Image</u></td>
+                            </tr>
+
+
+                            <tr>
+                                <td>
+                                    <div id="webcamPreview"></div>
+                                </td>
+                                <td>
+                                    <div id="capturedImage"><img id="imgCapture1" /></div>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>
+                                    <input type="button" id="btn_camera_Capture" value="Capture" style="font-size: 15px;" />
+                                </td>
+                                <td>
+                                    <input type="button" id="btn_camera_Upload" value="Upload" style="font-size: 15px;" />
+
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+
+                <div class="col-md-6 col-lg-4" style="width:100%; text-align: right;">
+                    <div id="photodiv" style="width:160px;height:150px;border:solid;border-color:black;">
+                        <!-- Display the image using the passed Base64 string -->
+
+                        <img id="photoDisplay" src="@((ViewBag.PhotoData != null) ? "data:image/png;base64," + ViewBag.PhotoData : "")" style="width: 100%; height: 100%;" />
+
+                    </div>
+                </div>
+
+
+
+            </div>
+            @*'''''''''''''''''''''''''''''''''''''''''''''''''*@
+            <div id="kyc_div">
+                <hr />
+                
+
+                <div class="row">
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <p style="color: darkblue; font-weight: 500;font-size: 18px;">Customer KYC &nbsp;&nbsp; &nbsp;</p>
+
+                    </div>
+                </div>
+                @*<br />*@
+
+                @*-------------------------------FORM FOR KYC UPLOAD--------------------------------------------------*@
+
+            <form action="@Url.Action("document_upload", "Customer_KYC")" method="post" id="kyc_form" enctype="multipart/form-data" @*onsubmit="return validateForm()"*@>
+
+
+                <div class="row">
+                    <div class="row" style="width:100%;">
+                        <div class="col-md-6 col-lg-4">
+
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width: 140px; background-color: #eff9ff;" class="input-group-text" id="basic-addon1">KYC Type<span style="color:red;"> * </span></span>
+
+                                </div>
+
+                                <div class="input-group-prepend">
+                                    <select class="form-control" name="kyc_id" id="kyc_id">
+                                        @foreach (var guardian in kyctypes)
+                                        {
+                                            <option value="@guardian.kyc_type">@guardian.kyc</option>
+                                        }
+                                    </select>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-6 col-lg-4" id="idno_div">
+                            <div class="input-group mb-3">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width: 140px; background-color: #eff9ff;" class="input-group-text" id="basic-addon1">ID No<span style="color:red">*</span></span>
+                                    </div>
+                                    <input type="text" id="id_no" name="id_no" onchange="validateAddressProofNo()" @*onkeyup="this.value=this.value.replace(/[^0-9A-Z]/g, '')"*@ onkeyup="validate_id_no(this)" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4" id="view_form16_div">
+                            <div class="input-group mb-3">
+                                <div class="input-group mb-3">
+
+                                    <button type="button" onclick="form_60_check()" class="button_style" style="width: 155px;font-size: 15px;display:none">View Form60</button>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+
+
+
+                    <div class="row" id="aadharAttachmentDiv" style="width:100%">
+
+
+
+                        <div class="col-md-6 col-lg-6">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width: 140px; background-color: #eff9ff;" class="input-group-text" id="basic-addon1">Unmasked<span style="color:red">*</span></span>
+                                    &nbsp; &nbsp; &nbsp;
+                                    <div>
+                                        <input type="file" id="image1" name="image1" style="font-size: 15px;" />
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="width:100%" id="attachment">
+                        <div class="col-md-6 col-lg-6">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+
+                                    <span style="width: 140px; background-color: #eff9ff;" class="input-group-text" id="attach" data-kyc-type="default">Attachment<span style="color:red">*</span></span>
+                                    <span style="width: 140px; background-color: #eff9ff; display: none;" class="input-group-text" id="masked" data-kyc-type="adhar">Masked<span style="color:red">*</span></span>
+                                    &nbsp; &nbsp; &nbsp;
+                                    <div>
+                                        <input type="file" id="image" name="image" accept="image/*, application/pdf" @*multiple*@ style="font-size: 15px;" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+                <div class="row" id="from_to_date">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">From Date<span style="color:red">*</span></span>
+                            </div>
+
+                            <input type="date" name="from_date" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" id="from_date" required onchange="validateFrom_dt(this.value)"
+                                   value="@Model.from_date" />
+                            <span id="from-error" style="color: red; font-size:small;"></span>
+
+
+                            <script>
+                                function validateFrom_dt(enteredDate) {
+
+                                var errorSpan = document.getElementById('from-error');
+                                errorSpan.textContent = '';  // Clear previous error message
+
+                            var fromDate = new Date(enteredDate);
+
+                            var dateReportedCertified = new Date(); // Set to today's date
+
+                           // alert('@Model.dob_validation');
+                           var dobValidation = '@Model.dob_validation';
+
+
+                            var dobParts = dobValidation.split('-');
+                            var dobYear = dobParts[2];
+                            var dobMonth = dobParts[1];
+                            var dobDay = dobParts[0];
+
+                            // Rearrange the parts to match the "YYYY-MM-DD" format
+                            var dateOfBirthISO = dobYear + '-' + dobMonth + '-' + dobDay;
+                            //alert(dateOfBirthISO);
+
+
+                            var dateOfBirth = new Date(dateOfBirthISO);
+
+
+
+
+                                    // Convert dates to UTC to remove time zone discrepancies
+                                    var todayUTC = new Date(Date.now()).setUTCHours(0, 0, 0, 0);
+                                    var fromDateUTC = new Date(enteredDate).setUTCHours(0, 0, 0, 0);
+
+                                    // Comparison logic
+                                    if (fromDateUTC > todayUTC) {
+                                        errorSpan.textContent = 'Must be on or earlier than today\'s date.';
+                                        var textBox = document.getElementById('from_date');
+                                        textBox.value = '';
+                                        return false;
+                                    }
+
+                                    if (fromDateUTC === todayUTC) {
+                                        //alert("today");
+                                        errorSpan.textContent = 'Must be earlier than today\'s date.';
+                                        var textBox = document.getElementById('from_date');
+                                        textBox.value = '';
+                                        return false;
+                                    }
+
+                                    if (fromDateUTC <= dateOfBirth) {
+                                        errorSpan.textContent = 'Must be later than the date of birth.';
+                                        var textBox = document.getElementById('from_date');
+                                        textBox.value = '';
+                                        return false;
+                                    }
+
+
+
+                                // Reset custom validity
+                                errorSpan.textContent = '';
+                                return true;
+                            }
+                            </script>
+
+
+
+
+
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">To Date<span style="color:red">*</span></span>
+                            </div>
+
+                            <input type="date" name="to_date" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" id="to_date" required oninput="validatetodate(this.value)"
+                                   @*@Model.to_date*@ />
+                            <span id="to-error" style="color: red; font-size:small;"></span>
+
+
+
+
+                            <script>
+                                function validatetodate(enteredDate) {
+                                    var errorSpan = document.getElementById('to-error');
+                                    errorSpan.textContent = '';  // Clear previous error message
+
+                                    var toDate = new Date(enteredDate);
+                                    var dateReportedCertified = new Date(); // Set to today's date
+
+                                    // Assuming dobValidation format is "DD-MM-YYYY"
+                                    var dobValidation = '@Model.dob_validation';
+                                    var dobParts = dobValidation.split('-');
+                                    var dobYear = dobParts[2];
+                                    var dobMonth = dobParts[1] - 1; // Month in JavaScript is 0-based
+                                    var dobDay = dobParts[0];
+
+                                    var dateOfBirth = new Date(dobYear, dobMonth, dobDay);
+
+                                    var issuedate = new Date(document.getElementById('from_date').value);
+
+                                    // Convert dates to UTC to remove time zone discrepancies
+                                    var todayUTC = new Date(Date.now()).setUTCHours(0, 0, 0, 0);
+                                    var toDateUTC = toDate.setUTCHours(0, 0, 0, 0);
+                                    var issueDateUTC = issuedate.setUTCHours(0, 0, 0, 0);
+                                    var dateOfBirthUTC = dateOfBirth.setUTCHours(0, 0, 0, 0);
+
+                                    // Debug alerts to verify date values
+                                    //alert("Today (UTC): " + new Date(todayUTC));
+                                    //alert("To Date (UTC): " + new Date(toDateUTC));
+                                    //alert("Issue Date (UTC): " + new Date(issueDateUTC));
+                                    //alert("Date of Birth (UTC): " + new Date(dateOfBirthUTC));
+
+                                    // Comparison logic
+                                    if (toDateUTC <= todayUTC) {
+                                        errorSpan.textContent = 'Must be greater than today\'s date.';
+                                        var textBox = document.getElementById('to_date');
+                                        textBox.value = '';
+                                        return false;
+                                    }
+
+
+                                    if (toDateUTC <= dateOfBirthUTC) {
+                                        errorSpan.textContent = 'Must be later than the date of birth.';
+                                        var textBox = document.getElementById('to_date');
+                                        textBox.value = '';
+                                        return false;
+                                    }
+
+                                    if (toDateUTC < issueDateUTC) {
+                                        errorSpan.textContent = 'Must be later than the From date.';
+                                        var textBox = document.getElementById('to_date');
+                                        textBox.value = '';
+                                        return false;
+                                    }
+
+                                    // Reset custom validity
+                                    errorSpan.textContent = '';
+                                    return true;
+    }
+                            </script>
+
+
+
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+
+                    </div>
+
+                </div>
+
+
+
+                <div id="pan_data_div" style="display:none;">
+                    <p style="color: red; font-size:small;">  Enter your details as in PAN Card</p>
+
+
+                    <div class="row" id="" style="width:100%;">
+
+                        <div class="col-md-6 col-lg-4" id="pan_customername">
+                            <div class="input-group mb-3">
+                                <div class="input-group mb-3">
+
+                                    <div class="input-group-prepend">
+                                        <span style="width: 140px; background-color: #eff9ff;" class="input-group-text" id="basic-addon1">Name<span style="color:red">*</span></span>
+                                    </div>
+                                    <input type="text" id="pan_customer_name" name="pan_customer_name" class="form-control" @*required*@ placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                             oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 col-lg-4">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span style="width:140px;" class="input-group-text">Date of Birth<span style="color:red">*</span></span>
+                                </div>
+
+                                <input type="date" name="pan_dob" oninput="validatepanDOB(this.value)" class="form-control" placeholder="" @*required*@ aria-label="" aria-describedby="basic-addon1" id="pan_dob" />
+
+                                <span id="dob-error_pan" style="color: red; font-size:small;"></span>
+
+
+
+
+                                <script>
+
+
+                                    function validatepanDOB(enteredDate) {
+                                        var errorSpan = document.getElementById('dob-error_pan');
+                                        var dobInput = document.getElementById('pan_dob');
+                                        errorSpan.textContent = '';  // Clear previous error message
+                                        dobInput.setCustomValidity('');  // Clear previous custom validity
+
+                                        if (enteredDate.trim() === '') {
+                                            errorSpan.textContent = 'Please enter your Date of Birth.';
+                                            dobInput.setCustomValidity('Please enter your Date of Birth.');
+                                            return;
+                                        }
+
+                                        // Extract the year part from the entered date
+                                        var enteredYear = enteredDate.split('-')[0];
+
+                                        // Check if the entered year has exactly 4 digits
+                                        if (enteredYear.length !== 4) {
+                                            errorSpan.textContent = 'Please enter a valid 4-digit year.';
+                                            dobInput.setCustomValidity('Please enter a valid 4-digit year.');
+                                            return;
+                                        }
+
+                                        var currentDate = new Date();
+                                        var selectedDate = new Date(enteredDate);
+
+                                        // Calculate age
+                                        var age = currentDate.getFullYear() - selectedDate.getFullYear();
+
+                                        // Check if the age is between 18 and 90
+                                        if (age < 18 || age > 90) {
+                                            errorSpan.textContent = 'Age must be between 18 and 90 years.';
+                                            dobInput.setCustomValidity('Age must be between 18 and 90 years.');
+                                            return;
+                                        }
+
+                                        // Set dynamic min value based on current year - 91
+                                        var minYear = currentDate.getFullYear() - 91;
+                                        dobInput.setAttribute('min', minYear + '-01-01');
+
+                                        // If no issues, clear the error message
+                                        dobInput.setCustomValidity('');  // Reset custom validity
+                                    }
+
+
+                                </script>
+
+
+
+
+
+
+
+
+
+                                @*<script>
+            function validatepanDOB(enteredDate) {
+                var errorSpan = document.getElementById('dob-error');
+                errorSpan.textContent = '';  // Clear previous error message
+
+                if (enteredDate.trim() === '') {
+                    errorSpan.textContent = 'Please enter your Date of Birth.';
+                    document.getElementById('dob').setCustomValidity('Please enter your Date of Birth.');
+                    return false;
+                }
+
+                // Extract the year part from the entered date
+                var enteredYear = enteredDate.split('-')[0];
+
+                // Check if the entered year has exactly 4 digits
+                if (enteredYear.length !== 4) {
+                    errorSpan.textContent = 'Please enter a valid 4-digit year.';
+                    document.getElementById('dob').setCustomValidity('Please enter a valid 4-digit year.');
+                    return false;
+                }
+
+                var currentDate = new Date();
+                var selectedDate = new Date(enteredDate);
+
+                // Calculate age
+                var age = currentDate.getFullYear() - selectedDate.getFullYear();
+
+                // Check if the age is between 18 and 90
+                if (age < 18 || age > 90) {
+                    errorSpan.textContent = 'Age must be between 18 and 90 years.';
+                    document.getElementById('dob').setCustomValidity('Age must be between 18 and 90 years.');
+                    return false;
+                }
+
+                // Set dynamic min value based on current year - 91
+                var minYear = currentDate.getFullYear() - 91;
+                document.getElementById('dob').setAttribute('min', minYear + '-01-01');
+
+                document.getElementById('dob').setCustomValidity('');  // Reset custom validity
+            }
+        </script>*@
+                            </div>
+                        </div>
+
+
+
+                        <div class="col-md-6 col-lg-4" id="pan_fathername">
+                            <div class="input-group mb-3">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span style="width: 140px; background-color: #eff9ff;" class="input-group-text" id="basic-addon1">Father's Name<span style="color:red">*</span></span>
+                                    </div>
+                                    <input type="text" id="pan_father_name" name="pan_father_name"  class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1"
+                                             oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()">
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+
+
+
+                <div class="row">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+
+                            <div>
+
+                                <button class="button_style" style="font-size: 15px;" type="submit" id="addKycButton" value="submit">Add KYC</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+                <br/>
+
+                @*------------------------------CLOSE-FORM FOR KYC UPLOAD--------------------------------------------------*@
+                <div id="gridContainer">
+                    @if (Model != null && Model.kycgrid != null)
+                    {
+                        @Html.Partial("grid_view", Model.kycgrid)
+
+                    }
+
+                </div>
+            </div>
+
+           
+            <br />
+
+            @*-----------------------FORM FOR DECLARATION------------------------------------*@
+            <div class="row">
+                <div class="col-md-6 col-lg-4" id="view_form16_div_new">
+                    <div class="input-group mb-3">
+
+
+                        <button type="button" onclick="form_60_check()" ; class="button_style"  style="width: 155px; font-size: 15px; background-color: #10439F;">View Form60</button>
+
+
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" id="fileInputContainer_new" style="display: none;">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <form id="uploadForm_form60" action="@Url.Action("form60_upload", "Customer_KYC")" method="post" enctype="multipart/form-data">
+                                <input type="file" style="font-size:15px;" id="image4" name="image4" class="form-control-file">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4" id="uploadButtonContainer_new" style="display: none;">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <button id="save2" style="width:155px;font-size:15px;" class="button_style" type="button" value="submit">UPLOAD</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </form>
+            <div class="row">
+                <div class="col-md-6 col-lg-4" id="viewDeclarationButton_div">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <button id="viewDeclarationButton" class="button_style" style="width: 155px; font-size: 15px; background-color:#686D76;" onclick="toggleFileInputVisibility();">Print Declaration</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4" id="fileInputContainer" style="display: none;">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <form id="uploadForm" action="@Url.Action("dec_upload", "Customer_KYC")" method="post" enctype="multipart/form-data">
+                                <input type="file" style="font-size:15px;" id="image3" name="image3" class="form-control-file">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4" id="uploadButtonContainer" style="display: none;">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <button id="save1" style="width:155px;font-size:15px;" class="button_style" type="submit" value="submit">UPLOAD</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </form>
+
+
+
+            @*-----------------------CLOSE FORM FOR DECLARATION------------------------------------*@
+
+
+            <hr />
+
+            <div class="row">
+                <div class="col-md-6 col-lg-4">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <button onclick="redirectToRegistration()" style="width: 155px; font-size: 15px;" class="button_style">Back</button>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                </div>
+
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <form id="sendApprovalForm" action="@Url.Action("Send_Apprv", "Customer_KYC")" method="post">
+
+                                <button type="submit" class="button_style" style="width: 155px; background-color: green; font-size: 15px;">Send For Approval</button>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+                @*<button onclick="redirectToRegistration()" style="width: 155px; font-size: 15px;" class="button_style">Back</button>
+        <form id="sendApprovalForm" action="@Url.Action("Send_Apprv", "Customer_KYC")" method="post">
+
+            <button type="submit" class="button_style" style="width: 155px; background-color: green; font-size: 15px;">Send For Approval</button>
+
+        </form>*@
+                <hr>
+
+
+            </div>
+
+    </div>
+
+    @*</div>
+        </div>
+
+
+        </div>
+
+
+        </div>*@
+
+    <br />
+
+
+
+    <div><hr /></div>
+
+    
+    @*</div>*@
+
+</body>
+
+
+
+</html>

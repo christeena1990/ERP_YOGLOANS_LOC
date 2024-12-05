@@ -1,0 +1,254 @@
+﻿
+@{
+    ViewBag.Title = "CustomerSearch";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+</head>
+<body>
+
+    <br />
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon"> Customer Search</h6>
+            </div>
+        </div>
+        <br />
+
+        <div class="row">
+            <div class="col-md-6 col-lg-3">
+                <div class="input-container">
+                    <textarea id="CustomerName" name="CustomerName" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '').toUpperCase()" autocomplete="off"></textarea>
+                    <label for="CustomerName">Customer Name</label>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="input-container">
+                    <input type="text" id="cust_id" name="cust_id" minlength="10" maxlength="10" pattern="\d{10}" oninput="this.value = this.value.replace(/\D/g, '');" autocomplete="off" />
+                    <label for="cust_id">Customer ID</label>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-3">
+                <div class="input-container">
+                    <input type="text" id="mob_num" name="mob_num" minlength="10" maxlength="10" pattern="\d{10}" oninput="this.value = this.value.replace(/\D/g, '');" autocomplete="off" />
+                    <label for="mob_num">Mobile Number</label>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-2" style="padding-top:10px;">
+                <button class="mb-2 mr-2 btn-pill btn btn-primary" id="btn_search">SEARCH</button>
+            </div>
+            <div class="col-md-6 col-lg-1" style="padding-top:10px;">
+                <button class="mb-2 mr-2 btn-pill btn btn-secondary" id="btn_reset">RESET</button>
+            </div>
+
+        </div>
+        <div class="row" id="div_dtls" style="width: 100%; overflow-y: auto;">
+
+            <table id="tbl_customer" @*class="mb-0 table table-hover"*@ class="table table-hover table-striped table-bordered" style="overflow-y: auto; font-size:12px;width:100%;font-weight:bold">
+
+
+                <thead style="display: none;">
+                    <tr>
+                        <th style="background-color: #4D759A; color: white;">#</th>
+                        <th style="background-color: #4D759A; color: white;">View</th>
+                        <th style="background-color: #4D759A; color: white;">Customer ID</th>
+                        <th style="background-color: #4D759A; color: white;">Name</th>
+                        <th style="background-color: #4D759A; color: white;">Mobile Number</th>
+                        <th style="background-color: #4D759A; color: white;">DOB</th>
+                        <th style="background-color: #4D759A; color: white;">Status</th>
+                        <th style="background-color: #4D759A; color: white;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+
+
+            </table>
+        </div>
+    </div>
+    <link rel="stylesheet" href="~/Content/cust_apprvlmsgbox1.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+  //Reset button click
+    $(document).ready(function () {
+        $('#btn_reset').click(function (event) {
+            event.preventDefault();
+            window.location.reload();
+        });
+    });
+
+    $(document).ready(function () {
+        $('#btn_search').click(function (event) {
+            customerSearch(event);
+        });
+    });
+    function customerSearch(event) {
+
+        event.preventDefault();
+
+        var name = $('#CustomerName').val() || "";
+        var custId = parseInt($('#cust_id').val()) || 0;
+        var mobNum = parseInt($('#mob_num').val()) || 0;
+
+        var formData = new FormData();
+        formData.append('name', name);
+        formData.append('custId', custId);
+        formData.append('mobNum', mobNum);
+
+
+        if (name === "" && custId === "" && mobNum === "") {
+            alert("Please enter any of the data..!");
+            $('#CustomerName').focus();
+            return false; // Prevent further execution and wizard step change
+        } else {
+
+            $.ajax({
+             url: "@Url.Action("GetCustomers", "Customer_search")",
+             type: 'POST',
+             data: formData,
+             contentType: false,
+             processData: false,
+             success: function (response) {
+
+                 // Clear the existing table body
+                 $('#tbl_customer tbody').empty();
+
+                 // Show the table header
+                 $('#tbl_customer thead').css('display', 'table-header-group');
+
+                 // Check if there is any data in the response
+                 if (response && response.length > 0) {
+                     // Loop through the response and populate the table
+                     $.each(response, function (index, customer) {
+                         var row = '<tr>' +
+
+                             '<td>' + (index + 1) + '</td>' + // Serial number
+                             '<td>' +
+                             '<a href="#" onclick="viewCustomerDetails(' + customer.CustomerID + ')"><span>&#128065;</span></a>' + // View action button
+                             '</td>' +
+                             '<td>' + customer.CustomerID + '</td>' +
+                             '<td>' + customer.Name + '</td>' +
+                             '<td>' + customer.MobileNo + '</td>' +
+                             '<td>' + customer.Dob + '</td>' +
+                             '<td>' + customer.Status + '</td>' +
+                             '<td>' +
+                             '<button type="button" class="btn btn-primary btn-sm" onclick="nextStep(' + customer.CustomerID + ')">Next</button>' + // Example action button
+                             '</td>' +
+                             '</tr>';
+
+                         // Append row to table body
+                         $('#tbl_customer tbody').append(row);
+                     });
+                 } else {
+                     // If no data found, display a message
+                     var noDataRow = '<tr><td colspan="8" class="text-center">No data found..</td></tr>';
+                     $('#tbl_customer tbody').append(noDataRow);
+                 }
+
+                },
+                error: function (error) {
+                    alert("Error fetching data.");
+
+                }
+            });
+        }
+
+    }
+
+    function viewCustomerDetails(customerId) {
+        //alert("Viewing details for customer ID: " + customerId);
+
+        $.ajax({
+            url: "@Url.Action("SetCustId_to_Session", "Customer_search")",
+            type: "GET",
+            data: { custId: customerId },
+              success: function (response) {
+
+                   if (response.success == true) {
+                        // Open the new tab with the URL from the action
+                        openInNewTab('@Url.Action("FillDetails", "Customer_CustView")');
+                   } else {
+                        alert("Failed to set customer ID in session.");
+                   }
+
+              },
+               error: function (error) {
+                alert("Error fetching data.");
+
+               }
+        });
+    }
+
+    function openInNewTab(url) {
+        var win = window.open(url, '_blank');
+        win.focus();
+    }
+
+    function nextStep(customerId) {
+    $.ajax({
+        url: "@Url.Action("GetApplicationStartPage", "Customer_search")",
+        type: "GET",
+        data: { custId: customerId },
+        success: function (response) {
+            if (response.success) {
+                var redirectUrl = response.message.trim();
+                var baseUrl = window.location.origin;
+                var fullUrl = baseUrl + '/' + redirectUrl;
+                window.location.href = fullUrl;
+            } else {
+                // Show the main error message
+                Swal.fire({
+                    html: `<span style="font-size: 20px;font-weight: bold;">${response.message}</span>`,
+                    icon: 'error',
+                    customClass: {
+                        popup: 'swal-custom-class'
+                    }
+                }).then(() => {
+                    // If dt1Data is not empty, show another popup with dt1 data
+                    if (response.dt1Data && response.dt1Data.length > 0) {
+                        let tableContent = `<table border="1" style="width:100%; text-align:left;">
+                                                <tr>
+                                                    <th>Module</th>
+                                                    <th>Branch</th>
+                                                    <th>Loan</th>
+                                                    <th>Reason</th>
+                                                </tr>`;
+                        response.dt1Data.forEach(function (row) {
+                            tableContent += `<tr>
+                                                <td>${row.Column1}</td>
+                                                <td>${row.Column2}</td>
+                                                <td>${row.Column3}</td>
+                                                <td>${row.Column4}</td>
+                                             </tr>`;
+                        });
+                        tableContent += `</table>`;
+
+                        // Show another SweetAlert with the table data
+                        Swal.fire({
+                            title: 'Due Details',
+                            html: tableContent,
+                            width: '600px', // Customize the width if needed
+                            customClass: {
+                                popup: 'swal-custom-class'
+                            }
+                        });
+                    }
+                });
+            }
+        },
+        error: function (error) {
+            alert("Error fetching data.");
+        }
+    });
+}
+
+    </script>
+</body>
+</html>
+

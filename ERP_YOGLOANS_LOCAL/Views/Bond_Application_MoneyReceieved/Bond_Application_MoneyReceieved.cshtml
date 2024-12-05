@@ -1,0 +1,740 @@
+﻿
+@{
+    ViewBag.Title = "Bond_Application_MoneyReceieved";
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+    <link rel="stylesheet" href="~/Content/table_styles.css" />
+
+
+
+
+
+</head>
+<body>
+
+
+
+
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            @*<br />*@
+            <div class="card-title">
+
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon"> Application amount received </h6>
+            </div>
+        </div>
+
+        <!--<form method="post" id="SubmitSchemeRegistration" onsubmit=;"--> @*action="@Url.Action("SubmitAppMoneyReceived", "Bond_Application_MoneyReceieved")"*@ <!--enctype="multipart/form-data" autocomplete="off" style="width: 100%; ">-->
+
+        <div class="card-body">
+
+
+
+
+            <div id="Joinapplicationaccttablediv" style="width: 87%; max-height: 180px; ">
+                <h5 class="card-title" id="toggleButtonSchemetbl" style="cursor: pointer;">
+                    <span id="arrowBond_schemetbl1" style="font-size: 12px;">&#9654;</span> <!-- Right arrow for collapsed state -->
+                    Application Details
+                </h5>
+                <div id="Bond_schemetbl1" style="overflow-y: auto; max-height: 180px; ">
+                    <table id="cus_detailsDataGrid" class="table table-hover table-striped table-bordered" style="width: 87%; font-size: 13px; font-weight: 500;">
+                        <thead>
+                            <tr>
+                                <th>Select</th> <!-- Selection column header -->
+                                @if (ViewBag.AccountMoneyreceivedDetails != null && ViewBag.AccountMoneyreceivedDetails.Columns.Count > 0)
+                                {
+                                    foreach (System.Data.DataColumn column in ViewBag.AccountMoneyreceivedDetails.Columns)
+                                    {
+                                        if (column.ColumnName != "status_id" && column.ColumnName != "cnt") // Exclude specific columns
+                                        {
+                                            <th>@column.ColumnName</th>
+                                        }
+                                    }
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (ViewBag.AccountMoneyreceivedDetails != null && ViewBag.AccountMoneyreceivedDetails.Rows.Count > 0)
+                            {
+                                foreach (System.Data.DataRow row in ViewBag.AccountMoneyreceivedDetails.Rows)
+                                {
+                                    <tr>
+                                        <td>
+                                            <input type="checkbox" name="selectedRow" class="select-checkbox" value="@row[0]" /> <!-- Checkbox for selecting the row -->
+                                        </td>
+                                        @foreach (System.Data.DataColumn column in ViewBag.AccountMoneyreceivedDetails.Columns)
+                                        {
+                                            if (column.ColumnName != "status_id" && column.ColumnName != "cnt") // Exclude specific columns
+                                            {
+                                                <td>@row[column]</td>
+                                                <!-- Display the value of the current column -->
+                                            }
+                                        }
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="10">No data available</td> <!-- Updated colspan to account for the selection column -->
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <br />
+
+            <div id="applicationmoneyreceiveddetailsdiv" style="padding-bottom: 5px; display: none;">
+                <h5 class="card-title" id="toggleButtonScheme" style="cursor: pointer;">
+                    <span id="arrowarrowmoneyreceiveddetails" style="font-size: 12px;">&#9654;</span> <!-- Right arrow for collapsed state -->
+                    Scheme Details
+                </h5>
+                <div class="row" style="padding-bottom: 5px;" id="moneyreceiveddetailsdiv">
+                    <div class="col-md-12 col-lg-6 col-xl-10">
+                        <div class="mb-3 card">
+
+
+
+
+
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="tab-animated-0" role="tabpanel">
+                                    <div class="scrollbar-container">
+                                        <div class="p-3">
+                                            <div class="row">
+                                                <div class="col-md-6 col-lg-4">
+                                                    <div class="notifications-box">
+                                                        <div class="vertical-time-simple vertical-without-time vertical-timeline vertical-timeline--one-column">
+                                                            <div class="vertical-timeline-item dot-danger vertical-timeline-element">
+                                                                <div>
+                                                                    <span class="vertical-timeline-element-icon bounce-in"></span>
+                                                                    <div class="vertical-timeline-element-content bounce-in">
+                                                                        <h4 class="timeline-title" id="branch" name="branch">
+                                                                            Branch:
+                                                                        </h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="vertical-timeline-item dot-success vertical-timeline-element">
+                                                                <div>
+                                                                    <span class="vertical-timeline-element-icon bounce-in"></span>
+                                                                    <div class="vertical-timeline-element-content bounce-in">
+                                                                        <h4 class="timeline-title" id="issueNo" name="issueNo">
+                                                                            Issue No:
+                                                                        </h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="vertical-timeline-item dot-dark vertical-timeline-element">
+                                                                <div>
+                                                                    <span class="vertical-timeline-element-icon bounce-in"></span>
+                                                                    <div class="vertical-timeline-element-content bounce-in">
+                                                                        <h4 class="timeline-title" id="applicationId" name="applicationId">
+                                                                            Application ID:
+                                                                        </h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6 col-lg-4">
+                                                    <div class="notifications-box">
+                                                        <div class="vertical-time-simple vertical-without-time vertical-timeline vertical-timeline--one-column">
+                                                            <div class="vertical-timeline-item dot-danger vertical-timeline-element">
+                                                                <div>
+                                                                    <span class="vertical-timeline-element-icon bounce-in"></span>
+                                                                    <div class="vertical-timeline-element-content bounce-in">
+                                                                        <h4 class="timeline-title" id="appMoneyNo" name="appMoneyNo">
+                                                                            App. Money No:
+                                                                        </h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="vertical-timeline-item dot-success vertical-timeline-element">
+                                                                <div>
+                                                                    <span class="vertical-timeline-element-icon bounce-in"></span>
+                                                                    <div class="vertical-timeline-element-content bounce-in">
+                                                                        <h4 class="timeline-title" id="customerName" name="customerName">
+                                                                            Customer Name:
+                                                                        </h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="vertical-timeline-item dot-dark vertical-timeline-element">
+                                                                <div>
+                                                                    <span class="vertical-timeline-element-icon bounce-in"></span>
+                                                                    <div class="vertical-timeline-element-content bounce-in">
+                                                                        <h4 class="timeline-title" id="customerId" name="customerId">
+                                                                            Customer ID:
+                                                                        </h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6 col-lg-4">
+                                                    <div class="notifications-box">
+                                                        <div class="vertical-time-simple vertical-without-time vertical-timeline vertical-timeline--one-column">
+                                                            <div class="vertical-timeline-item dot-danger vertical-timeline-element">
+                                                                <div>
+                                                                    <span class="vertical-timeline-element-icon bounce-in"></span>
+                                                                    <div class="vertical-timeline-element-content bounce-in">
+                                                                        <h4 class="timeline-title" id="amount" name="amount">
+                                                                            Amount:
+                                                                        </h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="vertical-timeline-item dot-success vertical-timeline-element">
+                                                                <div>
+                                                                    <span class="vertical-timeline-element-icon bounce-in"></span>
+                                                                    <div class="vertical-timeline-element-content bounce-in">
+                                                                        <h4 class="timeline-title" id="debentureNo" name="debentureNo">
+                                                                            No. Of Debentures:
+                                                                        </h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="vertical-timeline-item dot-dark vertical-timeline-element">
+                                                                <div>
+                                                                    <span class="vertical-timeline-element-icon bounce-in"></span>
+                                                                    <div class="vertical-timeline-element-content bounce-in">
+                                                                        <h4 class="timeline-title" id="applicationDate" name="applicationDate">
+                                                                            Application Date:
+                                                                        </h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> <!-- end of row -->
+                                        </div> <!-- end of p-3 -->
+                                    </div> <!-- end of scrollbar-container -->
+                                </div> <!-- end of tab-pane -->
+                            </div> <!-- end of tab-content -->
+                        </div> <!-- end of card -->
+                    </div> <!-- end of col-md-12 -->
+                </div> <!-- end of row -->
+            </div>
+
+
+
+            @*////////////////////////////////////-----------  table  with data and drpdwn &textbox  -----------/////////////////////////////////////////////*@
+
+
+
+
+
+            <div id="applicationacctbanktablediv" style="padding-bottom: 5px; display:none; width: 93%;">
+                @*<span style="color: maroon; font-weight: 500; font-size:medium;padding-bottom:20px;"> Money Received Details </span>*@
+                <span style="color: darkslategrey; font-weight: 700; font-size: 14px; padding-bottom: 20px;"> MONEY RECEIVED DETAILS </span>
+
+                <br />
+                <div style="overflow-y: auto; width: 93%; max-height: 400px;" id="added_row_table_div">
+                    <table id="added_row_table" class="table table-hover table-striped table-bordered" style="font-size: 12px; width: 93%;">
+                        <thead>
+                            <tr>
+                                <!-- Headers will be dynamically added here -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <!-- Rows will be dynamically added here -->
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row d-block text-center" style="padding-bottom: 5px;" id="buttonsdiv">
+                <button type="submit" class="btn btn-success " id="submitbutton" name="submitbutton" style="height: 38px; display: none;">SUBMIT</button> <!-- Button height adjusted -->
+                &nbsp;&nbsp; &nbsp;  &nbsp;
+                <button type="button" id="resetbutton" class="btn btn-gradient-secondary" style="height: 38px;"> &nbsp;RESET &nbsp;</button>
+                &nbsp;&nbsp; &nbsp;  &nbsp;
+                <button type="button" id="returnbutton" class="btn btn-gradient-danger" style="height: 38px; display: none;">RETURN</button>
+            </div>
+
+
+
+        </div>
+
+
+
+
+
+
+
+        @*</form>*@
+    </div>
+
+
+
+
+
+
+
+
+
+    @*////////////////////////////////////////////////////////////////////////*@
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+    <script>
+
+
+        // Toggle for Application Details
+        $("#toggleButtonSchemetbl").click(function () {
+            var tableContainer = $("#Bond_schemetbl1");
+            var arrow = $("#arrowBond_schemetbl1");
+
+            tableContainer.toggle(); // Toggle visibility of the table
+
+            // Change the arrow direction based on visibility
+            if (tableContainer.is(":visible")) {
+                arrow.html("&#9660;"); // Down arrow for expanded state
+            } else {
+                arrow.html("&#9654;"); // Right arrow for collapsed state
+            }
+        });
+
+        // Toggle for Scheme Details
+        $("#toggleButtonScheme").click(function () {
+            var div = $("#moneyreceiveddetailsdiv");
+            var arrow = $("#arrowmoneyreceiveddetails");
+
+            div.toggle(); // Toggle visibility of the div
+
+            // Change the arrow direction based on visibility
+            if (div.is(":visible")) {
+                arrow.html("&#9660;"); // Down arrow for expanded state
+            } else {
+                arrow.html("&#9654;"); // Right arrow for collapsed state
+            }
+        });
+
+
+
+    </script>
+
+
+
+    <script>
+        $(document).on('click', '#resetbutton', function (e) {
+            location.reload();
+        });
+    </script>
+
+
+
+    @*<script>
+            function validateForm() {
+                var isValid = true; // Tracks overall validity
+
+                // Validate all dropdowns with the class "ho-dropdown"
+                document.querySelectorAll('.ho-dropdown').forEach(function (dropdown) {
+                    if (dropdown.value === "" || dropdown.value === "0") {
+                        dropdown.classList.add('is-invalid'); // Highlight as invalid
+                        isValid = false;
+                    } else {
+                        dropdown.classList.remove('is-invalid');
+                    }
+                });
+
+                // Validate all clearing date inputs with the class "clearing-date-input"
+                document.querySelectorAll('.clearing-date-input').forEach(function (input) {
+                    if (input.value === "") {
+                        input.classList.add('is-invalid'); // Highlight as invalid
+                        isValid = false;
+                    } else {
+                        input.classList.remove('is-invalid');
+                    }
+                });
+
+                // If there are invalid fields, show an alert and prevent form submission
+                if (!isValid) {
+                    alert('Please fill out all required fields.');
+                }
+
+                return isValid; // Form will submit only if isValid is true
+            }
+        </script>*@
+
+
+
+    <script>
+
+
+        // Function to validate the form
+        function validateForm() {
+            var isValid = true; // Tracks overall validity
+
+            // Validate all dropdowns with the class "ho-dropdown"
+            document.querySelectorAll('.ho-dropdown').forEach(function (dropdown) {
+                if (dropdown.value === "" || dropdown.value === "0") {
+                    dropdown.classList.add('is-invalid'); // Highlight as invalid
+                    isValid = false;
+                } else {
+                    dropdown.classList.remove('is-invalid');
+                }
+            });
+
+            // Validate all clearing date inputs with the class "clearing-date-input"
+            document.querySelectorAll('.clearing-date-input').forEach(function (input) {
+                if (input.value === "") {
+                    input.classList.add('is-invalid'); // Highlight as invalid
+                    isValid = false;
+                } else {
+                    input.classList.remove('is-invalid');
+                }
+            });
+
+            // If there are invalid fields, show an alert and prevent form submission
+            if (!isValid) {
+                alert('Please fill out all required fields.');
+            }
+
+            return isValid; // Form will submit only if isValid is true
+        }
+
+        // Add event listeners for input and change events to remove validation errors
+        $(document).on('input change', '.ho-dropdown, .clearing-date-input', function () {
+            if ($(this).hasClass('ho-dropdown') && (this.value !== "" && this.value !== "0")) {
+                $(this).removeClass('is-invalid'); // Remove invalid class for valid dropdown selection
+            } else if ($(this).hasClass('clearing-date-input') && this.value !== "") {
+                $(this).removeClass('is-invalid'); // Remove invalid class for valid input
+            }
+        });
+
+
+
+    </script>
+
+
+
+
+
+    @*////////////////////////////////////////////////////////////////////*@
+
+
+
+    <script>
+
+
+        $(document).ready(function () {
+
+
+            let applicationId; // Declare the applicationId variable
+            $('#submitbutton').hide();
+            $('#returnbutton').hide();
+            $('#resetbutton').hide();
+
+            $(document).on('click', '.select-checkbox', function () {
+                // Uncheck all other checkboxes
+                $('.select-checkbox').not(this).prop('checked', false);
+
+                if ($(this).is(':checked')) {
+                    $('#applicationmoneyreceiveddetailsdiv').show();
+                    $('#applicationacctbanktablediv').show();
+                    $('#submitbutton').show();
+                    $('#returnbutton').show();
+                    $('#resetbutton').show();
+
+                    var selectedRow = $(this).closest('tr');
+
+                    // Fetch row values and populate divs
+                    var branch = selectedRow.find('td:eq(1)').text();
+                    var issueNo = selectedRow.find('td:eq(3)').text();
+                    applicationId = selectedRow.find('td:eq(2)').text();
+                    var appMoneyNo = selectedRow.find('td:eq(4)').text();
+                    var customerName = selectedRow.find('td:eq(5)').text();
+                    var customerId = selectedRow.find('td:eq(6)').text();
+                    var amount = selectedRow.find('td:eq(9)').text();
+                    var debentureNo = selectedRow.find('td:eq(10)').text();
+                    var applicationDate = selectedRow.find('td:eq(11)').text();
+
+                    $('#branch').html('Branch: <span class="dynamic-value">' + branch + '</span>');
+                    $('#issueNo').html('Issue No: <span class="dynamic-value">' + issueNo + '</span>');
+                    $('#applicationId').html('Application ID: <span class="dynamic-value">' + applicationId + '</span>');
+                    $('#appMoneyNo').html('App. Money No: <span class="dynamic-value">' + appMoneyNo + '</span>');
+                    $('#customerName').html('Customer Name: <span class="dynamic-value">' + customerName + '</span>');
+                    $('#customerId').html('Customer ID: <span class="dynamic-value">' + customerId + '</span>');
+                    $('#amount').html('Amount: <span class="dynamic-value">' + amount + '</span>');
+                    $('#debentureNo').html('No. Of Debentures: <span class="dynamic-value">' + debentureNo + '</span>');
+                    $('#applicationDate').html('Application Date: <span class="dynamic-value">' + applicationDate + '</span>');
+
+                    // AJAX to fetch additional details
+                    $.ajax({
+                        url: '/Bond_Application_MoneyReceieved/ApplicantsGridwithtxtanddrpdwn',
+                        type: 'POST',
+                        data: { app_id: applicationId },
+                        success: function (response) {
+                            var columns = response.columns;
+                            var data = response.data;
+                            var tableHead = $('#added_row_table thead tr');
+                            var tableBody = $('#added_row_table tbody');
+
+
+
+                            tableHead.empty();
+                            tableBody.empty();
+
+                            if (data.length > 0) {
+                                // Generate table headers, skipping the "type" column
+                                $.each(columns, function (index, columnName) {
+                                    if (columnName !== 'type' && columnName !== 'val') { // Skip the "type" and any extra columns
+                                        tableHead.append('<th>' + columnName + '</th>');
+                                    }
+                                });
+
+                                // Add headers for additional columns
+                                tableHead.append('<th>Clearing Date</th>');
+                                tableHead.append('<th>Head Office</th>');
+
+
+
+                                $.each(data, function (index, rowData) {
+                                    var rowHtml = '<tr data-type="' + rowData['type'] + '">'; // Set data-type attribute
+
+                                    $.each(rowData, function (key, value) {
+                                        if (key !== 'type' && key !== 'val') {
+                                            rowHtml += '<td>' + value + '</td>';
+                                        }
+                                    });
+
+                                    if (rowData['type'] === '1') {
+                                        rowHtml += '<td><input type="date" name="clearingDate" class="form-control clearing-date-input" /></td>';
+                                    } else {
+                                        rowHtml += '<td>N/A</td>';
+                                    }
+
+                                    rowHtml += '<td><select name="hoDropdown" class="form-control ho-dropdown"></select></td>';
+                                    rowHtml += '</tr>';
+                                    tableBody.append(rowHtml);
+                                });
+
+
+
+
+                                populateHoDropdown();
+                                $('#added_row_table_div').show();
+                            } else {
+                                tableBody.append('<tr><td colspan="' + (columns.length - 2) + '">No data found.</td></tr>');
+                                $('#added_row_table_div').show();
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('AJAX Error:', error);
+                        }
+                    });
+                } else {
+                    $('#applicationmoneyreceiveddetailsdiv').hide();
+                    $('#applicationacctbanktablediv').hide();
+                }
+            });
+
+            function populateHoDropdown() {
+                $.ajax({
+                    url: '/Bond_Application_MoneyReceieved/bankdropdown',
+                    type: 'GET',
+                    success: function (response) {
+                        var hoDropdowns = $('.ho-dropdown');
+                        hoDropdowns.each(function () {
+                            var dropdown = $(this);
+                            dropdown.empty();
+                            //dropdown.append('<option value="">Select H.O</option>');
+
+                            $.each(response, function (index, item) {
+                                dropdown.append('<option value="' + item.Value + '">' + item.Text + '</option>');
+                            });
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Failed to fetch H.O dropdown options:', error);
+                    }
+                });
+            }
+        });
+
+
+
+    </script>
+
+
+
+
+
+
+    @*//////////////////////////////////////////////////////////////////////*@
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+        $(document).on('click', '#submitbutton', function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Validate form fields before sending (if necessary)
+            if (!validateForm()) { // Call your validateForm function
+                return; // If not valid, exit the function
+            }
+
+            // Prepare data for concatenation
+            let h_data = { Value: "" }; // Initialize h_data
+
+            // Loop through each row in the table
+            $('#added_row_table tbody tr').each(function () {
+                // Extract the necessary fields
+                var trackid = $(this).find('td:eq(0)').text(); // Adjust index for trackid
+                var dropdownValue = $(this).find('.ho-dropdown').val(); // Get selected dropdown value
+                var typeValue = $(this).data('type'); // Fetch 'type' value from the data attribute
+                var clearingDate = $(this).find('.clearing-date-input').val(); // Get clearing date input
+
+                // Check type and assign appropriate clearingDate format
+                if (typeValue === '0') {
+                    clearingDate = ''; // Use empty for null representation as " ~ ~ "
+                }
+
+                // Concatenate values according to your logic
+                if (h_data.Value === "") {
+                    h_data.Value = `${trackid}~${dropdownValue}~${clearingDate || ' '}~${typeValue}`;
+                } else {
+                    h_data.Value += `$${trackid}~${dropdownValue}~${clearingDate || ' '}~${typeValue}`;
+                }
+            });
+
+            alert(`Concatenated Data: ${h_data.Value}`);
+
+            // Check if any data has been concatenated
+            if (h_data.Value === "") {
+                alert("No valid data to submit."); // Handle cases with no valid data
+                return;
+            }
+
+            // Send the concatenated data to the server
+            $.ajax({
+                type: 'POST',
+                url: '/Bond_Application_MoneyReceieved/SubmitAppMoneyReceived', // Update with your actual controller and action
+                data: { concatenatedData: h_data.Value },
+                //success: function (response) {
+                //    //    console.log("Data submitted successfully", response);
+                //    if (response.success) {
+                //        alert("Data submitted successfully....");
+                //        location.reload(); // Reload the page
+                //    } else {
+                //        alert("Error in submission: " + response.message);
+                //    }
+
+                //},
+
+                success: function (response) {
+                    // Process the response
+                    if (response.success) {
+                        // alert("success");
+                        // alert(response.data);
+                        Swal.fire({
+
+                            title: response.data,
+                            /* text: result.message,*/
+                            text: "",
+                            icon: "success",
+                            confirmButtonText: "OK"
+                        }).then(() => {
+                            window.location.reload();
+
+                        });
+
+                    }
+                    else {
+
+                        Swal.fire({
+                            title: "",
+                            text: response.message,
+                            icon: "error",
+                            confirmButtonText: "OK"
+
+                        });
+                    }
+
+                    // You can add other actions like updating the DOM, etc.
+                },
+
+
+
+
+                error: function (xhr, status, error) {
+                    console.error("Error occurred while submitting data", error);
+                }
+            });
+        });
+    </script>
+
+    @*//////////////////////////////////////////////////////////////////////*@
+
+
+
+    <style>
+
+
+        /* Style for the populated values */
+        .dynamic-value {
+            color: darkblue; /* Set text color to dark blue */
+            font-weight: bold; /* Make the text bold */
+            font-size: 12px;
+        }
+
+        /* Customize textbox and dropdown size */
+        .form-control {
+            font-size: 14px; /* Adjust font size as needed */
+            height: 30px; /* Adjust height as needed */
+            padding: 5px; /* Adjust padding for better appearance */
+        }
+
+
+
+        .ho-dropdown {
+            width: 150px; /* Set width to make data visible */
+            height: 30px; /* Set height as needed */
+            padding: 5px; /* Optional padding for better readability */
+            font-size: 14px; /* Adjust font size if needed */
+        }
+    </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+

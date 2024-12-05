@@ -1,0 +1,666 @@
+﻿
+
+@{
+    ViewBag.Title = "NCD_ApplicationForm";
+    Layout = null;
+
+}
+@using System.Data
+
+@*@model ERP_YOGLOANS_LOCAL.Models.NCD_Models.DataFillViewModel*@
+@model ERP_YOGLOANS_LOCAL.Models.NCD_Models.CombinedViewModel
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>APPLICATION FOR NCD</title>
+    <style type="text/css">
+        /* Reset and general settings */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Cambria, sans-serif;
+        }
+
+        .main-container {
+            width: 95%;
+            margin: auto;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* Header Section */
+        .header-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 15px;
+            border-bottom: .1px solid #000;
+        }
+
+        .company-logo {
+            width: 200px;
+            height: 50px;
+        }
+
+        .company-details {
+            text-align: left;
+        }
+
+            .company-details p {
+                margin: 2px 0;
+            }
+
+        /* Title */
+        .application-title {
+            margin: 20px 0;
+            font-size: 14px;
+            text-decoration: underline;
+        }
+
+
+            .application-title h4 {
+                margin-bottom: 5px; /* Adjust the bottom margin of the <h4> to reduce space */
+            }
+
+            .application-title p {
+                margin-top: 0; /* Remove or reduce the top margin of the <p> */
+                padding-top: 0; /* Remove any padding at the top of <p> */
+            }
+
+
+
+
+        /* Bordered box for image */
+        .bordered-box {
+            width: 90px;
+            height: 90px;
+            border: 1px solid #000;
+            padding: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        /* Image styling */
+        .applicant-photo {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        /* Applicant message section */
+        .applicant-message {
+            margin: 15px 0;
+            font-size: 10px;
+            text-align: left;
+            margin-bottom: 5px;
+        }
+
+            .applicant-message p {
+                font-size: 10px;
+                margin: 5px 0;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+        }
+
+        td {
+            padding: 2px;
+            text-align: left;
+            border: 1px solid #000;
+        }
+
+        #details-table td {
+            border: none;
+        }
+
+
+        /*        //////////////////////////////////*/
+
+
+
+        /*.compact-table {
+            width: 50%;*/ /* Set table width to 50% */
+            /*border-collapse: collapse;
+            font-size: small;*/
+            /*margin: 0 auto;*/ /* Center the table */
+        /*}*/
+
+       /* .pan-label {
+            width: 10px;
+            padding: 2px;
+            text-align: left;
+        }*/
+
+        .tdcolapsed {
+            width: 1px;
+            border: 1px solid #000;
+            text-align: center;
+            padding: 2px;
+        }
+
+
+
+        /*        ////////////////////////////////////*/
+
+        #panelBank, #panel5, #panelSignature {
+            text-align: center;
+            width: 100%;
+        }
+
+        .tableDate {
+            width: 95%;
+            font-size: 10px;
+            height: 10px;
+            margin: auto;
+        }
+
+            .tableDate td {
+                padding: 2px;
+                border: 1px solid #000;
+                text-align: center;
+            }
+
+        .tdcolaps {
+            border: 1px solid #000;
+        }
+
+
+        .tdlabelbold {
+            font-weight: 600;
+        }
+
+        .page-break {
+            break-after: page; /* Forces a page break */
+        }
+
+
+    
+    </style>
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+    <script>
+
+        $(document).ready(function () {
+            //alert("ajax loaded");
+            $.ajax({
+                url: '/NCD_ApplicationForm/NCD_ApplicationFormfill',
+                type: 'POST',
+                success: function (secondResponse) {
+                    if (secondResponse.success) {
+                        var model = secondResponse.model;
+
+                        // Populate the fields with model data
+                        $('#ApplicationId').text(model.ApplicationId);
+                        $('#CustomerId').text(model.CustomerId);
+                        $('#Date').text(model.Date);
+                        $('#FirstApplicant').text(model.FirstApplicant);
+                        $('#FatherName').text(model.FatherName);
+                        $('#Email').text(model.Email);   
+                        $('#Age').text(model.Age + " Years");
+                        $('#MobileNo').text(model.MobileNo);
+                        $('#SecondApplicant').text(model.SecondApplicant);
+
+                        // Conditionally set Contact with a preceding comma if it has a value
+                        if (model.Contact) {
+                            $('#Contact').text(', ' + model.Contact);
+                        } else {
+                            $('#Contact').text('');  // Clear Contact if empty
+                        }
+
+                        $('#KycDocName').text(model.KycDocName);
+                        $('#KycNo').text(model.KycNo);
+                        $('#Dob').text(model.Dob);
+
+
+                       
+
+                        // Set Base64 image source for photo
+                        if (model.Base64Photo) {
+                            $('#Base64Photo').attr('src', 'data:image/png;base64,' + model.Base64Photo);
+                        } else {
+                            // Optional: handle if no photo is available
+                            $('#Base64Photo').attr('alt', 'No photo available');
+                        }
+
+
+                        // Conditionally show or hide the Co-Applicant Container
+                        if (model.SecondApplicant) {
+                            $('#Base64CoApplicantPhoto').attr('src', 'data:image/png;base64,' + model.Base64CoApplicantPhoto);
+                            $('#CoApplicantContainer').show();
+                        } else {
+                            $('#CoApplicantContainer').hide();
+                        }
+
+
+                        $('#Duration').text(model.Duration);
+                        $('#DurationType').text(model.DurationType);
+                        $('#InterestRate').text(model.InterestRate);
+                        $('#InterestTypeFixed').prop('checked', model.InterestTypeFixed); // Assuming it's a checkbox
+                        $('#InterestTypeCompound').prop('checked', model.InterestTypeCompound); // Assuming it's a checkbox
+                        $('#Category').text(model.Category);
+                        $('#Place').text(model.Place);
+                        $('#DeclarationDate').text(model.DeclarationDate);
+                        $('#Declaration').html(model.Declaration);
+                        $('#Address').text(model.Address);                     
+                        $('#DpId').text(model.DpId);
+                        $('#DpName').text(model.DpName);
+                        
+                  
+                        // Start table with inline styles for border
+                        var tableHtml = '<table style="width: 100%; border-collapse: collapse; border: 1px solid black;"><thead><tr>';
+
+                        // Add headers with border
+                        model.GridDatachequeColumns.forEach(function (colName) {
+                            tableHtml += '<th style="border: 1px solid black; /*padding: 8px;*/">' + colName + '</th>';
+                        });
+                        tableHtml += '</tr></thead><tbody>';
+
+                        // Add rows with bordered cells
+                        model.GridDatacheque.forEach(function (rowData) {
+                            tableHtml += '<tr>';
+                            model.GridDatachequeColumns.forEach(function (colName) {
+                                tableHtml += '<td style="border: 1px solid black;text-align:center ">' + (rowData[colName] || '') + '</td>';
+                            });
+                            tableHtml += '</tr>';
+                        });
+
+                        tableHtml += '</tbody></table>';
+
+                        // Append the table to the HTML container
+                        $('#gridContainer').html(tableHtml);
+
+
+
+                    } else {
+                        alert("Error: " + secondResponse.message);
+                    }
+                },
+                error: function (error) {
+                    alert("Error occurred during data retrieval");
+                }
+            });
+        });
+    </script>
+
+
+</head>
+<body>
+    <div class="main-container">
+        <div class="header-section">
+            <img src="~/images/logo.jpg" alt="Logo" class="company-logo" />
+            <div class="company-details">
+                <p>YOGAKSHEMAM LOANS LTD.</p>
+                <p>Regd.office, 3rd Floor, Ottappath Tower, Aswini Junction</p>
+                <p>Thiruvambady(Post) ,Thrissur, Kerala - 680 022</p>
+                <p>Tel: 0487-2320102</p>
+            </div>
+        </div>
+
+        <div class="application-title">
+            <h3>APPLICATION FOR NON-CONVERTIBLE DEBENTURES - NCD</h3>
+            @*<p>(To be filled in by Applicant, Use BLOCK LETTERS Tick wherever applicable)</p>*@
+            <p>(Private Circulation Only)</p>
+
+        </div>
+
+        <table id="details-table">
+            <tr>
+
+                <td>
+                    <div class="infocell1">
+                        <div style="padding-bottom:2px;">Application ID: <span id="ApplicationId" style="font-weight:600"></span></div>
+                        <div style="padding-bottom:2px;">Customer ID: <span id="CustomerId" style="font-weight:600"></span></div>
+                        <div style="padding-bottom:2px;">Date: <span id="Date" style="font-weight:600"></span></div>
+                        <div style="padding-bottom:2px;">
+                            Issue No: <span id="lbl_issue_no" style="font-weight:600"> @Session["issueno"]</span>
+                        </div>
+                    </div>
+                </td>
+
+
+                <td>
+                    <div class="bordered-box">
+                        <img src="" alt="Applicant Photo" class="applicant-photo" id="Base64Photo" />
+                    </div>
+                </td>
+                <td>
+                    <div class="bordered-box" id="CoApplicantContainer">
+                        <img src="" alt="Co-applicant Photo" class="applicant-photo" id="Base64CoApplicantPhoto" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <div class="applicant-message">
+            <div style="text-align:left;border:.2px solid; width:25%;padding-left:5px;font-size:13px;font-weight:600">
+                <p>To<br /> The Board Of Directors</p>
+                <p>Yogakshemam Loans Limited</p>
+            </div>
+            <p>Having paid to the company as mentioned below, I/we apply for allotment of Secured Non-Convertible Debentures to me/us on the terms and conditions mentioned. We authorize you to place our names in the Register of NCD holders of the company as the holders(s) of the NCD that may be allotted and to register our details as given below.</p>
+        </div>
+
+
+        <table>
+
+            <tr>
+
+                <td >FIRST APPLICANT NAME</td>
+                <td class="tdlabelbold" id="FirstApplicant"></td>
+                <td>DOB & AGE</td>
+                <td class="tdlabelbold" id="DobAge">
+                    <span id="Dob"></span> & <span id="Age"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td>FATHER/HUSBAND NAME </td>
+                <td class="tdlabelbold" id="FatherName">  </td>
+                <td>SECOND APPLICANT NAME </td>
+                <td class="tdlabelbold" id="SecondApplicant"> </td>
+            </tr>
+
+            <tr>
+                <td>DP ID </td>
+                <td class="tdlabelbold" id="DpId"> </td>
+                <td>DP NAME</td>
+                <td class="tdlabelbold" id="DpName"> </td>
+            </tr>
+
+            <tr>
+
+                <td>KYC DOC </td>
+                <td class="tdlabelbold" id="KycDocName"></td>
+                <td>KYC DOC NO </td>
+                <td class="tdlabelbold" id="KycNo"> </td>
+            </tr>
+
+
+
+
+            <tr>
+
+                <td>ADDRESS OF THE FIRST APPLICANT</td>
+                <td class="tdlabelbold" id="Address"> </td>
+                <td>CUSTOMER CATEGORY </td>
+                <td class="tdlabelbold" id="Category"> </td>
+            </tr>
+
+            <tr>
+                <td>EMAIL ID</td>
+                <td class="tdlabelbold" id="Email"> </td>
+                <td>MOBILE NO </td>
+                <td class="tdlabelbold" id="mobland">
+                    <span id="MobileNo"></span>  <span id="Contact"></span>
+                </td>
+
+
+
+
+            </tr>
+
+
+        </table>
+
+        <br />
+
+
+        <div id="gridContainer"></div>
+
+        <p style="text-align:left;font-size:8px;">Cheques are subject to realization</p>
+
+        <table width="100%">
+            <tr>
+                <!-- Payment Of Interest Label -->
+                <td align="left" width="40%">
+                    Payment Of Interest:
+
+                    <input type="checkbox" id="InterestTypeFixed" style=" pointer-events: none" />
+
+                    Monthly
+
+                    <input type="checkbox" id="InterestTypeCompound" style="pointer-events:none" />
+
+                    Cumulative
+                </td>
+
+                <!-- Period of Investment Label -->
+                <td align="left" width="30%">
+                    Period Of Investment:
+
+                    <span id="Duration" class="tdlabelbold"></span>
+                    <span id="DurationType" class="tdlabelbold"></span>
+                </td>
+
+                <!-- Rate of Interest -->
+                <td width="30%" align="left">
+                    Rate of interest: <span id="InterestRate" class="tdlabelbold"></span>
+                </td>
+            </tr>
+        </table>
+
+        <br />
+
+        <div id="panelBank" style="text-align: center; width: 100%;">
+            <table style="border: thin groove #000000; border-collapse: collapse; font-family: Cambria; color: black; font-size: 10px; margin: auto;">
+                <tr>
+                    <td style="text-align: center;height:3px;">Nomination will be as per the records maintained by the depository of the above demat account</td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; height: 3px;">Payments of principal and interest will be credited to the bank account linked with demat account only</td>
+                </tr>
+            </table>
+        </div>
+
+
+        <p style="text-align: center;font-size:11px;">I hereby declare that all the information provided above is true and binding on me</p>
+
+        <p style="text-align: center;font-size:11px;">Signature Of Applicant/s</p>
+
+        <div id="panelSignature" style="text-align: center; width: 100%;">
+            <table class="tableDate" style="width: 95%; font-size: 10px; height: 10px; margin: auto;">
+
+                <tr>
+                    <td style="width: 33.3%; text-align: center; font-size: 8px;border:none">1st Applicant</td>
+                    <td style="width: 33.3%; text-align: center; font-size: 8px; border: none">2nd Applicant</td>
+                    <td style="width: 33.3%; text-align: center; font-size: 8px; border: none">3rd Applicant</td>
+                </tr>
+
+                <tr>
+                    <td class="tdcolaps" style="height: 35px;"></td>
+                    <td class="tdcolaps" style="height: 35px;"></td>
+                    <td class="tdcolaps" style="height: 35px;"></td>
+                </tr>
+
+            </table>
+        </div>
+
+        <br />
+        @*///////////////////////////////////////////////////////////////////////////*@
+
+        <hr style="border: 1.5px dashed;" />
+
+
+        <div style="text-align: center; width: 100%;">
+            <p style="text-align: center" class="tdlabelbold"> FOR OFFICE USE</p>
+            <p style="text-align: center"> Declaration</p>
+
+
+            <table style="width:100%; font-family: Cambria; color: black; font-size: 12px; border-collapse: collapse; margin: auto;">
+
+
+                <tr>
+                    <td colspan="2" align="left" style="font-size: 10px;border:none" id="Declaration">
+                        <!-- Replace with Model.Declaration if using a model property -->
+                    </td>
+                </tr>
+                <tr style="font-size: 9px;">
+                    <td style="text-align: left; border: none">
+                        Place:<span id="Place"></span> <!-- Replace with Model.Place if using a model property -->
+                    </td>
+                   
+                </tr>
+                <tr style="font-size: 10px;">
+                    <td style="font-size: 10px; text-align: left; border: none">
+                        Date: <span id="DeclarationDate"></span> <!-- Replace with Model.Date if using a model property -->
+                    </td>
+                    @*<td style="font-size: 10px; text-align: left; border: none">&nbsp;</td>*@
+                    <td style="font-size: 10px; text-align: right; border: none">
+                        Signature Of The Branch Manager With Seal&nbsp;
+                    </td>
+                </tr>
+                <tr style="font-size: 10px;">
+                    <td colspan="2" style="font-size: 10px; text-align: left; border: none">
+                        * Any Amount Collection mode are subject to realization.
+                    </td>
+                </tr>
+              
+            </table>
+        </div>
+
+
+
+
+        @*///////////////////////////////////////////////////////////////////*@
+
+
+        @*<br /> <br />*@
+
+        <div class="page-break"></div>
+
+        <div style="text-align:center;">
+            <p class="tdlabelbold">Terms Of Issue</p>
+        </div>
+
+        <!-- Panel 1: Body1 Data -->
+        <div id="panel_form" style="text-align: justify; width: 100%; font-size: 11px;" class="body">
+            @foreach (var body in Model.TableData.Body1Data)
+            {
+                <div><b> @body.RuleNo  @body.RuleName</b> @body.Data</div>
+            }
+        </div>
+
+        <br />
+
+
+        <div style="text-align:center;">
+            @if (Model.TableData.GridData != null && Model.TableData.GridData.Rows.Count > 0)
+            {
+                <table class="table" style="border:.5px solid;width:75%;">
+                    <thead>
+                        <tr>
+                            @foreach (DataColumn column in Model.TableData.GridData.Columns)
+                            {
+                                <th style="border:.5px solid">@column.ColumnName</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (DataRow row in Model.TableData.GridData.Rows)
+                        {
+                            <tr>
+                                @foreach (var cell in row.ItemArray)
+                                {
+                                    <td style="text-align: center">@cell</td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+
+
+
+
+        <br />
+
+        <!-- Panel 2: Body2 Data -->
+        <div id="panelform3" style="text-align: justify; width: 100%; font-size: 11px;" class="body">
+            @foreach (var body in Model.TableData.Body2Data)
+            {
+                <div> <b>@body.RuleNo  @body.RuleName </b> @body.Data</div>
+            }
+        </div>
+
+        <!-- Panel 3: Combined Body3 Data -->
+        <div id="panel_form_4" style="text-align: justify; width: 100%; font-size: 11px;" class="body">
+            @*@if (!string.IsNullOrEmpty(Model.TableData.Body3Data))
+            {
+                <div>@Model.TableData.Body3Data</div>
+
+            }*@
+
+            @foreach (var body in Model.TableData.Body3Data)
+            {
+                <div> <b>@body.RuleNo  @body.RuleName </b> @body.Data</div>
+            }
+
+
+        </div>
+
+        <!-- Panel 4: Body4 Data -->
+        <div id="panel_form_6" style="text-align: justify; width: 100%; font-size: 11px;" class="body">
+            @foreach (var body in Model.TableData.Body4Data)
+            {
+                <div><b> @body.RuleNo  @body.RuleName </b> @body.Data</div>
+            }
+        </div>
+
+
+
+        <p style="text-align: center;font-size:11px;">Signature Of Applicant/s</p>
+
+        <div id="panelfoot3" style="text-align: center; width: 100%;">
+            <table class="tableDate3" style="width: 95%; font-size: 10px; height: 10px; margin: auto;">
+
+                <tr>
+                    <td style="width: 33.3%; text-align: center; font-size: 8px;border:none">1st Applicant</td>
+                    <td style="width: 33.3%; text-align: center; font-size: 8px; border: none">2nd Applicant</td>
+                    <td style="width: 33.3%; text-align: center; font-size: 8px; border: none">3rd Applicant</td>
+                </tr>
+
+                <tr>
+                    <td class="tdcolaps" style="height: 35px;"></td>
+                    <td class="tdcolaps" style="height: 35px;"></td>
+                    <td class="tdcolaps" style="height: 35px;"></td>
+                </tr>
+
+            </table>
+        </div>
+
+
+
+
+
+    </div>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

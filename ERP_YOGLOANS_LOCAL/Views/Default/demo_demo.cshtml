@@ -1,0 +1,324 @@
+﻿
+
+@using System.Data
+@using System.Web.Mvc
+@model ERP_YOGLOANS_LOCAL.Models.Equifax_Model.Equifax_Enquiry_Model
+
+
+@{
+    Layout = null;
+
+
+}
+
+<html>
+<head>
+</head>
+
+<body>
+
+
+
+    <form action="@Url.Action("", "")" method="post" id="equifax_enquiry_form" enctype="multipart/form-data" autocomplete="off" style="width:100%;">
+        <div class="input-container" @*style="width:100%"*@>
+            <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+                <div class="input-container" style="width:100%" id="new_form">
+                    <div id="form-container" style="width:100%;">
+
+                        <hr style=" background-color:grey" />
+                        <br /> <br />
+                        <div id="panel_header">
+                            <br /> <br />
+                            <table style="width:100%;text-decoration-color:darkred;font-size:smaller;font-style:italic;" id="tbl_header">
+                                <tr>
+                                    <td colspan="2" style="text-align:center;"><h2>CONSUMER CREDIT REPORT V2.0</h2></td>
+                                </tr>
+                                <tr style="color:red;font-size:smaller;font-style:italic;">
+                                    <td>
+                                        CLIENT ID:&nbsp;<label style="color:black;">@*@Model.ClientId*@</label><br />
+                                        REPORT ORDER NO.:&nbsp;<label style="color:black;">@*@Model.OrderNo*@</label><br />
+                                        REFERENCE NUMBER:&nbsp;<label style="color:black;">@*@Model.RefNo<*@</label>
+                                    </td>
+                                    <td style="text-align:right;">
+                                        DATE:&nbsp;<label style="color:black;">@*@Model.Date*@</label><br />
+                                        TIME:&nbsp;<label style="color:black;">@*@Model.Time*@</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2"><hr /></td>
+                                </tr>
+                            </table>
+                        </div>
+
+
+
+                        <div id="pnl_document" style="width:100%;">
+                            <h3 style="color:gray;">Consumer Name: <span style="color:black;">@*@lbl_name.Text*@</span></h3>
+                            <table style="width:100%;font-size:x-small;">
+                                <tr style="background-color:maroon;color:white;">
+                                    <td>Personal Information</td>
+                                    <td>Identification</td>
+                                    <td>Contact Details</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="color:gray;font-style:italic;">
+                                            <span>Name:</span> <span style="color:black;">@*@lbl_pname.Text*@</span><br />
+                                            <span>DOB:</span> <span style="color:black;">@*@lbl_dob.Text*@</span><br />
+                                            <span>Age:</span> <span style="color:black;">@*@lbl_age.Text*@</span><br />
+                                            <span>Gender:</span> <span style="color:black;">@*@lbl_gender.Text*@</span><br />
+                                            <span>Total Income:</span> <span style="color:black;">@*@lbl_income.Text*@</span><br />
+                                            <span>Occupation:</span> <span style="color:black;">@*@lbl_occupation.Text*@</span><br />
+                                            <span>Marital Status:</span> <span style="color:black;">@*@lbl_marital.Text*@</span><br />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="color:gray;font-style:italic;">
+                                            <span>PAN:</span> <span style="color:black;">@*@lbl_pan.Text*@</span><br />
+                                            <span>Voter ID:</span> <span style="color:black;">@*@lbl_voter.Text*@</span><br />
+                                            <span>Passport ID:</span> <span style="color:black;">@*@lbl_passport.Text*@</span><br />
+                                            <span>UID:</span> <span style="color:black;">@*@lbl_uid.Text*@</span><br />
+                                            <span>Driver's License:</span> <span style="color:black;">@*@lbl_Dlicense.Text*@</span><br />
+                                            <span>Ration Card:</span> <span style="color:black;">@*@lbl_ration.Text*@</span><br />
+                                            <span>ID - Other:</span> <span style="color:black;">@*@lbl_otherid.Text*@</span><br />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div style="color:gray;font-style:italic;">
+                                            <span>Home:</span> <span style="color:black;">@*@lbl_home.Text*@</span><br />
+                                            <span>Office:</span> <span style="color:black;">@*@lbl_office.Text*@</span><br />
+                                            <span>Mobile:</span> <span style="color:black;">@*@lbl_mob.Text*@</span><br />
+                                            <span>Alt. Home/Other No:</span> <span style="color:black;">@*@Label17.Text*@</span><br />
+                                            <span>Alt. Office:</span> <span style="color:black;">@*@Label18.Text*@</span><br />
+                                            <span>Alt. Mobile:</span> <span style="color:black;">@*@Label19.Text*@</span><br />
+                                            <span>Email:</span> <span style="color:black;">@*@lbl_email.Text*@</span><br />
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <h3 style="color:gray;">Consumer Address:</h3>
+                            <table style="width:100%;border-collapse:collapse;border:1px solid #3366CC;" cellspacing="0" cellpadding="4">
+                                <tr style="background-color:maroon;color:white;">
+
+
+                                    <th>Seq</th>
+                                    <th>Address</th>
+                                    <th>ReportedDate</th>
+                                    <th>Postal</th>
+                                    <th>State</th>
+                                </tr>
+                                @*@foreach (var address in Model.AddressList)
+                {
+                    <tr>
+                        <td>@address.Seq</td>
+                        <td>@address.Address</td>
+                        <td>@address.ReportedDate</td>
+                        <td>@address.Postal</td>
+                        <td>@address.State</td>
+                    </tr>
+                }*@
+
+
+                            </table>
+
+                            <h3 style="color:gray;"><span>@*@lbl_equi_score.Text*@</span></h3>
+
+                            <table style="width:100%;border-collapse:collapse;border:1px solid #3366CC;" cellspacing="0" cellpadding="4">
+                                <tr style="background-color:maroon;color:white;">
+                                    <th>Name</th>
+                                    <th>Score</th>
+                                    <th>Type</th>
+                                    <th>ScoringElements</th>
+                                </tr>
+                                @*@foreach (var score in Model.ScoreList1)
+                {
+                    <tr>
+                        <td>@score.Name</td>
+                        <td>@score.Value</td>
+                        <td>@score.Type</td>
+                        <td>
+                            <table style="width:80%;border-collapse:collapse;border:none;" cellspacing="0" cellpadding="4">
+                                <tr>
+                                    <th>Seq</th>
+                                    <th>Description</th>
+                                </tr>
+                                @foreach (var element in score.Elements)
+                                {
+                                    <tr>
+                                        <td>@element.Seq</td>
+                                        <td>@element.Description</td>
+                                    </tr>
+                                }*@
+                            </table>
+                            </td>
+                            </tr>
+                            }
+                            </table>
+
+
+
+
+
+                            <h3 style="color:gray;"><span>@*@lbl_mfi_score.Text*@</span></h3>
+                            <table style="width:100%;border-collapse:collapse;border:1px solid #3366CC;" cellspacing="0" cellpadding="4">
+                                <tr style="background-color:maroon;color:white;">
+                                    <th>Name</th>
+                                    <th>Score</th>
+                                    <th>Type</th>
+                                    <th>ScoringElements</th>
+                                </tr>
+                                @*@foreach (var score in Model.ScoreList1)
+                {
+                    <tr>
+                        <td>@score.Name</td>
+                        <td>@score.Value</td>
+                        <td>@score.Type</td>
+                        <td>
+                            <table style="width:80%;border-collapse:collapse;border:none;" cellspacing="0" cellpadding="4">
+                                <tr>
+                                    <th>Seq</th>
+                                    <th>Description</th>
+                                </tr>
+                                @foreach (var element in score.Elements)
+                                {
+                                    <tr>
+                                        <td>@element.Seq</td>
+                                        <td>@element.Description</td>
+                                    </tr>
+                                }*@
+                            </table>
+                            </td>
+                            </tr>
+                            }
+                            </table>
+
+
+
+
+
+                            <h3><span>@*@lbl_micro.Text*@</span></h3>
+
+
+                            <table style="width:100%;border-collapse:collapse;border:1px solid #3366CC;" cellspacing="0" cellpadding="4">
+                                @*@foreach (var item in Model.MicrofinanceList)
+                {
+                    <tr>
+                        <td>ID: </td>
+                        <td>@item.Id</td>
+                    </tr>
+                    <tr>
+                        <td>Number of Open Accounts: </td>
+                        <td>@item.NoOfActiveAccounts</td>
+                    </tr>
+                    <tr>
+                        <td>Total Past Due Amount: </td>
+                        <td>@item.TotalPastDue</td>
+                    </tr>
+                    <tr>
+                        <td>Number of Past Due Accounts: </td>
+                        <td>@item.NoOfPastDueAccounts</td>
+                    </tr>
+                    <tr>
+                        <td>Recent Account: </td>
+                        <td>@item.RecentAccount</td>
+                    </tr>
+                    <tr>
+                        <td>Total Outstanding Balance: </td>
+                        <td>@item.TotalBalanceAmount</td>
+                    </tr>
+                    <tr>
+                        <td>Installment amount: </td>
+                        <td>@item.TotalMonthlyPaymentAmount</td>
+                    </tr>
+                    <tr>
+                        <td>Total Written Off Amount: </td>
+                        <td>@item.TotalWrittenOffAmount</td>
+                    </tr>
+                }*@
+                            </table>
+
+
+                            <h3><span>@*@lbl_retail.Text*@</span></h3>
+                            <table style="width:100%;border-collapse:collapse;border:1px solid #3366CC;" cellspacing="0" cellpadding="4">
+                                @*@foreach (var item in Model.RetailList)
+                {
+                    <tr>
+                        <td>Total Accounts: </td>
+                        <td>@item.NoOfAccounts</td>
+                    </tr>
+                    <tr>
+                        <td>Number of Open Accounts: </td>
+                        <td>@item.NoOfActiveAccounts</td>
+                    </tr>
+                    <tr>
+                        <td>No Of Write Offs: </td>
+                        <td>@item.NoOfWriteOffs</td>
+                    </tr>
+                    <tr>
+                        <td>Total Written Off Amount: </td>
+                        <td>@item.TotalWrittenOffAmount</td>
+                    </tr>
+                    <tr>
+                        <td>Total Outstanding Balance: </td>
+                        <td>@item.TotalBalanceAmount</td>
+                    </tr>
+                }*@
+                            </table>
+
+                            <h3><span>@*@lbl_digital.Text*@</span></h3>
+                            <table style="width:100%;border-collapse:collapse;border:1px solid #3366CC;" cellspacing="0" cellpadding="4">
+                                @*@foreach (var item in Model.DigitalList)
+                {
+                    <tr>
+                        <td>Bank Name: </td>
+                        <td>@item.BankName</td>
+                    </tr>
+                    <tr>
+                        <td>Customer ID: </td>
+                        <td>@item.CustomerId</td>
+                    </tr>
+                    <tr>
+                        <td>Account Number: </td>
+                        <td>@item.AccountNumber</td>
+                    </tr>
+                    <tr>
+                        <td>Account Type: </td>
+                        <td>@item.AccountType</td>
+                    </tr>
+                    <tr>
+                        <td>Account Balance: </td>
+                        <td>@item.AccountBalance</td>
+                    </tr>
+                }*@
+                            </table>
+                        </div>
+
+
+                        <div id="panel_footer" style="width:100%;height:8px;">
+                            <table id="tbl_footer" style="width:100%;height:8px;">
+                                <tr><td><hr /></td></tr>
+                                <tr><td style="font-size:10px">This is system generated document as per Equifax Data.</td></tr>
+                            </table>
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </form>
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+

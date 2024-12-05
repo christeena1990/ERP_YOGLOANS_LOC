@@ -1,0 +1,615 @@
+﻿
+
+@using System.Data
+
+@model IEnumerable<ERP_YOGLOANS_LOCAL.Models.CustomerCreate_model>
+
+@{
+
+    var addressList = ViewData["AddressproofList"] as DataTable;
+    var addressproof = addressList.AsEnumerable().Select(row => new
+    {
+        kyc_id = row["kyc_id"],
+        kyc_name = row["kyc_name"]
+    });
+
+    var idList = ViewData["idproofList"] as DataTable;
+    var idproof = idList.AsEnumerable().Select(row => new
+    {
+        kyc_id = row["kyc_id"],
+        kyc_name = row["kyc_name"]
+    });
+
+}
+
+
+<html>
+<head>
+    <style>
+        .button_style {
+            background-color: #007FFF;
+            height: 40px;
+            width: 100px;
+            border-radius: 8px;
+            color: white;
+            border-color: white;
+            font-size: 15px;
+        }
+    </style>
+
+</head>
+
+<body>
+ 
+        @*<class ="main-panel">
+        <div class="content">
+            <div class="page-inner">
+
+                <div class="col-md-12">
+                    <div class="card" style="background-color:#fafafa">
+                        <br />*@
+    <div class="app-main__inner" style="margin-top: -30px;padding:4px;width:100%;">
+        <br />
+        <div style="height: 50px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">Search Customer</h6>
+            </div>
+        </div>
+        <div class="card-body">
+
+            <form action="@Url.Action("Search_customer", "CustomerCreate")" method="post" id="search_form">
+
+                <div class="row" style="width:140%;">
+
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text" id="basic-addon1">Mobile No.</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="mobile_no" name="mobile_no" aria-label="" aria-describedby="basic-addon1" autocomplete="off" maxlength="10" @*onchange="validateMobileNumber(this)"*@ onkeyup="this.value=this.value.replace(/[^0-9]/g, '')" />
+                            <span id="mobileNoValidation" style="color:red;font-size:12px;"></span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Customer ID</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="customer_id" name="customer_id" aria-label="" aria-describedby="basic-addon1" autocomplete="off" maxlength="10" onkeyup="this.value=this.value.replace(/[^0-9]/g, '')" />
+
+                        </div>
+                        @*  *@
+                    </div>
+
+                </div>
+                @*...Fifth row...*@
+                <div class="row" style="width:140%;">
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Id Proof</span>
+                            </div>
+
+                            <select class="form-control" name="ddl_idproof" id="ddl_idproof" @*onchange="validateIDProofNo();*@">
+
+                                @foreach (var id in idproof)
+                                {
+                                    <option value="@id.kyc_id">@id.kyc_name</option>
+                                }
+                            </select>
+                            <span id="idProofValidation" style="color: red;font-size:12px;"></span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Id Proof No</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="txt_id_proof_no" name="txt_id_proof_no" aria-label="" aria-describedby="basic-addon1" @*onchange="validateIDProofNo();"*@ Style="text-transform: uppercase">
+                            <span id="idProofNoValidation" style="color: red;font-size:12px;"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+                @*...Sixth row...*@
+                <div class="row" style="width:140%;">
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Address Proof</span>
+                            </div>
+
+                            <select class="form-control" name="ddl_address" id="ddl_address" @*onchange="validateAddressProofNo();"*@>
+
+
+                                @foreach (var address in addressproof)
+                                {
+                                    <option value="@address.kyc_id">@address.kyc_name</option>
+                                }
+                            </select>
+                            <span id="addressProofValidation" style="color: red;font-size:12px;"></span>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Address Proof No</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="txt_add_proof_no" name="txt_add_proof_no" aria-label="" aria-describedby="basic-addon1" @*onchange="validateAddressProofNo();"*@ Style="text-transform: uppercase">
+                            <span id="addressProofNoValidation" style="color: red;font-size:12px;"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+                @*...Seventh row...*@
+                <div class="row" style="width:140%;">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">First Name</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="fname" name="fname" aria-label="" aria-describedby="basic-addon1" autocomplete="off" Style="text-transform: uppercase" onkeyup="this.value=this.value.replace(/[^a-zA-Z]/g, '')" onPaste="javascript: return false;">
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 col-lg-4">
+
+
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span style="width:140px;" class="input-group-text">Second Name</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" id="lname" name="lname" aria-label="" aria-describedby="basic-addon1" onkeyup="this.value=this.value.replace(/[^a-zA-Z. ]/g, '')" autocomplete="off" Style="text-transform: uppercase" onPaste="javascript: return false;">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="overlay" id="loadingOverlay">
+
+
+                </div>
+
+
+                <div id="loadingIndicator">
+
+
+                </div>
+
+                <div class="card-action" id="button_div">
+
+
+                    <button class="button_style" type="submit" id="btn_search" value="submit" onclick="showLoadingSpinner()" @*onclick="showDiv()"*@>Search</button>
+
+                    <button class="button_style" type="button"  style="background-color:#686D76;" id="resetButton">Reset</button>
+
+                </div>
+
+
+
+            </form>
+
+
+
+
+            <hr />
+
+
+
+            <div id="partialContainer">
+
+
+            </div>
+
+
+
+
+
+
+        </div>
+    </div>
+
+</body>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+
+<script src="~/Scripts/preloader_script.js"></script>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#mobile_no").on("focusout", function () {
+
+        var mobileNumber = $(this).val();
+
+
+
+        $.ajax({
+            url: '@Url.Action("SetMobileNumber", "CustomerCreate")',
+            type: 'POST',
+            data: { mobileNumber: mobileNumber },
+            success: function (result) {
+
+            },
+            error: function () {
+
+            }
+        });
+    });
+});
+
+
+
+    function validateMobileNumber(input) {
+        // Check if it's the mobile number input field
+        if (input.id === "mobile_no") {
+            // Allow only numeric input
+            input.value = input.value.replace(/\D/g, '');
+
+            // Display an alert if the mobile number is not 10 digits
+            if (input.value.length !== 10) {
+                document.getElementById("mobileNoValidation").innerHTML = "Mobile number must contain exactly 10 digits.please correct.";
+                $('#partialContainer').hide();
+            }
+            else if (!/^[6-9]/.test(input.value)) {
+                //alert("invalid");
+                document.getElementById("mobileNoValidation").innerHTML = "Mobile number must start with 6, 7, 8, or 9. Please correct.";
+                $('#partialContainer').hide();
+            }
+            else {
+                // Clear validation message if validation succeeds
+                document.getElementById("mobileNoValidation").innerHTML = "";
+            }
+        }
+    }
+
+
+    // reset button resetting form
+    $(document).ready(function () {
+        $('#resetButton').click(function () {
+            // Reset the form
+            $('#search_form')[0].reset();
+
+            // Show the search button
+            $('#btn_search').show();
+
+            // Show the incomplete customer table
+            $('#incompleate_customer_table').show();
+
+            $('#partialContainer').hide();
+
+
+            $('#mobileNoValidation').text("");
+            $('#idProofValidation').text("");
+            $('#addressProofValidation').text("");
+            $('#idProofNoValidation').text("");
+            $('#addressProofNoValidation').text("");
+
+
+        });
+    });
+
+
+
+
+
+   
+
+
+
+    function validateAddressProofNo() {
+
+        var selectedValue = document.getElementById("ddl_address").value;
+        var addressProofNo = document.getElementById("txt_add_proof_no").value.trim().toUpperCase();
+        var regex;
+        var addressProofValidationSpan = document.getElementById("addressProofValidation");
+        var addressProofNoValidationSpan = document.getElementById("addressProofNoValidation");
+
+        addressProofValidationSpan.innerHTML = "";
+        addressProofNoValidationSpan.innerHTML = "";
+
+
+        if (selectedValue !== "-1" && !addressProofNo) {
+
+            addressProofNoValidationSpan.innerHTML = "Please enter corresponding id number then search..";
+            return false;
+        }
+
+        if (selectedValue === "-1" && addressProofNo != "") {
+            addressProofValidationSpan.innerHTML = "Please select an Address Proof type then search..";
+            return false;
+        }
+        switch (selectedValue) {
+            case "9": // Aadhar
+                regex = /^\d{12}$/;
+                if (!regex.test(addressProofNo)) {
+                    addressProofNoValidationSpan.innerHTML = "Invalid Aadhar No! Please enter a valid 12-digit number.";
+                    clearAndFocus("txt_add_proof_no");
+                    return false;
+                }
+                break;
+            case "2": // Passport
+                regex = /([a-zA-Z]{1})([0-9]{7})$/;
+                if (!regex.test(addressProofNo)) {
+                    addressProofNoValidationSpan.innerHTML = "Invalid Passport No! Please enter a valid combination.";
+                    clearAndFocus("txt_add_proof_no");
+                    return false;
+                }
+                break;
+            case "4": // Indian Voters ID
+                regex = /^(?:[A-Z]{2}(?:[0-9]{8}|[0-9]{11,12})|[A-Z]{3}[0-9]{7})$/;
+                if (!regex.test(addressProofNo)) {
+                    addressProofNoValidationSpan.innerHTML = "Invalid Voters ID No! Please enter a valid combination.";
+                    clearAndFocus("txt_add_proof_no");
+                    return false;
+                }
+                break;
+            default:
+                // No validation for other items
+                return true; // Return true if no specific validation needed
+        }
+
+        return true; // Return true if validation passes
+    }
+
+
+
+
+    function validateIDProofNo() {
+        var selectedValue1 = document.getElementById("ddl_idproof").value;
+        var idProofNo = document.getElementById("txt_id_proof_no").value.trim().toUpperCase();
+        var regex;
+        var idProofNoValidationSpan = document.getElementById("idProofNoValidation");
+        var idProofValidationSpan = document.getElementById("idProofValidation");
+        idProofNoValidationSpan.innerHTML = "";
+        idProofValidationSpan.innerHTML = "";
+        if (selectedValue1 !== "-1" && !idProofNo) {
+            idProofNoValidationSpan.innerHTML = "Please enter the corresponding id number..";
+            return false; // Return false to indicate validation failure
+        }
+        if (selectedValue1 === "-1" && idProofNo != "") {
+            idProofValidationSpan.innerHTML = "Please select corresponding id proof type then search..";
+            return false; // Return false to indicate validation failure
+        }
+
+        switch (selectedValue1) {
+            // Add more cases as needed for different ID proof types
+            case "1": // PAN validation
+                regex = /^[a-zA-Z]{3}P[a-zA-Z][0-9]{4}[a-zA-Z]$/;
+                break;
+            default:
+                return true; // Default to true if no specific validation is required
+        }
+
+        if (!regex.test(idProofNo)) {
+            idProofNoValidationSpan.innerHTML = "Invalid PAN No! Please enter a valid number.";
+            return false; // Return false to indicate validation failure
+        }
+
+        return true; // Return true if validation passes
+    }
+
+
+     $(document).ready(function () {
+        $(".continue-link").on("click", function (e) {
+            e.preventDefault();
+
+            var row = $(this).closest('tr');
+            var id = parseInt(row.find('td:eq(0)').text()); // Assuming ID is in the first column and converting to integer
+            var sl_no = parseInt(row.find('td:eq(6)').text()); // Assuming sl_no is in the second column and converting to integer
+            //alert(id);
+            //alert(sl_no);
+            $.ajax({
+
+                url: '@Url.Action("modify_return_continue", "CustomerCreate")',
+                type: 'POST',
+                data: { id: id, sl_no: sl_no },
+                success: function (result) {
+                   // alert("modifyreturncontinue");
+                    if (result.success === true) {
+                        window.location.href = '@Url.Action("customer_modification", "Customer_modification")';
+                    }
+                },
+                error: function (error) {
+                    // Handle the error if needed
+                }
+            });
+        });
+     });
+
+      @*$(document).ready(function () {
+        $('.continue-link').click(function (e) {
+            e.preventDefault();
+            var row = $(this).closest('tr');
+            var id = row.find('td:eq(0)').text(); // Assuming ID is in the first column
+            var sl_no = row.find('td:eq(1)').text(); // Assuming sl_no is in the second column
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SetSessionVariables", "CustomerCreate")',
+                data: { id: id, sl_no: sl_no },
+                success: function (response) {
+                    // Handle success
+                    // For example, redirect to another page
+                    window.location.href = '@Url.Action("modify_return_continue", "CustomerCreate")';
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
+                    console.log(error);
+                }
+            });
+        });
+    });*@
+      $(document).ready(function () {
+    $('#btn_search').click(function (e) {
+        e.preventDefault();
+
+        // Get and trim the mobile number input value
+        var mobileInput = document.getElementById('mobile_no');
+        var mobileValue = mobileInput.value.trim();
+
+        // Check if mobile number length is greater than 1 before validating
+        if (mobileValue.length > 1) {
+            // Validate mobile number
+            validateMobileNumber(mobileInput);
+
+            // Check if mobile number validation failed
+            if ($('#mobileNoValidation').text().trim() !== "") {
+                return; // Stop form submission if validation fails
+            }
+        }
+
+        // Validate ID proof and address proof numbers
+        if (!validateIDProofNo() || !validateAddressProofNo()) {
+            return; // Stop form submission if validation fails
+        }
+
+        // Disable the search button to prevent double submission
+        $(this).prop('disabled', true);
+
+        // Create a FormData object from the form
+        var formData = new FormData($('#search_form')[0]);
+
+        // Convert FormData to a plain object
+        var formDataObject = {};
+        formData.forEach(function (value, key) {
+            formDataObject[key] = value;
+        });
+
+        // Convert the plain object to JSON
+        var jsonData = JSON.stringify(formDataObject);
+
+        // Show the loading indicator before making the AJAX call
+        showLoadingIndicator();
+
+        // Make an AJAX call to the server
+        $.ajax({
+            url: '@Url.Action("Search_customer", "CustomerCreate")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: jsonData,
+            success: function (result) {
+                // Update the partial container
+                $('#partialContainer').html(result);
+                $('#partialContainer').show(); // Show the partialContainer
+            },
+            error: function (xhr, status, error) {
+                // Display a meaningful error message to the user
+                alert("Please enter at least one field then Search");
+               // $('#partialContainer').html('<h5 style="color:red">Please enter at least one field then Search</h5>');
+                console.error('Error loading partial view:', error);
+            },
+            complete: function () {
+                // Re-enable the search button and hide the loading indicator when the AJAX call is complete
+                $('#btn_search').prop('disabled', false);
+                hideLoadingIndicator();
+            }
+        });
+    });
+});
+
+
+
+
+@*$(document).ready(function () {
+    $('#btn_search').click(function (e) {
+        e.preventDefault();
+        var mobileInput = document.getElementById('mobile_no');
+        var mobileValue = mobileInput.value.trim();
+
+        // Check if mobile number length is greater than 1 before validating
+        if (mobileValue.length > 1) {
+            // Validate mobile number
+            validateMobileNumber(mobileInput);
+
+            // Check if mobile number validation failed
+            if ($('#mobileNoValidation').text().trim() !== "") {
+                return; // Stop form submission if validation fails
+            }
+        }
+        if (!validateIDProofNo()) {
+            return; // Stop form submission if validation fails
+        }
+        if (!validateAddressProofNo()) {
+            return; // Stop form submission if validation fails
+        }
+        $(this).prop('disabled', true); // Disable the search button to prevent double submission
+       // $('#dataGrid1').hide(); // Hide the incomplete customer table
+
+        // Create a FormData object from the form
+        var formData = new FormData($('#search_form')[0]);
+
+        // Convert FormData to a plain object
+        var formDataObject = {};
+        formData.forEach(function (value, key) {
+            formDataObject[key] = value;
+        });
+
+
+
+            // Convert the plain object to JSON
+            var jsonData = JSON.stringify(formDataObject);
+
+            // Show the loading indicator before making the AJAX call
+
+
+        showLoadingIndicator();
+            // Make an AJAX call to the server
+            $.ajax({
+                url: '@Url.Action("Search_customer", "CustomerCreate")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: jsonData,
+                success: function (result) {
+                    // Update the partial container
+                    $('#partialContainer').html(result);
+                    $('#partialContainer').show(); // Show the partialContainer
+                },
+                error: function (xhr, status, error) {
+                    // Display a meaningful error message to the user
+                    $('#partialContainer').html('<h5 style="color:red">Please enter atleast one field then Search</h5>');
+                    console.error('Error loading partial view:', error);
+                },
+                complete: function () {
+                    // Re-enable the search button and hide the loading indicator when the AJAX call is complete
+                    $('#btn_search').prop('disabled', false);
+                    hideLoadingIndicator();
+                }
+            });
+
+    });
+});*@
+
+
+
+
+
+</script>
+
+
+
+</html>

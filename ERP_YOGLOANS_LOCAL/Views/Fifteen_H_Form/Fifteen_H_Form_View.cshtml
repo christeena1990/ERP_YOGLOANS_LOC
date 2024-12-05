@@ -1,0 +1,533 @@
+﻿@{
+    Layout = null;
+    var sessionValuepan_no = Session["pan_no"];
+    var sessionValueTrack_ID = Session["Track_ID"];
+    var applicationId = Session["appid"];
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table with 18 Rows and 4 Columns</title>
+    <style>
+        #table1 {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #table2 {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        td, th {
+            border: 1px solid black;
+            /*     height: 40px;*/
+            text-align: left;
+        }
+
+        .table3 td {
+            border: none; /* Remove border for td elements in this table */
+            padding: 5px; /* Optional: Add some padding for spacing */
+        }
+
+        .table3 th {
+            border: none; /* Remove border for th elements in this table */
+        }
+
+        .table3 td.right-align {
+            text-align: right; /* Right align specific cells */
+        }
+
+        .page-break {
+            page-break-before: always;
+            break-before: page;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+   
+
+    <script>
+        $(document).ready(function () {
+           //alert("function ready.");
+            var sessionValuepan_no = '@(sessionValuepan_no ?? "null")';
+            var sessionValueTrack_ID = '@(sessionValueTrack_ID ?? "null")';
+            //var applicationId = Session["Session[appid"]?.ToString();
+            var applicationId = '@(applicationId ?? "null")';
+           // alert(applicationId);
+
+            if (sessionValuepan_no !== "null" && sessionValueTrack_ID !== "null") {
+
+                initializeScript();
+            }
+            else if (applicationId !== "null") {
+                initializeScript();
+            }
+
+                else {
+              //  alert("Session values are not set, skipping script initialization.");
+            }
+        });
+
+
+        function initializeScript() {
+            //alert("Initializing form data.");
+
+            $.ajax({
+                url: '/Fifteen_H_Form/fifteen_H_details',
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    if (response.success && Array.isArray(response.data) && response.data.length > 0) {
+                        const data = response.data;
+
+                        // Loop through each item in the data array
+                        data.forEach((item, index) => {
+
+
+                            //alert("Customer Name: " + item.customer_name);
+
+                            $('#pantrack_label').text(item.pantrack);
+                            $('#customerNameLabel').text(item.customer_name);
+                            $('#customerNameLabel2').text(item.customer_name);
+                          //  alert("Mobile No: " + item.mobile_no);
+                            $('#mobileNoLabel').text(item.mobile_no);
+                            $('#emailIdLabel').text(item.email_id);
+                            $('#houseNameLabel').text(item.c_housename);
+                            $('#streetNameLabel').text(item.c_street_name);
+                            $('#cityLabel').text(item.c_city);
+                            $('#cityLabel2').text(item.city);
+                            $('#cityLabel3').text(item.city);
+                            $('#postNameLabel').text(item.post_name);
+                            $('#pinCodeLabel').text(item.pin_code);
+                            $('#districtNameLabel').text(item.district_name);
+                            $('#stateNameLabel').text(item.state_name);
+                            $('#panCardNoLabel').text(item.PancARdno);
+                            $('#totNo15FieldLabel').text(item.tot_no_15_field);
+                            $('#totIntCifLabel').text(item.tot_int_cif);
+                            $('#aggregateAmtLabel').text(item.aggregate_amt);
+                            $('#statusLabel').text(item.status);
+                            $('#fyLabel').text(item.fy);
+                            $('#premisesLabel').text(item.premises);
+                            $('#estIncomeLabel').text(item.estincome);
+                            $('#estTotIncomeLabel').text(item.esttotincom);
+                            $('#estTotIncomeLabel2').text(item.esttotincom);
+                           // alert(item.esttotincom);
+                            $('#resStatusLabel').text(item.resstatus);
+                            $('#assYrLabel').text(item.assyr);
+                            $('#endDateLabel').text(item.enddt);
+                            $('#endDateLabel1').text(item.enddt);
+                           // $('#panTrackLabel').text(item.pantrack);
+                            $('#dobLabel').text(item.dob);
+
+                            $('#dtLabel').text(item.dt);
+                            $('#dtLabel2').text(item.dt);
+                            $('#dtLabel3').text(item.dt);
+                            $('#otpDateLabel').text(item.otpdt);
+                            $('#signatureLabel').text(item.signature);
+                            $('#signatureLabel2').text(item.signature);
+                        });
+
+                      //  alert("Data retrieved successfully. Check console for details.");
+                    } else {
+                        alert("Failed to retrieve data.");
+                    }
+                    if (response.table1 && Array.isArray(response.table1)) {
+                      //  alert("table two");
+                        const table1Data = response.table1;
+                        const table2 = $('#table2');
+
+                        // Clear existing rows except the header
+                        table2.find("tr:gt(0)").remove();
+
+                        table1Data.forEach((item, index) => {
+                            // Create new row for table1
+                            const row = $('<tr>');
+
+                            // Generate Sl. No. dynamically
+                            row.append($('<td>').text(index + 1));
+
+                            // Add other columns from table1
+                            row.append($('<td>').text(item.a1));  // Identification number
+                            row.append($('<td>').text(item.a2));  // Nature of income
+                            row.append($('<td>').text(item.a3));  // Section under which tax is deductible
+                            row.append($('<td>').text(item.a4));  // Amount of income
+
+                            // Append the row to the table
+                            table2.append(row);
+                        });
+                    }
+
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error in AJAX request:", error);
+                    alert("Error initializing form data.");
+                }
+            });
+        }
+
+
+
+
+
+
+    </script>
+</head>
+<body style="font-size:9pt;">
+    <div id="part1">
+        <div style="width:100%; text-align: center;">
+            <h4 style="margin-bottom: 1px;">FORM NO.15H</h4>
+
+            <p1 style="margin-top: 1px;">[See section 197A(1C) and rule 29C]</p1>
+            <br />
+            <p4 style="margin-top: 1px; font-weight: 800;">Declaration under section 197A(1C) to be made by an individual who is of the age of sixty years or more claiming certain incomes without deduction of tax.</p4>
+            <br />
+            <p2 style="margin-top: 1px;font-weight:800;">PART I</p2>
+        </div>
+
+
+        <table id="table1">
+
+            <tr>
+                <td colspan="2" style="padding-bottom:10px;">
+                    1.Name Of Assessee(Declarant)
+                    <label><span id="customerNameLabel" style="display: block; "></span></label>
+                </td>
+                <td style="padding-bottom:10px;">
+                    2.PAN of the Assessee<sup>1</sup>
+                    <label><span id="panCardNoLabel" style="display: block; "></span></label>
+                </td>
+                <td style="padding-bottom:10px;">
+                    3.Date of Birth<sup>2</sup><br />(DD/MM/YYYY)
+                    <label><span id="dobLabel" style="display: block; "></span></label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    4.Previous year(P.Y.)<sup>3</sup>(for which<br /> declaration is being made):
+                    <label><span id="fyLabel" style="display: block;"></span></label>
+
+                </td>
+                <td colspan="2" style="padding-bottom:20px;">
+                    5.Flat/Door/Block No
+
+                    <label><span id="houseNameLabel" style="display: block;"></span></label>
+                </td>
+                <td style="padding-bottom:20px;">
+                    6.Name of Premises
+                    <label><span id="premisesLabel" style="display: block;"></span></label>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-bottom:20px;">
+                    7.Road/Street/Lane
+                    <label><span id="streetNameLabel" style="display: block;"></span></label>
+                </td>
+                <td style="padding-bottom:20px;">
+                    8.Area/Locality
+                    <label><span id="cityLabel" style="display: block;"></span></label>
+                </td>
+                <td style="padding-bottom:20px;">
+                    9.Town/City/District
+                    <label><span id="districtNameLabel" style="display: block;"></span></label>
+                </td>
+                <td style="padding-bottom:20px;">
+                    10.State
+                    <label><span id="stateNameLabel" style="display: block;"></span></label>
+                </td>
+
+            </tr>
+            <tr>
+                <td style="padding-bottom:20px;">
+                    11.PIN
+                    <label><span id="pinCodeLabel" style="display: block;"></span></label>
+                </td>
+                <td style="padding-bottom:20px;">
+                    12.Email
+                    <label><span id="emailIdLabel" style="display: block;"></span></label>
+                </td>
+                <td style="padding-bottom:20px;" colspan="2">
+                    13.Telephone No.(with STD Code) and Mobile No
+                    <label><span id="mobileNoLabel" style="display: block;"></span></label>
+                </td>
+
+            </tr>
+            <tr>
+                <td colspan="4">
+                    14.(a)Whether assessed to tax<sup>4</sup>:
+                    <label><input type="checkbox" name="assessedToTax" value="yes" disabled> Yes</label>
+                    <label><input type="checkbox" name="assessedToTax" value="no" checked disabled> No</label>
+
+
+                    <br />(b)If yes,latest assessment year for which assessed
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding-bottom:20px;">
+                    15.Estimated income for which this declaration is made
+                    <label><span id="estIncomeLabel" style="display: block;"></span></label>
+                </td>
+                <td colspan="2" style="padding-bottom:20px;">
+                    16.Estimated total income of the P.Y in which income<br /> mentioned in column 15 to be included<sup>5</sup>
+                    <label><span id="estTotIncomeLabel" style="display: block;"></span></label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    17.Details of Form No.15H other than this form filed for the previous year,if any<sup>6</sup>
+
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center">
+                    Total No. of Form No.15H filed
+
+                </td>
+                <td colspan="2" align="center">
+                    Aggregate amount of income for which form No. 15H<br />filed
+
+
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <br />
+                    <label id="totNo15FieldLabel"></label>
+                </td>
+                <td colspan="2">
+                    <br />
+                    <label id="aggregateAmtLabel"></label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">18.Details of income for which the declaration is filed</td>
+            </tr>
+        </table>
+
+        @*<table id="table2">
+            <tr>
+                <td>Sl.No</td>
+                <td>Identification number of relevant investment/account,etc<sup>7</sup></td>
+                <td>Nature of income</td>
+                <td>Section under which tax is deductible</td>
+                <td>Amount of income</td>
+            </tr>
+            <tr>
+                <td><br /></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>*@
+        <table id="table2">
+            <thead>
+                <tr>
+                    <td>Sl.No</td>
+                    <td>Identification number of relevant investment/account,etc<sup>7</sup></td>
+                    <td>Nature of income</td>
+                    <td>Section under which tax is deductible</td>
+                    <td>Amount of income</td>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+
+        <br />
+        <br />
+        <div style="text-align: right;width:100%;">
+            
+            <label style="width:50px;" id="signatureLabel">....................................</label>
+            <br />
+            <br />
+            Signature of the Declarant
+        </div>
+        <div style="width:100%; text-align: center;">
+            <h3>Declaration /Verification<sup>8</sup></h3>
+        </div>
+        <div>
+            <p style="text-align: justify;">
+                I
+                <label style="width:50px;" id="customerNameLabel2">................................</label>
+                do hereby declare that I am resident in India within the meaning
+                of section 6 of the Income-tax Act ,1961.I also hereby declare that to the best of my knowledge
+                and belief what is stated above is correct,complete and is truly stated and that the incomes referred
+                to in this form are not includible in the total income of any other person under section 60 to 64 of
+                the Income-tax Act ,961.I further declare that the tax on my estimated total income including
+                *income/incomes referred to in column 15 *and aggregate amount of *income/incomes referred to
+                in column 17 computed in a accordance with the provisions of the Income-tax Act, 1961,
+                for the previous year ending on
+                <label style="width:50px;" id="endDateLabel">................................</label>
+                relevant to the assessment year
+                <label style="width:50px;" id="assYrLabel">................................</label>
+                will be nil.
+            </p>
+        </div>
+
+        <table class="table3" border="0" width="100%">
+            <tr>
+                <td>
+                    Place:
+                    
+                    <label id="cityLabel2">..........................................</label>
+                
+                </td>
+                <td class="right-align">
+                    <label style="width:50px;" id="signatureLabel2">....................................</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Date:
+                    <label id="dtLabel">...........................................</label>
+                
+                 
+                </td>
+                <td class="right-align">Signature of the Declarant</td>
+            </tr>
+        </table>
+    </div>
+    <div id="part2" class="page-break">
+        <div style="width:100%; text-align: center;">
+            <h3 style="margin-bottom: 0px;">Part II</h3>
+
+            <p4 style="margin-top: 0px; font-weight: 800;">[To be filled by the person responsible for paying the income referred to in column 15 of Part I]</p4>
+
+        </div>
+
+        <table id="table1">
+            <tr>
+                <td colspan="2" style="padding-bottom:20px;">
+                    1.Name of the person responsible for paying<br />
+                    @*<label>YOGAKSHEMAM LOANS LTD.</label>*@
+                    <label><span>YOGAKSHEMAM LOANS LTD.</span></label>
+                </td>
+
+                <td style="padding-bottom:20px;" colspan="3">2.Unique Idetification No.<sup>9</sup><br />
+                  <label id="pantrack_label"></label>
+                </td>
+
+
+            </tr>
+            <tr>
+                <td style="padding-bottom:20px;">
+                    3.PAN of the person responsible for paying<br /><br />
+                    <label><span>AAACY0903F</span></label>
+                </td>
+                <td colspan="3" style="padding-bottom:20px;">
+                    4.Complete Address<br /><br />
+                    <label><span>Door No.28/315-D2, 3rd Floor, Ottappath<br /> Tower,Aswini Junction, Thiruvambady P.O, Thrissur <br />680 022</span></label>
+                </td>
+
+                <td style="padding-bottom:20px;">
+                    5.TAN of the person responsible for paying<br /><br />
+                    <label><span>AAACY0903F</span></label>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-bottom:20px;">
+                    6.Email
+                    <br />
+                    <br />
+                    
+                    <label><span>mail@yogloans.com</span></label>
+                </td>
+
+                <td colspan="3" style="padding-bottom:20px;">
+                    7.Telephone No.(with STD Code)and Mobile No
+                    <br />
+                    <br />
+
+                    <label><span>0487-2320102</span></label>
+                </td>
+
+                <td style="padding-bottom:20px;">
+                    8.Amount of income paid<sup>10</sup>
+                    <br /><br />
+                    <label id="estTotIncomeLabel2"></label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="padding-bottom:20px;">
+                    9.Date on which Declaration is received(DD/MM/YYYY)
+                    <br /><br />
+                    <label id="dtLabel2"></label>
+                </td>
+
+                <td style="padding-bottom:20px;" colspan="3">
+                    10.Date on which the income has been paid/credited (DD/MM/YYYY)
+
+                    <sup>9</sup>
+                    <br /><br />
+                    <label id="endDateLabel1"></label>
+                </td>
+            </tr>
+
+        </table>
+        <table class="table3" border="0" width="100%">
+            <tr>
+                <td>Place: 
+                <label id="cityLabel3">..........................................</label>
+                </td>
+
+                <td class="right-align">...................................................</td>
+            </tr>
+            <tr>
+                <td>
+                    Date:
+                    <label id="dtLabel3">...........................................</label>
+                </td>
+                <td class="right-align">Signature of the person responsible for paying<br /> the income referred to in column 15 of Part I</td>
+            </tr>
+        </table>
+        <br /><br />
+        <div style="text-align: justify;">
+            *Delete whichever is not applicable.
+            <sup>1</sup>As per provisions of section 206AA(2), the declaration under section 197A(1C) shall be invalid if the declarant
+            fails to furnish his valid Permanent Account Number (PAN).<br />
+            <sup>2</sup>Declaration can be furnished by a resident individual who is of the age of 60 years or more at any time during the
+            previous year.<br />
+            <sup>3</sup>The financial year to which the income pertains.<br />
+            <sup>4</sup>Please mention “Yes” if assessed to tax under the provisions of Income-tax Act, 1961 for any of the assessment
+            year out of six assessment years preceding the year in which the declaration is filed.<br />
+            <sup>5</sup>Please mention the amount of estimated total income of the previous year for which the declaration is filed
+            including the amount of income for which this declaration is made.<br />
+            <sup>6</sup>In case any declaration(s) in Form No. 15H is filed before filing this declaration during the previous
+            year, mention the total number of such Form No. 15H filed along with the aggregate amount of income
+            for which said declaration(s) have been filed.<br />
+            <sup>7</sup>Mention the distinctive number of shares, account number of term deposit, recurring deposit, National
+            Savings Schemes, life insurance policy number, employee code, etc.<br />
+            <sup>8</sup>Before signing the declaration/verification, the declarant should satisfy himself that the information
+            furnished in this form is true, correct and complete in all respects. Any person making a false statement in
+            the declaration shall be liable to prosecution under section 277 of the Income-tax Act, 1961 and on
+            conviction be punishable-
+        </div>
+        <div style="padding-left: 20px; text-align: justify;">
+            (i) in a case where tax sought to be evaded exceeds twenty-five lakh rupees, with rigorous
+            imprisonment which shall not be less than six months but which may extend to seven years and
+            with fine;<br />
+            (ii) in any other case, with rigorous imprisonment which shall not be less than three months but
+            which may extend to two years and with fine.
+        </div>
+        <div style="text-align: justify;">
+            <sup>9</sup>The person responsible for paying the income referred to in column 15 of Part I shall allot a unique
+            identification number to all the Form No. 15H received by him during a quarter of the financial year and
+            report this reference number along with the particulars prescribed in rule 31A(4)(vii) of the Income-tax
+            Rules, 1962 in the TDS statement furnished for the same quarter.  In case the person has also received
+            Form No.15G during the same quarter, please allot separate series of serial number for Form No.15H and
+            Form No.15G.<br />
+            <sup>10</sup>The person responsible for paying the income referred to in column 15 of Part I shall not accept the
+            declaration where the amount of income of the nature referred to in section 197A(1C) or the aggregate of
+            the amounts of such income credited or paid or likely to be credited or paid during the previous year in
+            which such income is to be included exceeds the maximum amount which is not chargeable to tax after
+            allowing for deduction(s) under Chapter VI-A, if any, or set off of loss, if any, under the head “income
+            from house property” for which the declarant is eligible. For deciding the eligibility, he is required to
+            verify income or the aggregate amount of incomes, as the case may be, reported by the declarant in
+            columns 15 and 17.".
+        </div>
+    </div>
+</body>
+</html>

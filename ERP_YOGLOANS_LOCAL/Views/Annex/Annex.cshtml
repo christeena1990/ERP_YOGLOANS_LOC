@@ -1,0 +1,992 @@
+﻿@model ERP_YOGLOANS_LOCAL.Models.Legality_Model.Annex_model
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annex Page</title>
+    @*<style>
+
+            html {
+                zoom: 90%; /* You can adjust the percentage to your preference */
+            }
+
+            /* Ensure a new page starts here */
+            .page-break {
+                page-break-before: always; /* Start on a new page */
+                break-before: page; /* For better compatibility */
+            }
+
+
+
+
+
+            /*
+            -------------------------------------------------------------*/
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                text-align: center;
+                /*---------------------------------------*/
+            }
+
+            .heading-container {
+                margin: 20px 0;
+            }
+
+                .heading-container h1 {
+                    font-size: 24px;
+                    margin: 10px 0;
+                }
+
+                .heading-container h2 {
+                    font-size: 18px;
+                    margin: 5px 0;
+                }
+
+            table {
+                border-collapse: collapse;
+                border-block-color: black;
+                width: 80%;
+                margin: 20px auto;
+            }
+
+            /* Increase padding to increase row height */
+            th, td {
+                border: 2px solid #ddd;
+                border: 2px solid #000000;
+                padding: 12px; /* Increased padding for more row height */
+                text-align: left;
+            }
+
+            /* Remove black background and apply a different style if desired */
+            th {
+                color: #000000; /* Set text color if needed */
+                font-weight: normal; /* Ensure table headers are not bold */
+            }
+
+
+            .small-column {
+                width: 30px; /* Fixed width for serial number column */
+                text-align: center;
+            }
+
+            .large-column {
+                width: 200px;
+            }
+
+            .largest-column {
+                width: 460px;
+            }
+
+            .disbursal-schedule {
+                font-weight: bold;
+            }
+
+            .disbursal-details {
+                display: block;
+                margin-top: 5px;
+            }
+
+            .pdf-button {
+                margin: 20px;
+                padding: 10px 20px;
+                font-size: 16px;
+                color: white;
+                background-color: #007bff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            /* Container for tables */
+            .table-container {
+                text-align: center; /* Center-aligns the tables */
+            }
+
+            /* Ensure the tables are centered within the container */
+            .no-space {
+                border-collapse: collapse; /* Removes space between table borders */
+                margin: 0 auto; /* Centers the table horizontally */
+                border: 1px solid #ddd; /* Optional: Border around the table */
+            }
+
+                /* Remove padding and margins around table cells */
+                .no-space td, .no-space th {
+                    padding: 12px; /* Increase padding for row height */
+                    border: 1px solid #ddd; /* Optional: Border around cells */
+                }
+
+            /* Optional: Adjust the margin between tables */
+            #content1 {
+                margin-bottom: 0; /* Remove space between tables */
+            }
+
+            .numbered-item {
+                display: inline-block;
+                width: 30px; /* Adjust width as needed */
+            }
+
+            .description {
+                display: inline;
+                text-indent: 5px; /* Adjust indentation as needed */
+            }
+
+
+            .multiline {
+                display: block;
+                margin-left: 35px; /* Adjust margin as needed */
+            }
+        </style>*@
+
+    @*-----------------black outline with separate box----------------------*@
+
+    @*<style>
+            html {
+                zoom: 85%; /* Adjust this percentage to scale down the content */
+            }
+
+            /* Ensure a new page starts here */
+            .page-break {
+                page-break-before: always; /* Start on a new page */
+                break-before: page; /* For better compatibility */
+            }
+
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+                text-align: center;
+                font-size: 12px; /* Smaller font size for better fitting */
+            }
+
+            .heading-container {
+                margin: 10px 0;
+            }
+
+                .heading-container h1 {
+                    font-size: 18px; /* Adjust font size */
+                    margin: 5px 0;
+                }
+
+                .heading-container h2 {
+                    font-size: 14px; /* Adjust font size */
+                    margin: 3px 0;
+                }
+
+            table {
+                border-collapse: collapse;
+                border: 2px solid black; /* Black border for the table */
+                width: 100%; /* Adjust width to 100% */
+                margin: 5px auto; /* Reduce margin */
+            }
+
+            th, td {
+                border: 1px solid black; /* Black border for table cells */
+                padding: 8px; /* Reduced padding */
+                text-align: left;
+            }
+
+            .small-column {
+                width: 20px; /* Adjusted width */
+                text-align: center;
+            }
+
+            .large-column {
+                width: 150px; /* Adjusted width */
+            }
+
+            .largest-column {
+                width: 300px; /* Adjusted width */
+            }
+
+            .pdf-button {
+                margin: 10px;
+                padding: 5px 10px;
+                font-size: 12px;
+                color: white;
+                background-color: #007bff;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+        </style>*@
+
+
+    <style>
+        html {
+            zoom: 85%; /* Adjust this percentage to scale down the content */
+        }
+
+        /* Ensure a new page starts here */
+        .page-break {
+            page-break-before: always; /* Start on a new page */
+            break-before: page; /* For better compatibility */
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            font-size: 12px; /* Smaller font size for better fitting */
+        }
+
+        .heading-container {
+            margin: 10px 0;
+        }
+
+            .heading-container h1 {
+                font-size: 18px; /* Adjust font size */
+                margin: 5px 0;
+            }
+
+            .heading-container h2 {
+                font-size: 14px; /* Adjust font size */
+                margin: 3px 0;
+            }
+
+        table {
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+            width: 100%; /* Adjust width to 100% */
+            margin: 5px auto; /* Reduce margin */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px; /* Reduced padding */
+            text-align: left;
+        }
+
+        .small-column {
+            width: 20px; /* Adjusted width */
+            text-align: center;
+        }
+
+        .large-column {
+            width: 150px; /* Adjusted width */
+        }
+
+        .largest-column {
+            width: 300px; /* Adjusted width */
+        }
+
+        .pdf-button {
+            margin: 10px;
+            padding: 5px 10px;
+            font-size: 12px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+
+
+
+</head>
+<body>
+    <div id="annex_a">
+        <div class="heading-container">
+            <h1>Key Facts Statement</h1>
+            <h2>Part 1 (Interest rate and fees/charges)</h2>
+        </div>
+
+        <!-- Container for centered tables -->
+        @*<div class="table-container">*@
+        <!-- Main Table -->
+        <table id="content1" class="no-space">
+            <tr>
+                <td class="small-column" style="font-weight:bold">1</td>
+                <td class="large-column" style="font-weight:bold">Loan proposal/ account No:&nbsp; @Model.ApplicationId</td>
+                <td class="large-column" style="font-weight:bold">Type of Loan:&nbsp; @Model.LoanType</td>
+            </tr>
+            <tr>
+                <td class="small-column" style="font-weight:bold">2</td>
+                <td class="large-column" style="font-weight:bold">Sanctioned Loan amount (in Rupees)</td>
+                <td class="large-column">@Model.LoanAmount</td>
+            </tr>
+            <tr>
+                <td class="small-column" style="font-weight:bold">3</td>
+                <td class="large-column">
+                    <span class="disbursal-schedule">Disbursal schedule</span><br>
+                    <span class="disbursal-details">
+                        (i) &nbsp; in stages or 100% upfront.<br>
+                        (ii) &nbsp; If it is stage wise, mention the clause of loan<br /> agreement having relevant details
+                    </span>
+                </td>
+                <td class="large-column"></td>
+            </tr>
+            <tr>
+                <td class="small-column" style="font-weight:bold">4</td>
+                <td class="large-column" style="font-weight:bold">Loan term (year/months/days)</td>
+                <td class="large-column">@Model.Duration</td>
+            </tr>
+            <tr>
+                <td class="small-column" style="font-weight:bold">5</td>
+                <td class="largest-column" colspan="2" style="font-weight:bold;">Instalment details</td>
+            </tr>
+        </table>
+
+        <!-- Nested Table -->
+        <table id="content2" class="no-space">
+            <thead>
+                <tr>
+                    <th style="width:50px">Type of instalments</th>
+                    <th style="width:50px">Number of EPIs</th>
+                    <th style="width:50px">EPI (₹)</th>
+                    <th style="width:50px">Commencement of repayment, post sanction</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.Instalment</td>
+                    <td>@Model.NumberOfEPIs</td>
+                    <td>@Model.EPI</td>
+                    <td>@Model.CommencementOfRepayment</td>
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+
+        <table id="content3" class="no-space">
+            <tr>
+                <td class="small-column" style="font-weight:bold">6</td>
+                <td class="largest-column" colspan="3" style="font-weight:bold;">Interest rate (%) and type (fixed or floating or hybrid)</td>
+                <td>@Model.InterestRateType</td>
+            </tr>
+            <tr>
+                <td class="small-column" style="font-weight:bold">7</td>
+                <td class="largest-column" colspan="2" style="font-weight:bold;">Additional Information in case of Floating rate of interest</td>
+            </tr>
+        </table>
+
+        <table id="content4" class="no-space">
+            <tr>
+                <th rowspan="2">Reference<br>Benchmark</th>
+                <th rowspan="2">Benchmark<br>rate (%) (B)</th>
+                <th rowspan="2">Spread (%) (S)</th>
+                <th rowspan="2">Final rate (%)<br>R = (B) + (S)</th>
+                <td colspan="2">Reset<br>periodicity<br>(Months)</td>
+                <th colspan="2">Impact of change in the reference<br>benchmark<br>(for 25 bps change in ‘R’, change in:3)</th>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>S</td>
+                <td>EPI (₹)</td>
+                <td>No. of EPIs</td>
+            </tr>
+            <tr>
+                <td>@Model.RefBenchmark</td>
+                <td>@Model.BenchmarkRate</td>
+                <td>@Mode</td>
+                <td>@Model.Spread</td>
+                <td>@Model.FinalRate</td>
+                <td>@Model.ResetPeriodB</td>
+                <td>@Model.ResetPeriodS</td>
+                <td>@Model.BenchEPI</td>
+                <td>@Model.BenchNoEPI</td>
+            </tr>
+        </table>
+
+        <table id="content5" class="no-space">
+            <tr>
+                <td class="small-column" style="font-weight:bold">8</td>
+                <td class="largest-column" colspan="2" style="font-weight:bold;">Fee/ Charges4</td>
+            </tr>
+        </table>
+
+        <table id="combined-table" class="no-space">
+            <tr>
+                <th colspan="2"></th>
+                <th colspan="2">Payable to the RE (A)</th>
+                <th colspan="2">Payable to a third party through RE (B)</th>
+            </tr>
+            <tr>
+                <td class="small-column"></td>
+                <td></td>
+                <td>One-time/Recurring</td>
+                <td>Amount (in ₹) or Percentage (%) as applicable</td>
+                <td>One-time/Recurring</td>
+                <td>Amount (in ₹) or Percentage (%) as applicable</td>
+            </tr>
+            <tr>
+                <td>i)</td>
+                <td>Processing fees</td>
+                <td>@Model.RE_A_Processing_recurring</td>
+                <td>@Model.RE_A_Processing_amount</td>
+                <td>@Model.RE_B_Processing_recurring</td>
+                <td>@Model.RE_B_Processing_amount</td>
+            </tr>
+            <tr>
+                <td>ii)</td>
+                <td>Insurance charges</td>
+                <td>@Model.RE_A_Insurance_recurring</td>
+                <td>@Model.RE_A_Insurance_amount</td>
+                <td>@Model.RE_B_Insurance_recurring</td>
+                <td>@Model.RE_B_Insurance_amount</td>
+            </tr>
+            <tr>
+                <td>iii)</td>
+                <td>Valuation fees</td>
+                <td>@Model.RE_A_fee_recurring</td>
+                <td>@Model.RE_A_fee_amount</td>
+                <td>@Model.RE_B_fee_recurring</td>
+                <td>@Model.RE_B_fee_amount</td>
+            </tr>
+            <tr>
+                <td>iv)</td>
+                <td>Any other (please specify)</td>
+                <td>@Model.RE_A_other_recurring</td>
+                <td>@Model.RE_A_other_amount</td>
+                <td>@Model.RE_B_other_recurring</td>
+                <td>@Model.RE_B_other_amount</td>
+            </tr>
+            @*<tr>
+                    <td class="small-column" style="font-weight:bold">9</td>
+                    <td class="largest-column" colspan="3" style="font-weight:bold; width:200px;">Annual Percentage Rate (APR) (%)</td>
+                </tr>*@
+        </table>
+        <table id="content11" class="no-space">
+            <tr>
+                <td class="small-column" style="font-weight:bold">9</td>
+                <td class="largest-column" colspan="3" style="font-weight:bold;">Annual Percentage Rate (APR) (%)</td>
+                <td>@Model.APR</td>
+            </tr>
+
+        </table>
+
+        <table id="content6" class="no-space">
+            <tr>
+                <td class="small-column" style="font-weight:bold">10</td>
+                <td class="largest-column" colspan="2" style="font-weight:bold;">Details of Contingent Charges (in ₹ or %, as applicable)</td>
+            </tr>
+        </table>
+
+        <table id="content7" class="no-space">
+            <tr>
+                <td class="small-column">i)</td>
+                <td class="largest-column">Penal charges, if any, in case of delayed payment</td>
+                <td>@Model.Penal_charge</td>
+            </tr>
+            <tr>
+                <td class="small-column">ii)</td>
+                <td class="largest-column">Other penal charges, if any</td>
+                <td>@Model.OtherPenalCharge</td>
+            </tr>
+            <tr>
+                <td class="small-column">iii)</td>
+                <td class="largest-column">Foreclosure charges, if applicable</td>
+                <td>@Model.ForeclosureCharge</td>
+            </tr>
+            <tr>
+                <td class="small-column">iv)</td>
+                <td class="largest-column">Charges for switching of loans from floating to fixed rate and vice versa</td>
+                <td>@Model.SwitchingCharge</td>
+            </tr>
+            <tr>
+                <td class="small-column">v)</td>
+                <td class="largest-column">Any other charges (please specify)</td>
+                <td>@Model.OtherCharge</td>
+            </tr>
+        </table>
+
+
+        @*</div>*@
+
+        @*<div class="heading-container">*@
+        <div class="heading-container page-break">
+            <h2>Part 2 (Other qualitative information)</h2>
+        </div>
+        <table id="content8" class="no-space">
+            <tr>
+                <td class="small-column">1</td>
+                <td class="largest-column">
+                    Clause of Loan agreement relating to
+                    engagement of recovery agents
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="small-column">2</td>
+                <td class="largest-column">
+                    Clause of Loan agreement which details
+                    grievance redressal mechanism
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="small-column">3</td>
+                <td class="largest-column">
+                    Phone number and email id of the nodal
+                    grievance redressal officer7
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="small-column">4</td>
+                <td class="largest-column">
+                    Whether the loan is, or in future maybe, subject
+                    to transfer to other REs or securitisation (Yes/ No)
+                </td>
+                <td></td>
+            </tr>
+            @*<tr>
+                    <td class="small-column">5</td>
+                    <td class="largest-column">
+                        In case of lending under collaborative lending arrangements (e.g., co-lending/ outsourcing),
+                        following additional details may be furnished:
+                    </td>
+                    <td></td>
+                </tr>*@
+        </table>
+        <table id="content9" class="no-space">
+            <tr>
+                <td class="small-column">10</td>
+                <td class="largest-column" colspan="2">
+                    In case of lending under collaborative lending arrangements (e.g., co-lending/ outsourcing),<br />
+                    following additional details may be furnished:
+                </td>
+            </tr>
+        </table>
+        <table id="content10" class="no-space">
+            <tr>
+                <th style="font:normal">
+                    Name of the originating RE, along<br />
+                    with its funding proportion
+                </th>
+                <th>
+                    Name of the partner RE along with its<br />
+                    proportion of funding
+                </th>
+                <th>Blended rate of interest </th>
+            </tr>
+            <tr>
+                <td> </td>
+                <td> </td>
+                <td> </td>
+            </tr>
+        </table>
+        <table id="content11" class="no-space">
+            <tr>
+                <td class="small-column">6</td>
+                <td class="largest-column" colspan="2">
+                    In case of digital loans, following specific disclosures may be furnished:
+                </td>
+            </tr>
+        </table>
+        <table id="content12" class="no-space">
+
+            <tr>
+                <td class="largest-column">
+                    <span class="numbered-item">(i)</span>
+                    <span class="description">
+                        Cooling off/look-up period, in terms of RE’s
+                        board approved
+                        <span class="multiline">
+                            policy, during which borrower
+                            shall not be charged any penalty on
+                            prepayment of loan
+                        </span>
+                    </span>
+                </td>
+                <td></td>
+            </tr>
+
+            <tr>
+
+                <td class="largest-column">
+                    <span class="numbered-item">(ii)</span>
+                    <span class="description">
+                        Details of LSP acting as recovery agent and
+                        authorized to
+                        <span class="multiline">
+                            approach the borrower
+                        </span>
+                    </span>
+                </td>
+                <td></td>
+            </tr>
+
+        </table>
+
+        @*----------------------AnnexB------------------------*@
+
+        <div class="heading-container page-break">
+            <br />
+            <br />
+            <br />
+            <h1>Illustration for computation of APR for Retail and MSME loans </h1>
+
+        </div>
+
+        <table id="content1">
+
+            <thead>
+                <tr>
+                    <th style="text-align:center">Sl.No</th>
+                    <th style="text-align:center">Parameter</th>
+                    <th style="text-align:center">Details</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td class="small-column">1</td>
+                    <td class="largest-column">
+                        Sanctioned Loan amount (in Rupees) (Sl no. 2 of the KFS
+                        template – Part 1)
+                    </td>
+                    <td class="medium-column">@Model.LoanAmount</td>
+                </tr>
+                <tr>
+                    <td class="small-column">2</td>
+                    <td class="largest-column">
+                        Loan Term (in years/ months/ days) (Sl No.4  of the KFS
+                        template – Part 1)
+                    </td>
+                    <td class="medium-column">@Model.Tenure</td>
+                </tr>
+                <tr>
+                    <td class="small-column">a)</td>
+                    <td class="largest-column">
+                        No. of instalments for payment of principal, in case of non
+                        equated periodic loans
+                    </td>
+                    <td class="medium-column"> @Model.no_of_instalment</td>
+                </tr>
+
+                <tr>
+                    <td class="small-column">b)</td>
+                    <td class="largest-column">
+                        Type of EPI
+                        Amount of each EPI (in Rupees) and
+                        nos. of EPIs (e.g., no. of EMIs in case of monthly
+                        instalments)
+                        (Sl No. 5 of the KFS template – Part 1)
+                    </td>
+                    <td class="medium-column">
+                        @Model.EPI_amount
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="small-column">c)</td>
+                    <td class="largest-column">
+                        No. of instalments for payment of capitalised interest, if any
+                    </td>
+                    <td class="medium-column"> @Model.no_of_instalment_int</td>
+                </tr>
+
+                <tr>
+                    <td class="small-column">d)</td>
+                    <td class="largest-column">
+                        Commencement of repayments, post sanction (Sl No. 5 of
+                        the KFS template – Part 1)
+                    </td>
+                    <td class="medium-column">  </td>
+                </tr>
+
+
+                <tr>
+                    <td class="small-column">3</td>
+                    <td class="largest-column">
+                        Interest rate type (fixed or floating or hybrid) (Sl No. 6 of the
+                        KFS template – Part 1)
+                    </td>
+                    <td class="medium-column">@Model.InterestRateTypeB</td>
+                </tr>
+                <tr>
+                    <td class="small-column">4</td>
+                    <td class="largest-column">
+                        Rate of Interest (Sl No. 6 of the KFS template – Part 1)
+                    </td>
+                    <td class="medium-column">@Model.Rate_of_Interest%</td>
+                </tr>
+                <tr>
+                    <td class="small-column">5</td>
+                    <td class="largest-column">
+                        Total Interest Amount to be charged during the entire tenor
+                        of the loan as per the rate prevailing on sanction date (in
+                        Rupees)
+                    </td>
+                    <td class="medium-column">@Model.Total_Interest_Amount</td>
+                </tr>
+                <tr>
+                    <td class="small-column">6</td>
+                    <td class="largest-column">
+                        Fee/ Charges payable8 (in Rupees)
+                    </td>
+                    <td class="medium-column">@Model.Fee_Charges</td>
+                </tr>
+
+                <tr>
+                    <td class="small-column">A</td>
+                    <td class="largest-column">
+                        Payable to the RE (Sl No.8A of the KFS template-Part 1)
+                    </td>
+                    <td class="medium-column">@Model.Payable_to_the_RE</td>
+                </tr>
+
+                <tr>
+                    <td class="small-column">B</td>
+                    <td class="largest-column">
+                        Payable to third-party routed through RE (Sl No.8B of the
+                        KFS template – Part 1)
+                    </td>
+                    <td class="medium-column">@Model.Payable_to_third_party_routed_through_RE</td>
+                </tr>
+
+                <tr>
+                    <td class="small-column">7</td>
+                    <td class="largest-column">
+                        Net disbursed amount (1-6) (in Rupees)
+                    </td>
+                    <td class="medium-column">@Model.Net_disbursed_amount</td>
+                </tr>
+
+                <tr>
+                    <td class="small-column">8</td>
+                    <td class="largest-column">
+                        Total amount to be paid by the borrower (sum of 1 and 5)
+                        (in Rupees)
+                    </td>
+                    <td class="medium-column">@Model.Total_amount_to_be_paid</td>
+                </tr>
+                <tr>
+                    <td class="small-column">9</td>
+                    <td class="largest-column">
+                        Annual Percentage rate- Effective annualized interest rate
+                        (in percentage)10  (Sl No.9 of the KFS template-Part 1)
+                    </td>
+                    <td class="medium-column">@Model.Annual_Percentage_rate%</td>
+                </tr>
+                <tr>
+                    <td class="small-column">10</td>
+                    <td class="largest-column">
+                        Schedule of disbursement as per terms and conditions
+                    </td>
+                    <td class="medium-column">
+                        @Model.Schedule_of_disbursement
+                    </td>
+                </tr>
+                <tr>
+                    <td class="small-column">8</td>
+                    <td class="largest-column">
+                        Due date of payment of instalment and interest
+                    </td>
+                    <td class="medium-column">@Model.Due_date</td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        @*------------------------------AnnexC------------------------*@
+
+        <div class="heading-container page-break">
+            <br />
+            <br />
+            <br />
+            <h1>
+                Illustrative Repayment Schedule under Equated Periodic Instalment for the
+                hypothetical loan illustrated in Annex B
+            </h1>
+
+        </div>
+
+        <table id="content1">
+
+            <thead>
+                <tr>
+                    <th style="text-align:center">
+                        Instalment
+                        No.
+                    </th>
+                    <th style="text-align:center">
+                        Outstanding
+                        Principal (in
+                        Rupees)
+                    </th>
+                    <th style="text-align:center">
+                        Principal (in
+                        Rupees)
+                    </th>
+                    <th style="text-align:center">
+                        Interest (in
+                        Rupees)
+                    </th>
+                    <th style="text-align:center">
+                        Instalment (in
+                        Rupees)
+                    </th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr>
+                    <td style="text-align:center" class="small-column">1</td>
+                    <td style="text-align:center" class="medium-column">
+                        20,000
+                    </td>
+                    <td style="text-align:center" class="medium-column">720 </td>
+                    <td style="text-align:center" class="medium-column">250 </td>
+                    <td style="text-align:center" class="medium-column">970 </td>
+                </tr>
+                <tr>
+                    <td style="text-align:center" class="small-column">2</td>
+                    <td style="text-align:center" class="large-column">
+                        19,280
+                    </td>
+                    <td style="text-align:center" class="medium-column">729 </td>
+                    <td style="text-align:center" class="medium-column">241 </td>
+                    <td style="text-align:center" class="medium-column">970 </td>
+                </tr>
+
+
+                <tr>
+                    <td style="text-align:center" class="small-column">3</td>
+                    <td style="text-align:center" class="large-column">
+                        19,280
+                    </td>
+                    <td style="text-align:center" class="medium-column">729 </td>
+                    <td style="text-align:center" class="medium-column">241 </td>
+                    <td style="text-align:center" class="medium-column">970 </td>
+                </tr>
+                <tr>
+                    <td style="text-align:center" class="small-column">4</td>
+                    <td style="text-align:center" class="large-column">
+                        19,280
+                    </td>
+                    <td style="text-align:center" class="medium-column">729 </td>
+                    <td style="text-align:center" class="medium-column">241 </td>
+                    <td style="text-align:center" class="medium-column">970 </td>
+                </tr>
+                <tr>
+                    <td style="text-align:center" class="small-column">5</td>
+                    <td style="text-align:center" class="large-column">
+                        19,280
+                    </td>
+                    <td style="text-align:center" class="medium-column">729 </td>
+                    <td style="text-align:center" class="medium-column">241 </td>
+                    <td style="text-align:center" class="medium-column">970 </td>
+                </tr>
+                <tr>
+                    <td style="text-align:center" class="small-column">6</td>
+                    <td style="text-align:center" class="large-column">
+                        19,280
+                    </td>
+                    <td style="text-align:center" class="medium-column">729 </td>
+                    <td style="text-align:center" class="medium-column">241 </td>
+                    <td style="text-align:center" class="medium-column">970 </td>
+                </tr>
+
+
+                <tr>
+                    <td style="text-align:center" class="small-column">7</td>
+                    <td style="text-align:center" class="large-column">
+                        19,280
+                    </td>
+                    <td style="text-align:center" class="medium-column">729 </td>
+                    <td style="text-align:center" class="medium-column">241 </td>
+                    <td style="text-align:center" class="medium-column">970 </td>
+                </tr>
+
+                <tr>
+                    <td style="text-align:center" class="small-column">8</td>
+                    <td style="text-align:center" class="large-column">
+                        19,280
+                    </td>
+                    <td style="text-align:center" class="medium-column">729 </td>
+                    <td style="text-align:center" class="medium-column">241 </td>
+                    <td style="text-align:center" class="medium-column">970 </td>
+                </tr>
+                <tr>
+                    <td style="text-align:center" class="small-column">9</td>
+                    <td style="text-align:center" class="large-column">
+                        19,280
+                    </td>
+                    <td style="text-align:center" class="medium-column">729 </td>
+                    <td style="text-align:center" class="medium-column">241 </td>
+                    <td style="text-align:center" class="medium-column">970 </td>
+                </tr>
+                <tr>
+                    <td style="text-align:center" class="small-column">10</td>
+                    <td style="text-align:center" class="large-column">
+                        19,280
+                    </td>
+                    <td style="text-align:center" class="medium-column">729 </td>
+                    <td style="text-align:center" class="medium-column">241 </td>
+                    <td style="text-align:center" class="medium-column">970 </td>
+                </tr>
+                <tr>
+                    <td style="text-align:center" class="small-column">8</td>
+                    <td style="text-align:center" class="large-column">
+                        19,280
+                    </td>
+                    <td style="text-align:center" class="medium-column">729 </td>
+                    <td style="text-align:center" class="medium-column">241 </td>
+                    <td style="text-align:center" class="medium-column">970 </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+
+    </div>
+
+
+
+
+
+    <button class="pdf-button" onclick="generatePDF()">Download as PDF</button>
+
+    <!-- Include the html2pdf library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+    @*<script>
+            function generatePDF() {
+                // Get the HTML element to be converted to PDF
+                var element = document.getElementById('annex_a');
+
+                // Options for html2pdf
+                var options = {
+                    margin: [0.2, 0.2, 0.2, 0.2], // Margins (top, left, bottom, right)
+                    filename: 'Annex_Page.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2 },
+                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+                };
+
+                // Generate PDF
+                html2pdf().from(element).set(options).save();
+            }
+        </script>*@
+
+    <script>
+        function generatePDF() {
+            var element = document.getElementById('annex_a');
+
+            var options = {
+                margin: [0.1, 0.1, 0.1, 0.1], // Reduced margins
+                filename: 'Annex_Page.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 1 }, // Adjust scale if needed
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            html2pdf().from(element).set(options).save();
+        }
+    </script>
+
+</body>
+</html>

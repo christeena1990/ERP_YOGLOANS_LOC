@@ -1,0 +1,56 @@
+﻿
+@{
+    ViewBag.Title = "Error_page";
+    Layout = null;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+                .container {
+                    position: relative;
+                    background-image: url('/images/error_page.jpeg');
+                    /*            background-image: url('/images/404-Error.png');
+        */ background-size: cover;
+                    background-repeat: no-repeat;
+                    height: 650px;
+                    width: 1200px;
+                    /* height: 500px;
+                   width: 950px;*/
+                    margin: 0 auto;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    position: relative;
+                }
+
+                .btn {
+                    background-color: #e96d25;
+                    /*  background-color: red;*/
+
+                    color: white;
+                    padding: 10px 20px;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    margin-top: 300px;
+                    margin-left: -550px;
+                    /*            margin-left: -50px;
+        */
+                }
+    </style>
+</head>
+<body>
+    <div class="container">
+        @*<button class="btn">Back to Home</button>*@
+        <button class="btn" onclick="window.location.href='@Url.Action("Index", "Home")'">Back to Home</button>
+
+    </div>
+</body>
+</html>
+

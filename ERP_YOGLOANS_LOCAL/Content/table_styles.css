@@ -1,0 +1,99 @@
+﻿
+
+
+#cus_detailsDataGrid {
+    overflow-y: auto;
+    font-size: 9px;
+    width: 90%;
+    font-weight: 500;
+    border-collapse: collapse;
+}
+    #cus_detailsDataGrid th, #cus_detailsDataGrid td {
+        border: 1px solid #ccc;
+        padding: 8px;
+        /*padding: 2px;*/
+        text-align: center;
+    }
+    #cus_detailsDataGrid th {
+        background-color: #4D759A;
+        position: sticky;
+        /*   background-color: red;*/
+        color: white;
+        padding: 3px;
+    }
+
+
+    #cus_detailsDataGrid td {
+       
+        padding: 3px;
+    }
+
+
+
+
+#added_row_table {
+    overflow-y: auto;
+    font-size: 9px;
+    /* font-size: 14px;*/
+    width: 90%;
+    font-weight: 500;
+    border-collapse: collapse;
+}
+
+#selectedRowTable {
+    overflow-y: auto;
+    font-size: 9px;
+    width: 100%;
+    font-weight: 500;
+    border-collapse: collapse;
+}
+
+
+
+#added_row_table th, #added_row_table td {
+    border: 1px solid #ccc;
+      padding: 8px;
+   /* padding: 2px;*/
+    text-align: center;
+}
+/* Styling for table header */
+#added_row_table th {
+    background-color: #4D759A;
+    color: white;
+
+}
+
+
+
+
+
+#selectedRowTable th, #selectedRowTable td {
+    border: 1px solid #ccc;
+      padding: 8px;
+   /* padding: 2px;*/
+    text-align: center;
+}
+
+/* Styling for table header */
+#selectedRowTable th {
+    background-color: #4D759A;
+    color: white;
+}
+
+/* Style for the selected row table */
+#selectedRowTable {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+    #selectedRowTable th, #selectedRowTable td {
+        border: 1px solid #ccc;
+        /*  padding: 8px;*/
+        padding: 2px;
+        text-align: center;
+    }
+
+
+/*///////////////////////////////////////////////////////*/

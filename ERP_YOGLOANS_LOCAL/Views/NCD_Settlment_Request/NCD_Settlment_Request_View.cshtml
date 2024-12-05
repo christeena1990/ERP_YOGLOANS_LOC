@@ -1,0 +1,1254 @@
+﻿
+
+
+<html>
+<head>
+    <link rel="stylesheet" href="~/Content/input_styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <style>
+     
+        /* -------------------Style for Autosuggestion ------------------------------------------------*/
+
+        .suggestionsclass {
+            font-size: 14px; /* Adjust this value to your desired font size */
+            position: absolute;
+            top: 100%; /* Position below the search box */
+            left: 0;
+            width: 300px; /* Match the width of the search box */
+            background-color: white;
+            border: 1px solid white;
+            border-radius: 3px;
+            z-index: 1000; /* Ensure the suggestions appear above other elements */
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            /*margin-left: 30px;*/
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+            .suggestionsclass li {
+                padding: 5px;
+            }
+
+                .suggestionsclass li:hover {
+                    background-color: darkgray;
+                    cursor: pointer;
+                    color: blue;
+                }
+
+        .fixed-width-card {
+            flex: 1 1 300px; /* Flex-grow: 1, Flex-shrink: 1, Flex-basis: 300px */
+            min-width: 250px; /* Ensure a minimum width */
+            word-wrap: break-word;
+            word-break: break-word;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .widget-heading {
+            color: darkred; /* Sets text color */
+            font-size: 16px;
+        }
+
+        .widget-subheading1 {
+            /*font-weight: 1500;*/
+            /* opacity: 1000;*/
+            color: darkblue;
+            /* font-weight: bold;*/
+            font-size: 16px;
+        }
+
+        #example {
+            overflow-y: auto;
+            font-size: 11px;
+            /*  width: 100%;*/
+            font-weight: 700;
+            color: black;
+            /* border-collapse: collapse;*/
+        }
+
+            #example th, #example td {
+                /*     border: 1px solid #ccc;*/
+                padding: 0px;
+                text-align: left;
+            }
+
+            #example th {
+                background-color: #4D759A;
+                color: white;
+                font-size: 11px;
+            }
+
+        #selectedRowTable {
+            overflow-y: auto;
+            font-size: 13px;
+            color: black;
+            width: 100%;
+            font-weight: 500;
+            border-collapse: collapse;
+        }
+
+            #selectedRowTable th, #selectedRowTable td {
+                border: 1px solid #ccc;
+                padding: 4px;
+                text-align: center;
+            }
+
+            /* Styling for table header */
+            #selectedRowTable th {
+                background-color: #4D759A;
+                color: white;
+            }
+    </style>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const checkboxes = document.querySelectorAll('.select-checkbox');
+            const selectedRowTable = document.getElementById('selectedRowTable');
+            const selectedRowContainer = document.getElementById('selectedRowContainer');
+
+            checkboxes.forEach(function (checkbox) {
+
+                checkbox.addEventListener('change', function () {
+                    alert("checked");
+                    if (this.checked) {
+                        // Uncheck other checkboxes
+                        checkboxes.forEach(function (otherCheckbox) {
+                            if (otherCheckbox !== checkbox) {
+                                otherCheckbox.checked = false;
+                            }
+                        });
+
+                        // Get the row associated with this checkbox
+                        const row = this.closest('tr');
+                        const rowData = Array.from(row.querySelectorAll('td')).map(td => td.innerText);
+
+                        const cus_name = rowData[1];
+                        // alert("name" + cus_name);
+                        const cus_id = rowData[2];
+
+                        const issueNo = rowData[3];
+                        const cirtificateNo = rowData[4];
+                        const amount = rowData[5];
+                        const int_rate = rowData[6];
+                        const int_type = rowData[7];
+                        const AllotmentDt = rowData[8];
+                        const MaturityDt = rowData[9];
+                        const bed_id = rowData[11]; // Get value from 5th column (index 4)
+                        const period = rowData[12];
+
+                        // Clear the selected row table content
+                        selectedRowTable.querySelector('thead tr').innerHTML = '';
+                        selectedRowTable.querySelector('tbody tr').innerHTML = '';
+
+                        // Get the headers from the original table
+                        const originalTableHeaders = document.querySelectorAll('#example th');
+                        originalTableHeaders.forEach((th, index) => {
+                            if (index > 0) { // Skip the "Select" column header
+                                const newTh = document.createElement('th');
+                                newTh.textContent = th.textContent;
+                                selectedRowTable.querySelector('thead tr').appendChild(newTh);
+                            }
+                        });
+
+                        // Populate the selected row table
+                        rowData.forEach((data, index) => {
+                            if (index > 0) { // Skip the "Select" column data
+                                const newTd = document.createElement('td');
+                                newTd.textContent = data;
+                                selectedRowTable.querySelector('tbody tr').appendChild(newTd);
+                            }
+                        });
+
+                        // Show the selected row container and other elements
+                        selectedRowContainer.style.display = 'block';
+
+                        
+                        $("#selectedRowTable").show();
+                        // textfill(bond_id);
+                        $.ajax({
+                            url: '/NCD_Settlment_Request/textBox_fill_meture',
+                            type: 'POST',  // Use the correct HTTP method (GET, POST, etc.)
+                            contentType: 'application/json',
+                            data: JSON.stringify({ bed_id: bed_id }),  // Pass the value as data
+                            success: function (response) {
+                                if (!response.success) {
+                                    // alert(response.message);
+
+                                    Swal.fire({
+                                        title: "",
+                                        text: response.message,
+                                        icon: "error",
+                                        confirmButtonText: "OK"
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+                                    //window.location.reload();
+                                }
+                                var data = response.data;
+                                var item = data[0];
+
+                                //  $('#cus_id').val(cus_id);
+                                document.getElementById('cus_id').innerText = cus_id;
+                                document.getElementById('cus_name').innerText = cus_name;
+                                document.getElementById('issueNo').innerText = issueNo;
+                                document.getElementById('cirtificateNo').innerText = cirtificateNo;
+                                document.getElementById('int_rate').innerText = int_rate;
+                                document.getElementById('int_type').innerText = int_type;
+                                document.getElementById('AllotmentDt').innerText = AllotmentDt;
+                                document.getElementById('MaturityDt').innerText = MaturityDt;
+                                document.getElementById('period').innerText = period;
+                                document.getElementById('amount').innerText = amount;
+
+
+
+                                document.getElementById('interstamt').innerText = data[0].interstamt;
+
+                                document.getElementById('eranint').innerText = data[0].eranint;
+
+                                document.getElementById('tot_tds').innerText = data[0].tot_tds;
+                                document.getElementById('payamt').innerText = data[0].payamt;
+                                document.getElementById('balpay').innerText = data[0].balpay;
+
+
+                                document.getElementById('maturity_amount').innerText = data[0].maturity_amount;
+                                document.getElementById('lasttds').innerText = data[0].lasttds;
+                                document.getElementById('short_recovery').innerText = data[0].short_recovery;
+                                document.getElementById('pantrack').innerText = data[0].pantrack;
+
+                                document.getElementById('settpay').innerText = data[0].settpay;
+                                document.getElementById('trid').innerText = data[0].trid;
+
+
+                                /* document.getElementById('start').innerText = data[0].start;*/
+
+                                //  document.getElementById('lastintamt').innerText = data[0].lastintamt;
+
+
+                                /*   document.getElementById('tds_accrued').innerText = data[0].tds_accrued;*/
+
+
+                                //document.getElementById('lien').innerText = data[0].lien;
+
+                                document.getElementById('pan').innerText = item.pan;
+                                //alert(item.trid);
+                                //alert(item.pan);
+                                if (item.trid != "" && item.pan != "") {
+
+                                    $("#form60_div").hide();
+                                    $("#pan_div").show();
+                                }
+                                else if (item.trid == "" && item.pan != "") {
+                                    $("#pan_div").show();
+                                    $("#form60_div").hide();
+                                }
+                                else if (item.trid != "" && item.pan == "") {
+
+                                    $("#pan_div").hide();
+                                    $("#form60_div").show();
+                                }
+                                else {
+                                    alert("no pan or form60");
+                                }
+
+
+                                $("#example_div").hide();
+                                $("#textBpx_details_div").show();
+                                $("#buttonDiv").show();
+
+
+                            },
+                            error: function (error) {
+                                console.error("Error:", error);
+                                // Handle any errors
+                            }
+                        });
+
+                    } else {
+                        // Clear the selected row table if no checkbox is checked
+                        selectedRowTable.querySelector('thead tr').innerHTML = '';
+                        selectedRowTable.querySelector('tbody tr').innerHTML = '';
+                        selectedRowContainer.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        //document.addEventListener("DOMContentLoaded", function () {
+        //    document.getElementById("tab-0").addEventListener("click", function () {
+        //        alert("Matured ");
+        //        $("#example_div").show();
+        //        $("#search_box").hide();
+        //        $("#textBpx_details_div").hide();
+        //        $("#buttonDiv").hide();
+        //        $("#selectedRowTable").hide();
+
+
+        //    });
+        //});
+
+        //document.addEventListener("DOMContentLoaded", function () {
+        //    document.getElementById("tab-1").addEventListener("click", function () {
+        //        alert("Premature ");
+        //        $("#example_div").hide();
+        //        $("#search_box").show();
+        //        $("#textBpx_details_div").hide();
+        //        $("#buttonDiv").hide();
+        //        $("#selectedRowTable").hide();
+        //    });
+        //});
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Event listener for "Matured" tab
+            document.getElementById("tab-0").addEventListener("click", function () {
+                alert("Matured");
+
+                // Update aria-selected attributes
+                document.getElementById("tab-0").setAttribute("aria-selected", "true");
+                document.getElementById("tab-1").setAttribute("aria-selected", "false");
+
+                // Show/hide divs accordingly
+                $("#example_div").show();
+                $("#search_box").hide();
+                $("#textBpx_details_div").hide();
+                $("#buttonDiv").hide();
+                $("#selectedRowTable").hide();
+                document.getElementById("tabValue").value = "M";
+            });
+
+            // Event listener for "Premature" tab
+            document.getElementById("tab-1").addEventListener("click", function () {
+                alert("Premature");
+
+                // Update aria-selected attributes
+                document.getElementById("tab-0").setAttribute("aria-selected", "false");
+                document.getElementById("tab-1").setAttribute("aria-selected", "true");
+
+                // Show/hide divs accordingly
+                $("#example_div").hide();
+                $("#search_box").show();
+                $("#textBpx_details_div").hide();
+                $("#buttonDiv").hide();
+                $("#selectedRowTable").hide();
+                document.getElementById("tabValue").value = "P";
+            });
+        });
+
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            //document.getElementById('lbl_message').textContent = "";
+            //localStorage.setItem('activeButton', "");
+            initSearch("searchBox", "suggestions", "selected_debId");
+            // Manage button group functionality
+            const buttons = document.querySelectorAll('.btn-group .btn');
+
+            // Function to update active class and save to localStorage
+            function setActiveButton(button) {
+                // Remove active class from all buttons
+                buttons.forEach(btn => btn.classList.remove('active'));
+
+                // Add active class to the clicked button
+                button.classList.add('active');
+
+                // Save the value of the active button to localStorage
+                localStorage.setItem('activeButton', button.value);
+                var activeValue1 = localStorage.getItem('activeButton');
+
+                // Display appropriate message based on the button value
+                if (activeValue1 == "B") {
+                    document.getElementById('lbl_message').textContent = "You are trying to BLOCK the Interest Payment.";
+                } else if (activeValue1 == "R") {
+                    document.getElementById('lbl_message').textContent = "You are trying to RELEASE the Interest Payment block.";
+                }
+
+                //alert(activeValue1);
+            }
+
+            // Attach event listener to each button
+            buttons.forEach(button => {
+                button.addEventListener('click', function () {
+                    let isActive = (localStorage.getItem('onceSearched') === 'true');
+
+                    if (isActive) {
+                        // Store the clicked button value before reloading
+                        localStorage.setItem('clickedButtonValue', button.value);
+                        location.reload(); // Reload the page
+                    } else {
+                        setActiveButton(button);
+                    }
+                });
+            });
+
+            // After page reload, apply the setActiveButton to the clicked button
+            const clickedButtonValue = localStorage.getItem('clickedButtonValue');
+            if (clickedButtonValue) {
+                buttons.forEach(button => {
+                    if (button.value === clickedButtonValue) {
+                        setActiveButton(button);
+                    }
+                });
+                localStorage.removeItem('clickedButtonValue'); // Clear after applying
+            }
+
+            // Load the active button from localStorage on page load
+            const activeButtonValue = localStorage.getItem('activeButton');
+            if (activeButtonValue) {
+                buttons.forEach(button => {
+                    if (button.value === activeButtonValue) {
+                        button.classList.add('active');
+                    }
+                });
+            }
+        });
+function initSearch(searchBoxId, suggestionsId, selectedDebId) {
+    const searchBox = document.getElementById(searchBoxId);
+    const suggestions = document.getElementById(suggestionsId);
+    const selected_DebId = document.getElementById(selectedDebId);
+
+    searchBox.addEventListener("input", function () {
+      //  alert("oninput");
+        const search_txt = searchBox.value;
+        if (search_txt.length >= 2) {
+            fetch(`@Url.Action("GetSearchSuggestions", "NCD_Settlment_Request")?search_txt=${search_txt}`)
+                .then(response => response.json())
+                .then(data => {
+                    suggestions.innerHTML = "";
+                    data.forEach(item => {
+                        const li = document.createElement("li");
+                        li.textContent = item.Name;
+                        li.dataset.debId = item.DebId;
+
+                        li.onclick = function () {
+                            document.getElementById("searchBox").value = item.Name;
+                            suggestions.style.display = "none";
+
+                            const [issueNoCertificateNo, customerName] = item.Name.split(" ");
+
+                            // Further split issue_no and certificate_no
+                            const [issueNo, certificateNo] = issueNoCertificateNo.split("/");
+
+                            // Trim values to ensure no extra spaces
+                            const issueNumber = issueNo.trim();
+                            const certificateNumber = certificateNo.trim();
+                            localStorage.setItem('issueNumber', issueNumber);
+                            localStorage.setItem('certificateNum', certificateNumber);
+                            localStorage.setItem('selectedDebId', item.DebId);
+                        };
+
+                        suggestions.appendChild(li);
+                    });
+                });
+        } else {
+            suggestions.innerHTML = "";
+
+        }
+    });
+
+    document.addEventListener("click", function (event) {
+        if (!suggestions.contains(event.target) && event.target !== searchBox) {
+            suggestions.innerHTML = "";
+        }
+    });
+}
+
+
+
+        function search() {
+            //alert("search click");
+            // Retrieve values from localStorage
+            var issue_no = localStorage.getItem('issueNumber');
+            var certifi_no = localStorage.getItem('certificateNum');
+            var deb_id = localStorage.getItem('selectedDebId');
+           // alert(issue_no);
+         //   alert(certifi_no);
+            // Check if the values are not null or empty
+            if (issue_no && certifi_no) {
+                // Make an AJAX call
+                $.ajax({
+                    url: '/NCD_Settlment_Request/locking_test', // Replace with your actual controller and method URL
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        issue_no: issue_no,
+                        certifi_no: certifi_no,
+                        deb_id: deb_id
+                    }),
+                    success: function (response) {
+                       // alert('Data sent successfully:' + response.data);  // Change from 'data' to 'response.data'
+                      //  alert(response.data);  // Change from 'data' to 'response.data'
+
+                        if (response.data == "0") {
+                            fetchPremetureData();  // Call your function if msg is "0"
+                        } else {
+                          //  alert(response.data); 
+
+                               
+                            Swal.fire({
+                                title: "",
+                                text: response.data,
+                                icon: "error",
+                                confirmButtonText: "OK"
+                            }).then(() => {
+                                window.location.reload();
+                            });  // Reload the page if msg is not "0"
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error response
+                        console.error('Error occurred:', error);
+                    }
+                });
+            } else {
+                alert('Issue Number or Certificate Number is missing.');
+            }
+        }
+
+        function fetchPremetureData() {
+            $.ajax({
+                url: '/NCD_Settlment_Request/text_box_fill_premeture',
+                type: 'POST',
+                dataType: 'json',
+                success: function (response) {
+                    if (!response.success) {
+                        // alert(response.message);
+
+                        Swal.fire({
+                            title: "",
+                            text: response.message,
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                        //window.location.reload();
+                    }
+                    var data = response.data;
+                    var item = data[0];
+
+           
+
+                    document.getElementById('cus_id').innerText = data[0].customer_id; 
+                    document.getElementById('cus_name').innerText = data[0].customer_name; 
+                    document.getElementById('int_rate').innerText = data[0].interest_rate; 
+                    document.getElementById('period').innerText = data[0].period; 
+                    document.getElementById('amount').innerText = data[0].amount; 
+                    document.getElementById('int_type').innerText = data[0].interest_type;
+                    document.getElementById('AllotmentDt').innerText = data[0].allotment_date;
+                    document.getElementById('MaturityDt').innerText = data[0].maturity_date;          
+                    document.getElementById('cirtificateNo').innerText = data[0].cirtificate_no; 
+                    document.getElementById('issueNo').innerText = data[0].issue_no; 
+                    document.getElementById('pre_closing_int_rate').innerText = data[0].pre_intrate; 
+                    document.getElementById('pre_closing_int').innerText = data[0].preamount; 
+
+                    document.getElementById('interstamt').innerText = data[0].interstamt;
+                    document.getElementById('eranint').innerText = data[0].eranint;
+                    document.getElementById('tot_tds').innerText = data[0].tot_tds;
+                    document.getElementById('payamt').innerText = data[0].payamt;
+                    document.getElementById('balpay').innerText = data[0].balpay;
+                    document.getElementById('maturity_amount').innerText = data[0].maturity_amount;
+                    document.getElementById('lasttds').innerText = data[0].lasttds;
+                    document.getElementById('short_recovery').innerText = data[0].short_recovery;
+                    document.getElementById('pantrack').innerText = data[0].pantrack;
+                    document.getElementById('settpay').innerText = data[0].settpay;
+                    document.getElementById('trid').innerText = data[0].trid;
+
+
+                    /* document.getElementById('start').innerText = data[0].start;*/
+
+                    //  document.getElementById('lastintamt').innerText = data[0].lastintamt;
+
+
+                    /*   document.getElementById('tds_accrued').innerText = data[0].tds_accrued;*/
+
+
+                    //document.getElementById('lien').innerText = data[0].lien;
+
+                    document.getElementById('pan').innerText = item.pan;
+                    //alert(item.trid);
+                    //alert(item.pan);
+                    if (item.trid != "" && item.pan != "") {
+
+                        $("#form60_div").hide();
+                        $("#pan_div").show();
+                    }
+                    else if (item.trid == "" && item.pan != "") {
+                        $("#pan_div").show();
+                        $("#form60_div").hide();
+                    }
+                    else if (item.trid != "" && item.pan == "") {
+
+                        $("#pan_div").hide();
+                        $("#form60_div").show();
+                    }
+                    else {
+                        alert("no pan or form60");
+                    }
+                    
+                    
+                    $("#premature_int_div").show();
+                    $("#premature_intRate_div").show();
+                    
+                    $("#pan_div2").hide();
+                    $("#pan_div1").hide();
+                    $("#example_div").hide();
+                    $("#textBpx_details_div").show();
+                    $("#buttonDiv").show();
+
+
+                },
+                error: function (error) {
+                    console.error("Error:", error);
+                    alert("An error occurred while fetching the data.");
+                }
+            });
+        }
+
+
+
+        $(document).ready(function () {
+            $('#requestButton').click(function () {
+               
+
+                let close_type = document.getElementById("tabValue").value;
+                alert(close_type);
+
+                var settl_Amt = $('#settpay').text();
+                var total_int = $('#interstamt').text();
+                var tot_tds = $('#tot_tds').text();
+                var total_paidamt = $('#payamt').text();
+                var total_payable = $('#balpay').text();
+                var tot_eranint = $('#eranint').text();
+                var lasttds = $('#lasttds').text();
+                var short_recovery = $('#short_recovery').text();
+                var panData = $('#pan').text();
+                var trid = $('#trid').text();
+
+               // var ciretificate_att = document.getElementById('ciretificate_attach');
+                // alert(ciretificate_att);
+
+                var formData = new FormData();
+                formData.append("panData", panData);
+                formData.append("settl_Amt", settl_Amt);
+                formData.append("total_int", total_int);
+                formData.append("tot_tds", tot_tds);
+                formData.append("total_paidamt", total_paidamt);
+                formData.append("total_payable", total_payable);
+                formData.append("tot_eranint", tot_eranint);
+                formData.append("lasttds", lasttds);
+                formData.append("short_recovery", short_recovery);
+                formData.append("trid", trid);
+                formData.append("close_type", close_type);
+
+               // formData.append("file", ciretificate_attach.files[0]);
+
+                if (panData) {
+                    $.ajax({
+                        url: '/NCD_Settlment_Request/requestBtn_click', // replace with your endpoint
+                        type: 'POST',
+                        processData: false,
+                        contentType: false,
+                        data: formData,
+                        success: function (response) {
+                            if (response.success) {
+                                // alert("success");
+                                //  alert(response.data);
+                                Swal.fire({
+
+                                    title: response.data,
+                                    /* text: result.message,*/
+                                    text: "",
+                                    icon: "success",
+                                    confirmButtonText: "OK"
+                                }).then(() => {
+                                    window.location.reload();
+
+                                });
+
+                            }
+                            else {
+
+                                Swal.fire({
+                                    title: "",
+                                    text: response.data,
+                                    icon: "error",
+                                    confirmButtonText: "OK"
+
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            // Handle error
+                            console.error('Error:', error);
+                        }
+                    });
+                } else {
+                    console.error('No data found in #pan div');
+                }
+            });
+        });
+
+
+
+        function reloadPage() {
+            // Reload the page
+            location.reload();
+        }
+    </script>
+</head>
+<body>
+    <input type="hidden" id="tabValue" name="tabValue" value="">
+    <div class="app-main__inner" style="margin-top: -30px;padding:0px;width:100%;">
+        <div style="height: 40px; display: flex; align-items: center; justify-content: center;">
+            <div class="card-title">
+                <h6 style="font-weight: bold; font-size: 25px; margin: 0;color:maroon">NCD Settlement Request Form</h6>
+            </div>
+        </div>
+        <ul class="body-tabs body-tabs-layout tabs-animated body-tabs-animated nav">
+            <li class="nav-item">
+                <a role="tab" class="nav-link" id="tab-0" data-toggle="tab" href="#tab-content-0" aria-selected="false">
+                    <span>Matured</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a role="tab" class="nav-link active" id="tab-1" data-toggle="tab" href="#tab-content-1" aria-selected="false">
+                    <span>Premature</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="row" id="search_box" style="display:none;">
+            <div class="col-md-6 col-lg-12">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        @*<div class="input-group-text">
+                                <i class="fa fa-search"></i>
+                            </div>*@
+                    </div>
+                    <input id="searchBox" placeholder="Issue Number/Certificate Number" type="text" class="form-control" autocomplete="off">
+                    <div class="input-group-text" style="height:39px;" onclick="search()">
+                        <i class="fa fa-search"></i>
+                    </div>
+                    <ul id="suggestions" class="suggestionsclass"></ul>
+                </div>
+            </div>
+
+            @*<div class="col-md-6 col-lg-2">
+                    <div class="input-group mb-3">
+                        <input type="text" id="selected_debId" placeholder="ID" class="form-control" style="width:120px;" readonly />
+                    </div>
+                </div>*@
+        </div>
+
+        @if (ViewBag.CustomerBankDetails != null && ViewBag.CustomerBankDetails.Rows.Count > 0)
+        {
+            <div class="main-card mb-3 card" id="example_div" style="display:none;">
+                <div class="card-body">
+                    <div id="example_wrapper" class="dataTables_wrapper dt-bootstrap4">
+
+                        <div class="row">
+                            <div class="col-sm-12">
+
+                                <table style="width: 100%;" id="example" class="table table-hover table-striped table-bordered dataTable dtr-inline" role="grid" aria-describedby="example_info">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th> <!-- Selection column header -->
+                                            @if (ViewBag.CustomerBankDetails != null && ViewBag.CustomerBankDetails.Columns.Count > 0)
+                                            {
+                                                foreach (System.Data.DataColumn column in ViewBag.CustomerBankDetails.Columns)
+                                                {
+                                                    <th>@column.ColumnName</th>
+                                                }
+                                            }
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.CustomerBankDetails != null && ViewBag.CustomerBankDetails.Rows.Count > 0)
+                                        {
+                                            foreach (System.Data.DataRow row in ViewBag.CustomerBankDetails.Rows)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" name="selectedRow" class="select-checkbox" value="@row[0]" /> <!-- Checkbox for selecting the row -->
+                                                    </td>
+                                                    @foreach (var item in row.ItemArray)
+                                                    {
+                                                        <td>@item</td>
+                                                    }
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="6">No data available</td> <!-- Updated colspan to account for the selection column -->
+                                            </tr>
+                                        }
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="overflow-x:auto; max-height: 400px;" id="selectedRowContainer">
+
+                <table id="selectedRowTable" class="table table-hover table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <!-- Dynamically fill the column headers -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <!-- Dynamically fill the row data -->
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-body" id="textBpx_details_div" style="display:none;width:100%;">
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">
+                                            Customer ID
+                                        </div>
+                                        <div id="cus_id" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Customer Name</div>
+                                        <div id="cus_name" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Issue No</div>
+                                        <div id="issueNo" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Certificate No</div>
+                                        <div id="cirtificateNo" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Interest Rate:</div>
+                                        <div id="int_rate" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Interest Type</div>
+                                        <div id="int_type" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">
+                                            Allotment
+                                            Date
+                                        </div>
+                                        <div id="AllotmentDt" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">
+                                            Maturity
+                                            Date
+                                        </div>
+                                        <div id="MaturityDt" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+                @*------------------------------------Applicant Details   1st row-------------------------------------------*@
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Period</div>
+                                        <div id="period" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading"> Amount</div>
+                                        <div id="amount" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Maturity Amount</div>
+                                        <div id="maturity_amount" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">	Total Interest</div>
+                                        <div id="interstamt" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                @*------------------------------------Applicant Details   2st row-------------------------------------------*@
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Total Earned   Interest</div>
+                                        <div id="eranint" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Total TDS</div>
+                                        <div id="tot_tds" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading"> 	Total Interest Paid</div>
+                                        <div id="payamt" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">
+                                            Total Payable Amount
+
+                                        </div>
+                                        <div id="balpay" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                @*------------------------------------Applicant Details   3rd row-------------------------------------------*@
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">TDS Payable</div>
+                                        <div id="lasttds" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">	Short recovery</div>
+                                        <div id="short_recovery" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">	Total Settlement amount</div>
+                                        <div id="settpay" style="color:red;font-weight:800;" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">15 track_id</div>
+                                        <div id="pantrack" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="main-card mb-1 card" style="font-size:16px;">
+                    <div class="no-gutters row">
+
+                        <div class="col-md-3" id="form60_div">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Form60</div>
+                                        <div id="trid" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" id="pan_div">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Pan</div>
+                                        <div id="pan" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" id="pan_div1">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading"></div>
+                                        <div id="padfn" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" id="pan_div2">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading"></div>
+                                        <div id="pdfan" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" id="premature_intRate_div" style="display:none;">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Premature closing interest Rate</div>
+                                        <div id="pre_closing_int_rate" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" id="premature_int_div" style="display:none;">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+                                        <div class="widget-heading">Premature Closing interest</div>
+                                        <div id="pre_closing_int" class="widget-subheading1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3" id="pan_div">
+                            <div class="widget-content">
+                                <div class="widget-content-wrapper">
+                                    <div class="widget-content-right ml-0 mr-3">
+
+                                    </div>
+                                    <div class="widget-content-left">
+
+
+                                        <div class="input-container" @*style="position: relative;"*@>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="card-body" id="buttonDiv" style="display:none;">
+
+                <div class="text-center">
+
+                    <button id="requestButton" style="height: 55px; width: 100px;font-size:18px;" class="ladda-button mb-2 mr-2 btn-square btn btn-success" data-style="expand-up">
+                        <span class="ladda-label">Request</span>
+
+                        <span class="ladda-spinner"></span><div class="ladda-progress" style="width: 0px;"></div>
+                    </button>
+                    <button onclick="reloadPage()" style="height: 55px; width: 100px; font-size: 18px;" class="ladda-button mb-2 mr-2 btn-square btn btn-secondary" data-style="expand-right">
+                        <span class="ladda-label">Reset</span>
+
+                        <span class="ladda-spinner"></span>
+                    </button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <h3>No Documents Available</h3>
+        }
+    </div>
+
+</body>
+</html>
